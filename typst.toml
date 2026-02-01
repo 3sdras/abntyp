@@ -1,0 +1,11 @@
+[package]
+name = "abntypst"
+version = "0.1.0"
+entrypoint = "lib.typ"
+authors = ["Esdras"]
+license = "MIT"
+description = "Formatação de documentos acadêmicos conforme normas ABNT"
+repository = "https://github.com/esdras/abntypst"
+keywords = ["abnt", "acadêmico", "tcc", "tese", "artigo", "brasileiro"]
+categories = ["paper", "thesis", "report"]
+disciplines = ["humanities", "social-sciences", "engineering"]
