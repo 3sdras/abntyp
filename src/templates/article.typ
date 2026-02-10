@@ -64,21 +64,44 @@
   set par(
     leading: 1.5em * 0.65,
     justify: true,
-    first-line-indent: 1.25cm,
+    first-line-indent: (amount: 1.25cm, all: true),
   )
+
+  set list(indent: 2em, body-indent: 0.5em)
+  set enum(indent: 2em, body-indent: 0.5em)
+  set terms(indent: 0em, hanging-indent: 2em, separator: [: ])
 
   // Configuração de headings (sem numeração para artigo)
   show heading.where(level: 1): it => {
     v(1.5em)
-    text(weight: "bold", size: 12pt, upper(it.body))
+    text(weight: "bold", size: 12pt)[
+      #if it.numbering != none {
+        counter(heading).display()
+        h(0.5em)
+      }
+      #upper(it.body)
+    ]
     v(1.5em)
   }
 
   show heading.where(level: 2): it => {
     v(1em)
-    text(weight: "bold", size: 12pt, it.body)
+    text(weight: "regular", size: 12pt)[
+      #if it.numbering != none {
+        counter(heading).display()
+        h(0.5em)
+      }
+      #upper(it.body)
+    ]
     v(1em)
   }
+
+  // Excluir indentação de containers que não devem ser indentados
+  show heading: set par(first-line-indent: 0pt)
+  show figure: set par(first-line-indent: 0pt)
+  show raw: set par(first-line-indent: 0pt)
+  show outline: set par(first-line-indent: 0pt)
+  show terms: set par(first-line-indent: 0pt)
 
   // Título centralizado, maiúsculas, negrito
   align(center)[

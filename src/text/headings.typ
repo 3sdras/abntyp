@@ -72,51 +72,61 @@
   show heading.where(level: 1): it => {
     pagebreak(weak: true)
     v(1.5em)
-    if it.numbering != none {
-      counter(heading).display()
-      h(0.5em)
-    }
-    text(weight: "bold", size: 12pt, upper(it.body))
+    text(weight: "bold", size: 12pt)[
+      #if it.numbering != none {
+        counter(heading).display()
+        h(0.5em)
+      }
+      #upper(it.body)
+    ]
     v(1.5em)
   }
 
   show heading.where(level: 2): it => {
     v(1.5em)
-    if it.numbering != none {
-      counter(heading).display()
-      h(0.5em)
-    }
-    text(weight: "regular", size: 12pt, upper(it.body))
+    text(weight: "regular", size: 12pt)[
+      #if it.numbering != none {
+        counter(heading).display()
+        h(0.5em)
+      }
+      #upper(it.body)
+    ]
     v(1.5em)
   }
 
   show heading.where(level: 3): it => {
     v(1.5em)
-    if it.numbering != none {
-      counter(heading).display()
-      h(0.5em)
-    }
-    text(weight: "bold", size: 12pt, it.body)
+    text(weight: "bold", size: 12pt)[
+      #if it.numbering != none {
+        counter(heading).display()
+        h(0.5em)
+      }
+      #it.body
+    ]
     v(1.5em)
   }
 
   show heading.where(level: 4): it => {
     v(1.5em)
-    if it.numbering != none {
-      counter(heading).display()
-      h(0.5em)
-    }
-    text(weight: "regular", size: 12pt, it.body)
+    text(weight: "regular", size: 12pt)[
+      #if it.numbering != none {
+        counter(heading).display()
+        h(0.5em)
+      }
+      #it.body
+    ]
     v(1.5em)
   }
 
   show heading.where(level: 5): it => {
     v(1.5em)
-    if it.numbering != none {
-      counter(heading).display()
-      h(0.5em)
-    }
-    text(style: "italic", size: 12pt, it.body)
+    text(weight: "regular", style: "italic", size: 12pt)[
+      #if it.numbering != none {
+        counter(heading).display()
+        h(0.5em)
+      }
+      #it.body
+    ]
     v(1.5em)
   }
 

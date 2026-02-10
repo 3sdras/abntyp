@@ -81,8 +81,12 @@
   set par(
     leading: 1.5em * 0.65,
     justify: true,
-    first-line-indent: 1.25cm,
+    first-line-indent: (amount: 1.25cm, all: true),
   )
+
+  set list(indent: 2em, body-indent: 0.5em)
+  set enum(indent: 2em, body-indent: 0.5em)
+  set terms(indent: 0em, hanging-indent: 2em, separator: [: ])
 
   // Configuracao de headings com numeracao progressiva
   set heading(numbering: "1.1")
@@ -90,33 +94,70 @@
   show heading.where(level: 1): it => {
     pagebreak(weak: true)
     v(1.5em)
-    if it.numbering != none {
-      counter(heading).display()
-      h(0.5em)
-    }
-    text(weight: "bold", size: 14pt, upper(it.body))
+    text(weight: "bold", size: 14pt)[
+      #if it.numbering != none {
+        counter(heading).display()
+        h(0.5em)
+      }
+      #upper(it.body)
+    ]
     v(1.5em)
   }
 
   show heading.where(level: 2): it => {
     v(1.5em)
-    if it.numbering != none {
-      counter(heading).display()
-      h(0.5em)
-    }
-    text(weight: "bold", size: 12pt, it.body)
+    text(weight: "regular", size: 12pt)[
+      #if it.numbering != none {
+        counter(heading).display()
+        h(0.5em)
+      }
+      #upper(it.body)
+    ]
     v(1.5em)
   }
 
   show heading.where(level: 3): it => {
     v(1.5em)
-    if it.numbering != none {
-      counter(heading).display()
-      h(0.5em)
-    }
-    text(weight: "regular", size: 12pt, it.body)
+    text(weight: "bold", size: 12pt)[
+      #if it.numbering != none {
+        counter(heading).display()
+        h(0.5em)
+      }
+      #it.body
+    ]
     v(1em)
   }
+
+  show heading.where(level: 4): it => {
+    v(1.5em)
+    text(weight: "regular", size: 12pt)[
+      #if it.numbering != none {
+        counter(heading).display()
+        h(0.5em)
+      }
+      #it.body
+    ]
+    v(1em)
+  }
+
+  show heading.where(level: 5): it => {
+    v(1.5em)
+    text(weight: "regular", style: "italic", size: 12pt)[
+      #if it.numbering != none {
+        counter(heading).display()
+        h(0.5em)
+      }
+      #it.body
+    ]
+    v(1em)
+  }
+
+  // Excluir indentacao de containers que nao devem ser indentados
+  show heading: set par(first-line-indent: 0pt)
+  show figure: set par(first-line-indent: 0pt)
+  show raw: set par(first-line-indent: 0pt)
+  show outline: set par(first-line-indent: 0pt)
+  show terms: set par(first-line-indent: 0pt)
 
   // Notas de rodape
   set footnote.entry(

@@ -12,7 +12,7 @@
   set par(
     leading: 1.5em * 0.65,  // Typst usa leading, não line-height
     justify: true,
-    first-line-indent: 1.25cm,  // Parágrafo com recuo de 1,25 cm
+    first-line-indent: (amount: 1.25cm, all: true),  // Parágrafo com recuo de 1,25 cm
   )
 }
 
@@ -21,7 +21,7 @@
   set par(
     leading: 1.5em * 0.65,
     justify: true,
-    first-line-indent: 1.25cm,
+    first-line-indent: (amount: 1.25cm, all: true),
   )
   body
 }

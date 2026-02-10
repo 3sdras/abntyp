@@ -3,7 +3,7 @@
 /// Configura sumário conforme ABNT
 /// - Título "SUMARIO" centralizado, negrito
 /// - Indicativos de seção alinhados à esquerda
-/// - Títulos alinhados à margem do indicativo mais extenso
+/// - Entradas espelham a formatação dos headings (NBR 6027/6024)
 /// - Páginas ligadas por linha pontilhada
 #let abnt-outline() = {
   // Título
@@ -13,20 +13,69 @@
 
   v(1.5em)
 
-  // Configuração do outline
-  show outline.entry: it => {
-    // Seções primárias em negrito e maiúsculas
-    if it.level == 1 {
-      v(0.5em)
-      strong(it)
-    } else {
-      it
-    }
+  // Nível 1: MAIÚSCULAS + negrito
+  show outline.entry.where(level: 1): it => {
+    v(0.5em)
+    block[
+      #link(it.element.location())[
+        #text(weight: "bold")[#upper(it.body())]
+        #box(width: 1fr, it.fill)
+        #it.page()
+      ]
+    ]
+  }
+
+  // Nível 2: MAIÚSCULAS, regular
+  show outline.entry.where(level: 2): it => {
+    block[
+      #link(it.element.location())[
+        #h(1em)
+        #upper(it.body())
+        #box(width: 1fr, it.fill)
+        #it.page()
+      ]
+    ]
+  }
+
+  // Nível 3: Minúsculas + negrito
+  show outline.entry.where(level: 3): it => {
+    block[
+      #link(it.element.location())[
+        #h(2em)
+        #text(weight: "bold")[#it.body()]
+        #box(width: 1fr, it.fill)
+        #it.page()
+      ]
+    ]
+  }
+
+  // Nível 4: Minúsculas, regular
+  show outline.entry.where(level: 4): it => {
+    block[
+      #link(it.element.location())[
+        #h(3em)
+        #it.body()
+        #box(width: 1fr, it.fill)
+        #it.page()
+      ]
+    ]
+  }
+
+  // Nível 5: Minúsculas, itálico
+  show outline.entry.where(level: 5): it => {
+    block[
+      #link(it.element.location())[
+        #h(4em)
+        #text(style: "italic")[#it.body()]
+        #box(width: 1fr, it.fill)
+        #it.page()
+      ]
+    ]
   }
 
   outline(
     title: none,
-    indent: auto,
+    indent: 0pt,
   )
 }
 
@@ -41,11 +90,71 @@
 
   v(1.5em)
 
+  // Nível 1: MAIÚSCULAS + negrito (NBR 6027)
+  show outline.entry.where(level: 1): it => {
+    v(0.5em)
+    block[
+      #link(it.element.location())[
+        #text(weight: "bold")[#upper(it.body())]
+        #box(width: 1fr, it.fill)
+        #it.page()
+      ]
+    ]
+  }
+
+  // Nível 2: MAIÚSCULAS, regular
+  show outline.entry.where(level: 2): it => {
+    block[
+      #link(it.element.location())[
+        #h(1em)
+        #upper(it.body())
+        #box(width: 1fr, it.fill)
+        #it.page()
+      ]
+    ]
+  }
+
+  // Nível 3: Minúsculas + negrito
+  show outline.entry.where(level: 3): it => {
+    block[
+      #link(it.element.location())[
+        #h(2em)
+        #text(weight: "bold")[#it.body()]
+        #box(width: 1fr, it.fill)
+        #it.page()
+      ]
+    ]
+  }
+
+  // Nível 4: Minúsculas, regular
+  show outline.entry.where(level: 4): it => {
+    block[
+      #link(it.element.location())[
+        #h(3em)
+        #it.body()
+        #box(width: 1fr, it.fill)
+        #it.page()
+      ]
+    ]
+  }
+
+  // Nível 5: Minúsculas, itálico
+  show outline.entry.where(level: 5): it => {
+    block[
+      #link(it.element.location())[
+        #h(4em)
+        #text(style: "italic")[#it.body()]
+        #box(width: 1fr, it.fill)
+        #it.page()
+      ]
+    ]
+  }
+
   outline(
     title: none,
     depth: depth,
-    indent: auto,
-      )
+    indent: 0pt,
+  )
 
   pagebreak()
 }

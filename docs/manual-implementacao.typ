@@ -59,10 +59,10 @@
   #text(size: 12pt)[Manual de Implementação]
 
   #v(1cm)
-  #text(size: 11pt)[Versão 0.4.0]
+  #text(size: 11pt)[Versão 0.5.0]
 
   #v(1fr)
-  #text(size: 11pt)[Janeiro 2026]
+  #text(size: 11pt)[Fevereiro 2026]
 ]
 
 #pagebreak()
@@ -350,6 +350,34 @@ Define espaçamentos entre linhas e parágrafos.
 // Bloco para natureza do trabalho (recuo 8cm)
 #let nature-block(body)
 ```
+
+*Indentação de parágrafos (`all: true`):*
+
+A norma ABNT exige recuo de 1,25cm em _todos_ os parágrafos, inclusive o primeiro após um título. Por padrão, o Typst segue a convenção anglo-saxônica e não indenta o primeiro parágrafo. Os templates do ABNTypst usam `first-line-indent` com `all: true` para corrigir isso:
+
+```typst
+#set par(first-line-indent: (amount: 1.25cm, all: true))
+```
+
+Como o parâmetro `all: true` indenta o conteúdo dentro de _todos_ os contêineres, os templates aplicam automaticamente show rules para excluir elementos que não devem ter indentação:
+
+```typst
+#show heading: set par(first-line-indent: 0pt)
+#show figure: set par(first-line-indent: 0pt)
+#show raw: set par(first-line-indent: 0pt)
+#show outline: set par(first-line-indent: 0pt)
+#show terms: set par(first-line-indent: 0pt)
+```
+
+Os templates também configuram recuo para listas e enumerações:
+
+```typst
+#set list(indent: 2em, body-indent: 0.5em)
+#set enum(indent: 2em, body-indent: 0.5em)
+#set terms(indent: 0em, hanging-indent: 2em, separator: [: ])
+```
+
+Todas essas configurações são aplicadas automaticamente ao usar qualquer template (`abntcc`, `artigo`, `relatorio`, etc.). Se estiver montando o documento manualmente sem template, inclua-as no preâmbulo.
 
 === sorting.typ - Ordenação Alfabética (NBR 6033:1989)
 
@@ -741,7 +769,7 @@ Cria páginas de resumo conforme NBR 6028.
 
 === toc.typ - Sumário e Listas
 
-Cria sumário e listas conforme NBR 6027.
+Cria sumário e listas conforme NBR 6027. O sumário formata automaticamente as entradas espelhando a hierarquia visual dos headings (NBR 6027:2012): nível 1 em maiúsculas e negrito, nível 2 em maiúsculas sem negrito, nível 3 em minúsculas e negrito, nível 4 em minúsculas sem negrito, nível 5 em minúsculas e itálico.
 
 ```typst
 // Sumário
@@ -1852,6 +1880,28 @@ O pacote usa um arquivo CSL baseado nas normas NBR 6023:2018 e NBR 10520:2023.
 Para casos especiais, você pode usar as funções de formatação manual (`ref-book`, `ref-article`, `ref-online`)
 
 = Changelog
+
+== Versão 0.5.0 (Fevereiro 2026)
+
+- Conformidade de headings com NBR 6024:2012 em todos os templates
+  - Indicativo numérico agora herda a formatação do nível (negrito, itálico, etc.)
+  - Adicionado nível 5 (quinário: minúsculas, itálico) nos templates thesis, technical-report, research-project e book
+  - Corrigida hierarquia dos níveis 2 e 3 no template book (estavam invertidos)
+  - Corrigido nível 2 nos templates article e periodical (agora MAIÚSCULAS sem negrito)
+- Indentação de parágrafos conforme ABNT (`all: true`)
+  - Todos os templates agora usam `first-line-indent: (amount: 1.25cm, all: true)` para indentar todos os parágrafos, inclusive o primeiro após títulos
+  - Show rules para excluir containers (heading, figure, raw, outline, terms) da indentação
+  - Configuração de recuo para listas, enumerações e termos em todos os templates
+- Sumário conforme NBR 6027:2012 (`toc.typ`)
+  - Entradas do sumário agora espelham a formatação dos headings (5 níveis)
+  - Nível 1: MAIÚSCULAS + negrito; Nível 2: MAIÚSCULAS; Nível 3: negrito; Nível 4: normal; Nível 5: itálico
+- Funções renomeadas para português (nomes públicos)
+  - Templates: `abntcc`, `artigo`, `relatorio`, `projeto-pesquisa`, `livro`, `slides`, `slides-defesa`
+  - Elementos: `capa()`, `folha-rosto()`, `ficha-catalografica()`, `resumo()`, `sumario()`
+  - Citações: `citar()`, `citar-autor()`, `citar-multiplos()`, `citar-etal()`, `citar-apud()`, etc.
+  - Citações diretas: `citacao-curta()`, `citacao-longa()`, `supressao`, `interpolacao()`, `grifo-nosso()`, `grifo-do-autor()`
+  - Referências: `ref-livro()`, `ref-artigo()`, `ref-online()`, `referencias-titulo()`
+  - Sub-funções internas de templates mantêm nomes em inglês
 
 == Versão 0.4.0 (Janeiro 2026)
 
