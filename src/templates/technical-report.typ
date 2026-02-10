@@ -56,7 +56,7 @@
 /// - font: fonte a usar
 /// - bibliography-file: arquivo .bib (opcional)
 /// - bibliography-title: titulo da secao de referencias
-#let technical-report(
+#let relatorio(
   title: "",
   subtitle: none,
   report-number: none,

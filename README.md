@@ -120,7 +120,7 @@ O ABNTypst implementa as seguintes normas ABNT (versões atualizadas):
 ```typst
 #import "@preview/abntypst:0.1.0": *
 
-#show: thesis.with(
+#show: abntcc.with(
   title: "Uma proposta de pacote para normas ABNT em Typst",
   subtitle: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
   author: "Cláudio Código",
@@ -136,8 +136,8 @@ O ABNTypst implementa as seguintes normas ABNT (versões atualizadas):
 )
 
 // Elementos pré-textuais
-#cover(...)
-#title-page(...)
+#capa(...)
+#folha-rosto(...)
 #resumo(keywords: keywords-pt)[Texto do resumo...]
 #abstract(keywords: keywords-en)[Abstract text...]
 #sumario()
@@ -159,7 +159,7 @@ Texto do desenvolvimento...
 ```typst
 #import "@preview/abntypst:0.1.0": *
 
-#show: article.with(
+#show: artigo.with(
   title: "Título do Artigo",
   authors: (
     (name: "Autor Um", affiliation: "Universidade A", email: "autor1@exemplo.com"),
@@ -186,16 +186,16 @@ O ABNTypst suporta os dois sistemas de chamada permitidos pela NBR 10520:2023:
 
 ```typst
 // Citação entre parênteses
-#cite-ad("Silva", "2023", page: "45")  // (SILVA, 2023, p. 45)
+#citar("Silva", "2023", page: "45")  // (SILVA, 2023, p. 45)
 
 // Autor no texto
-#cite-text("Silva", "2023")  // Silva (2023)
+#citar-autor("Silva", "2023")  // Silva (2023)
 
 // Citação direta curta
-#quote-short("Silva", "2023", page: "45")[Texto da citação]
+#citacao-curta("Silva", "2023", page: "45")[Texto da citação]
 
 // Citação direta longa
-#quote-long("Silva", "2023", page: "45-46")[
+#citacao-longa("Silva", "2023", page: "45-46")[
   Texto longo da citação com mais de três linhas...
 ]
 ```
@@ -207,12 +207,12 @@ O sistema numérico foi implementado inspirado no `abntex2-num.bst` do abnTeX2.
 ```typst
 #import "@preview/abntypst:0.1.0": *
 
-#show: numeric-cite-setup
+#show: citacao-num-config
 
-O resultado foi positivo #cite-num("silva2023", page: "45").
-Outros autores #cite-num-multiple(("santos2022", "costa2021")) confirmam.
+O resultado foi positivo #citar-num("silva2023", page: "45").
+Outros autores #citar-num-multiplos(("santos2022", "costa2021")) confirmam.
 
-#numeric-bibliography((
+#bibliografia-numerica((
   ("silva2023", [SILVA, J. *Título*. São Paulo: Editora, 2023.]),
   ("santos2022", [SANTOS, M. Artigo. *Revista*, v. 1, 2022.]),
 ))

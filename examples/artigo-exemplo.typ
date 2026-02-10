@@ -19,7 +19,7 @@
 #import "../lib.typ": *
 
 // Configuração do documento usando o template article
-#show: article.with(
+#show: artigo.with(
   title: "Impacto da Inteligência Artificial na Educação Superior",
   subtitle: "uma revisão sistemática da literatura",
   authors: (

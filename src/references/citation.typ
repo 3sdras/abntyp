@@ -28,38 +28,57 @@
 /// - author: sobrenome do autor
 /// - year: ano da publicação
 /// - page: página (opcional)
-#let cite-ad(author, year, page: none) = {
+#let citar(author, year, page: none) = {
   [(#upper(author), #year#if page != none [, p. #page])]
 }
 
 /// Citação com autor no texto
-#let cite-text(author, year) = {
+/// "Segundo Silva (2023)..."
+#let citar-autor(author, year) = {
   [#author (#year)]
 }
 
+/// Citação indireta (parafraseada)
+/// Apenas menciona o autor e ano
+#let citar-indireto(author, year) = {
+  [(#upper(author), #year)]
+}
+
+/// Citação de citação (apud)
+/// Autor original apud autor da obra consultada
+#let citar-apud(
+  original-author,
+  original-year,
+  secondary-author,
+  secondary-year,
+  page: none,
+) = {
+  [(#upper(original-author), #original-year apud #upper(secondary-author), #secondary-year#if page != none [, p. #page])]
+}
+
 /// Citação com múltiplos autores (até 3)
-#let cite-multiple(authors, year, page: none) = {
+#let citar-multiplos(authors, year, page: none) = {
   let formatted = authors.map(a => upper(a)).join("; ")
   [(#formatted, #year#if page != none [, p. #page])]
 }
 
 /// Citação com mais de 3 autores (et al.)
-#let cite-etal(first-author, year, page: none) = {
+#let citar-etal(first-author, year, page: none) = {
   [(#upper(first-author) et al., #year#if page != none [, p. #page])]
 }
 
 /// Citação de entidade coletiva
-#let cite-entity(entity, year, page: none) = {
+#let citar-entidade(entity, year, page: none) = {
   [(#upper(entity), #year#if page != none [, p. #page])]
 }
 
 /// Citação de obra sem autoria
-#let cite-title(title, year, page: none) = {
+#let citar-titulo(title, year, page: none) = {
   [(#upper(title), #year#if page != none [, p. #page])]
 }
 
 /// Título da seção de referências
-#let referencias-title() = {
+#let referencias-titulo() = {
   heading(level: 1, numbering: none, "REFERÊNCIAS")
 }
 
@@ -67,7 +86,7 @@
 // (usar quando não for possível usar .bib)
 
 /// Formata referência de livro
-#let ref-book(
+#let ref-livro(
   author: none,
   title: none,
   subtitle: none,
@@ -92,7 +111,7 @@
 }
 
 /// Formata referência de artigo de periódico
-#let ref-article(
+#let ref-artigo(
   author: none,
   title: none,
   journal: none,

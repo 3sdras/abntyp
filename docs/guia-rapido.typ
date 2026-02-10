@@ -26,7 +26,7 @@ Coloque a pasta `abntypst` no seu projeto e importe:
 == Documento Básico
 
 ```typst
-#show: thesis.with(
+#show: abntcc.with(
   title: "Título",
   author: "Seu Nome",
   institution: "Universidade",
@@ -35,7 +35,7 @@ Coloque a pasta `abntypst` no seu projeto e importe:
   advisor: "Prof. Dr. Nome",
 )
 
-#cover(
+#capa(
   institution: "Universidade",
   author: "Seu Nome",
   title: "Título",
@@ -43,7 +43,7 @@ Coloque a pasta `abntypst` no seu projeto e importe:
   year: 2026,
 )
 
-#title-page(
+#folha-rosto(
   author: "Seu Nome",
   title: "Título",
   nature: "Dissertação...",
@@ -82,7 +82,7 @@ Texto...
 *Citação curta (até 3 linhas):*
 ```typst
 Conforme o autor,
-#quote-short("texto",
+#citacao-curta("texto",
   author: "SILVA",
   year: "2023",
   page: "42").
@@ -90,7 +90,7 @@ Conforme o autor,
 
 *Citação longa (mais de 3 linhas):*
 ```typst
-#quote-long(
+#citacao-longa(
   author: "SILVA",
   year: "2023",
 )[
@@ -102,10 +102,10 @@ Conforme o autor,
 *Sistema autor-data:*
 ```typst
 // No texto
-Segundo #cite-author("Silva", "2023")
+Segundo #citar-autor("Silva", "2023")
 
 // Entre parênteses
-#cite-ad("SILVA", "2023", page: "42")
+#citar("SILVA", "2023", page: "42")
 ```
 
 == Figuras
@@ -184,7 +184,7 @@ São Paulo: Editora, 2023.
 
 *Fonte Arial:*
 ```typst
-#show: thesis.with(
+#show: abntcc.with(
   font: "Arial",
   // ...
 )

@@ -21,7 +21,7 @@
 #import "../lib.typ": *
 
 // Configuração do documento usando o template technical-report
-#show: technical-report.with(
+#show: relatorio.with(
   title: "Análise de Desempenho de Sistemas de Banco de Dados NoSQL",
   subtitle: "estudo comparativo entre MongoDB, Cassandra e Redis",
   report-number: 15,

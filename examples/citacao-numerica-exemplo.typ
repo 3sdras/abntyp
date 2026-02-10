@@ -43,7 +43,7 @@
 )
 
 // Configurar sistema numerico
-#show: numeric-cite-setup
+#show: citacao-num-config
 
 // ============================================================================
 // TITULO
@@ -81,39 +81,39 @@ A principal vantagem do sistema numerico e a limpeza visual do texto, sem a inte
 
 == Citacao Simples
 
-A metodologia utilizada foi baseada em estudos anteriores #cite-num("silva2023"). Os resultados foram consistentes com a literatura #cite-num("santos2022").
+A metodologia utilizada foi baseada em estudos anteriores #citar-num("silva2023"). Os resultados foram consistentes com a literatura #citar-num("santos2022").
 
 == Citacao com Pagina
 
-Conforme demonstrado na pesquisa #cite-num("silva2023", page: "45"), "os resultados indicam uma correlacao positiva entre as variaveis analisadas".
+Conforme demonstrado na pesquisa #citar-num("silva2023", page: "45"), "os resultados indicam uma correlacao positiva entre as variaveis analisadas".
 
 == Citacao com Volume e Pagina
 
-O conceito foi originalmente proposto #cite-num("enciclopedia2020", volume: "2", page: "123-125") e posteriormente expandido por outros autores.
+O conceito foi originalmente proposto #citar-num("enciclopedia2020", volume: "2", page: "123-125") e posteriormente expandido por outros autores.
 
 == Citacoes Multiplas
 
-Diversos estudos confirmam esta hipotese #cite-num-multiple(("silva2023", "santos2022", "costa2021")).
+Diversos estudos confirmam esta hipotese #citar-num-multiplos(("silva2023", "santos2022", "costa2021")).
 
 == Citacao no Texto (Autor Mencionado)
 
-Segundo Silva #cite-num-inline("silva2023", page: "78"), a abordagem proposta apresenta vantagens significativas em relacao aos metodos tradicionais.
+Segundo Silva #citar-num-linha("silva2023", page: "78"), a abordagem proposta apresenta vantagens significativas em relacao aos metodos tradicionais.
 
 == Citacao de Citacao (Apud)
 
-Freire afirmou que a educacao e um ato politico #cite-num-apud("freire1994", "streck2017", original-page: "13", consulted-page: "25").
+Freire afirmou que a educacao e um ato politico #citar-num-apud("freire1994", "streck2017", original-page: "13", consulted-page: "25").
 
 = CITACOES DIRETAS
 
 == Citacao Curta (ate 3 linhas)
 
-#quote-num-short("santos2022", page: "67")[
+#citacao-num-curta("santos2022", page: "67")[
   A tecnologia transformou profundamente as relacoes sociais no seculo XXI
 ]
 
 == Citacao Longa (mais de 3 linhas)
 
-#quote-num-long("silva2023", page: "89-90")[
+#citacao-num-longa("silva2023", page: "89-90")[
   A teleconferencia permite ao individuo participar de um encontro nacional ou regional sem a necessidade de deixar seu local de origem. Tipos comuns de teleconferencia incluem o uso de televisao, telefone e computador. Atraves de audio-Loss conferencia, utilizando a companhia local de telefone, um sinal de audio pode ser emitido em um salao de qualquer dimensao
 ]
 
@@ -121,7 +121,7 @@ Freire afirmou que a educacao e um ato politico #cite-num-apud("freire1994", "st
 
 A NBR 10520:2023 tambem permite o formato sobrescrito (expoente) para citacoes numericas. Veja exemplos:
 
-O estudo comprovou a hipotese#cite-num("costa2021", style: "superscript"). Outros autores#cite-num("oliveira2020", page: "34", style: "superscript") chegaram a conclusoes similares.
+O estudo comprovou a hipotese#citar-num("costa2021", style: "superscript"). Outros autores#citar-num("oliveira2020", page: "34", style: "superscript") chegaram a conclusoes similares.
 
 *Nota:* No formato sobrescrito, nao deve haver espaco entre o texto e o numero.
 
@@ -143,7 +143,7 @@ O estudo comprovou a hipotese#cite-num("costa2021", style: "superscript"). Outro
 // REFERENCIAS
 // ============================================================================
 
-#numeric-bibliography(
+#bibliografia-numerica(
   (
     ("silva2023", [SILVA, Joao Carlos. *Metodologia de pesquisa aplicada*. 2. ed. Sao Paulo: Editora Academica, 2023.]),
     ("santos2022", [SANTOS, Maria Helena. Transformacoes sociais na era digital. *Revista Brasileira de Sociologia*, Brasilia, v. 10, n. 2, p. 45-78, 2022.]),

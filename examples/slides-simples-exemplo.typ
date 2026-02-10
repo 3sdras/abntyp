@@ -204,21 +204,23 @@ O algoritmo ajusta os coeficientes para minimizar o erro quadratico medio (MSE).
 )
 
 // Slide final
-#touying-slide(setting: body => {
-  set align(center + horizon)
-  body
-})[
-  #text(size: 36pt, weight: "bold", fill: cores-clean.primary)[
-    Obrigado!
+#touying-slide-wrapper(self => {
+  touying-slide(self: self, setting: body => {
+    set align(center + horizon)
+    body
+  })[
+    #text(size: 36pt, weight: "bold", fill: cores-clean.primary)[
+      Obrigado!
+    ]
+
+    #v(1em)
+
+    #text(size: 18pt)[Duvidas e discussao]
+
+    #v(2em)
+
+    #text(size: 14pt, fill: gray)[
+      carlos.silva\@exemplo.edu.br
+    ]
   ]
-
-  #v(1em)
-
-  #text(size: 18pt)[Duvidas e discussao]
-
-  #v(2em)
-
-  #text(size: 14pt, fill: gray)[
-    carlos.silva\@exemplo.edu.br
-  ]
-]
+})

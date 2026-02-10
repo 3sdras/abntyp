@@ -25,7 +25,7 @@
 #import themes.university: *
 
 // Re-exportar funcoes de citacao do ABNTypst para uso em slides
-#import "../references/citation.typ": cite-ad, cite-text, cite-multiple, cite-etal, cite-entity, cite-title
+#import "../references/citation.typ": citar, citar-autor, citar-multiplos, citar-etal, citar-entidade, citar-titulo
 
 // =============================================================================
 // TEMPLATE PRINCIPAL: slides()
@@ -96,55 +96,57 @@
   )
 
   // Slide de titulo personalizado
-  touying-slide(setting: body => {
-    set align(center + horizon)
-    body
-  })[
-    // Logo (se fornecido)
-    #if logo != none {
-      logo
-      v(0.5em)
-    }
+  touying-slide-wrapper(self => {
+    touying-slide(self: self, setting: body => {
+      set align(center + horizon)
+      body
+    })[
+      // Logo (se fornecido)
+      #if logo != none {
+        logo
+        v(0.5em)
+      }
 
-    // Instituicao
-    #text(size: 18pt, fill: secondary-color, upper(institution))
+      // Instituicao
+      #text(size: 18pt, fill: secondary-color, upper(institution))
 
-    #if department != none {
-      linebreak()
-      text(size: 14pt, fill: secondary-color, department)
-    }
+      #if department != none {
+        linebreak()
+        text(size: 14pt, fill: secondary-color, department)
+      }
 
-    #v(1em)
+      #v(1em)
 
-    // Titulo
-    #text(size: 32pt, weight: "bold", fill: primary-color, title)
+      // Titulo
+      #text(size: 32pt, weight: "bold", fill: primary-color, title)
 
-    // Subtitulo
-    #if subtitle != none {
-      linebreak()
-      v(0.3em)
-      text(size: 20pt, fill: secondary-color, subtitle)
-    }
+      // Subtitulo
+      #if subtitle != none {
+        linebreak()
+        v(0.3em)
+        text(size: 20pt, fill: secondary-color, subtitle)
+      }
 
-    #v(1.5em)
+      #v(1.5em)
 
-    // Autor
-    #text(size: 18pt, author)
+      // Autor
+      #text(size: 18pt, author)
 
-    // Orientador (para defesas)
-    #if advisor != none {
-      linebreak()
-      v(0.3em)
-      text(size: 14pt)[Orientador(a): #advisor]
-    }
+      // Orientador (para defesas)
+      #if advisor != none {
+        linebreak()
+        v(0.3em)
+        text(size: 14pt)[Orientador(a): #advisor]
+      }
 
-    #v(1em)
+      #v(1em)
 
-    // Data
-    #text(size: 14pt, fill: secondary-color)[
-      #date.display("[day] de [month repr:long] de [year]")
+      // Data
+      #text(size: 14pt, fill: secondary-color)[
+        #date.display("[day] de [month repr:long] de [year]")
+      ]
     ]
-  ]
+  })
 
   // Conteudo da apresentacao
   body
@@ -163,7 +165,7 @@
 /// - degree: grau pretendido (ex: "Bacharel em Ciencia da Computacao")
 /// - program: programa de pos-graduacao (para mestrado/doutorado)
 /// - committee: membros da banca (lista de nomes)
-#let defense-slides(
+#let slides-defesa(
   title: "",
   subtitle: none,
   author: "",
@@ -202,97 +204,101 @@
   )
 
   // Slide de titulo para defesa
-  touying-slide(setting: body => {
-    set align(center + horizon)
-    body
-  })[
-    #if logo != none {
-      logo
-      v(0.3em)
-    }
+  touying-slide-wrapper(self => {
+    touying-slide(self: self, setting: body => {
+      set align(center + horizon)
+      body
+    })[
+      #if logo != none {
+        logo
+        v(0.3em)
+      }
 
-    #text(size: 16pt, fill: secondary-color, upper(institution))
+      #text(size: 16pt, fill: secondary-color, upper(institution))
 
-    #if department != none {
-      linebreak()
-      text(size: 12pt, fill: secondary-color, department)
-    }
+      #if department != none {
+        linebreak()
+        text(size: 12pt, fill: secondary-color, department)
+      }
 
-    #if program != none {
-      linebreak()
-      text(size: 12pt, fill: secondary-color, program)
-    }
+      #if program != none {
+        linebreak()
+        text(size: 12pt, fill: secondary-color, program)
+      }
 
-    #v(0.8em)
+      #v(0.8em)
 
-    #text(size: 28pt, weight: "bold", fill: primary-color, title)
+      #text(size: 28pt, weight: "bold", fill: primary-color, title)
 
-    #if subtitle != none {
-      linebreak()
-      v(0.2em)
-      text(size: 18pt, fill: secondary-color, subtitle)
-    }
+      #if subtitle != none {
+        linebreak()
+        v(0.2em)
+        text(size: 18pt, fill: secondary-color, subtitle)
+      }
 
-    #v(1em)
+      #v(1em)
 
-    #text(size: 16pt, author)
+      #text(size: 16pt, author)
 
-    #v(0.5em)
+      #v(0.5em)
 
-    #grid(
-      columns: if co-advisor != none { (1fr, 1fr) } else { (1fr,) },
-      gutter: 1em,
-      text(size: 12pt)[
-        *Orientador(a):* \
-        #advisor
-      ],
-      if co-advisor != none {
+      #grid(
+        columns: if co-advisor != none { (1fr, 1fr) } else { (1fr,) },
+        gutter: 1em,
         text(size: 12pt)[
-          *Coorientador(a):* \
-          #co-advisor
+          *Orientador(a):* \
+          #advisor
+        ],
+        if co-advisor != none {
+          text(size: 12pt)[
+            *Coorientador(a):* \
+            #co-advisor
+          ]
+        },
+      )
+
+      #v(0.5em)
+
+      #if degree != none {
+        text(size: 11pt, fill: secondary-color)[
+          Trabalho apresentado para obtencao do grau de #degree
         ]
-      },
-    )
+      }
 
-    #v(0.5em)
+      #v(0.3em)
 
-    #if degree != none {
-      text(size: 11pt, fill: secondary-color)[
-        Trabalho apresentado para obtencao do grau de #degree
+      #text(size: 12pt, fill: secondary-color)[
+        #date.display("[day] de [month repr:long] de [year]")
       ]
-    }
-
-    #v(0.3em)
-
-    #text(size: 12pt, fill: secondary-color)[
-      #date.display("[day] de [month repr:long] de [year]")
     ]
-  ]
+  })
 
   body
 
   // Slide final com agradecimentos (padrao em defesas)
-  touying-slide(setting: body => {
-    set align(center + horizon)
-    body
-  })[
-    #text(size: 36pt, weight: "bold", fill: primary-color)[
-      Obrigado!
-    ]
-
-    #v(1em)
-
-    #text(size: 18pt)[Perguntas?]
-
-    #v(2em)
-
-    #if committee.len() > 0 {
-      text(size: 14pt, fill: secondary-color)[
-        *Banca Examinadora:* \
-        #committee.join(" | ")
+  touying-slide-wrapper(self => {
+    touying-slide(self: self, setting: body => {
+      set align(center + horizon)
+      body
+    })[
+      #text(size: 36pt, weight: "bold", fill: primary-color)[
+        Obrigado!
       ]
-    }
-  ]
+
+      #v(1em)
+
+      #text(size: 18pt)[Perguntas?]
+
+      #v(2em)
+
+      #if committee.len() > 0 {
+        text(size: 14pt, fill: secondary-color)[
+          *Banca Examinadora:* \
+          #committee.join(" | ")
+        ]
+      }
+    ]
+  })
 }
 
 // =============================================================================
@@ -307,15 +313,19 @@
   items: (),
   primary-color: rgb("#003366"),
 ) = {
-  touying-slide(title: title)[
-    #set text(size: 20pt)
-    #set enum(numbering: "1.", body-indent: 1em)
+  touying-slide-wrapper(self => {
+    touying-slide(self: self)[
+      #text(size: 24pt, weight: "bold")[#title]
+      #v(0.5em)
+      #set text(size: 20pt)
+      #set enum(numbering: "1.", body-indent: 1em)
 
-    #for (i, item) in items.enumerate() {
-      [#text(fill: primary-color, weight: "bold", str(i + 1) + ".") #item \ ]
-      v(0.5em)
-    }
-  ]
+      #for (i, item) in items.enumerate() {
+        [#text(fill: primary-color, weight: "bold", str(i + 1) + ".") #item \ ]
+        v(0.5em)
+      }
+    ]
+  })
 }
 
 /// Slide de secao (divisor)
@@ -326,17 +336,19 @@
   subtitle: none,
   primary-color: rgb("#003366"),
 ) = {
-  touying-slide(setting: body => {
-    set align(center + horizon)
-    body
-  })[
-    #text(size: 36pt, weight: "bold", fill: primary-color, title)
+  touying-slide-wrapper(self => {
+    touying-slide(self: self, setting: body => {
+      set align(center + horizon)
+      body
+    })[
+      #text(size: 36pt, weight: "bold", fill: primary-color, title)
 
-    #if subtitle != none {
-      v(0.5em)
-      text(size: 20pt, fill: primary-color.lighten(30%), subtitle)
-    }
-  ]
+      #if subtitle != none {
+        v(0.5em)
+        text(size: 20pt, fill: primary-color.lighten(30%), subtitle)
+      }
+    ]
+  })
 }
 
 /// Slide com citacao em destaque
@@ -350,28 +362,30 @@
   page: none,
   primary-color: rgb("#003366"),
 ) = {
-  touying-slide(setting: body => {
-    set align(center + horizon)
-    body
-  })[
-    #box(
-      width: 80%,
-      inset: 2em,
-      stroke: (left: 4pt + primary-color),
-      fill: primary-color.lighten(95%),
-    )[
-      #set text(size: 22pt, style: "italic")
-      #set par(leading: 1.2em)
-      "#quote"
-    ]
+  touying-slide-wrapper(self => {
+    touying-slide(self: self, setting: body => {
+      set align(center + horizon)
+      body
+    })[
+      #box(
+        width: 80%,
+        inset: 2em,
+        stroke: (left: 4pt + primary-color),
+        fill: primary-color.lighten(95%),
+      )[
+        #set text(size: 22pt, style: "italic")
+        #set par(leading: 1.2em)
+        "#quote"
+      ]
 
-    #v(1em)
+      #v(1em)
 
-    // Formato NBR 10520:2023 para citacao
-    #text(size: 16pt, fill: primary-color)[
-      (#upper(author), #year#if page != none [, p. #page])
+      // Formato NBR 10520:2023 para citacao
+      #text(size: 16pt, fill: primary-color)[
+        (#upper(author), #year#if page != none [, p. #page])
+      ]
     ]
-  ]
+  })
 }
 
 /// Slide de referencias
@@ -382,26 +396,30 @@
   title: "Referencias",
   items: (),
 ) = {
-  touying-slide(title: title)[
-    #set text(size: 14pt)
-    #set par(
-      hanging-indent: 1em,
-      first-line-indent: 0pt,
-      leading: 0.8em,
-    )
+  touying-slide-wrapper(self => {
+    touying-slide(self: self)[
+      #text(size: 24pt, weight: "bold")[#title]
+      #v(0.5em)
+      #set text(size: 14pt)
+      #set par(
+        hanging-indent: 1em,
+        first-line-indent: 0pt,
+        leading: 0.8em,
+      )
 
-    // Nota sobre a norma aplicavel
-    #text(size: 10pt, fill: gray)[
-      _Formatacao conforme NBR 6023:2018_
+      // Nota sobre a norma aplicavel
+      #text(size: 10pt, fill: gray)[
+        _Formatacao conforme NBR 6023:2018_
+      ]
+
+      #v(0.5em)
+
+      #for item in items {
+        item
+        v(0.3em)
+      }
     ]
-
-    #v(0.5em)
-
-    #for item in items {
-      item
-      v(0.3em)
-    }
-  ]
+  })
 }
 
 /// Slide de figura com fonte
@@ -415,27 +433,33 @@
   source: none,
   source-year: none,
 ) = {
-  touying-slide(title: title)[
-    #align(center)[
-      #if image != none { image }
-
-      #if caption != none {
+  touying-slide-wrapper(self => {
+    touying-slide(self: self)[
+      #if title != none {
+        text(size: 24pt, weight: "bold", title)
         v(0.5em)
-        text(size: 14pt, weight: "bold", caption)
       }
+      #align(center)[
+        #if image != none { image }
 
-      #if source != none {
-        v(0.3em)
-        text(size: 12pt, fill: gray)[
-          Fonte: #if source-year != none {
-            [(#upper(source), #source-year)]
-          } else {
-            source
-          }
-        ]
-      }
+        #if caption != none {
+          v(0.5em)
+          text(size: 14pt, weight: "bold", caption)
+        }
+
+        #if source != none {
+          v(0.3em)
+          text(size: 12pt, fill: gray)[
+            Fonte: #if source-year != none {
+              [(#upper(source), #source-year)]
+            } else {
+              source
+            }
+          ]
+        }
+      ]
     ]
-  ]
+  })
 }
 
 /// Slide comparativo (duas colunas)
@@ -447,30 +471,34 @@
   right-content: [],
   primary-color: rgb("#003366"),
 ) = {
-  touying-slide(title: title)[
-    #grid(
-      columns: (1fr, 1fr),
-      gutter: 2em,
+  touying-slide-wrapper(self => {
+    touying-slide(self: self)[
+      #text(size: 24pt, weight: "bold")[#title]
+      #v(0.5em)
+      #grid(
+        columns: (1fr, 1fr),
+        gutter: 2em,
 
-      // Coluna esquerda
-      [
-        #align(center)[
-          #text(weight: "bold", fill: primary-color, size: 18pt, left-title)
-        ]
-        #v(0.5em)
-        #left-content
-      ],
+        // Coluna esquerda
+        [
+          #align(center)[
+            #text(weight: "bold", fill: primary-color, size: 18pt, left-title)
+          ]
+          #v(0.5em)
+          #left-content
+        ],
 
-      // Coluna direita
-      [
-        #align(center)[
-          #text(weight: "bold", fill: primary-color, size: 18pt, right-title)
-        ]
-        #v(0.5em)
-        #right-content
-      ],
-    )
-  ]
+        // Coluna direita
+        [
+          #align(center)[
+            #text(weight: "bold", fill: primary-color, size: 18pt, right-title)
+          ]
+          #v(0.5em)
+          #right-content
+        ],
+      )
+    ]
+  })
 }
 
 /// Slide de metodologia
@@ -484,41 +512,45 @@
   instrumentos: (),
   primary-color: rgb("#003366"),
 ) = {
-  touying-slide(title: title)[
-    #grid(
-      columns: (1fr, 1fr),
-      gutter: 1.5em,
-      row-gutter: 1em,
+  touying-slide-wrapper(self => {
+    touying-slide(self: self)[
+      #text(size: 24pt, weight: "bold")[#title]
+      #v(0.5em)
+      #grid(
+        columns: (1fr, 1fr),
+        gutter: 1.5em,
+        row-gutter: 1em,
 
-      if tipo-pesquisa != none {
-        [
-          #text(weight: "bold", fill: primary-color)[Tipo de Pesquisa] \
-          #tipo-pesquisa
-        ]
-      },
+        if tipo-pesquisa != none {
+          [
+            #text(weight: "bold", fill: primary-color)[Tipo de Pesquisa] \
+            #tipo-pesquisa
+          ]
+        },
 
-      if abordagem != none {
-        [
-          #text(weight: "bold", fill: primary-color)[Abordagem] \
-          #abordagem
-        ]
-      },
+        if abordagem != none {
+          [
+            #text(weight: "bold", fill: primary-color)[Abordagem] \
+            #abordagem
+          ]
+        },
 
-      if procedimentos.len() > 0 {
-        [
-          #text(weight: "bold", fill: primary-color)[Procedimentos] \
-          #list(..procedimentos)
-        ]
-      },
+        if procedimentos.len() > 0 {
+          [
+            #text(weight: "bold", fill: primary-color)[Procedimentos] \
+            #list(..procedimentos)
+          ]
+        },
 
-      if instrumentos.len() > 0 {
-        [
-          #text(weight: "bold", fill: primary-color)[Instrumentos] \
-          #list(..instrumentos)
-        ]
-      },
-    )
-  ]
+        if instrumentos.len() > 0 {
+          [
+            #text(weight: "bold", fill: primary-color)[Instrumentos] \
+            #list(..instrumentos)
+          ]
+        },
+      )
+    ]
+  })
 }
 
 /// Slide de resultados com destaque numerico
@@ -527,24 +559,30 @@
   items: (), // Lista de (valor, descricao)
   primary-color: rgb("#003366"),
 ) = {
-  touying-slide(title: title)[
-    #set align(center)
+  touying-slide-wrapper(self => {
+    touying-slide(self: self)[
+      #text(size: 24pt, weight: "bold")[#title]
+      #v(0.5em)
+      #set align(center)
 
-    #grid(
-      columns: items.len(),
-      gutter: 2em,
+      #if items.len() > 0 {
+        grid(
+          columns: items.len(),
+          gutter: 2em,
 
-      ..items.map(item => {
-        box(
-          inset: 1em,
-          [
-            #text(size: 48pt, weight: "bold", fill: primary-color, item.at(0)) \
-            #text(size: 14pt, item.at(1))
-          ]
+          ..items.map(item => {
+            box(
+              inset: 1em,
+              [
+                #text(size: 48pt, weight: "bold", fill: primary-color, item.at(0)) \
+                #text(size: 14pt, item.at(1))
+              ]
+            )
+          })
         )
-      })
-    )
-  ]
+      }
+    ]
+  })
 }
 
 // =============================================================================

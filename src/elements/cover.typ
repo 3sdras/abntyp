@@ -8,7 +8,7 @@
 /// - subtitle: subtítulo (opcional)
 /// - location: cidade
 /// - year: ano de depósito
-#let cover(
+#let capa(
   institution: none,
   faculty: none,
   program: none,

@@ -168,7 +168,7 @@ Quando publicado no repositório oficial do Typst:
 ```typst
 #import "abntypst/lib.typ": *
 
-#show: thesis.with(
+#show: abntcc.with(
   title: "Uma proposta de pacote para normas ABNT em Typst",
   subtitle: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
   author: "Cláudio Código",
@@ -180,7 +180,7 @@ Quando publicado no repositório oficial do Typst:
   advisor: "Prof. Dr. Esdras Teixeira Costa",
 )
 
-#cover(
+#capa(
   institution: "Universidade Federal de Jataí",
   faculty: "Instituto de Ciências Exatas e Tecnológicas",
   author: "Cláudio Código",
@@ -190,7 +190,7 @@ Quando publicado no repositório oficial do Typst:
   year: 2026,
 )
 
-#title-page(
+#folha-rosto(
   author: "Cláudio Código",
   title: "Uma proposta de pacote para normas ABNT em Typst",
   subtitle: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
@@ -649,7 +649,7 @@ Cria a capa do trabalho conforme NBR 14724.
 *Exemplo:*
 
 ```typst
-#cover(
+#capa(
   institution: "Universidade Federal de Jataí",
   faculty: "Instituto de Ciências Exatas e Tecnológicas",
   program: "PROFMAT - Programa de Mestrado Profissional em Rede em Matemática",
@@ -666,7 +666,7 @@ Cria a capa do trabalho conforme NBR 14724.
 Cria a folha de rosto conforme NBR 14724.
 
 ```typst
-#let title-page(
+#let folha-rosto(
   author: none,       // Nome do autor
   title: none,        // Título
   subtitle: none,     // Subtítulo
@@ -684,7 +684,7 @@ Cria a folha de rosto conforme NBR 14724.
 *Exemplo:*
 
 ```typst
-#title-page(
+#folha-rosto(
   author: "Cláudio Código",
   title: "Uma proposta de pacote para normas ABNT em Typst",
   subtitle: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
@@ -700,7 +700,7 @@ Cria a folha de rosto conforme NBR 14724.
 *Ficha catalográfica (verso):*
 
 ```typst
-#let catalog-card(content)
+#let ficha-catalografica(content)
 ```
 
 === abstract.typ - Resumo e Abstract
@@ -836,23 +836,23 @@ Formata citações conforme NBR 10520.
 *Citação direta curta (até 3 linhas):*
 
 ```typst
-#let quote-short(text, author: none, year: none, page: none)
+#let citacao-curta(text, author: none, year: none, page: none)
 ```
 
 *Exemplo:*
 ```typst
-Conforme o autor, #quote-short("a formatação adequada é essencial", author: "SILVA", year: "2023", page: "42").
+Conforme o autor, #citacao-curta("a formatação adequada é essencial", author: "SILVA", year: "2023", page: "42").
 ```
 
 *Citação direta longa (mais de 3 linhas):*
 
 ```typst
-#let quote-long(body, author: none, year: none, page: none)
+#let citacao-longa(body, author: none, year: none, page: none)
 ```
 
 *Exemplo:*
 ```typst
-#quote-long(author: "SILVA", year: "2023", page: "42-43")[
+#citacao-longa(author: "SILVA", year: "2023", page: "42-43")[
   A formatação adequada dos trabalhos acadêmicos é essencial para a clareza e a credibilidade da comunicação científica. As normas ABNT estabelecem padrões que facilitam a leitura e a compreensão dos textos.
 ]
 ```
@@ -861,29 +861,29 @@ Conforme o autor, #quote-short("a formatação adequada é essencial", author: "
 
 ```typst
 // Citação com autor no texto: "Segundo Silva (2023)..."
-#let cite-author(author, year)
+#let citar-autor(author, year)
 
 // Citação com autor fora do texto: "... (SILVA, 2023)"
 #let cite-parenthetical(author, year, page: none)
 
 // Citação de citação (apud)
-#let cite-apud(original-author, original-year, secondary-author, secondary-year, page: none)
+#let citar-apud(original-author, original-year, secondary-author, secondary-year, page: none)
 ```
 
 *Elementos especiais:*
 
 ```typst
 // Supressão de texto: [...]
-#let ellipsis
+#let supressao
 
 // Interpolação: [texto adicionado]
-#let interpolation(text)
+#let interpolacao(text)
 
 // Grifo nosso
-#let emphasis-mine(text)
+#let grifo-nosso(text)
 
 // Grifo do autor
-#let emphasis-original(text)
+#let grifo-do-autor(text)
 ```
 
 === figures.typ - Figuras e Ilustrações
@@ -1022,22 +1022,22 @@ Funções auxiliares para o sistema autor-data conforme NBR 6023 e NBR 10520.
 
 ```typst
 // Citação autor-data básica
-#let cite-ad(author, year, page: none)
+#let citar(author, year, page: none)
 
 // Citação com autor no texto
-#let cite-text(author, year)
+#let citar-autor(author, year)
 
 // Múltiplos autores (até 3)
-#let cite-multiple(authors, year, page: none)
+#let citar-multiplos(authors, year, page: none)
 
 // Mais de 3 autores (et al.)
-#let cite-etal(first-author, year, page: none)
+#let citar-etal(first-author, year, page: none)
 
 // Entidade coletiva
-#let cite-entity(entity, year, page: none)
+#let citar-entidade(entity, year, page: none)
 
 // Obra sem autoria (pelo título)
-#let cite-title(title, year, page: none)
+#let citar-titulo(title, year, page: none)
 ```
 
 *Formatação manual de referências:*
@@ -1085,7 +1085,7 @@ Funções auxiliares para o sistema autor-data conforme NBR 6023 e NBR 10520.
 Template completo para trabalhos acadêmicos.
 
 ```typst
-#show: thesis.with(
+#show: abntcc.with(
   title: "",           // Título
   subtitle: none,      // Subtítulo
   author: "",          // Autor
@@ -1123,7 +1123,7 @@ Template completo para trabalhos acadêmicos.
 Template para artigos conforme NBR 6022.
 
 ```typst
-#show: article.with(
+#show: artigo.with(
   title: "",
   subtitle: none,
   authors: (),         // Lista de autores com afiliação
@@ -1139,7 +1139,7 @@ Template para artigos conforme NBR 6022.
 *Exemplo de autores:*
 
 ```typst
-#show: article.with(
+#show: artigo.with(
   title: "Título do Artigo",
   authors: (
     (name: "Maria da Silva", affiliation: "Universidade Federal de São Paulo"),
@@ -1219,7 +1219,7 @@ Template para fascículos de publicações periódicas técnicas e/ou científic
 Template para livros e folhetos com todos os elementos pré-textuais e pós-textuais.
 
 ```typst
-#show: book.with(
+#show: livro.with(
   title: "Título do Livro",
   subtitle: none,
   author: "Nome do Autor",
@@ -1334,7 +1334,7 @@ Template para livros e folhetos com todos os elementos pré-textuais e pós-text
 Template para projetos de pesquisa.
 
 ```typst
-#show: research-project.with(
+#show: projeto-pesquisa.with(
   title: "",           // Título do projeto
   subtitle: none,      // Subtítulo
   author: "",          // Autor(es) - pode ser string ou array
@@ -1411,7 +1411,7 @@ Template para projetos de pesquisa.
 Template para relatórios técnicos e/ou científicos.
 
 ```typst
-#show: technical-report.with(
+#show: relatorio.with(
   title: "",              // Título do relatório
   subtitle: none,         // Subtítulo
   report-number: none,    // Número do relatório
@@ -1750,11 +1750,11 @@ meu-tcc/
 ```typst
 #import "abntypst/lib.typ": *
 
-#show: thesis.with(...)
+#show: abntcc.with(...)
 
 // Pré-textuais
-#cover(...)
-#title-page(...)
+#capa(...)
+#folha-rosto(...)
 #resumo(...)
 #abstract(...)
 #sumario()
@@ -1779,7 +1779,7 @@ meu-tcc/
 == Como mudar a fonte para Arial?
 
 ```typst
-#show: thesis.with(
+#show: abntcc.with(
   // ...
   font: "Arial",
 )
@@ -1828,7 +1828,7 @@ Sim! O pacote inclui suporte a arquivos `.bib` com formatação automática ABNT
 *Opção 1: Via template*
 
 ```typst
-#show: thesis.with(
+#show: abntcc.with(
   // ... outros parâmetros ...
   bibliography-file: "referencias.bib",
   bibliography-title: "REFERÊNCIAS",  // opcional

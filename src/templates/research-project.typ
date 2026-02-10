@@ -32,7 +32,7 @@
 /// - font: fonte a usar ("Times New Roman" ou "Arial")
 /// - bibliography-file: caminho para arquivo .bib (opcional)
 /// - bibliography-title: titulo da secao de referencias
-#let research-project(
+#let projeto-pesquisa(
   title: "",
   subtitle: none,
   author: "",

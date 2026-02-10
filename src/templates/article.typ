@@ -19,7 +19,7 @@
 /// - columns: número de colunas (1 ou 2)
 /// - bibliography-file: caminho para arquivo .bib (opcional)
 /// - bibliography-title: título da seção de referências (padrão: "REFERÊNCIAS")
-#let article(
+#let artigo(
   title: "",
   subtitle: none,
   authors: (),

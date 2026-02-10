@@ -29,7 +29,7 @@
 #import "../lib.typ": *
 
 // Configuração do documento usando o template book
-#show: book.with(
+#show: livro.with(
   title: "Fundamentos de Programação",
   subtitle: "Uma Abordagem Prática",
   author: "Prof. Dr. Ricardo Mendes Silva",

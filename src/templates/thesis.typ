@@ -31,7 +31,7 @@
 /// - font: fonte a usar ("Times New Roman" ou "Arial")
 /// - bibliography-file: caminho para arquivo .bib (opcional)
 /// - bibliography-title: título da seção de referências (padrão: "REFERÊNCIAS")
-#let thesis(
+#let abntcc(
   title: "",
   subtitle: none,
   author: "",

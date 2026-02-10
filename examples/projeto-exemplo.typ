@@ -20,7 +20,7 @@
 #import "../lib.typ": *
 
 // Configuração do documento usando o template research-project
-#show: research-project.with(
+#show: projeto-pesquisa.with(
   title: "Desenvolvimento de Aplicativo Mobile para Gestão de Saúde Mental",
   subtitle: "uma abordagem baseada em técnicas de terapia cognitivo-comportamental",
   author: "Carolina Beatriz Fernandes",

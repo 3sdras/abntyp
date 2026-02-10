@@ -4,7 +4,7 @@
 #import "../core/spacing.typ": nature-block
 
 /// Cria folha de rosto conforme ABNT
-#let title-page(
+#let folha-rosto(
   author: none,
   title: none,
   subtitle: none,
@@ -90,7 +90,7 @@
 
 /// Verso da folha de rosto (ficha catalográfica)
 /// Deve ocupar a parte inferior da página
-#let catalog-card(content) = {
+#let ficha-catalografica(content) = {
   set page(numbering: none)
   v(1fr)
 

@@ -46,7 +46,7 @@
 // APLICANDO O TEMPLATE
 // ----------------------------------------------------------------------------
 //
-// #show: thesis.with(...) aplica o template ao documento inteiro.
+// #show: abntcc.with(...) aplica o template ao documento inteiro.
 // Isso configura automaticamente:
 //   - Fonte (Times New Roman ou Arial)
 //   - Margens (3cm superior/esquerda, 2cm inferior/direita)
@@ -56,7 +56,7 @@
 //
 // MODIFIQUE os valores abaixo com seus dados reais.
 
-#show: thesis.with(
+#show: abntcc.with(
   // --- Dados básicos do trabalho ---
   title: "Uma proposta de pacote para normas ABNT em Typst",
   // DICA: Se não tiver subtítulo, remova ou comente a linha abaixo
@@ -110,7 +110,7 @@
 // - Local (cidade)
 // - Ano de depósito
 
-#cover(
+#capa(
   institution: "Universidade Federal de Jataí",
   faculty: "Instituto de Ciências Exatas e Tecnológicas",
   author: "Cláudio Código",
@@ -130,7 +130,7 @@
 //
 // IMPORTANTE: A "nature" (natureza) varia conforme o tipo de trabalho.
 
-#title-page(
+#folha-rosto(
   author: "Cláudio Código",
   title: "Uma proposta de pacote para normas ABNT em Typst",
   subtitle: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
@@ -463,7 +463,7 @@ Conforme a NBR 14724:2024, um trabalho acadêmico deve conter elementos pré-tex
 Segundo Silva (2023), a padronização é essencial para a comunicação científica, pois permite que pesquisadores de diferentes instituições compreendam e avaliem os trabalhos de seus pares de forma consistente.
 
 // Outra forma de citar (autor entre parênteses):
-A padronização de documentos científicos surgiu da necessidade de facilitar a comunicação entre pesquisadores #cite-ad("SILVA", "2023", page: "15").
+A padronização de documentos científicos surgiu da necessidade de facilitar a comunicação entre pesquisadores #citar("SILVA", "2023", page: "15").
 
 
 // ----------------------------------------------------------------------------
@@ -471,10 +471,10 @@ A padronização de documentos científicos surgiu da necessidade de facilitar a
 // ----------------------------------------------------------------------------
 // Use aspas duplas e indique autor, ano e página.
 
-De acordo com Santos (2022, p. 45), #quote-short("as normas técnicas são instrumentos fundamentais para a qualidade e a confiabilidade da produção científica").
+De acordo com Santos (2022, p. 45), #citacao-curta("as normas técnicas são instrumentos fundamentais para a qualidade e a confiabilidade da produção científica").
 
 // Outra forma (autor entre parênteses):
-A literatura especializada destaca que #quote-short("as normas técnicas são instrumentos fundamentais para a qualidade e a confiabilidade da produção científica", author: "SANTOS", year: "2022", page: "45").
+A literatura especializada destaca que #citacao-curta("as normas técnicas são instrumentos fundamentais para a qualidade e a confiabilidade da produção científica", author: "SANTOS", year: "2022", page: "45").
 
 
 // ----------------------------------------------------------------------------
@@ -484,7 +484,7 @@ A literatura especializada destaca que #quote-short("as normas técnicas são in
 
 A importância da normalização para a comunicação científica é amplamente reconhecida na literatura:
 
-#quote-long(author: "SILVA", year: "2023", page: "42")[
+#citacao-longa(author: "SILVA", year: "2023", page: "42")[
   A formatação adequada dos trabalhos acadêmicos é essencial para a clareza e a credibilidade da comunicação científica. As normas técnicas estabelecem padrões que facilitam a leitura e a compreensão dos textos, além de permitir a verificação das fontes consultadas. Sem essa padronização, cada instituição ou publicação adotaria critérios próprios, dificultando o intercâmbio de conhecimentos entre diferentes comunidades acadêmicas.
 ]
 
@@ -498,8 +498,8 @@ A importância da normalização para a comunicação científica é amplamente 
 // Exemplo de apud:
 Oliveira (1998 apud SANTOS, 2022, p. 78) já destacava a importância da padronização documental. O uso do apud indica que você está citando um autor (Oliveira) através de outro (Santos), pois não teve acesso direto à obra original.
 
-// Usando a função cite-apud:
-Essa perspectiva histórica demonstra que a preocupação com normas técnicas não é recente #cite-apud("OLIVEIRA", "1998", "SANTOS", "2022", page: "78").
+// Usando a função citar-apud:
+Essa perspectiva histórica demonstra que a preocupação com normas técnicas não é recente #citar-apud("OLIVEIRA", "1998", "SANTOS", "2022", page: "78").
 
 
 // ----------------------------------------------------------------------------
@@ -511,13 +511,13 @@ Essa perspectiva histórica demonstra que a preocupação com normas técnicas n
 
 === Elementos Especiais em Citações
 
-Quando necessário suprimir parte de uma citação, use reticências entre colchetes [...]. Por exemplo: #quote-short("A normalização [...] é essencial para a ciência", author: "SILVA", year: "2023", page: "50").
+Quando necessário suprimir parte de uma citação, use reticências entre colchetes [...]. Por exemplo: #citacao-curta("A normalização [...] é essencial para a ciência", author: "SILVA", year: "2023", page: "50").
 
 // DICA: O pacote oferece funções auxiliares:
-// #ellipsis - produz [...]
-// #interpolation("texto") - produz [texto]
-// #emphasis-mine("texto") - produz: texto em itálico, grifo nosso
-// #emphasis-original("texto") - produz: texto em itálico, grifo do autor
+// #supressao - produz [...]
+// #interpolacao("texto") - produz [texto]
+// #grifo-nosso("texto") - produz: texto em itálico, grifo nosso
+// #grifo-do-autor("texto") - produz: texto em itálico, grifo do autor
 
 
 == Tipografia Digital
@@ -700,7 +700,7 @@ A @tab-funcionalidades resume as principais funcionalidades implementadas no pac
 Os resultados obtidos demonstram que o Typst é uma plataforma adequada para a implementação de normas de formatação acadêmica. A sintaxe clara e a compilação rápida facilitam o processo de escrita e revisão.
 
 // Exemplo de uso combinado: texto + citação
-O pacote desenvolvido apresenta vantagens significativas em relação às soluções existentes, especialmente quanto à curva de aprendizado e ao tempo de compilação. Esses resultados corroboram as observações de #cite-author("Silva", "2023"), que destacou a importância de ferramentas acessíveis para a comunidade acadêmica.
+O pacote desenvolvido apresenta vantagens significativas em relação às soluções existentes, especialmente quanto à curva de aprendizado e ao tempo de compilação. Esses resultados corroboram as observações de #citar-autor("Silva", "2023"), que destacou a importância de ferramentas acessíveis para a comunidade acadêmica.
 
 
 // ============================================================================
@@ -956,7 +956,7 @@ Observações: _______________________________________________
 ERRO: "cannot find file"
 SOLUÇÃO: Verifique o caminho do import. Use caminho relativo correto.
 
-ERRO: "unknown variable: thesis"
+ERRO: "unknown variable: abntcc"
 SOLUÇÃO: Certifique-se de importar com: #import "abntypst/lib.typ": *
 
 ERRO: Numeração de páginas incorreta
@@ -974,7 +974,7 @@ SOLUÇÃO: Use referências manuais ou verifique se o arquivo .bib existe.
 // ============================================================================
 
 // USAR FONTE ARIAL:
-#show: thesis.with(
+#show: abntcc.with(
   font: "Arial",
   // ... outros parâmetros
 )

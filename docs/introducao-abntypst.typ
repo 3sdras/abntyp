@@ -10,6 +10,7 @@
 #set page(
   paper: "a4",
   margin: (top: 3cm, bottom: 2cm, left: 3cm, right: 2cm),
+  numbering: none,
 )
 
 #set text(
@@ -20,30 +21,81 @@
 )
 
 #set par(
-  leading: 1.5em,
+  leading: 0.65em,
+  spacing: 0.65em,
   justify: true,
-  first-line-indent: 1.25cm,
+  first-line-indent: (amount: 1.25cm, all: true),
 )
 
 #set heading(numbering: "1.1")
 
-// Formatação dos headings
+// Latex escrito como LaTeX
+#let LaTeX = {
+  [L]
+  h(-0.1em)
+  text(baseline: -0.2em, size: 0.7em)[A]
+  h(-0.1em)
+  [T]
+  h(-0.1em)
+  text(baseline: 0.2em)[E]
+  h(-0.1em)
+  [X]
+}
+
+#show "LaTeX": LaTeX
+
+// ambiente de descrição
+#set terms(
+  indent: 0em,           // indentação do item
+  hanging-indent: 2em, // recuo da descrição
+  separator: [: ],       // separador entre termo e descrição
+)
+
+// recuo de listas e enumerações
+#set list(indent: 2em, body-indent: 0.5em)
+#set enum(indent: 2em, body-indent: 0.5em)
+
+// O first-line-indent com all: true indenta o primeiro parágrafo dentro
+// de qualquer contêiner. As show rules abaixo excluem os elementos que
+// não devem ser indentados (solução idiomática do Typst).
+#show heading: set par(first-line-indent: 0pt)
+#show figure: set par(first-line-indent: 0pt)
+#show raw: set par(first-line-indent: 0pt)
+#show outline: set par(first-line-indent: 0pt)
+#show terms: set par(first-line-indent: 0pt)
+
+// Formatação dos headings conforme NBR 6024
+// Nível 1 (primário): MAIÚSCULAS + negrito
 #show heading.where(level: 1): it => {
   pagebreak(weak: true)
-  v(1em)
-  text(size: 16pt, weight: "bold")[
+  v(1.5em)
+  text(size: 12pt, weight: "bold")[
     #if it.numbering != none {
       counter(heading).display()
       h(0.5em)
     }
-    #it.body
+    #upper(it.body)
+  ]
+  v(1.5em)
+}
+
+// Nível 2 (secundário): MAIÚSCULAS, sem negrito
+#show heading.where(level: 2): it => {
+  v(1.5em)
+  text(size: 12pt, weight: "regular")[
+    #if it.numbering != none {
+      counter(heading).display()
+      h(0.5em)
+    }
+    #upper(it.body)
   ]
   v(1em)
 }
 
-#show heading.where(level: 2): it => {
+// Nível 3 (terciário): minúsculas + negrito
+#show heading.where(level: 3): it => {
   v(1em)
-  text(size: 13pt, weight: "bold")[
+  text(size: 12pt, weight: "bold")[
     #if it.numbering != none {
       counter(heading).display()
       h(0.5em)
@@ -53,16 +105,30 @@
   v(0.5em)
 }
 
-#show heading.where(level: 3): it => {
-  v(0.8em)
-  text(size: 12pt, weight: "bold")[
+// Nível 4 (quaternário): minúsculas, sem negrito
+#show heading.where(level: 4): it => {
+  v(1em)
+  text(size: 12pt, weight: "regular")[
     #if it.numbering != none {
       counter(heading).display()
       h(0.5em)
     }
     #it.body
   ]
-  v(0.3em)
+  v(0.5em)
+}
+
+// Nível 5 (quinário): minúsculas, itálico
+#show heading.where(level: 5): it => {
+  v(1em)
+  text(size: 12pt, weight: "regular", style: "italic")[
+    #if it.numbering != none {
+      counter(heading).display()
+      h(0.5em)
+    }
+    #it.body
+  ]
+  v(0.5em)
 }
 
 // Função auxiliar para exemplos numerados
@@ -76,6 +142,7 @@
     stroke: (left: 2pt + gray),
     fill: luma(245),
   )[
+    #set par(first-line-indent: 0pt)
     #text(weight: "bold")[Exemplo #context exemplo-counter.display():]
     #body
   ]
@@ -184,7 +251,9 @@
 
 #heading(level: 1, numbering: none)[Prefácio]
 
-Estas notas são uma adaptação do trabalho original "Uma breve introdução ao $"LaTeX" 2 epsilon$", de Lenimar Nunes de Andrade, para o caso do Typst com base nas normas da ABNT, com o objetivo de servir de material didático para a disciplina "Software Livre para digitação de textos matemáticos" na UFJ.
+
+
+Estas notas são uma adaptação dos trabalhos originais "Uma breve introdução ao $"LaTeX" 2 epsilon$", de Lenimar Nunes de Andrade e a documentação do pacote ABNTex2 de LaTeX, para o caso do Typst, com o objetivo de servir de material didático para a disciplina "Software Livre para digitação de textos matemáticos" na UFJ.
 
 O ABNTypst é um pacote gratuito, de código aberto, desenvolvido para facilitar a produção de documentos técnicos e científicos brasileiros. Pode ser utilizado diretamente no navegador através do #link("https://typst.app")[typst.app], ou instalado localmente em qualquer sistema operacional.
 
@@ -210,13 +279,17 @@ Os apêndices contêm tabelas de referência para símbolos matemáticos (Apênd
 // CAPÍTULO 1: CONCEITOS BÁSICOS
 // ============================================================================
 
+// Inicia numeração de páginas (arábica, canto superior direito)
+#set page(numbering: "1", number-align: top + right)
+#counter(page).update(1)
+
 = Conceitos Básicos
 
 == Introdução ao Typst
 
 O Typst é um sistema de composição tipográfica moderno, criado em 2019 por Laurenz Mädje e Martin Haug na Universidade Técnica de Berlim. Diferente do LaTeX, que foi desenvolvido na década de 1980, o Typst foi projetado desde o início para ser mais acessível e intuitivo.
 
-Um documento em Typst é formado pelo texto propriamente dito, mais alguns comandos e funções. Os comandos em Typst iniciam com `#` (cerquilha), diferente do LaTeX que usa `\` (barra invertida).
+Um documento em Typst é formado pelo texto propriamente dito, mais alguns comandos e funções. Os comandos em Typst iniciam com `#` ('jogo da velha' ou cerquilha), diferente do \ LaTeX que usa `\` (barra invertida).
 
 Ao contrário de processadores de texto como o Microsoft Word, o texto em Typst não é digitado na forma como vai ser impresso (WYSIWYG). O texto é digitado com marcações, similar ao Markdown ou HTML. Por exemplo, $sqrt(2)$ é digitado como `$sqrt(2)$` e a letra grega $pi$ é digitada como `$pi$`.
 
@@ -232,11 +305,10 @@ As principais vantagens do Typst sobre o LaTeX são:
 
 O ABNTypst (ABNTypst Biblioteca Normativa Typst) é um pacote que implementa as normas da Associação Brasileira de Normas Técnicas (ABNT) para formatação de documentos acadêmicos em Typst.
 
-O projeto foi inspirado no abnTeX2, o excelente pacote LaTeX mantido por Lauro César Araujo e colaboradores que há anos auxilia a comunidade acadêmica brasileira.
+O projeto é uma adaptação do abnTeX2, o excelente pacote LaTeX mantido por Lauro César Araujo e colaboradores, que há anos auxilia a comunidade acadêmica brasileira.
 
-O ABNTypst oferece:
+Graças ao trabalho original da equipe do abnTeX2, o ABNTypst oferece templates prontos para teses, dissertações, TCCs, artigos, relatórios e outros tipos de documentos, além de:
 
-- Templates prontos para teses, dissertações, TCCs, artigos, relatórios e outros tipos de documentos
 - Funções para criar capas, folhas de rosto, resumos e outros elementos pré-textuais
 - Formatação automática de seções conforme a NBR 6024
 - Sistema de citações autor-data e numérico conforme a NBR 10520
@@ -264,13 +336,13 @@ Para usar o ABNTypst no webapp, basta importar o pacote no início do documento:
 
 Para trabalhar offline ou em projetos maiores, você pode instalar o Typst localmente. O Typst está disponível para Windows, macOS e Linux.
 
-*Windows (via winget):*
+/ Windows (via winget):
 #raw(block: true, lang: "bash", "winget install --id Typst.Typst")
 
-*macOS (via Homebrew):*
+/ MacOS (via Homebrew):
 #raw(block: true, lang: "bash", "brew install typst")
 
-*Linux (via pacotes):*
+/ Linux (via pacotes):
 #raw(block: true, lang: "bash", "# Arch Linux
 pacman -S typst
 
@@ -287,36 +359,34 @@ Para compilar e assistir mudanças em tempo real:
 
 O Typst pode ser editado em qualquer editor de texto, mas alguns oferecem suporte especial:
 
-*Neovim:*
+/ Neovim:
 - Instale o plugin `tinymist` para LSP completo, destaque de sintaxe e autocompletar
 - Visualização em tempo real integrada
 
-*Visual Studio Code:*
+/ Visual Studio Code:
 - Instale a extensão "Tinymist Typst" para LSP e destaque de sintaxe
 - Instale a extensão "Typst Preview" para visualização em tempo real
 
-*Outros editores:*
+/ Outros editores:
 - Emacs: modo `typst-mode`
 - Sublime Text: pacote "Typst"
 
-== Um exemplo simples
+=== Um exemplo simples
 
 Vejamos o documento Typst mais simples possível:
 
 #exemplo[
   #raw(block: true, lang: "typst", "Olá, mundo!")
-
-  Este código produz um documento de uma página contendo apenas "Olá, mundo!".
 ]
 
-Diferente do LaTeX, que exige comandos como `\documentclass` e `\begin{document}`, o Typst permite criar documentos sem nenhum preâmbulo. O texto digitado é processado diretamente.
+Este código acima produz um documento de uma página contendo apenas "Olá, mundo!".
 
 Para um documento acadêmico usando ABNTypst, o exemplo mínimo seria:
 
 #exemplo[
   #raw(block: true, lang: "typst", "#import \"@preview/abntypst:0.1.0\": *
 
-#show: thesis.with(
+#show: abntcc.with(
   title: \"Meu Trabalho Acadêmico\",
   author: \"Maria da Silva\",
   institution: \"Universidade Federal\",
@@ -337,24 +407,24 @@ Este é o desenvolvimento do trabalho.
 Esta é a conclusão.")
 ]
 
-O comando `#show: thesis.with(...)` aplica o template de trabalho acadêmico a todo o documento, configurando automaticamente margens, fontes, espaçamentos e numeração de seções.
+O comando `#show: abntcc.with(...)` aplica o template de trabalho acadêmico a todo o documento, configurando automaticamente margens, fontes, espaçamentos e numeração de seções.
 
 == Estrutura de um documento Typst
 
 Um documento Typst pode ser dividido em três partes:
 
-1. *Configuração (opcional)*: Comandos `#set` e `#show` que definem formatação
-2. *Preâmbulo (opcional)*: Importações e definições de funções
+1. *Preâmbulo (opcional)*: Importações de pacotes e definições de funções
+2. *Configuração (opcional)*: Comandos `#set` e `#show` que definem formatação
 3. *Conteúdo*: O texto propriamente dito
 
 #exemplo[
-  #raw(block: true, lang: "typst", "// 1. Configuração
+  #raw(block: true, lang: "typst", "// 1. Preâmbulo (importações)
+#import \"@preview/abntypst:0.1.0\": *
+
+// 2. Configuração
 #set page(paper: \"a4\", margin: 2cm)
 #set text(font: \"Times New Roman\", size: 12pt)
 #set par(justify: true)
-
-// 2. Preâmbulo (importações)
-#import \"@preview/abntypst:0.1.0\": *
 
 // 3. Conteúdo
 = Introdução
@@ -362,11 +432,11 @@ Um documento Typst pode ser dividido em três partes:
 Texto do documento...")
 ]
 
-Comentários em Typst são escritos com `//` (para linha única) ou `/* ... */` (para múltiplas linhas), similar a linguagens de programação modernas.
-
 == Tipos e tamanhos de letras
 
-O Typst oferece várias formas de alterar o estilo do texto:
+O Typst oferece várias formas de alterar o estilo do texto. A @tab:estilos resume os principais estilos disponíveis, a @tab:tamanhos mostra como alterar o tamanho e, em seguida, apresentamos como trocar a fonte.
+
+=== Estilos de texto
 
 #figure(
   table(
@@ -387,7 +457,7 @@ O Typst oferece várias formas de alterar o estilo do texto:
   ),
   caption: [Estilos de texto em Typst],
   kind: table,
-)
+) <tab:estilos>
 
 #block(
   width: 100%,
@@ -410,7 +480,7 @@ O Typst oferece várias formas de alterar o estilo do texto:
 // Uso: #versalete(\"Texto em Versalete\")")
 ]
 
-Para alterar o tamanho do texto:
+=== Tamanhos de texto
 
 #figure(
   table(
@@ -429,9 +499,11 @@ Para alterar o tamanho do texto:
   ),
   caption: [Tamanhos de texto em Typst],
   kind: table,
-)
+) <tab:tamanhos>
 
-Para alterar a fonte:
+=== Fontes
+
+Para alterar a fonte de todo o documento, use `#set text(font: ...)`. Para alterar pontualmente, use `#text(font: ...)[...]`:
 
 #raw(block: true, lang: "typst", "#set text(font: \"Arial\")  // Todo o documento em Arial
 
@@ -452,10 +524,28 @@ uma linha em branco acima.")
 Para configurar o espaçamento entre linhas e o recuo de parágrafo:
 
 #raw(block: true, lang: "typst", "#set par(
-  leading: 1.5em,           // Espaçamento entre linhas (1,5)
-  first-line-indent: 1.25cm, // Recuo da primeira linha
+  leading: 0.65em,           // Espaçamento entre linhas (padrão ≈ 1,5)
+  spacing: 0.65em,           // Espaço entre parágrafos
+  first-line-indent: (amount: 1.25cm, all: true), // Recuo da primeira linha
   justify: true,             // Texto justificado
 )")
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: 0.5pt + gray,
+  radius: 3pt,
+)[
+  #set text(size: 10pt)
+  #set par(first-line-indent: 0pt)
+  *Observação sobre indentação no Brasil:* Por padrão, o Typst não indenta o primeiro parágrafo após um título --- seguindo a convenção tipográfica anglo-saxônica, conhecida em editoração portuguesa como "composição à inglesa". No entanto, no Brasil, a norma ABNT é indentar _todos_ os parágrafos, inclusive o primeiro. Para isso, é necessário usar `first-line-indent` com o parâmetro `all: true`:
+
+  #raw(block: true, lang: "typst", "// Indenta TODOS os parágrafos (padrão brasileiro)
+#set par(first-line-indent: (amount: 1.25cm, all: true))
+
+// Comportamento padrão do Typst (NÃO indenta o primeiro parágrafo)
+#set par(first-line-indent: 1.25cm)")
+]
 
 Para forçar uma quebra de linha sem iniciar novo parágrafo, use `\`:
 
@@ -517,10 +607,10 @@ A capa é elemento obrigatório e deve conter:
 - Local (cidade)
 - Ano
 
-No ABNTypst, a capa é criada com a função `#cover()`:
+No ABNTypst, a capa é criada com a função `#capa()`:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#cover(
+  #raw(block: true, lang: "typst", "#capa(
   institution: \"Universidade Federal de Jataí\",
   faculty: \"Instituto de Ciências Exatas e Tecnológicas\",
   program: \"PROFMAT\",
@@ -541,7 +631,7 @@ A folha de rosto contém os mesmos elementos da capa, acrescidos de:
 - Nome do coorientador (se houver)
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#title-page(
+  #raw(block: true, lang: "typst", "#folha-rosto(
   author: \"Maria da Silva\",
   title: \"Análise de Algoritmos de Ordenação\",
   subtitle: \"Um estudo comparativo\",
@@ -559,10 +649,27 @@ A folha de rosto contém os mesmos elementos da capa, acrescidos de:
 
 == Ficha catalográfica
 
-A ficha catalográfica deve ser elaborada por um bibliotecário e inserida no verso da folha de rosto:
+A ficha catalográfica deve ser elaborada por um bibliotecário. Na maioria das instituições, o bibliotecário fornece a ficha pronta em formato PDF. Para incluí-la no documento, basta usar a função `image()` do Typst (a partir da versão 0.14.0), que aceita arquivos PDF:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#catalog-card[
+  #raw(block: true, lang: "typst", "// Inserir a ficha catalográfica a partir de um PDF
+// fornecido pelo bibliotecário
+#page[
+  #v(1fr)
+  #image(\"ficha-catalografica.pdf\", page: 1, width: 100%)
+]")
+]
+
+
+O ABNTypst também oferece a função `#ficha-catalografica()`, que cria a moldura padrão da ficha (caixa de 12,5 × 7,5~cm, fonte 10pt, centralizada na parte inferior da página).
+
+Diferente de funções como `#capa()` ou `#folha-rosto()`, que possuem campos nomeados (`author:`, `title:`, etc.), a `#ficha-catalografica()` recebe conteúdo livre, pois a ficha segue uma notação biblioteconômica específica (código Cutter, CDU/CDD) que não se presta a campos parametrizados:
+
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// Moldura para compor a ficha manualmente
+// (útil para rascunho ou conferência com o bibliotecário)
+#ficha-catalografica[
   S586a  Silva, Maria da.
          Análise de algoritmos de ordenação: um estudo
          comparativo / Maria da Silva. -- Jataí, 2026.
@@ -689,7 +796,7 @@ O resumo deve apresentar de forma concisa os pontos relevantes do trabalho. Conf
 
 == Listas (ilustrações, tabelas, siglas)
 
-As listas são elementos opcionais que facilitam a localização de figuras, tabelas, quadros e a compreensão de siglas e símbolos.
+As listas são elementos opcionais que facilitam a localização de figuras, tabelas, quadros (arranjos textuais com bordas fechadas, diferenciados das tabelas --- ver @sec:quadros) e a compreensão de siglas e símbolos.
 
 #exemplo[
   #raw(block: true, lang: "typst", "// Lista de ilustrações (gerada automaticamente)
@@ -719,7 +826,7 @@ As listas são elementos opcionais que facilitam a localização de figuras, tab
 
 == Sumário
 
-O sumário é elemento obrigatório e lista as seções do trabalho com suas respectivas páginas. No ABNTypst, é gerado automaticamente:
+O sumário é elemento obrigatório conforme a NBR 6027:2012, que estabelece as regras para sua apresentação. Ele lista as seções do trabalho com suas respectivas páginas. No ABNTypst, é gerado automaticamente:
 
 #exemplo[
   #raw(block: true, lang: "typst", "#sumario()
@@ -772,20 +879,28 @@ A NBR 6024:2012 estabelece as regras para numeração progressiva das seções d
 ===== Primeiros experimentos    // 1.1.1.1.1 Primeiros experimentos")
 ]
 
-Para seções sem numeração (Referências, Apêndices, Anexos):
+Para seções sem numeração (Referências, Apêndices, Anexos), usa-se `numbering: none`:
 
-#raw(block: true, lang: "typst", "#heading(level: 1, numbering: none)[REFERÊNCIAS]")
+#exemplo[
+  #raw(block: true, lang: "typst", "#heading(level: 1, numbering: none)[REFERÊNCIAS]
+
+#heading(level: 1, numbering: none)[APÊNDICES]
+
+#heading(level: 1, numbering: none)[ANEXOS]")
+
+  Resultado: os títulos aparecem centralizados, em caixa alta e negrito, sem numeração.
+]
 
 == Citações (NBR 10520)
 
-A NBR 10520:2023 estabelece as regras para citações em documentos. O ABNTypst suporta os dois sistemas de chamada: autor-data (padrão) e numérico.
+A NBR 10520:2023 estabelece as regras para citações em documentos. A seção 4.2 da norma prevê dois sistemas de chamada: *autor-data* e *numérico*. Ambos são embasados pela ABNT, porém o sistema autor-data é amplamente predominante nos trabalhos acadêmicos brasileiros. Uma vez escolhido um sistema, ele deve ser utilizado de forma consistente em todo o documento.
 
 === Citação direta curta
 
 Citações diretas de até três linhas são inseridas no texto entre aspas duplas:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "Conforme o autor, #quote-short(
+  #raw(block: true, lang: "typst", "Conforme o autor, #citacao-curta(
   \"a formatação adequada é essencial para a clareza\",
   author: \"SILVA\",
   year: \"2023\",
@@ -800,7 +915,7 @@ Citações diretas de até três linhas são inseridas no texto entre aspas dupl
 Citações com mais de três linhas devem ser destacadas com recuo de 4 cm, fonte menor e espaçamento simples:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#quote-long(
+  #raw(block: true, lang: "typst", "#citacao-longa(
   author: \"SILVA\",
   year: \"2023\",
   page: \"42-43\"
@@ -820,35 +935,43 @@ No sistema autor-data, a indicação da fonte é feita pelo sobrenome do autor e
 
 #exemplo[
   #raw(block: true, lang: "typst", "// Autor no texto
-Segundo #cite-author(\"Silva\", \"2023\"), a metodologia...
+Segundo #citar-autor(\"Silva\", \"2023\"), a metodologia...
 
 // Autor entre parênteses
-A metodologia é importante #cite-ad(\"SILVA\", \"2023\", page: \"45\").
+A metodologia é importante #citar(\"SILVA\", \"2023\", page: \"45\").
 
 // Múltiplos autores (até 3)
-Conforme #cite-ad(\"SILVA; SANTOS; COSTA\", \"2023\")...
+Conforme #citar(\"SILVA; SANTOS; COSTA\", \"2023\")...
 
 // Mais de 3 autores (et al.)
-De acordo com #cite-ad(\"SILVA et al.\", \"2023\")...
+De acordo com #citar(\"SILVA et al.\", \"2023\")...
 
 // Citação de citação (apud)
-#cite-apud(\"FREUD\", \"1900\", \"LACAN\", \"1966\", page: \"123\")")
+#citar-apud(\"FREUD\", \"1900\", \"LACAN\", \"1966\", page: \"123\")")
+
+  Resultados:
+
+  / Autor no texto: Segundo Silva (2023), a metodologia...
+  / Autor entre parênteses: A metodologia é importante (SILVA, 2023, p. 45).
+  / Múltiplos autores: Conforme (SILVA; SANTOS; COSTA, 2023)...
+  / Mais de 3 autores: De acordo com (SILVA ET AL., 2023)...
+  / Citação de citação: (FREUD, 1900 apud LACAN, 1966, p. 123)
 ]
 
 === Sistema numérico
 
-O sistema numérico usa números arábicos para indicar as fontes. *Importante*: conforme a NBR 10520, o sistema numérico NÃO pode ser usado quando houver notas de rodapé.
+O sistema numérico, também previsto na seção 4.2 da NBR 10520:2023, usa números arábicos consecutivos para indicar as fontes. A numeração remete à lista de referências ao final do documento. *Importante*: conforme a própria norma, o sistema numérico *não* pode ser usado quando houver notas de rodapé, pois haveria conflito na numeração.
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#show: numeric-cite-setup
+  #raw(block: true, lang: "typst", "#show: citacao-num-config
 
-O resultado foi positivo #cite-num(\"silva2023\", page: \"45\").
+O resultado foi positivo #citar-num(\"silva2023\", page: \"45\").
 
-Outros autores #cite-num-multiple((\"santos2022\", \"costa2021\"))
+Outros autores #citar-num-multiplos((\"santos2022\", \"costa2021\"))
 confirmam os resultados.
 
 // No final do documento:
-#numeric-bibliography((
+#bibliografia-numerica((
   (\"silva2023\", [SILVA, J. *Título*. São Paulo: Editora, 2023.]),
   (\"santos2022\", [SANTOS, M. Artigo. *Revista*, v. 1, 2022.]),
   (\"costa2021\", [COSTA, A. Outro título. Rio: Ed., 2021.]),
@@ -953,7 +1076,7 @@ Parâmetros úteis para imagens:
   fit: \"contain\",   // Modo de ajuste
 )")
 
-== Quadros
+== Quadros <sec:quadros>
 
 Quadros são arranjos predominantemente textuais, com informações dispostas em linhas e colunas. Diferem das tabelas por serem fechados (com bordas em todos os lados):
 
@@ -1566,7 +1689,7 @@ n. 3, p. 45-67, set. 2022.")
 O ABNTypst pode usar arquivos `.bib` para gerar referências automaticamente:
 
 #raw(block: true, lang: "typst", "// No preâmbulo
-#show: thesis.with(
+#show: abntcc.with(
   bibliography-file: \"referencias.bib\",
 )
 
@@ -1669,9 +1792,9 @@ O ABNTypst oferece templates para diversos tipos de documentos acadêmicos e té
 
 == Trabalho acadêmico (tese, dissertação, TCC)
 
-O template `thesis` é o mais completo, seguindo a NBR 14724:2024:
+O template `abntcc` é o mais completo, seguindo a NBR 14724:2024:
 
-#raw(block: true, lang: "typst", "#show: thesis.with(
+#raw(block: true, lang: "typst", "#show: abntcc.with(
   title: \"Título do Trabalho\",
   subtitle: \"Subtítulo (se houver)\",
   author: \"Nome do Autor\",
@@ -1691,9 +1814,9 @@ O template `thesis` é o mais completo, seguindo a NBR 14724:2024:
 
 == Artigo científico
 
-O template `article` segue a NBR 6022:2018:
+O template `artigo` segue a NBR 6022:2018:
 
-#raw(block: true, lang: "typst", "#show: article.with(
+#raw(block: true, lang: "typst", "#show: artigo.with(
   title: \"Título do Artigo\",
   authors: (
     (name: \"Autor Um\",
@@ -1712,9 +1835,9 @@ O template `article` segue a NBR 6022:2018:
 
 == Relatório técnico
 
-O template `technical-report` segue a NBR 10719:2015:
+O template `relatorio` segue a NBR 10719:2015:
 
-#raw(block: true, lang: "typst", "#show: technical-report.with(
+#raw(block: true, lang: "typst", "#show: relatorio.with(
   title: \"Título do Relatório\",
   report-number: \"RT-001/2026\",
   institution: \"Instituição\",
@@ -1728,9 +1851,9 @@ O template `technical-report` segue a NBR 10719:2015:
 
 == Projeto de pesquisa
 
-O template `research-project` segue a NBR 15287:2025:
+O template `projeto-pesquisa` segue a NBR 15287:2025:
 
-#raw(block: true, lang: "typst", "#show: research-project.with(
+#raw(block: true, lang: "typst", "#show: projeto-pesquisa.with(
   title: \"Título do Projeto\",
   author: \"Nome do Pesquisador\",
   institution: \"Universidade\",
@@ -1752,9 +1875,9 @@ O template `research-project` segue a NBR 15287:2025:
 
 == Livro
 
-O template `book` segue a NBR 6029:2023:
+O template `livro` segue a NBR 6029:2023:
 
-#raw(block: true, lang: "typst", "#show: book.with(
+#raw(block: true, lang: "typst", "#show: livro.with(
   title: \"Título do Livro\",
   author: \"Nome do Autor\",
   publisher: \"Editora\",
@@ -2039,22 +2162,22 @@ Este apêndice é destinado a usuários que já conhecem LaTeX e desejam migrar 
     table.hline(stroke: 1pt),
     [*abnTeX2 (LaTeX)*], [*ABNTypst (Typst)*],
     table.hline(stroke: 0.5pt),
-    [#raw("\\documentclass{abntex2}")], [#raw("#show: thesis.with(..)")],
-    [#raw("\\imprimircapa")], [#raw("#cover(..)")],
-    [#raw("\\imprimirfolhaderosto")], [#raw("#title-page(..)")],
+    [#raw("\\documentclass{abntex2}")], [#raw("#show: abntcc.with(..)")],
+    [#raw("\\imprimircapa")], [#raw("#capa(..)")],
+    [#raw("\\imprimirfolhaderosto")], [#raw("#folha-rosto(..)")],
     [#raw("\\begin{resumo}...\\end{resumo}")], [#raw("#resumo(..)[...]")],
     [#raw("\\begin{abstract}...\\end{abstract}")], [#raw("#abstract-page(..)[...]")],
     [#raw("\\pdfbookmark{Sumário}{toc}\\tableofcontents")], [#raw("#sumario()")],
     [#raw("\\chapter{...}")], [#raw("= Título") (nível 1)],
     [#raw("\\section{...}")], [#raw("== Título") (nível 2)],
     [#raw("\\cite{...}")], [#raw("@ref") ou #raw("#cite(<ref>)")],
-    [#raw("\\citeonline{...}")], [#raw("#cite-author(\"Autor\", \"2023\")")],
-    [#raw("\\apud{...}{...}")], [#raw("#cite-apud(..)")],
-    [#raw("\\textcite{...}")], [#raw("#cite-author(..)")],
-    [#raw("\\begin{citacao}...\\end{citacao}")], [#raw("#quote-long(..)[...]")],
-    [#raw("\\SingleSpacing")], [#raw("#set par(leading: 1em)")],
-    [#raw("\\OnehalfSpacing")], [#raw("#set par(leading: 1.5em)")],
-    [#raw("\\DoubleSpacing")], [#raw("#set par(leading: 2em)")],
+    [#raw("\\citeonline{...}")], [#raw("#citar-autor(\"Autor\", \"2023\")")],
+    [#raw("\\apud{...}{...}")], [#raw("#citar-apud(..)")],
+    [#raw("\\textcite{...}")], [#raw("#citar-autor(..)")],
+    [#raw("\\begin{citacao}...\\end{citacao}")], [#raw("#citacao-longa(..)[...]")],
+    [#raw("\\SingleSpacing")], [#raw("#set par(leading: 0.5em)")],
+    [#raw("\\OnehalfSpacing")], [#raw("#set par(leading: 0.65em)")],
+    [#raw("\\DoubleSpacing")], [#raw("#set par(leading: 1.4em)")],
     table.hline(stroke: 1pt),
   ),
   caption: [Equivalências abnTeX2/ABNTypst],

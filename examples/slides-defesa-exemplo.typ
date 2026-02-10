@@ -23,7 +23,7 @@
 #import "../lib.typ": *
 
 // Usar o template de defesa
-#show: defense-slides.with(
+#show: slides-defesa.with(
   title: "Sistema de Recomendacao de Filmes Baseado em Aprendizado de Maquina",
   subtitle: "Uma abordagem usando filtragem colaborativa",
   author: "Maria Silva Santos",
@@ -279,4 +279,4 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
 )
 
 // O slide final de "Obrigado! Perguntas?" e gerado automaticamente
-// pelo template defense-slides
+// pelo template slides-defesa

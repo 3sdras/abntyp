@@ -21,7 +21,7 @@
 /// - isbn: numero ISBN
 /// - font: fonte a usar
 /// - running-header: titulo corrente (opcional)
-#let book(
+#let livro(
   title: "",
   subtitle: none,
   author: "",
