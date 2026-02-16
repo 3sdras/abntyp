@@ -2,72 +2,72 @@
 // Elementos obrigatórios: instituição, autor, título, subtítulo, local, ano
 
 /// Cria capa conforme ABNT
-/// - institution: nome da instituição (em maiúsculas)
-/// - author: nome do autor
-/// - title: título do trabalho
-/// - subtitle: subtítulo (opcional)
-/// - location: cidade
-/// - year: ano de depósito
+/// - instituicao: nome da instituição (em maiúsculas)
+/// - autor: nome do autor
+/// - titulo: título do trabalho
+/// - subtitulo: subtítulo (opcional)
+/// - local: cidade
+/// - ano: ano de depósito
 #let capa(
-  institution: none,
-  faculty: none,
-  program: none,
-  author: none,
-  title: none,
-  subtitle: none,
-  location: none,
-  year: none,
+  instituicao: none,
+  faculdade: none,
+  programa: none,
+  autor: none,
+  titulo: none,
+  subtitulo: none,
+  local: none,
+  ano: none,
 ) = {
   set page(numbering: none)
   set align(center)
 
   // Instituição (maiúsculas, negrito)
-  if institution != none {
-    text(weight: "bold", size: 12pt, upper(institution))
+  if instituicao != none {
+    text(weight: "bold", size: 12pt, upper(instituicao))
     linebreak()
   }
 
-  if faculty != none {
-    text(weight: "bold", size: 12pt, upper(faculty))
+  if faculdade != none {
+    text(weight: "bold", size: 12pt, upper(faculdade))
     linebreak()
   }
 
-  if program != none {
-    text(weight: "bold", size: 12pt, upper(program))
+  if programa != none {
+    text(weight: "bold", size: 12pt, upper(programa))
   }
 
   v(1fr)
 
   // Autor
-  if author != none {
-    text(size: 12pt, upper(author))
+  if autor != none {
+    text(size: 12pt, upper(autor))
   }
 
   v(1fr)
 
   // Título (maiúsculas, negrito)
-  if title != none {
-    if subtitle != none {
+  if titulo != none {
+    if subtitulo != none {
       // Título com dois-pontos no final
-      text(weight: "bold", size: 14pt, upper(title) + ":")
+      text(weight: "bold", size: 14pt, upper(titulo) + ":")
       linebreak()
       // Subtítulo em linha separada
-      text(size: 14pt, subtitle)
+      text(size: 14pt, subtitulo)
     } else {
-      text(weight: "bold", size: 14pt, upper(title))
+      text(weight: "bold", size: 14pt, upper(titulo))
     }
   }
 
   v(1fr)
 
   // Local e ano
-  if location != none {
-    text(size: 12pt, upper(location))
+  if local != none {
+    text(size: 12pt, upper(local))
     linebreak()
   }
 
-  if year != none {
-    text(size: 12pt, str(year))
+  if ano != none {
+    text(size: 12pt, str(ano))
   }
 
   pagebreak()

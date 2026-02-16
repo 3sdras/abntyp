@@ -22,9 +22,9 @@
 // Configuração do documento usando o template academic-poster
 // (inclui campo para orientador)
 #show: academic-poster.with(
-  title: "Análise de Sentimentos em Redes Sociais",
-  subtitle: "uma abordagem com Deep Learning",
-  authors: (
+  titulo: "Análise de Sentimentos em Redes Sociais",
+  subtitulo: "uma abordagem com Deep Learning",
+  autores: (
     (
       name: "Lucas Henrique Almeida",
       affiliation: "Graduando em Ciência da Computação, Universidade Federal de Exemplo",
@@ -34,28 +34,28 @@
       affiliation: "Graduanda em Ciência da Computação, Universidade Federal de Exemplo",
     ),
   ),
-  advisor: "Prof. Dr. Ricardo Oliveira Silva",
-  institution: "Universidade Federal de Exemplo",
-  department: "Departamento de Ciência da Computação",
-  contact: "lucas.almeida@ufe.edu.br | beatriz.mendes@ufe.edu.br",
-  abstract-text: [
+  orientador: "Prof. Dr. Ricardo Oliveira Silva",
+  instituicao: "Universidade Federal de Exemplo",
+  departamento: "Departamento de Ciência da Computação",
+  contato: "lucas.almeida@ufe.edu.br | beatriz.mendes@ufe.edu.br",
+  texto-resumo: [
     Este trabalho apresenta uma abordagem de deep learning para análise de sentimentos em postagens de redes sociais em português brasileiro. Utilizando uma arquitetura BERT adaptada (BERTimbau), o modelo alcançou 89,3% de acurácia na classificação de sentimentos em três categorias: positivo, negativo e neutro. O dataset utilizado contém 50.000 tweets coletados entre 2022 e 2024.
   ],
-  keywords: ("Análise de sentimentos", "Deep Learning", "BERT", "Redes sociais", "PLN"),
-  num-columns: 3,
-  width: 90cm,
-  height: 120cm,
-  font: "Arial",
-  title-size: 72pt,
-  body-size: 24pt,
-  accent-color: rgb("#1a5276"),
+  palavras-chave: ("Análise de sentimentos", "Deep Learning", "BERT", "Redes sociais", "PLN"),
+  num-colunas: 3,
+  largura: 90cm,
+  altura: 120cm,
+  fonte: "Arial",
+  tamanho-titulo: 72pt,
+  tamanho-corpo: 24pt,
+  cor-destaque: rgb("#1a5276"),
 )
 
 // ============================================================================
 // CONTEÚDO DO PÔSTER
 // ============================================================================
 
-#poster-section(title: "Introdução", accent-color: rgb("#1a5276"))[
+#poster-section(titulo: "Introdução", cor-destaque: rgb("#1a5276"))[
   A análise de sentimentos é uma tarefa fundamental do Processamento de Linguagem Natural (PLN) que busca identificar e extrair opiniões subjetivas em textos.
 
   Com o crescimento exponencial das redes sociais, milhões de opiniões são compartilhadas diariamente, criando uma fonte rica de dados para:
@@ -68,7 +68,7 @@
   *Objetivo:* Desenvolver um modelo de deep learning para classificação de sentimentos em português brasileiro com alta acurácia.
 ]
 
-#poster-section(title: "Metodologia", accent-color: rgb("#1a5276"))[
+#poster-section(titulo: "Metodologia", cor-destaque: rgb("#1a5276"))[
   == Dataset
 
   - *Fonte:* Twitter/X (API Acadêmica)
@@ -86,7 +86,7 @@
 
   == Arquitetura do Modelo
 
-  #poster-highlight(accent-color: rgb("#1a5276"))[
+  #poster-highlight(cor-destaque: rgb("#1a5276"))[
     *BERTimbau-Large* + Camada de classificação
 
     - 24 camadas transformer
@@ -96,7 +96,7 @@
   ]
 ]
 
-#poster-section(title: "Resultados", accent-color: rgb("#1a5276"))[
+#poster-section(titulo: "Resultados", cor-destaque: rgb("#1a5276"))[
   == Métricas de Desempenho
 
   #table(
@@ -114,7 +114,7 @@
 
   #v(0.5em)
 
-  #poster-highlight(accent-color: rgb("#1a5276"))[
+  #poster-highlight(cor-destaque: rgb("#1a5276"))[
     *Acurácia Global: 89,3%*
 
     Superando o baseline (SVM + TF-IDF) em 12,7 pontos percentuais
@@ -135,11 +135,11 @@
       [BERT Multilíngue], [85,4%],
       [*BERTimbau (nosso)*], [*89,3%*],
     ),
-    caption: "Comparativo de desempenho",
+    legenda: "Comparativo de desempenho",
   )
 ]
 
-#poster-section(title: "Discussão", accent-color: rgb("#1a5276"))[
+#poster-section(titulo: "Discussão", cor-destaque: rgb("#1a5276"))[
   == Principais Contribuições
 
   - Modelo estado-da-arte para português brasileiro
@@ -154,7 +154,7 @@
   - *Gírias regionais:* 22% dos erros
   - *Textos muito curtos:* 18% dos erros
 
-  #poster-highlight(accent-color: rgb("#1a5276"))[
+  #poster-highlight(cor-destaque: rgb("#1a5276"))[
     *Trabalhos Futuros:*
     - Incorporar detecção de sarcasmo
     - Expandir para outras redes sociais
@@ -162,7 +162,7 @@
   ]
 ]
 
-#poster-section(title: "Conclusão", accent-color: rgb("#1a5276"))[
+#poster-section(titulo: "Conclusão", cor-destaque: rgb("#1a5276"))[
   Este trabalho demonstrou que modelos de deep learning baseados em BERT adaptados para o português brasileiro superam significativamente abordagens tradicionais na tarefa de análise de sentimentos.
 
   O modelo desenvolvido atinge *89,3% de acurácia*, representando um avanço importante para aplicações de PLN em português.

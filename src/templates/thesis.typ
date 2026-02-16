@@ -13,49 +13,49 @@
 /// Template principal para trabalhos acadêmicos (tese, dissertação, TCC)
 ///
 /// Parâmetros:
-/// - title: título do trabalho
-/// - subtitle: subtítulo (opcional)
-/// - author: nome do autor
-/// - institution: nome da instituição
-/// - faculty: faculdade/unidade
-/// - program: programa de pós-graduação
-/// - location: cidade
-/// - year: ano de depósito
-/// - nature: natureza do trabalho
-/// - objective: objetivo (ex: "Dissertação apresentada ao Programa...")
+/// - titulo: título do trabalho
+/// - subtitulo: subtítulo (opcional)
+/// - autor: nome do autor
+/// - instituicao: nome da instituição
+/// - faculdade: faculdade/unidade
+/// - programa: programa de pós-graduação
+/// - local: cidade
+/// - ano: ano de depósito
+/// - natureza: natureza do trabalho
+/// - objetivo: objetivo (ex: "Dissertação apresentada ao Programa...")
 /// - area: área de concentração
-/// - advisor: orientador
-/// - co-advisor: coorientador (opcional)
-/// - keywords-pt: palavras-chave em português
-/// - keywords-en: keywords em inglês
-/// - font: fonte a usar ("Times New Roman" ou "Arial")
-/// - bibliography-file: caminho para arquivo .bib (opcional)
-/// - bibliography-title: título da seção de referências (padrão: "REFERÊNCIAS")
+/// - orientador: orientador
+/// - coorientador: coorientador (opcional)
+/// - palavras-chave: palavras-chave em português
+/// - palavras-chave-en: keywords em inglês
+/// - fonte: fonte a usar ("Times New Roman" ou "Arial")
+/// - arquivo-bibliografia: caminho para arquivo .bib (opcional)
+/// - titulo-bibliografia: título da seção de referências (padrão: "REFERÊNCIAS")
 #let abntcc(
-  title: "",
-  subtitle: none,
-  author: "",
-  institution: "",
-  faculty: none,
-  program: none,
-  location: "",
-  year: datetime.today().year(),
-  nature: none,
-  objective: none,
+  titulo: "",
+  subtitulo: none,
+  autor: "",
+  instituicao: "",
+  faculdade: none,
+  programa: none,
+  local: "",
+  ano: datetime.today().year(),
+  natureza: none,
+  objetivo: none,
   area: none,
-  advisor: none,
-  co-advisor: none,
-  keywords-pt: (),
-  keywords-en: (),
-  font: "Times New Roman",
-  bibliography-file: none,
-  bibliography-title: "REFERÊNCIAS",
+  orientador: none,
+  coorientador: none,
+  palavras-chave: (),
+  palavras-chave-en: (),
+  fonte: "Times New Roman",
+  arquivo-bibliografia: none,
+  titulo-bibliografia: "REFERÊNCIAS",
   body,
 ) = {
   // Configuração do documento
   set document(
-    title: title,
-    author: author,
+    title: titulo,
+    author: autor,
   )
 
   // Configuração de página
@@ -71,7 +71,7 @@
 
   // Configuração de fonte
   set text(
-    font: font,
+    font: fonte,
     size: 12pt,
     lang: "pt",
     region: "BR",
@@ -155,7 +155,7 @@
   // Excluir indentação de containers que não devem ser indentados
   show heading: set par(first-line-indent: 0pt)
   show figure: set par(first-line-indent: 0pt)
-  show raw: set par(first-line-indent: 0pt)
+  show raw.where(block: true): set par(first-line-indent: 0pt)
   show outline: set par(first-line-indent: 0pt)
   show terms: set par(first-line-indent: 0pt)
 
@@ -168,8 +168,8 @@
   body
 
   // Bibliografia automática (se arquivo .bib fornecido)
-  if bibliography-file != none {
-    abnt-bibliography(bibliography-file, title: bibliography-title)
+  if arquivo-bibliografia != none {
+    abnt-bibliography(arquivo-bibliografia, titulo: titulo-bibliografia)
   }
 }
 
@@ -194,37 +194,37 @@
 }
 
 /// Página de dedicatória
-#let dedicatoria(content) = {
+#let dedicatoria(conteudo) = {
   set page(numbering: none)
   v(1fr)
   align(right)[
     #box(width: 50%)[
       #set par(first-line-indent: 0pt)
-      #content
+      #conteudo
     ]
   ]
   pagebreak()
 }
 
 /// Página de agradecimentos
-#let agradecimentos(content) = {
+#let agradecimentos(conteudo) = {
   align(center)[
     #text(weight: "bold", size: 12pt, "AGRADECIMENTOS")
   ]
   v(1.5em)
-  content
+  conteudo
   pagebreak()
 }
 
 /// Epígrafe
-#let epigrafe(quote, author) = {
+#let epigrafe(quote, autor) = {
   set page(numbering: none)
   v(1fr)
   align(right)[
     #box(width: 50%)[
       #set par(first-line-indent: 0pt)
       "#quote" \
-      [(#author)]
+      [(#autor)]
     ]
   ]
   pagebreak()

@@ -22,25 +22,25 @@
 
 // Configuração do documento usando o template technical-report
 #show: relatorio.with(
-  title: "Análise de Desempenho de Sistemas de Banco de Dados NoSQL",
-  subtitle: "estudo comparativo entre MongoDB, Cassandra e Redis",
-  report-number: 15,
-  report-code: "UFE-CPD-2026-BD-015",
-  institution: "Universidade Federal de Exemplo",
-  institution-address: "Av. Principal, 1000 - Campus Universitário - CEP 12345-678 - Cidade/UF",
-  project-title: "Projeto de Modernização da Infraestrutura de Dados",
-  authors: (
+  titulo: "Análise de Desempenho de Sistemas de Banco de Dados NoSQL",
+  subtitulo: "estudo comparativo entre MongoDB, Cassandra e Redis",
+  numero-relatorio: 15,
+  codigo-relatorio: "UFE-CPD-2026-BD-015",
+  instituicao: "Universidade Federal de Exemplo",
+  endereco-instituicao: "Av. Principal, 1000 - Campus Universitário - CEP 12345-678 - Cidade/UF",
+  titulo-projeto: "Projeto de Modernização da Infraestrutura de Dados",
+  autores: (
     (name: "Dr. Fernando Henrique Alves", qualification: "Coordenador do Projeto"),
     (name: "MSc. Roberta Cristina Lima", qualification: "Pesquisadora"),
     (name: "BSc. Gabriel Santos Oliveira", qualification: "Analista de Sistemas"),
   ),
-  classification: none,
+  classificacao: none,
   issn: none,
-  location: "Cidade",
-  year: 2026,
-  font: "Times New Roman",
+  local: "Cidade",
+  ano: 2026,
+  fonte: "Times New Roman",
   // Para usar bibliografia automática, o caminho deve ser relativo à raiz:
-  // bibliography-file: "examples/referencias.bib",
+  // arquivo-bibliografia: "examples/referencias.bib",
 )
 
 // ============================================================================
@@ -49,40 +49,40 @@
 
 // Capa
 #report-cover(
-  institution: "Universidade Federal de Exemplo",
-  institution-address: "Av. Principal, 1000 - Campus Universitário - Cidade/UF",
-  report-number: 15,
-  title: "Análise de Desempenho de Sistemas de Banco de Dados NoSQL",
-  subtitle: "estudo comparativo entre MongoDB, Cassandra e Redis",
-  year: 2026,
+  instituicao: "Universidade Federal de Exemplo",
+  endereco-instituicao: "Av. Principal, 1000 - Campus Universitário - Cidade/UF",
+  numero-relatorio: 15,
+  titulo: "Análise de Desempenho de Sistemas de Banco de Dados NoSQL",
+  subtitulo: "estudo comparativo entre MongoDB, Cassandra e Redis",
+  ano: 2026,
 )
 
 // Folha de rosto - anverso
 #report-title-page(
-  institution: "Universidade Federal de Exemplo",
-  project-title: "Projeto de Modernização da Infraestrutura de Dados",
-  title: "Análise de Desempenho de Sistemas de Banco de Dados NoSQL",
-  subtitle: "estudo comparativo entre MongoDB, Cassandra e Redis",
-  report-code: "UFE-CPD-2026-BD-015",
-  authors: (
+  instituicao: "Universidade Federal de Exemplo",
+  titulo-projeto: "Projeto de Modernização da Infraestrutura de Dados",
+  titulo: "Análise de Desempenho de Sistemas de Banco de Dados NoSQL",
+  subtitulo: "estudo comparativo entre MongoDB, Cassandra e Redis",
+  codigo-relatorio: "UFE-CPD-2026-BD-015",
+  autores: (
     (name: "Dr. Fernando Henrique Alves", qualification: "Coordenador do Projeto"),
     (name: "MSc. Roberta Cristina Lima", qualification: "Pesquisadora"),
     (name: "BSc. Gabriel Santos Oliveira", qualification: "Analista de Sistemas"),
   ),
-  location: "Cidade",
-  year: 2026,
+  local: "Cidade",
+  ano: 2026,
 )
 
 // Folha de rosto - verso (equipe técnica e ficha catalográfica)
 #report-title-page-verso(
-  technical-team: (
-    (role: "Coordenação Geral", name: "Dr. Fernando Henrique Alves"),
-    (role: "Coordenação Técnica", name: "MSc. Roberta Cristina Lima"),
-    (role: "Desenvolvimento", name: "BSc. Gabriel Santos Oliveira"),
-    (role: "Infraestrutura", name: "Téc. Carlos Eduardo Martins"),
-    (role: "Revisão", name: "Profa. Dra. Ana Paula Ferreira"),
+  equipe-tecnica: (
+    (funcao: "Coordenação Geral", nome: "Dr. Fernando Henrique Alves"),
+    (funcao: "Coordenação Técnica", nome: "MSc. Roberta Cristina Lima"),
+    (funcao: "Desenvolvimento", nome: "BSc. Gabriel Santos Oliveira"),
+    (funcao: "Infraestrutura", nome: "Téc. Carlos Eduardo Martins"),
+    (funcao: "Revisão", nome: "Profa. Dra. Ana Paula Ferreira"),
   ),
-  cataloging-data: [
+  dados-catalogacao: [
     #set text(size: 9pt)
     #set par(leading: 0.8em)
     Alves, Fernando Henrique.
@@ -99,10 +99,10 @@
 
 // Errata (opcional - incluída como demonstração)
 #errata(
-  reference: [ALVES, F. H.; LIMA, R. C.; OLIVEIRA, G. S. *Análise de desempenho de sistemas de banco de dados NoSQL*: estudo comparativo entre MongoDB, Cassandra e Redis. Cidade: UFE/CPD, 2026. 45 p. (Relatório Técnico, n. 15).],
-  items: (
-    (page: 12, line: 5, wrong: "throughput de 15.000", correct: "throughput de 150.000"),
-    (page: 23, line: 18, wrong: "latência média de 5ms", correct: "latência média de 0,5ms"),
+  referencia: [ALVES, F. H.; LIMA, R. C.; OLIVEIRA, G. S. *Análise de desempenho de sistemas de banco de dados NoSQL*: estudo comparativo entre MongoDB, Cassandra e Redis. Cidade: UFE/CPD, 2026. 45 p. (Relatório Técnico, n. 15).],
+  itens: (
+    (pagina: 12, linha: 5, errado: "throughput de 15.000", correto: "throughput de 150.000"),
+    (pagina: 23, linha: 18, errado: "latência média de 5ms", correto: "latência média de 0,5ms"),
   ),
 )
 
@@ -117,7 +117,7 @@
 
 // Resumo
 #resumo-relatorio(
-  keywords: ("Banco de dados NoSQL", "MongoDB", "Cassandra", "Redis", "Análise de desempenho", "Benchmarking"),
+  palavras-chave: ("Banco de dados NoSQL", "MongoDB", "Cassandra", "Redis", "Análise de desempenho", "Benchmarking"),
 )[
   Este relatório apresenta uma análise comparativa de desempenho entre três sistemas de banco de dados NoSQL amplamente utilizados: MongoDB, Apache Cassandra e Redis. O estudo foi conduzido no contexto do Projeto de Modernização da Infraestrutura de Dados da Universidade Federal de Exemplo, com o objetivo de subsidiar a decisão sobre qual tecnologia adotar para o novo sistema de gestão acadêmica. A metodologia envolveu a execução de benchmarks padronizados utilizando o framework YCSB (Yahoo! Cloud Serving Benchmark) em ambiente controlado, com cargas de trabalho representativas de operações típicas do sistema acadêmico. Os resultados indicam que o MongoDB apresenta melhor desempenho para operações de leitura complexas, enquanto o Cassandra demonstra superioridade em cenários de escrita intensiva e alta disponibilidade. O Redis destaca-se para operações de cache e consultas simples de baixa latência. Recomenda-se a adoção de arquitetura híbrida combinando MongoDB para dados principais e Redis para cache, considerando os requisitos específicos do sistema acadêmico.
 ]
@@ -399,27 +399,27 @@ Arquivos principais:
 
 // Formulário de identificação
 #formulario-identificacao(
-  title: "Análise de Desempenho de Sistemas de Banco de Dados NoSQL: estudo comparativo entre MongoDB, Cassandra e Redis",
-  classification: "Ostensivo",
-  report-number: "15",
-  report-type: "Relatório Técnico de Pesquisa Aplicada",
-  date: "Janeiro de 2026",
-  authors: (
+  titulo: "Análise de Desempenho de Sistemas de Banco de Dados NoSQL: estudo comparativo entre MongoDB, Cassandra e Redis",
+  classificacao: "Ostensivo",
+  numero-relatorio: "15",
+  tipo-relatorio: "Relatório Técnico de Pesquisa Aplicada",
+  data: "Janeiro de 2026",
+  autores: (
     (name: "Dr. Fernando Henrique Alves"),
     (name: "MSc. Roberta Cristina Lima"),
     (name: "BSc. Gabriel Santos Oliveira"),
   ),
-  institutions: (
+  instituicoes: (
     "Universidade Federal de Exemplo",
     "Centro de Processamento de Dados",
   ),
-  abstract-text: [
+  texto-resumo: [
     Análise comparativa de desempenho entre MongoDB, Cassandra e Redis para subsidiar decisão tecnológica do novo sistema de gestão acadêmica. Testes realizados com YCSB em ambiente controlado. Recomenda-se arquitetura híbrida com MongoDB para dados principais e Redis para cache.
   ],
-  keywords: ("Banco de dados NoSQL", "MongoDB", "Cassandra", "Redis", "Benchmarking"),
-  edition: "1ª edição",
-  pages: "45",
-  distribution: "Irrestrita",
-  distributor: "Centro de Processamento de Dados - UFE",
-  notes: "Relatório produzido no âmbito do Projeto de Modernização da Infraestrutura de Dados.",
+  palavras-chave: ("Banco de dados NoSQL", "MongoDB", "Cassandra", "Redis", "Benchmarking"),
+  edicao: "1ª edição",
+  paginas: "45",
+  distribuicao: "Irrestrita",
+  distribuidor: "Centro de Processamento de Dados - UFE",
+  observacoes: "Relatório produzido no âmbito do Projeto de Modernização da Infraestrutura de Dados.",
 )

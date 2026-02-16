@@ -5,45 +5,45 @@
 
 /// Cria folha de rosto conforme ABNT
 #let folha-rosto(
-  author: none,
-  title: none,
-  subtitle: none,
-  nature: none,        // Natureza do trabalho (dissertação, tese, TCC)
-  objective: none,     // Objetivo (obtenção de grau)
-  institution: none,
-  area: none,          // Área de concentração
-  advisor: none,       // Orientador
-  co-advisor: none,    // Coorientador
-  location: none,
-  year: none,
+  autor: none,
+  titulo: none,
+  subtitulo: none,
+  natureza: none,        // Natureza do trabalho (dissertação, tese, TCC)
+  objetivo: none,        // Objetivo (obtenção de grau)
+  instituicao: none,
+  area: none,            // Área de concentração
+  orientador: none,      // Orientador
+  coorientador: none,    // Coorientador
+  local: none,
+  ano: none,
 ) = {
   set page(numbering: none)
   set align(center)
 
   // Autor
-  if author != none {
-    text(size: 12pt, upper(author))
+  if autor != none {
+    text(size: 12pt, upper(autor))
   }
 
   v(1fr)
 
   // Título (maiúsculas, negrito)
-  if title != none {
-    if subtitle != none {
+  if titulo != none {
+    if subtitulo != none {
       // Título com dois-pontos no final
-      text(weight: "bold", size: 14pt, upper(title) + ":")
+      text(weight: "bold", size: 14pt, upper(titulo) + ":")
       linebreak()
       // Subtítulo em linha separada
-      text(size: 14pt, subtitle)
+      text(size: 14pt, subtitulo)
     } else {
-      text(weight: "bold", size: 14pt, upper(title))
+      text(weight: "bold", size: 14pt, upper(titulo))
     }
   }
 
   v(2cm)
 
   // Natureza do trabalho (recuo de 8cm, espaço simples)
-  if nature != none or objective != none or advisor != none {
+  if natureza != none or objetivo != none or orientador != none {
     set align(right)
     box(width: 8cm)[
       #set align(left)
@@ -54,20 +54,20 @@
       )
       #set text(size: 10pt)
 
-      #if nature != none { nature }
-      #if objective != none { [ #objective] }
-      #if institution != none { linebreak(); institution }
+      #if natureza != none { natureza }
+      #if objetivo != none { [ #objetivo] }
+      #if instituicao != none { linebreak(); instituicao }
       #if area != none { linebreak(); [Área de concentração: #area] }
 
-      #if advisor != none {
+      #if orientador != none {
         linebreak()
         linebreak()
-        [Orientador: #advisor]
+        [Orientador: #orientador]
       }
 
-      #if co-advisor != none {
+      #if coorientador != none {
         linebreak()
-        [Coorientador: #co-advisor]
+        [Coorientador: #coorientador]
       }
     ]
   }
@@ -76,13 +76,13 @@
 
   // Local e ano
   set align(center)
-  if location != none {
-    text(size: 12pt, upper(location))
+  if local != none {
+    text(size: 12pt, upper(local))
     linebreak()
   }
 
-  if year != none {
-    text(size: 12pt, str(year))
+  if ano != none {
+    text(size: 12pt, str(ano))
   }
 
   pagebreak()
@@ -90,7 +90,7 @@
 
 /// Verso da folha de rosto (ficha catalográfica)
 /// Deve ocupar a parte inferior da página
-#let ficha-catalografica(content) = {
+#let ficha-catalografica(conteudo) = {
   set page(numbering: none)
   v(1fr)
 
@@ -103,7 +103,7 @@
     )[
       #set text(size: 10pt)
       #set par(leading: 1em * 0.65)
-      #content
+      #conteudo
     ]
   ]
 

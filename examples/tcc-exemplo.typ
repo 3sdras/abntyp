@@ -58,36 +58,36 @@
 
 #show: abntcc.with(
   // --- Dados básicos do trabalho ---
-  title: "Uma proposta de pacote para normas ABNT em Typst",
+  titulo: "Uma proposta de pacote para normas ABNT em Typst",
   // DICA: Se não tiver subtítulo, remova ou comente a linha abaixo
-  subtitle: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
+  subtitulo: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
 
   // --- Dados do autor ---
-  author: "Cláudio Código",
+  autor: "Cláudio Código",
 
   // --- Dados da instituição ---
-  institution: "Universidade Federal de Jataí",
-  faculty: "Instituto de Ciências Exatas e Tecnológicas",
-  program: "PROFMAT - Programa de Mestrado Profissional em Rede em Matemática",
+  instituicao: "Universidade Federal de Jataí",
+  faculdade: "Instituto de Ciências Exatas e Tecnológicas",
+  programa: "PROFMAT - Programa de Mestrado Profissional em Rede em Matemática",
   // DICA para graduação:
-  //   program: "Curso de Bacharelado em Matemática",
+  //   programa: "Curso de Bacharelado em Matemática",
 
   // --- Local e data ---
-  location: "Jataí",
-  year: 2026,
+  local: "Jataí",
+  ano: 2026,
 
   // --- Orientação ---
-  advisor: "Prof. Dr. Esdras Teixeira Costa",
+  orientador: "Prof. Dr. Esdras Teixeira Costa",
   // DICA: Se tiver coorientador, descomente:
-  // co-advisor: "Prof. Dr. Nome do Coorientador",
+  // coorientador: "Prof. Dr. Nome do Coorientador",
 
   // --- Fonte ---
   // Opções: "Times New Roman" (padrão) ou "Arial"
-  font: "Times New Roman",
+  fonte: "Times New Roman",
 
   // --- Bibliografia automática (opcional) ---
   // Se você tiver um arquivo .bib com suas referências:
-  // bibliography-file: "referencias.bib",
+  // arquivo-bibliografia: "referencias.bib",
   // O CSL ABNT será aplicado automaticamente.
 )
 
@@ -111,13 +111,13 @@
 // - Ano de depósito
 
 #capa(
-  institution: "Universidade Federal de Jataí",
-  faculty: "Instituto de Ciências Exatas e Tecnológicas",
-  author: "Cláudio Código",
-  title: "Uma proposta de pacote para normas ABNT em Typst",
-  subtitle: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
-  location: "Jataí",
-  year: 2026,
+  instituicao: "Universidade Federal de Jataí",
+  faculdade: "Instituto de Ciências Exatas e Tecnológicas",
+  autor: "Cláudio Código",
+  titulo: "Uma proposta de pacote para normas ABNT em Typst",
+  subtitulo: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
+  local: "Jataí",
+  ano: 2026,
 )
 
 
@@ -131,32 +131,32 @@
 // IMPORTANTE: A "nature" (natureza) varia conforme o tipo de trabalho.
 
 #folha-rosto(
-  author: "Cláudio Código",
-  title: "Uma proposta de pacote para normas ABNT em Typst",
-  subtitle: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
+  autor: "Cláudio Código",
+  titulo: "Uma proposta de pacote para normas ABNT em Typst",
+  subtitulo: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
 
   // -----------------------------------------------------------------------
   // NATUREZA DO TRABALHO - Escolha e adapte conforme seu caso:
   // -----------------------------------------------------------------------
 
   // Para DISSERTAÇÃO de mestrado:
-  nature: "Dissertação apresentada ao PROFMAT - Programa de Mestrado Profissional em Rede em Matemática do Instituto de Ciências Exatas e Tecnológicas da Universidade Federal de Jataí",
-  objective: "como requisito parcial para obtenção do título de Mestre.",
+  natureza: "Dissertação apresentada ao PROFMAT - Programa de Mestrado Profissional em Rede em Matemática do Instituto de Ciências Exatas e Tecnológicas da Universidade Federal de Jataí",
+  objetivo: "como requisito parcial para obtenção do título de Mestre.",
 
   // Para TCC de graduação (descomente e adapte):
-  // nature: "Trabalho de Conclusão de Curso apresentado ao Curso de Licenciatura em Matemática da Universidade Federal de Jataí",
-  // objective: "como requisito parcial para obtenção do grau de Licenciado em Matemática.",
+  // natureza: "Trabalho de Conclusão de Curso apresentado ao Curso de Licenciatura em Matemática da Universidade Federal de Jataí",
+  // objetivo: "como requisito parcial para obtenção do grau de Licenciado em Matemática.",
 
   // Para TESE de doutorado (descomente e adapte):
-  // nature: "Tese apresentada ao Programa de Pós-Graduação em Matemática da Universidade Federal de Jataí",
-  // objective: "como requisito parcial para obtenção do título de Doutor em Matemática.",
+  // natureza: "Tese apresentada ao Programa de Pós-Graduação em Matemática da Universidade Federal de Jataí",
+  // objetivo: "como requisito parcial para obtenção do título de Doutor em Matemática.",
 
   // -----------------------------------------------------------------------
 
-  advisor: "Prof. Dr. Esdras Teixeira Costa",
-  // co-advisor: "Prof. Dr. Nome do Coorientador",  // Se houver
-  location: "Jataí",
-  year: 2026,
+  orientador: "Prof. Dr. Esdras Teixeira Costa",
+  // coorientador: "Prof. Dr. Nome do Coorientador",  // Se houver
+  local: "Jataí",
+  ano: 2026,
 )
 
 
@@ -272,7 +272,7 @@
 // ----------------------------------------------------------------------------
 
 #resumo(
-  keywords: ("Palavra-chave 1", "Palavra-chave 2", "Palavra-chave 3", "Palavra-chave 4"),
+  palavras-chave: ("Palavra-chave 1", "Palavra-chave 2", "Palavra-chave 3", "Palavra-chave 4"),
 )[
   // DICA: Escreva em parágrafo único, sem recuo, texto corrido.
   // Evite citações, fórmulas e abreviaturas no resumo.
@@ -288,7 +288,7 @@
 // Se seu programa exigir resumo em outra língua, use a função foreign-abstract.
 
 #abstract(
-  keywords: ("Keyword 1", "Keyword 2", "Keyword 3", "Keyword 4"),
+  palavras-chave: ("Keyword 1", "Keyword 2", "Keyword 3", "Keyword 4"),
 )[
   The formatting of academic documents in Brazil follows the standards of the Brazilian Association of Technical Standards (ABNT), which establishes guidelines for the presentation of works such as undergraduate theses, master's dissertations, and doctoral theses. This work aims to present the development of a system to automate the formatting of academic documents according to ABNT standards, using the Typst typesetting language. The methodology adopted consisted of a detailed analysis of current standards, identification of formatting requirements, and implementation of specific templates and functions for each document element. The results obtained demonstrate that it is possible to produce correctly formatted academic documents more simply and efficiently than traditional solutions based on LaTeX or conventional word processors. It is concluded that Typst, combined with the developed package, offers a viable and modern alternative for the production of academic works in Brazil, reducing the time spent on formatting and allowing authors to focus their efforts on content.
 ]
@@ -463,7 +463,7 @@ Conforme a NBR 14724:2024, um trabalho acadêmico deve conter elementos pré-tex
 Segundo Silva (2023), a padronização é essencial para a comunicação científica, pois permite que pesquisadores de diferentes instituições compreendam e avaliem os trabalhos de seus pares de forma consistente.
 
 // Outra forma de citar (autor entre parênteses):
-A padronização de documentos científicos surgiu da necessidade de facilitar a comunicação entre pesquisadores #citar("SILVA", "2023", page: "15").
+A padronização de documentos científicos surgiu da necessidade de facilitar a comunicação entre pesquisadores #citar("SILVA", "2023", pagina: "15").
 
 
 // ----------------------------------------------------------------------------
@@ -474,7 +474,7 @@ A padronização de documentos científicos surgiu da necessidade de facilitar a
 De acordo com Santos (2022, p. 45), #citacao-curta("as normas técnicas são instrumentos fundamentais para a qualidade e a confiabilidade da produção científica").
 
 // Outra forma (autor entre parênteses):
-A literatura especializada destaca que #citacao-curta("as normas técnicas são instrumentos fundamentais para a qualidade e a confiabilidade da produção científica", author: "SANTOS", year: "2022", page: "45").
+A literatura especializada destaca que #citacao-curta("as normas técnicas são instrumentos fundamentais para a qualidade e a confiabilidade da produção científica", autor: "SANTOS", ano: "2022", pagina: "45").
 
 
 // ----------------------------------------------------------------------------
@@ -484,7 +484,7 @@ A literatura especializada destaca que #citacao-curta("as normas técnicas são 
 
 A importância da normalização para a comunicação científica é amplamente reconhecida na literatura:
 
-#citacao-longa(author: "SILVA", year: "2023", page: "42")[
+#citacao-longa(autor: "SILVA", ano: "2023", pagina: "42")[
   A formatação adequada dos trabalhos acadêmicos é essencial para a clareza e a credibilidade da comunicação científica. As normas técnicas estabelecem padrões que facilitam a leitura e a compreensão dos textos, além de permitir a verificação das fontes consultadas. Sem essa padronização, cada instituição ou publicação adotaria critérios próprios, dificultando o intercâmbio de conhecimentos entre diferentes comunidades acadêmicas.
 ]
 
@@ -499,7 +499,7 @@ A importância da normalização para a comunicação científica é amplamente 
 Oliveira (1998 apud SANTOS, 2022, p. 78) já destacava a importância da padronização documental. O uso do apud indica que você está citando um autor (Oliveira) através de outro (Santos), pois não teve acesso direto à obra original.
 
 // Usando a função citar-apud:
-Essa perspectiva histórica demonstra que a preocupação com normas técnicas não é recente #citar-apud("OLIVEIRA", "1998", "SANTOS", "2022", page: "78").
+Essa perspectiva histórica demonstra que a preocupação com normas técnicas não é recente #citar-apud("OLIVEIRA", "1998", "SANTOS", "2022", pagina: "78").
 
 
 // ----------------------------------------------------------------------------
@@ -511,7 +511,7 @@ Essa perspectiva histórica demonstra que a preocupação com normas técnicas n
 
 === Elementos Especiais em Citações
 
-Quando necessário suprimir parte de uma citação, use reticências entre colchetes [...]. Por exemplo: #citacao-curta("A normalização [...] é essencial para a ciência", author: "SILVA", year: "2023", page: "50").
+Quando necessário suprimir parte de uma citação, use reticências entre colchetes [...]. Por exemplo: #citacao-curta("A normalização [...] é essencial para a ciência", autor: "SILVA", ano: "2023", pagina: "50").
 
 // DICA: O pacote oferece funções auxiliares:
 // #supressao - produz [...]
@@ -963,7 +963,7 @@ ERRO: Numeração de páginas incorreta
 SOLUÇÃO: Verifique se #counter(page).update(1) está antes da Introdução.
 
 ERRO: Fonte não encontrada
-SOLUÇÃO: Instale Times New Roman ou use font: "Arial" no template.
+SOLUÇÃO: Instale Times New Roman ou use fonte: "Arial" no template.
 
 ERRO: Referências não aparecem
 SOLUÇÃO: Use referências manuais ou verifique se o arquivo .bib existe.
@@ -975,7 +975,7 @@ SOLUÇÃO: Use referências manuais ou verifique se o arquivo .bib existe.
 
 // USAR FONTE ARIAL:
 #show: abntcc.with(
-  font: "Arial",
+  fonte: "Arial",
   // ... outros parâmetros
 )
 

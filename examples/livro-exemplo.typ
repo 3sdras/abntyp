@@ -30,16 +30,16 @@
 
 // Configuração do documento usando o template book
 #show: livro.with(
-  title: "Fundamentos de Programação",
-  subtitle: "Uma Abordagem Prática",
-  author: "Prof. Dr. Ricardo Mendes Silva",
-  publisher: "Editora Universitária",
-  location: "São Paulo",
-  year: 2026,
-  edition: 2,
+  titulo: "Fundamentos de Programação",
+  subtitulo: "Uma Abordagem Prática",
+  autor: "Prof. Dr. Ricardo Mendes Silva",
+  editora: "Editora Universitária",
+  local: "São Paulo",
+  ano: 2026,
+  edicao: 2,
   isbn: "978-65-00000-00-0",
-  font: "Times New Roman",
-  running-header: "Fundamentos de Programação",
+  fonte: "Times New Roman",
+  cabecalho: "Fundamentos de Programação",
 )
 
 // ============================================================================
@@ -48,19 +48,19 @@
 
 // Primeira capa
 #book-cover(
-  author: "Prof. Dr. Ricardo Mendes Silva",
-  title: "Fundamentos de Programação",
-  subtitle: "Uma Abordagem Prática",
-  publisher: "Editora Universitária",
-  edition: 2,
-  location: "São Paulo",
-  year: 2026,
+  autor: "Prof. Dr. Ricardo Mendes Silva",
+  titulo: "Fundamentos de Programação",
+  subtitulo: "Uma Abordagem Prática",
+  editora: "Editora Universitária",
+  edicao: 2,
+  local: "São Paulo",
+  ano: 2026,
 )
 
 // Quarta capa (contracapa)
 #book-back-cover(
   isbn: "978-65-00000-00-0",
-  summary: [
+  resumo: [
     *Fundamentos de Programação: Uma Abordagem Prática* é um livro didático destinado a estudantes de cursos superiores de Computação, Engenharia e áreas afins que estão iniciando seus estudos em programação.
 
     Com linguagem clara e exemplos práticos, esta segunda edição atualizada aborda os conceitos essenciais da programação de computadores, incluindo algoritmos, estruturas de dados básicas, funções e tratamento de erros. Todos os exemplos são apresentados em Python 3.12, uma das linguagens mais utilizadas no ensino e na indústria.
@@ -74,7 +74,7 @@
     *Sobre o autor:*
     Ricardo Mendes Silva é Doutor em Ciência da Computação pela Universidade de São Paulo e Professor Titular da Universidade Federal de Exemplo. Possui mais de 20 anos de experiência no ensino de programação e é autor de diversos livros na área.
   ],
-  publisher-address: [
+  endereco-editora: [
     *Editora Universitária*
 
     Rua das Publicações, 500 -- Centro
@@ -92,32 +92,32 @@
 // ============================================================================
 
 // Falsa folha de rosto
-#half-title-page(title: "Fundamentos de Programação")
+#half-title-page(titulo: "Fundamentos de Programação")
 
 // Folha de rosto - anverso
 #book-title-page(
-  author: "Prof. Dr. Ricardo Mendes Silva",
-  title: "Fundamentos de Programação",
-  subtitle: "Uma Abordagem Prática",
-  collaborators: [
+  autor: "Prof. Dr. Ricardo Mendes Silva",
+  titulo: "Fundamentos de Programação",
+  subtitulo: "Uma Abordagem Prática",
+  colaboradores: [
     Revisão técnica: Profa. Dra. Ana Paula Ferreira
 
     Ilustrações: Carlos Eduardo Martins
   ],
-  edition: 2,
-  publisher: "Editora Universitária",
-  location: "São Paulo",
-  year: 2026,
+  edicao: 2,
+  editora: "Editora Universitária",
+  local: "São Paulo",
+  ano: 2026,
 )
 
 // Folha de rosto - verso
 #book-title-page-verso(
-  copyright-year: 2026,
-  copyright-holder: "Ricardo Mendes Silva",
-  reproduction-rights: [
+  ano-copyright: 2026,
+  detentor-copyright: "Ricardo Mendes Silva",
+  direitos-reproducao: [
     Todos os direitos reservados. É proibida a reprodução total ou parcial desta obra sem autorização prévia e por escrito do autor e da editora.
   ],
-  credits: [
+  creditos: [
     *Coordenação editorial:* Maria Helena Santos
 
     *Revisão:* João Carlos Andrade
@@ -132,7 +132,7 @@
 
     Dados Internacionais de Catalogação na Publicação (CIP)
   ],
-  catalog-card: [
+  ficha-catalografica: [
     #set text(size: 9pt)
     #set par(leading: 0.8em)
     Silva, Ricardo Mendes
@@ -147,8 +147,8 @@
 
     #align(right)[CDD 005.133]
   ],
-  librarian: "Bibliotecária responsável: Ana Maria Costa -- CRB-8/12345",
-  publisher-info: [
+  bibliotecario: "Bibliotecária responsável: Ana Maria Costa -- CRB-8/12345",
+  dados-editora: [
     Editora Universitária Ltda.
 
     Rua das Publicações, 500 -- Centro -- São Paulo/SP -- CEP 01000-000
@@ -200,10 +200,10 @@
 ))
 
 // Sumário
-#book-toc(depth: 3)
+#book-toc(profundidade: 3)
 
 // Prefácio
-#book-preface(title: "PREFÁCIO À SEGUNDA EDIÇÃO")[
+#book-preface(titulo: "PREFÁCIO À SEGUNDA EDIÇÃO")[
   É com grande satisfação que apresento a segunda edição de *Fundamentos de Programação: Uma Abordagem Prática*. Desde a publicação da primeira edição em 2022, o livro tem sido adotado em dezenas de instituições de ensino superior em todo o Brasil, e o feedback dos professores e estudantes foi fundamental para esta nova versão.
 
   Esta edição traz atualizações importantes: todos os exemplos foram revisados para Python 3.12, novos exercícios práticos foram adicionados ao final de cada capítulo, e um novo capítulo sobre boas práticas de programação foi incluído. Além disso, o material de apoio online foi expandido com videoaulas e exercícios interativos.
@@ -421,7 +421,7 @@ RAMALHO, Luciano. *Python Fluente*. 2. ed. São Paulo: Novatec, 2023.
 ))
 
 // Apêndice
-#book-appendix(letter: "A", title: "INSTALAÇÃO DO PYTHON")[
+#book-appendix(letra: "A", titulo: "INSTALAÇÃO DO PYTHON")[
   == Windows
 
   + Acesse python.org/downloads
@@ -444,7 +444,7 @@ RAMALHO, Luciano. *Python Fluente*. 2. ed. São Paulo: Novatec, 2023.
   ```
 ]
 
-#book-appendix(letter: "B", title: "TABELA ASCII")[
+#book-appendix(letra: "B", titulo: "TABELA ASCII")[
   A tabela ASCII (American Standard Code for Information Interchange) define a correspondência entre caracteres e valores numéricos.
 
   #figure(

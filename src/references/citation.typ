@@ -25,56 +25,56 @@
 // Para sistema numerico, ver: numeric.typ
 
 /// Formata citação autor-data
-/// - author: sobrenome do autor
-/// - year: ano da publicação
-/// - page: página (opcional)
-#let citar(author, year, page: none) = {
-  [(#upper(author), #year#if page != none [, p. #page])]
+/// - autor: sobrenome do autor
+/// - ano: ano da publicação
+/// - pagina: página (opcional)
+#let citar(autor, ano, pagina: none) = {
+  [(#upper(autor), #ano#if pagina != none [, p. #pagina])]
 }
 
 /// Citação com autor no texto
 /// "Segundo Silva (2023)..."
-#let citar-autor(author, year) = {
-  [#author (#year)]
+#let citar-autor(autor, ano) = {
+  [#autor (#ano)]
 }
 
 /// Citação indireta (parafraseada)
 /// Apenas menciona o autor e ano
-#let citar-indireto(author, year) = {
-  [(#upper(author), #year)]
+#let citar-indireto(autor, ano) = {
+  [(#upper(autor), #ano)]
 }
 
 /// Citação de citação (apud)
 /// Autor original apud autor da obra consultada
 #let citar-apud(
-  original-author,
-  original-year,
-  secondary-author,
-  secondary-year,
-  page: none,
+  autor-original,
+  ano-original,
+  autor-secundario,
+  ano-secundario,
+  pagina: none,
 ) = {
-  [(#upper(original-author), #original-year apud #upper(secondary-author), #secondary-year#if page != none [, p. #page])]
+  [(#upper(autor-original), #ano-original apud #upper(autor-secundario), #ano-secundario#if pagina != none [, p. #pagina])]
 }
 
 /// Citação com múltiplos autores (até 3)
-#let citar-multiplos(authors, year, page: none) = {
-  let formatted = authors.map(a => upper(a)).join("; ")
-  [(#formatted, #year#if page != none [, p. #page])]
+#let citar-multiplos(autores, ano, pagina: none) = {
+  let formatted = autores.map(a => upper(a)).join("; ")
+  [(#formatted, #ano#if pagina != none [, p. #pagina])]
 }
 
 /// Citação com mais de 3 autores (et al.)
-#let citar-etal(first-author, year, page: none) = {
-  [(#upper(first-author) et al., #year#if page != none [, p. #page])]
+#let citar-etal(primeiro-autor, ano, pagina: none) = {
+  [(#upper(primeiro-autor) et al., #ano#if pagina != none [, p. #pagina])]
 }
 
 /// Citação de entidade coletiva
-#let citar-entidade(entity, year, page: none) = {
-  [(#upper(entity), #year#if page != none [, p. #page])]
+#let citar-entidade(entidade, ano, pagina: none) = {
+  [(#upper(entidade), #ano#if pagina != none [, p. #pagina])]
 }
 
 /// Citação de obra sem autoria
-#let citar-titulo(title, year, page: none) = {
-  [(#upper(title), #year#if page != none [, p. #page])]
+#let citar-titulo(titulo, ano, pagina: none) = {
+  [(#upper(titulo), #ano#if pagina != none [, p. #pagina])]
 }
 
 /// Título da seção de referências
@@ -87,76 +87,76 @@
 
 /// Formata referência de livro
 #let ref-livro(
-  author: none,
-  title: none,
-  subtitle: none,
-  edition: none,
-  location: none,
-  publisher: none,
-  year: none,
+  autor: none,
+  titulo: none,
+  subtitulo: none,
+  edicao: none,
+  local: none,
+  editora: none,
+  ano: none,
 ) = {
   set par(
     hanging-indent: 1.25cm,
     first-line-indent: 0pt,
   )
 
-  if author != none { upper(author); [. ] }
-  if title != none { strong(title) }
-  if subtitle != none { [: #subtitle] }
+  if autor != none { upper(autor); [. ] }
+  if titulo != none { strong(titulo) }
+  if subtitulo != none { [: #subtitulo] }
   [. ]
-  if edition != none { [#edition. ed. ] }
-  if location != none { [#location: ] }
-  if publisher != none { publisher }
-  if year != none { [, #year.] }
+  if edicao != none { [#edicao. ed. ] }
+  if local != none { [#local: ] }
+  if editora != none { editora }
+  if ano != none { [, #ano.] }
 }
 
 /// Formata referência de artigo de periódico
 #let ref-artigo(
-  author: none,
-  title: none,
-  journal: none,
-  location: none,
+  autor: none,
+  titulo: none,
+  revista: none,
+  local: none,
   volume: none,
-  number: none,
-  pages: none,
-  month: none,
-  year: none,
+  numero: none,
+  paginas: none,
+  mes: none,
+  ano: none,
 ) = {
   set par(
     hanging-indent: 1.25cm,
     first-line-indent: 0pt,
   )
 
-  if author != none { upper(author); [. ] }
-  if title != none { [#title. ] }
-  if journal != none { strong(journal) }
-  if location != none { [, #location] }
+  if autor != none { upper(autor); [. ] }
+  if titulo != none { [#titulo. ] }
+  if revista != none { strong(revista) }
+  if local != none { [, #local] }
   if volume != none { [, v. #volume] }
-  if number != none { [, n. #number] }
-  if pages != none { [, p. #pages] }
-  if month != none { [, #month] }
-  if year != none { [. #year.] }
+  if numero != none { [, n. #numero] }
+  if paginas != none { [, p. #paginas] }
+  if mes != none { [, #mes] }
+  if ano != none { [. #ano.] }
 }
 
 /// Formata referência de documento eletrônico
 #let ref-online(
-  author: none,
-  title: none,
+  autor: none,
+  titulo: none,
   site: none,
-  year: none,
+  ano: none,
   url: none,
-  access-date: none,
+  data-acesso: none,
 ) = {
   set par(
     hanging-indent: 1.25cm,
     first-line-indent: 0pt,
   )
 
-  if author != none { upper(author); [. ] }
-  if title != none { strong(title); [. ] }
+  if autor != none { upper(autor); [. ] }
+  if titulo != none { strong(titulo); [. ] }
   if site != none { [#site, ] }
-  if year != none { year }
+  if ano != none { ano }
   [. ]
   if url != none { [Disponível em: #url. ] }
-  if access-date != none { [Acesso em: #access-date.] }
+  if data-acesso != none { [Acesso em: #data-acesso.] }
 }

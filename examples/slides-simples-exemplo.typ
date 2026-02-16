@@ -16,15 +16,15 @@
 
 // Template simples para apresentacao academica
 #show: slides.with(
-  title: "Introducao ao Machine Learning",
-  subtitle: "Conceitos Fundamentais",
-  author: "Prof. Dr. Carlos Eduardo Silva",
-  institution: "Universidade Federal de Exemplo",
-  department: "Departamento de Ciencia da Computacao",
-  date: datetime(year: 2025, month: 8, day: 20),
-  aspect-ratio: "16-9",
-  primary-color: cores-clean.primary,
-  secondary-color: cores-clean.secondary,
+  titulo: "Introducao ao Machine Learning",
+  subtitulo: "Conceitos Fundamentais",
+  autor: "Prof. Dr. Carlos Eduardo Silva",
+  instituicao: "Universidade Federal de Exemplo",
+  departamento: "Departamento de Ciencia da Computacao",
+  data: datetime(year: 2025, month: 8, day: 20),
+  proporcao: "16-9",
+  cor-primaria: cores-clean.primary,
+  cor-secundaria: cores-clean.secondary,
 )
 
 // ============================================================================
@@ -32,8 +32,8 @@
 // ============================================================================
 
 #slide-sumario(
-  title: "Roteiro",
-  items: (
+  titulo: "Roteiro",
+  itens: (
     "O que e Machine Learning?",
     "Tipos de Aprendizado",
     "Aplicacoes Praticas",
@@ -65,9 +65,9 @@
 == Tipos de Aprendizado
 
 #slide-comparativo(
-  title: "",
-  left-title: "Supervisionado",
-  left-content: [
+  titulo: "",
+  titulo-esquerda: "Supervisionado",
+  conteudo-esquerda: [
     Dados rotulados
 
     - Classificacao
@@ -75,8 +75,8 @@
 
     _Exemplo: Spam vs. Nao-spam_
   ],
-  right-title: "Nao Supervisionado",
-  right-content: [
+  titulo-direita: "Nao Supervisionado",
+  conteudo-direita: [
     Dados sem rotulos
 
     - Clustering
@@ -112,8 +112,8 @@ O algoritmo ajusta os coeficientes para minimizar o erro quadratico medio (MSE).
 // Citacao formatada conforme NBR 10520:2023
 #slide-citacao(
   quote: "Machine learning is the field of study that gives computers the ability to learn without being explicitly programmed.",
-  author: "Samuel",
-  year: "1959",
+  autor: "Samuel",
+  ano: "1959",
 )
 
 == Aplicacoes Praticas
@@ -148,8 +148,8 @@ O algoritmo ajusta os coeficientes para minimizar o erro quadratico medio (MSE).
 )
 
 #slide-resultado-numerico(
-  title: "ML em Numeros",
-  items: (
+  titulo: "ML em Numeros",
+  itens: (
     ("$15.7 tri", "Mercado global de IA em 2030"),
     ("77%", "Empresas usando ou explorando IA"),
     ("2.3M", "Empregos em IA/ML ate 2025"),
@@ -196,7 +196,7 @@ O algoritmo ajusta os coeficientes para minimizar o erro quadratico medio (MSE).
 // ============================================================================
 
 #slide-referencias(
-  items: (
+  itens: (
     [MITCHELL, T. M. *Machine Learning*. New York: McGraw-Hill, 1997.],
     [SAMUEL, A. L. Some studies in machine learning using the game of checkers. *IBM Journal of Research and Development*, v. 3, n. 3, p. 210-229, 1959.],
     [GERON, A. *Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow*. 2. ed. Sebastopol: O'Reilly Media, 2019.],

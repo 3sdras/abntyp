@@ -20,18 +20,18 @@
 
 // Configuração do documento usando o template periodical
 #show: periodical.with(
-  title: "Revista Brasileira de Tecnologia e Inovação",
-  subtitle: "Brazilian Journal of Technology and Innovation",
+  titulo: "Revista Brasileira de Tecnologia e Inovação",
+  subtitulo: "Brazilian Journal of Technology and Innovation",
   issn: "2965-0000",
   volume: 8,
-  number: 2,
-  year: 2026,
-  month-start: 5,  // maio
-  month-end: 8,    // agosto
-  location: "Cidade",
-  publisher: "Editora Universitária",
-  institution: "Universidade Federal de Exemplo",
-  font: "Times New Roman",
+  numero: 2,
+  ano: 2026,
+  mes-inicio: 5,  // maio
+  mes-fim: 8,    // agosto
+  local: "Cidade",
+  editora: "Editora Universitária",
+  instituicao: "Universidade Federal de Exemplo",
+  fonte: "Times New Roman",
 )
 
 // ============================================================================
@@ -40,37 +40,37 @@
 
 // Capa do fascículo
 #periodical-cover(
-  title: "Revista Brasileira de Tecnologia e Inovação",
-  subtitle: "Brazilian Journal of Technology and Innovation",
+  titulo: "Revista Brasileira de Tecnologia e Inovação",
+  subtitulo: "Brazilian Journal of Technology and Innovation",
   issn: "2965-0000",
   volume: 8,
-  number: 2,
-  year: 2026,
-  month-start: 5,
-  month-end: 8,
+  numero: 2,
+  ano: 2026,
+  mes-inicio: 5,
+  mes-fim: 8,
 )
 
 // Folha de rosto - anverso
 #periodical-title-page(
-  title: "Revista Brasileira de Tecnologia e Inovação",
+  titulo: "Revista Brasileira de Tecnologia e Inovação",
   issn: "2965-0000",
   volume: 8,
-  number: 2,
-  pages: "1-180",
-  year: 2026,
-  month-start: 5,
-  month-end: 8,
-  location: "Cidade",
+  numero: 2,
+  paginas: "1-180",
+  ano: 2026,
+  mes-inicio: 5,
+  mes-fim: 8,
+  local: "Cidade",
 )
 
 // Folha de rosto - verso (expediente)
 #periodical-title-page-verso(
-  copyright-year: 2026,
-  copyright-holder: "Universidade Federal de Exemplo",
-  reproduction-rights: [
+  ano-copyright: 2026,
+  detentor-copyright: "Universidade Federal de Exemplo",
+  direitos-reproducao: [
     É permitida a reprodução parcial ou total desta obra, desde que citada a fonte e que não seja para venda ou qualquer fim comercial.
   ],
-  credits: [
+  creditos: [
     *CORPO EDITORIAL*
 
     *Editor-Chefe*
@@ -107,7 +107,7 @@
 
     *Indexação:* Latindex, DOAJ, Redalyc, Google Scholar
   ],
-  cataloging: [
+  catalogacao: [
     #set text(size: 9pt)
     Revista Brasileira de Tecnologia e Inovação / Universidade Federal de Exemplo. -- v. 1, n. 1 (2019)- . -- Cidade: Editora Universitária, 2019-
 
@@ -152,19 +152,19 @@
 // Artigo 1
 #pagebreak()
 #periodical-article(
-  title: "Detecção de Anomalias em Sistemas Industriais utilizando Aprendizado de Máquina",
-  authors: (
+  titulo: "Detecção de Anomalias em Sistemas Industriais utilizando Aprendizado de Máquina",
+  autores: (
     (name: "André Luiz Pereira", affiliation: "Doutor em Engenharia de Produção, Professor Adjunto da Universidade Federal de Exemplo. E-mail: andre.pereira@ufe.edu.br"),
     (name: "Juliana Costa Ribeiro", affiliation: "Mestranda em Ciência da Computação, Universidade Federal de Exemplo. E-mail: juliana.ribeiro@ufe.edu.br"),
   ),
-  abstract-pt: [
+  resumo: [
     Este artigo apresenta uma abordagem baseada em aprendizado de máquina para detecção de anomalias em sistemas industriais no contexto da Indústria 4.0. O método proposto utiliza uma combinação de autoencoders e redes LSTM para identificar padrões anômalos em séries temporais de sensores. Os experimentos foram realizados com dados reais de uma planta industrial do setor petroquímico, alcançando taxa de detecção de 94,7% com apenas 2,3% de falsos positivos. Os resultados demonstram que a abordagem proposta supera métodos estatísticos tradicionais e pode ser integrada a sistemas de manutenção preditiva.
   ],
-  keywords-pt: ("Detecção de anomalias", "Aprendizado de máquina", "Indústria 4.0", "Manutenção preditiva", "Séries temporais"),
-  abstract-en: [
+  palavras-chave: ("Detecção de anomalias", "Aprendizado de máquina", "Indústria 4.0", "Manutenção preditiva", "Séries temporais"),
+  resumo-en: [
     This paper presents a machine learning approach for anomaly detection in industrial systems in the context of Industry 4.0. The proposed method uses a combination of autoencoders and LSTM networks to identify anomalous patterns in sensor time series. Experiments were conducted with real data from a petrochemical plant, achieving a detection rate of 94.7% with only 2.3% false positives. The results demonstrate that the proposed approach outperforms traditional statistical methods and can be integrated into predictive maintenance systems.
   ],
-  keywords-en: ("Anomaly detection", "Machine learning", "Industry 4.0", "Predictive maintenance", "Time series"),
+  palavras-chave-en: ("Anomaly detection", "Machine learning", "Industry 4.0", "Predictive maintenance", "Time series"),
 )[
   = Introdução
 
@@ -212,20 +212,20 @@
 // Artigo 2
 #pagebreak()
 #periodical-article(
-  title: "Práticas de DevOps em Empresas Brasileiras de Desenvolvimento de Software",
-  authors: (
+  titulo: "Práticas de DevOps em Empresas Brasileiras de Desenvolvimento de Software",
+  autores: (
     (name: "Marcos Vinícius Santos", affiliation: "Doutorando em Engenharia de Software, Universidade Estadual de Modelo. E-mail: marcos.santos@uem.edu.br"),
     (name: "Fernanda Cristina Lima", affiliation: "Professora Associada, Departamento de Computação, Universidade Estadual de Modelo. E-mail: fernanda.lima@uem.edu.br"),
     (name: "Paulo Roberto Oliveira", affiliation: "Professor Titular, Departamento de Computação, Universidade Estadual de Modelo. E-mail: paulo.oliveira@uem.edu.br"),
   ),
-  abstract-pt: [
+  resumo: [
     Este artigo investiga a adoção de práticas DevOps em empresas brasileiras de desenvolvimento de software. Foi conduzido um survey com 247 profissionais de 89 organizações de diferentes portes e setores. Os resultados indicam que 68% das empresas participantes adotam pelo menos parcialmente práticas DevOps, com destaque para integração contínua (82%), controle de versão (95%) e containerização (61%). Os principais benefícios reportados incluem redução no tempo de entrega, melhoria na qualidade do software e maior colaboração entre equipes. As barreiras mais citadas foram resistência cultural, falta de habilidades técnicas e complexidade de ferramentas. O estudo contribui para a compreensão do estado atual da adoção de DevOps no contexto brasileiro.
   ],
-  keywords-pt: ("DevOps", "Engenharia de software", "Práticas ágeis", "Integração contínua", "Survey"),
-  abstract-en: [
+  palavras-chave: ("DevOps", "Engenharia de software", "Práticas ágeis", "Integração contínua", "Survey"),
+  resumo-en: [
     This paper investigates the adoption of DevOps practices in Brazilian software development companies. A survey was conducted with 247 professionals from 89 organizations of different sizes and sectors. Results indicate that 68% of participating companies at least partially adopt DevOps practices, with emphasis on continuous integration (82%), version control (95%), and containerization (61%). The main reported benefits include reduced delivery time, improved software quality, and greater collaboration between teams. The most cited barriers were cultural resistance, lack of technical skills, and tool complexity. The study contributes to understanding the current state of DevOps adoption in the Brazilian context.
   ],
-  keywords-en: ("DevOps", "Software engineering", "Agile practices", "Continuous integration", "Survey"),
+  palavras-chave-en: ("DevOps", "Software engineering", "Agile practices", "Continuous integration", "Survey"),
 )[
   = Introdução
 
@@ -283,19 +283,19 @@
 // Artigo 3
 #pagebreak()
 #periodical-article(
-  title: "Impacto de Interfaces Conversacionais na Experiência do Usuário em Aplicativos Bancários",
-  authors: (
+  titulo: "Impacto de Interfaces Conversacionais na Experiência do Usuário em Aplicativos Bancários",
+  autores: (
     (name: "Carolina Beatriz Mendes", affiliation: "Mestre em Design de Interação, Pesquisadora na Universidade Federal de Exemplo. E-mail: carolina.mendes@ufe.edu.br"),
     (name: "Roberto Carlos Ferreira", affiliation: "Doutor em Ciência da Computação, Professor Associado da Universidade Federal de Exemplo. E-mail: roberto.ferreira@ufe.edu.br"),
   ),
-  abstract-pt: [
+  resumo: [
     Este artigo investiga o impacto de interfaces conversacionais (chatbots) na experiência do usuário em aplicativos bancários móveis. Um estudo experimental com 120 participantes comparou a realização de tarefas bancárias comuns utilizando interface tradicional (menus e botões) versus interface conversacional. Os resultados indicam que a interface conversacional apresentou maior satisfação percebida (4,2 vs 3,6 na escala SUS) e menor carga cognitiva, especialmente para tarefas complexas como consulta de extratos e contestação de transações. Entretanto, a interface tradicional mostrou-se superior para tarefas simples e frequentes, como transferências. Recomenda-se a adoção de interfaces híbridas que permitam ao usuário escolher o modo de interação conforme o contexto da tarefa.
   ],
-  keywords-pt: ("Chatbot", "Experiência do usuário", "Interface conversacional", "Mobile banking", "Usabilidade"),
-  abstract-en: [
+  palavras-chave: ("Chatbot", "Experiência do usuário", "Interface conversacional", "Mobile banking", "Usabilidade"),
+  resumo-en: [
     This paper investigates the impact of conversational interfaces (chatbots) on user experience in mobile banking applications. An experimental study with 120 participants compared common banking tasks using traditional interface (menus and buttons) versus conversational interface. Results indicate that the conversational interface showed higher perceived satisfaction (4.2 vs 3.6 on SUS scale) and lower cognitive load, especially for complex tasks such as statement queries and transaction disputes. However, the traditional interface proved superior for simple and frequent tasks such as transfers. Hybrid interfaces that allow users to choose the interaction mode according to task context are recommended.
   ],
-  keywords-en: ("Chatbot", "User experience", "Conversational interface", "Mobile banking", "Usability"),
+  palavras-chave-en: ("Chatbot", "User experience", "Conversational interface", "Mobile banking", "Usability"),
 )[
   = Introdução
 

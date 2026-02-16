@@ -27,32 +27,32 @@ Coloque a pasta `abntypst` no seu projeto e importe:
 
 ```typst
 #show: abntcc.with(
-  title: "Título",
-  author: "Seu Nome",
-  institution: "Universidade",
-  location: "Cidade",
-  year: 2026,
-  advisor: "Prof. Dr. Nome",
+  titulo: "Título",
+  autor: "Seu Nome",
+  instituicao: "Universidade",
+  local: "Cidade",
+  ano: 2026,
+  orientador: "Prof. Dr. Nome",
 )
 
 #capa(
-  institution: "Universidade",
-  author: "Seu Nome",
-  title: "Título",
-  location: "Cidade",
-  year: 2026,
+  instituicao: "Universidade",
+  autor: "Seu Nome",
+  titulo: "Título",
+  local: "Cidade",
+  ano: 2026,
 )
 
 #folha-rosto(
-  author: "Seu Nome",
-  title: "Título",
-  nature: "Dissertação...",
-  advisor: "Prof. Dr. Nome",
-  location: "Cidade",
-  year: 2026,
+  autor: "Seu Nome",
+  titulo: "Título",
+  natureza: "Dissertação...",
+  orientador: "Prof. Dr. Nome",
+  local: "Cidade",
+  ano: 2026,
 )
 
-#resumo(keywords: ("A", "B"))[
+#resumo(palavras-chave: ("A", "B"))[
   Texto do resumo...
 ]
 
@@ -83,16 +83,16 @@ Texto...
 ```typst
 Conforme o autor,
 #citacao-curta("texto",
-  author: "SILVA",
-  year: "2023",
-  page: "42").
+  autor: "SILVA",
+  ano: "2023",
+  pagina: "42").
 ```
 
 *Citação longa (mais de 3 linhas):*
 ```typst
 #citacao-longa(
-  author: "SILVA",
-  year: "2023",
+  autor: "SILVA",
+  ano: "2023",
 )[
   Texto longo da citação
   com mais de três linhas...
@@ -105,10 +105,14 @@ Conforme o autor,
 Segundo #citar-autor("Silva", "2023")
 
 // Entre parênteses
-#citar("SILVA", "2023", page: "42")
+#citar("SILVA", "2023", pagina: "42")
 ```
 
-== Figuras
+== Figuras, tabelas e quadros
+
+A função `#figure()` é nativa do Typst e serve como contêiner genérico para qualquer elemento com título e numeração --- figuras, tabelas, quadros, etc. O parâmetro `kind` diferencia o tipo.
+
+=== Figura
 
 ```typst
 #figure(
@@ -118,7 +122,7 @@ Segundo #citar-autor("Silva", "2023")
 #fonte[Elaborado pelo autor.]
 ```
 
-== Tabelas (IBGE)
+=== Tabela (padrão IBGE)
 
 ```typst
 #figure(
@@ -185,7 +189,7 @@ São Paulo: Editora, 2023.
 *Fonte Arial:*
 ```typst
 #show: abntcc.with(
-  font: "Arial",
+  fonte: "Arial",
   // ...
 )
 ```

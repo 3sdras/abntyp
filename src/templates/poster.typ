@@ -18,57 +18,57 @@
 /// Template principal para Poster Cientifico conforme NBR 15437:2006
 ///
 /// Parametros:
-/// - title: titulo do poster (obrigatorio)
-/// - subtitle: subtitulo (opcional)
-/// - authors: lista de autores (nome e afiliacao)
-/// - institution: instituicao principal
-/// - contact: informacoes de contato (email, endereco)
-/// - abstract-text: resumo (ate 100 palavras)
-/// - keywords: palavras-chave
-/// - num-columns: numero de colunas para o conteudo (padrao: 3)
-/// - width: largura do poster (padrao: 90cm)
-/// - height: altura do poster (padrao: 120cm)
-/// - font: fonte a usar
-/// - title-size: tamanho da fonte do titulo (padrao: 72pt)
-/// - body-size: tamanho da fonte do corpo (padrao: 24pt)
-/// - background: cor de fundo (opcional)
-/// - accent-color: cor de destaque (opcional)
+/// - titulo: titulo do poster (obrigatorio)
+/// - subtitulo: subtitulo (opcional)
+/// - autores: lista de autores (nome e afiliacao)
+/// - instituicao: instituicao principal
+/// - contato: informacoes de contato (email, endereco)
+/// - texto-resumo: resumo (ate 100 palavras)
+/// - palavras-chave: palavras-chave
+/// - num-colunas: numero de colunas para o conteudo (padrao: 3)
+/// - largura: largura do poster (padrao: 90cm)
+/// - altura: altura do poster (padrao: 120cm)
+/// - fonte: fonte a usar
+/// - tamanho-titulo: tamanho da fonte do titulo (padrao: 72pt)
+/// - tamanho-corpo: tamanho da fonte do corpo (padrao: 24pt)
+/// - fundo: cor de fundo (opcional)
+/// - cor-destaque: cor de destaque (opcional)
 #let poster(
-  title: "",
-  subtitle: none,
-  authors: (),
-  institution: none,
-  contact: none,
-  abstract-text: none,
-  keywords: (),
-  num-columns: 3,
-  width: 90cm,
-  height: 120cm,
-  font: "Arial",
-  title-size: 72pt,
-  body-size: 24pt,
-  background: white,
-  accent-color: rgb("#003366"),
+  titulo: "",
+  subtitulo: none,
+  autores: (),
+  instituicao: none,
+  contato: none,
+  texto-resumo: none,
+  palavras-chave: (),
+  num-colunas: 3,
+  largura: 90cm,
+  altura: 120cm,
+  fonte: "Arial",
+  tamanho-titulo: 72pt,
+  tamanho-corpo: 24pt,
+  fundo: white,
+  cor-destaque: rgb("#003366"),
   body,
 ) = {
   // Configuracao do documento
   set document(
-    title: title,
-    author: authors.map(a => if type(a) == dictionary { a.name } else { a }).join(", "),
+    title: titulo,
+    author: autores.map(a => if type(a) == dictionary { a.name } else { a }).join(", "),
   )
 
   // Configuracao de pagina para poster
   set page(
-    width: width,
-    height: height,
+    width: largura,
+    height: altura,
     margin: 2cm,
-    fill: background,
+    fill: fundo,
   )
 
   // Configuracao de fonte
   set text(
-    font: font,
-    size: body-size,
+    font: fonte,
+    size: tamanho-corpo,
     lang: "pt",
     region: "BR",
   )
@@ -85,8 +85,8 @@
     v(0.5em)
     text(
       weight: "bold",
-      size: body-size * 1.5,
-      fill: accent-color,
+      size: tamanho-corpo * 1.5,
+      fill: cor-destaque,
       upper(it.body),
     )
     v(0.5em)
@@ -96,7 +96,7 @@
     v(0.3em)
     text(
       weight: "bold",
-      size: body-size * 1.2,
+      size: tamanho-corpo * 1.2,
       it.body,
     )
     v(0.3em)
@@ -107,34 +107,34 @@
     // Titulo
     #text(
       weight: "bold",
-      size: title-size,
-      fill: accent-color,
-      upper(title),
+      size: tamanho-titulo,
+      fill: cor-destaque,
+      upper(titulo),
     )
 
     // Subtitulo
-    #if subtitle != none {
+    #if subtitulo != none {
       linebreak()
       text(
-        size: title-size * 0.6,
-        ": " + subtitle,
+        size: tamanho-titulo * 0.6,
+        ": " + subtitulo,
       )
     }
 
     #v(1cm)
 
     // Autores
-    #if authors.len() > 0 {
-      text(size: body-size * 1.3)[
-        #for (i, author) in authors.enumerate() {
+    #if autores.len() > 0 {
+      text(size: tamanho-corpo * 1.3)[
+        #for (i, autor) in autores.enumerate() {
           if i > 0 { [, ] }
-          if type(author) == dictionary {
-            text(weight: "bold", author.name)
-            if "affiliation" in author {
+          if type(autor) == dictionary {
+            text(weight: "bold", autor.name)
+            if "affiliation" in autor {
               super(str(i + 1))
             }
           } else {
-            text(weight: "bold", author)
+            text(weight: "bold", autor)
           }
         }
       ]
@@ -142,11 +142,11 @@
 
       // Afiliacoes
       v(0.5cm)
-      text(size: body-size * 0.9)[
-        #for (i, author) in authors.enumerate() {
-          if type(author) == dictionary and "affiliation" in author {
+      text(size: tamanho-corpo * 0.9)[
+        #for (i, autor) in autores.enumerate() {
+          if type(autor) == dictionary and "affiliation" in autor {
             super(str(i + 1))
-            author.affiliation
+            autor.affiliation
             linebreak()
           }
         }
@@ -154,70 +154,70 @@
     }
 
     // Instituicao principal
-    #if institution != none {
+    #if instituicao != none {
       v(0.3cm)
-      text(size: body-size, institution)
+      text(size: tamanho-corpo, instituicao)
     }
 
     // Contato
-    #if contact != none {
+    #if contato != none {
       linebreak()
-      text(size: body-size * 0.8, contact)
+      text(size: tamanho-corpo * 0.8, contato)
     }
   ]
 
   v(1cm)
 
   // Linha divisoria
-  line(length: 100%, stroke: 2pt + accent-color)
+  line(length: 100%, stroke: 2pt + cor-destaque)
 
   v(1cm)
 
   // Resumo (se fornecido)
-  if abstract-text != none {
+  if texto-resumo != none {
     box(
       width: 100%,
       inset: 1em,
-      fill: accent-color.lighten(90%),
+      fill: cor-destaque.lighten(90%),
       radius: 5pt,
     )[
-      #text(weight: "bold", size: body-size * 1.1)[RESUMO]
+      #text(weight: "bold", size: tamanho-corpo * 1.1)[RESUMO]
       #linebreak()
       #v(0.3em)
-      #abstract-text
-      #if keywords.len() > 0 {
+      #texto-resumo
+      #if palavras-chave.len() > 0 {
         v(0.5em)
         text(weight: "bold")[Palavras-chave: ]
-        keywords.join("; ")
+        palavras-chave.join("; ")
       }
     ]
     v(1cm)
   }
 
   // Conteudo em colunas
-  columns(num-columns, gutter: 2em, body)
+  columns(num-colunas, gutter: 2em, body)
 }
 
 /// Secao de poster com caixa colorida
 #let poster-section(
-  title: none,
-  accent-color: rgb("#003366"),
+  titulo: none,
+  cor-destaque: rgb("#003366"),
   body,
 ) = {
   box(
     width: 100%,
     inset: 1em,
-    stroke: 2pt + accent-color,
+    stroke: 2pt + cor-destaque,
     radius: 5pt,
   )[
-    #if title != none {
+    #if titulo != none {
       align(center)[
         #box(
-          fill: accent-color,
+          fill: cor-destaque,
           inset: 0.5em,
           radius: 3pt,
         )[
-          #text(weight: "bold", fill: white, upper(title))
+          #text(weight: "bold", fill: white, upper(titulo))
         ]
       ]
       v(0.5em)
@@ -229,13 +229,13 @@
 
 /// Caixa de destaque para poster
 #let poster-highlight(
-  accent-color: rgb("#003366"),
+  cor-destaque: rgb("#003366"),
   body,
 ) = {
   box(
     width: 100%,
     inset: 1em,
-    fill: accent-color.lighten(90%),
+    fill: cor-destaque.lighten(90%),
     radius: 5pt,
   )[
     #body
@@ -247,18 +247,18 @@
 /// Maior e com legenda mais visivel
 #let poster-figure(
   body,
-  caption: none,
-  source: none,
+  legenda: none,
+  origem: none,
 ) = {
   align(center)[
     #body
-    #if caption != none {
+    #if legenda != none {
       v(0.3em)
-      text(weight: "bold")[#caption]
+      text(weight: "bold")[#legenda]
     }
-    #if source != none {
+    #if origem != none {
       linebreak()
-      text(size: 0.8em)[Fonte: #source]
+      text(size: 0.8em)[Fonte: #origem]
     }
   ]
   v(0.5em)
@@ -266,7 +266,7 @@
 
 /// Referencias para poster
 /// Formato compacto, sem notas de rodape
-#let poster-references(items) = {
+#let poster-references(itens) = {
   text(weight: "bold", size: 1.2em)[REFERENCIAS]
   v(0.3em)
 
@@ -276,7 +276,7 @@
   )
   set text(size: 0.8em)
 
-  for item in items {
+  for item in itens {
     item
     linebreak()
     v(0.2em)
@@ -285,43 +285,43 @@
 
 /// Template de poster academico (com orientador)
 #let academic-poster(
-  title: "",
-  subtitle: none,
-  authors: (),
-  advisor: none,
-  institution: none,
-  department: none,
-  contact: none,
-  abstract-text: none,
-  keywords: (),
-  num-columns: 3,
-  width: 90cm,
-  height: 120cm,
-  font: "Arial",
-  title-size: 72pt,
-  body-size: 24pt,
-  background: white,
-  accent-color: rgb("#003366"),
+  titulo: "",
+  subtitulo: none,
+  autores: (),
+  orientador: none,
+  instituicao: none,
+  departamento: none,
+  contato: none,
+  texto-resumo: none,
+  palavras-chave: (),
+  num-colunas: 3,
+  largura: 90cm,
+  altura: 120cm,
+  fonte: "Arial",
+  tamanho-titulo: 72pt,
+  tamanho-corpo: 24pt,
+  fundo: white,
+  cor-destaque: rgb("#003366"),
   logo: none,
   body,
 ) = {
   // Configuracao do documento
   set document(
-    title: title,
-    author: authors.map(a => if type(a) == dictionary { a.name } else { a }).join(", "),
+    title: titulo,
+    author: autores.map(a => if type(a) == dictionary { a.name } else { a }).join(", "),
   )
 
   // Configuracao de pagina
   set page(
-    width: width,
-    height: height,
+    width: largura,
+    height: altura,
     margin: 2cm,
-    fill: background,
+    fill: fundo,
   )
 
   set text(
-    font: font,
-    size: body-size,
+    font: fonte,
+    size: tamanho-corpo,
     lang: "pt",
     region: "BR",
   )
@@ -336,8 +336,8 @@
     v(0.5em)
     text(
       weight: "bold",
-      size: body-size * 1.5,
-      fill: accent-color,
+      size: tamanho-corpo * 1.5,
+      fill: cor-destaque,
       upper(it.body),
     )
     v(0.5em)
@@ -347,7 +347,7 @@
     v(0.3em)
     text(
       weight: "bold",
-      size: body-size * 1.2,
+      size: tamanho-corpo * 1.2,
       it.body,
     )
     v(0.3em)
@@ -366,50 +366,50 @@
     align(center)[
       #text(
         weight: "bold",
-        size: title-size,
-        fill: accent-color,
-        upper(title),
+        size: tamanho-titulo,
+        fill: cor-destaque,
+        upper(titulo),
       )
 
-      #if subtitle != none {
+      #if subtitulo != none {
         linebreak()
-        text(size: title-size * 0.6, ": " + subtitle)
+        text(size: tamanho-titulo * 0.6, ": " + subtitulo)
       }
 
       #v(0.5cm)
 
       // Autores
-      #text(size: body-size * 1.2)[
-        #for (i, author) in authors.enumerate() {
+      #text(size: tamanho-corpo * 1.2)[
+        #for (i, autor) in autores.enumerate() {
           if i > 0 { [, ] }
-          if type(author) == dictionary {
-            text(weight: "bold", author.name)
+          if type(autor) == dictionary {
+            text(weight: "bold", autor.name)
           } else {
-            text(weight: "bold", author)
+            text(weight: "bold", autor)
           }
         }
       ]
 
       // Orientador
-      #if advisor != none {
+      #if orientador != none {
         linebreak()
-        text(size: body-size)[Orientador: #advisor]
+        text(size: tamanho-corpo)[Orientador: #orientador]
       }
 
       #v(0.3cm)
 
       // Instituicao
-      #if institution != none {
-        text(size: body-size * 0.9, institution)
+      #if instituicao != none {
+        text(size: tamanho-corpo * 0.9, instituicao)
       }
-      #if department != none {
+      #if departamento != none {
         linebreak()
-        text(size: body-size * 0.8, department)
+        text(size: tamanho-corpo * 0.8, departamento)
       }
 
-      #if contact != none {
+      #if contato != none {
         linebreak()
-        text(size: body-size * 0.7, contact)
+        text(size: tamanho-corpo * 0.7, contato)
       }
     ],
 
@@ -418,96 +418,96 @@
   )
 
   v(1cm)
-  line(length: 100%, stroke: 2pt + accent-color)
+  line(length: 100%, stroke: 2pt + cor-destaque)
   v(1cm)
 
   // Resumo
-  if abstract-text != none {
+  if texto-resumo != none {
     box(
       width: 100%,
       inset: 1em,
-      fill: accent-color.lighten(90%),
+      fill: cor-destaque.lighten(90%),
       radius: 5pt,
     )[
-      #text(weight: "bold", size: body-size * 1.1)[RESUMO]
+      #text(weight: "bold", size: tamanho-corpo * 1.1)[RESUMO]
       #linebreak()
       #v(0.3em)
-      #abstract-text
-      #if keywords.len() > 0 {
+      #texto-resumo
+      #if palavras-chave.len() > 0 {
         v(0.5em)
         text(weight: "bold")[Palavras-chave: ]
-        keywords.join("; ")
+        palavras-chave.join("; ")
       }
     ]
     v(1cm)
   }
 
   // Conteudo
-  columns(num-columns, gutter: 2em, body)
+  columns(num-colunas, gutter: 2em, body)
 }
 
 /// Cria um poster A0 (padrao para congressos)
 #let poster-a0(
-  title: "",
-  subtitle: none,
-  authors: (),
-  institution: none,
-  contact: none,
-  abstract-text: none,
-  keywords: (),
-  num-columns: 3,
-  font: "Arial",
-  accent-color: rgb("#003366"),
+  titulo: "",
+  subtitulo: none,
+  autores: (),
+  instituicao: none,
+  contato: none,
+  texto-resumo: none,
+  palavras-chave: (),
+  num-colunas: 3,
+  fonte: "Arial",
+  cor-destaque: rgb("#003366"),
   body,
 ) = {
   poster(
-    title: title,
-    subtitle: subtitle,
-    authors: authors,
-    institution: institution,
-    contact: contact,
-    abstract-text: abstract-text,
-    keywords: keywords,
-    num-columns: num-columns,
-    width: 84.1cm,   // A0 width
-    height: 118.9cm, // A0 height
-    font: font,
-    title-size: 72pt,
-    body-size: 24pt,
-    accent-color: accent-color,
+    titulo: titulo,
+    subtitulo: subtitulo,
+    autores: autores,
+    instituicao: instituicao,
+    contato: contato,
+    texto-resumo: texto-resumo,
+    palavras-chave: palavras-chave,
+    num-colunas: num-colunas,
+    largura: 84.1cm,   // A0 width
+    altura: 118.9cm, // A0 height
+    fonte: fonte,
+    tamanho-titulo: 72pt,
+    tamanho-corpo: 24pt,
+    cor-destaque: cor-destaque,
     body,
   )
 }
 
 /// Cria um poster A1
 #let poster-a1(
-  title: "",
-  subtitle: none,
-  authors: (),
-  institution: none,
-  contact: none,
-  abstract-text: none,
-  keywords: (),
-  num-columns: 2,
-  font: "Arial",
-  accent-color: rgb("#003366"),
+  titulo: "",
+  subtitulo: none,
+  autores: (),
+  instituicao: none,
+  contato: none,
+  texto-resumo: none,
+  palavras-chave: (),
+  num-colunas: 2,
+  fonte: "Arial",
+  cor-destaque: rgb("#003366"),
   body,
 ) = {
   poster(
-    title: title,
-    subtitle: subtitle,
-    authors: authors,
-    institution: institution,
-    contact: contact,
-    abstract-text: abstract-text,
-    keywords: keywords,
-    num-columns: num-columns,
-    width: 59.4cm,  // A1 width
-    height: 84.1cm, // A1 height
-    font: font,
-    title-size: 48pt,
-    body-size: 18pt,
-    accent-color: accent-color,
+    titulo: titulo,
+    subtitulo: subtitulo,
+    autores: autores,
+    instituicao: instituicao,
+    contato: contato,
+    texto-resumo: texto-resumo,
+    palavras-chave: palavras-chave,
+    num-colunas: num-colunas,
+    largura: 59.4cm,  // A1 width
+    altura: 84.1cm, // A1 height
+    fonte: fonte,
+    tamanho-titulo: 48pt,
+    tamanho-corpo: 18pt,
+    cor-destaque: cor-destaque,
     body,
   )
 }

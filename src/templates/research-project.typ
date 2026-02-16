@@ -18,41 +18,41 @@
 /// Template principal para Projeto de Pesquisa conforme NBR 15287:2025
 ///
 /// Parametros:
-/// - title: titulo do projeto
-/// - subtitle: subtitulo (opcional)
-/// - author: nome do(s) autor(es) - pode ser string ou array
-/// - institution: nome da entidade
-/// - location: cidade da entidade
-/// - year: ano de entrega
-/// - project-type: tipo de projeto (ex: "Projeto de pesquisa apresentado...")
-/// - advisor: nome do orientador (opcional)
-/// - co-advisor: nome do coorientador (opcional)
-/// - coordinator: nome do coordenador (opcional)
+/// - titulo: titulo do projeto
+/// - subtitulo: subtitulo (opcional)
+/// - autor: nome do(s) autor(es) - pode ser string ou array
+/// - instituicao: nome da entidade
+/// - local: cidade da entidade
+/// - ano: ano de entrega
+/// - tipo-projeto: tipo de projeto (ex: "Projeto de pesquisa apresentado...")
+/// - orientador: nome do orientador (opcional)
+/// - coorientador: nome do coorientador (opcional)
+/// - coordenador: nome do coordenador (opcional)
 /// - volume: numero do volume (se houver mais de um)
-/// - font: fonte a usar ("Times New Roman" ou "Arial")
-/// - bibliography-file: caminho para arquivo .bib (opcional)
-/// - bibliography-title: titulo da secao de referencias
+/// - fonte: fonte a usar ("Times New Roman" ou "Arial")
+/// - arquivo-bibliografia: caminho para arquivo .bib (opcional)
+/// - titulo-bibliografia: titulo da secao de referencias
 #let projeto-pesquisa(
-  title: "",
-  subtitle: none,
-  author: "",
-  institution: "",
-  location: "",
-  year: datetime.today().year(),
-  project-type: none,
-  advisor: none,
-  co-advisor: none,
-  coordinator: none,
+  titulo: "",
+  subtitulo: none,
+  autor: "",
+  instituicao: "",
+  local: "",
+  ano: datetime.today().year(),
+  tipo-projeto: none,
+  orientador: none,
+  coorientador: none,
+  coordenador: none,
   volume: none,
-  font: "Times New Roman",
-  bibliography-file: none,
-  bibliography-title: "REFERENCIAS",
+  fonte: "Times New Roman",
+  arquivo-bibliografia: none,
+  titulo-bibliografia: "REFERENCIAS",
   body,
 ) = {
   // Configuracao do documento
   set document(
-    title: title,
-    author: if type(author) == array { author.join(", ") } else { author },
+    title: titulo,
+    author: if type(autor) == array { autor.join(", ") } else { autor },
   )
 
   // Configuracao de pagina conforme NBR 15287
@@ -69,7 +69,7 @@
 
   // Configuracao de fonte
   set text(
-    font: font,
+    font: fonte,
     size: 12pt,
     lang: "pt",
     region: "BR",
@@ -153,7 +153,7 @@
   // Excluir indentacao de containers que nao devem ser indentados
   show heading: set par(first-line-indent: 0pt)
   show figure: set par(first-line-indent: 0pt)
-  show raw: set par(first-line-indent: 0pt)
+  show raw.where(block: true): set par(first-line-indent: 0pt)
   show outline: set par(first-line-indent: 0pt)
   show terms: set par(first-line-indent: 0pt)
 
@@ -167,8 +167,8 @@
   body
 
   // Bibliografia automatica (se arquivo .bib fornecido)
-  if bibliography-file != none {
-    abnt-bibliography(bibliography-file, title: bibliography-title)
+  if arquivo-bibliografia != none {
+    abnt-bibliography(arquivo-bibliografia, titulo: titulo-bibliografia)
   }
 }
 
@@ -182,46 +182,46 @@
 /// 6. Local (cidade) da entidade
 /// 7. Ano de entrega
 #let project-cover(
-  institution: none,
-  author: none,
-  title: none,
-  subtitle: none,
+  instituicao: none,
+  autor: none,
+  titulo: none,
+  subtitulo: none,
   volume: none,
-  location: none,
-  year: none,
+  local: none,
+  ano: none,
 ) = {
   set page(numbering: none)
   set align(center)
 
   // Instituicao (maiusculas, negrito)
-  if institution != none {
-    text(weight: "bold", size: 12pt, upper(institution))
+  if instituicao != none {
+    text(weight: "bold", size: 12pt, upper(instituicao))
   }
 
   v(1fr)
 
   // Autor(es)
-  if author != none {
-    if type(author) == array {
-      for a in author {
+  if autor != none {
+    if type(autor) == array {
+      for a in autor {
         text(size: 12pt, upper(a))
         linebreak()
       }
     } else {
-      text(size: 12pt, upper(author))
+      text(size: 12pt, upper(autor))
     }
   }
 
   v(1fr)
 
   // Titulo (maiusculas, negrito)
-  if title != none {
-    text(weight: "bold", size: 14pt, upper(title))
+  if titulo != none {
+    text(weight: "bold", size: 14pt, upper(titulo))
   }
 
   // Subtitulo (precedido de dois-pontos)
-  if subtitle != none {
-    text(size: 14pt, ": " + subtitle)
+  if subtitulo != none {
+    text(size: 14pt, ": " + subtitulo)
   }
 
   // Volume
@@ -233,13 +233,13 @@
   v(1fr)
 
   // Local e ano
-  if location != none {
-    text(size: 12pt, upper(location))
+  if local != none {
+    text(size: 12pt, upper(local))
     linebreak()
   }
 
-  if year != none {
-    text(size: 12pt, str(year))
+  if ano != none {
+    text(size: 12pt, str(ano))
   }
 
   pagebreak()
@@ -256,43 +256,43 @@
 /// 7. Local (cidade)
 /// 8. Ano da entrega
 #let project-title-page(
-  author: none,
-  title: none,
-  subtitle: none,
+  autor: none,
+  titulo: none,
+  subtitulo: none,
   volume: none,
-  project-type: none,
-  institution: none,
-  advisor: none,
-  co-advisor: none,
-  coordinator: none,
-  location: none,
-  year: none,
+  tipo-projeto: none,
+  instituicao: none,
+  orientador: none,
+  coorientador: none,
+  coordenador: none,
+  local: none,
+  ano: none,
 ) = {
   set page(numbering: none)
   set align(center)
 
   // Autor(es)
-  if author != none {
-    if type(author) == array {
-      for a in author {
+  if autor != none {
+    if type(autor) == array {
+      for a in autor {
         text(size: 12pt, upper(a))
         linebreak()
       }
     } else {
-      text(size: 12pt, upper(author))
+      text(size: 12pt, upper(autor))
     }
   }
 
   v(1fr)
 
   // Titulo (maiusculas, negrito)
-  if title != none {
-    text(weight: "bold", size: 14pt, upper(title))
+  if titulo != none {
+    text(weight: "bold", size: 14pt, upper(titulo))
   }
 
   // Subtitulo
-  if subtitle != none {
-    text(size: 14pt, ": " + subtitle)
+  if subtitulo != none {
+    text(size: 14pt, ": " + subtitulo)
   }
 
   // Volume
@@ -304,7 +304,7 @@
   v(2cm)
 
   // Tipo de projeto e orientadores (recuo de 8cm, espaco simples)
-  if project-type != none or advisor != none or coordinator != none {
+  if tipo-projeto != none or orientador != none or coordenador != none {
     set align(right)
     box(width: 8cm)[
       #set align(left)
@@ -315,23 +315,23 @@
       )
       #set text(size: 10pt)
 
-      #if project-type != none { project-type }
-      #if institution != none { linebreak(); institution }
+      #if tipo-projeto != none { tipo-projeto }
+      #if instituicao != none { linebreak(); instituicao }
 
-      #if advisor != none {
+      #if orientador != none {
         linebreak()
         linebreak()
-        [Orientador: #advisor]
+        [Orientador: #orientador]
       }
 
-      #if co-advisor != none {
+      #if coorientador != none {
         linebreak()
-        [Coorientador: #co-advisor]
+        [Coorientador: #coorientador]
       }
 
-      #if coordinator != none {
+      #if coordenador != none {
         linebreak()
-        [Coordenador: #coordinator]
+        [Coordenador: #coordenador]
       }
     ]
   }
@@ -340,13 +340,13 @@
 
   // Local e ano
   set align(center)
-  if location != none {
-    text(size: 12pt, upper(location))
+  if local != none {
+    text(size: 12pt, upper(local))
     linebreak()
   }
 
-  if year != none {
-    text(size: 12pt, str(year))
+  if ano != none {
+    text(size: 12pt, str(ano))
   }
 
   pagebreak()
@@ -356,21 +356,21 @@
 /// Cria uma tabela de cronograma com atividades e periodos
 ///
 /// Parametros:
-/// - title: titulo da secao (padrao: "CRONOGRAMA")
-/// - activities: lista de atividades (strings)
-/// - periods: lista de periodos (ex: ("Jan", "Fev", "Mar", ...))
-/// - schedule: matriz de booleanos indicando quando cada atividade ocorre
-///             schedule.at(i).at(j) = true se atividade i ocorre no periodo j
+/// - titulo: titulo da secao (padrao: "CRONOGRAMA")
+/// - atividades: lista de atividades (strings)
+/// - periodos: lista de periodos (ex: ("Jan", "Fev", "Mar", ...))
+/// - marcacoes: matriz de booleanos indicando quando cada atividade ocorre
+///             marcacoes.at(i).at(j) = true se atividade i ocorre no periodo j
 #let cronograma(
-  title: "CRONOGRAMA",
-  activities: (),
-  periods: (),
-  schedule: (),
+  titulo: "CRONOGRAMA",
+  atividades: (),
+  periodos: (),
+  marcacoes: (),
 ) = {
-  heading(level: 1, title)
+  heading(level: 1, titulo)
 
-  let num-periods = periods.len()
-  let num-activities = activities.len()
+  let num-periods = periodos.len()
+  let num-activities = atividades.len()
 
   // Criar colunas: primeira para atividades, demais para periodos
   let cols = (auto,) + (1fr,) * num-periods
@@ -383,15 +383,15 @@
 
     // Cabecalho
     [*Atividades*],
-    ..periods.map(p => [*#p*]),
+    ..periodos.map(p => [*#p*]),
 
     // Linhas de atividades
     ..{
       let cells = ()
-      for (i, activity) in activities.enumerate() {
+      for (i, activity) in atividades.enumerate() {
         cells.push(activity)
         for j in range(num-periods) {
-          if schedule.len() > i and schedule.at(i).len() > j and schedule.at(i).at(j) {
+          if marcacoes.len() > i and marcacoes.at(i).len() > j and marcacoes.at(i).at(j) {
             cells.push([X])
           } else {
             cells.push([])
@@ -407,19 +407,19 @@
 /// Cria uma secao listando os recursos necessarios
 ///
 /// Parametros:
-/// - title: titulo da secao (padrao: "RECURSOS")
-/// - items: lista de tuplas (descricao, valor) ou apenas descricoes
+/// - titulo: titulo da secao (padrao: "RECURSOS")
+/// - itens: lista de tuplas (descricao, valor) ou apenas descricoes
 /// - total: valor total (opcional, calculado automaticamente se valores forem numeros)
 #let recursos(
-  title: "RECURSOS",
-  items: (),
+  titulo: "RECURSOS",
+  itens: (),
   total: none,
 ) = {
-  heading(level: 1, title)
+  heading(level: 1, titulo)
 
-  if items.len() > 0 {
-    // Verificar se items tem valores
-    let has-values = if type(items.at(0)) == array { items.at(0).len() > 1 } else { false }
+  if itens.len() > 0 {
+    // Verificar se itens tem valores
+    let has-values = if type(itens.at(0)) == array { itens.at(0).len() > 1 } else { false }
 
     if has-values {
       // Tabela com descricao e valores
@@ -435,7 +435,7 @@
 
         ..{
           let cells = ()
-          for item in items {
+          for item in itens {
             cells.push(item.at(0))
             cells.push(str(item.at(1)))
           }
@@ -449,7 +449,7 @@
           ([*Total*], [*#str(total)*])
         } else {
           // Calcular total se possivel
-          let sum = items.fold(0, (acc, item) => {
+          let sum = itens.fold(0, (acc, item) => {
             if type(item.at(1)) == int or type(item.at(1)) == float {
               acc + item.at(1)
             } else {
@@ -463,7 +463,7 @@
       )
     } else {
       // Lista simples
-      for item in items {
+      for item in itens {
         [- #item]
         linebreak()
       }
@@ -473,13 +473,13 @@
 
 /// Glossario para projeto de pesquisa
 /// Conforme NBR 15287 - ordem alfabetica
-#let glossario-projeto(items) = {
+#let glossario-projeto(itens) = {
   heading(level: 1, numbering: none, "GLOSSARIO")
 
   set par(first-line-indent: 0pt)
 
   // Ordenar itens alfabeticamente
-  let sorted-items = items.pairs().sorted(key: p => p.at(0))
+  let sorted-items = itens.pairs().sorted(key: p => p.at(0))
 
   for (termo, definicao) in sorted-items {
     [*#termo:* #definicao]
@@ -492,20 +492,20 @@
 
 /// Apendice para projeto de pesquisa
 /// Formato: APENDICE A - TITULO EM MAIUSCULAS
-#let apendice(letter, title) = {
+#let apendice(letra, titulo) = {
   pagebreak()
   align(center)[
-    #text(weight: "bold", size: 12pt)[APENDICE #letter -- #upper(title)]
+    #text(weight: "bold", size: 12pt)[APENDICE #letra -- #upper(titulo)]
   ]
   v(1.5em)
 }
 
 /// Anexo para projeto de pesquisa
 /// Formato: ANEXO A - TITULO EM MAIUSCULAS
-#let anexo(letter, title) = {
+#let anexo(letra, titulo) = {
   pagebreak()
   align(center)[
-    #text(weight: "bold", size: 12pt)[ANEXO #letter -- #upper(title)]
+    #text(weight: "bold", size: 12pt)[ANEXO #letra -- #upper(titulo)]
   ]
   v(1.5em)
 }

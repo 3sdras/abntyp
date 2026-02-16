@@ -24,23 +24,23 @@
 
 // Usar o template de defesa
 #show: slides-defesa.with(
-  title: "Sistema de Recomendacao de Filmes Baseado em Aprendizado de Maquina",
-  subtitle: "Uma abordagem usando filtragem colaborativa",
-  author: "Maria Silva Santos",
-  advisor: "Prof. Dr. Joao Carlos Oliveira",
-  co-advisor: "Profa. Dra. Ana Paula Costa",
-  institution: "Universidade Federal de Exemplo",
-  department: "Departamento de Ciencia da Computacao",
-  program: none, // Deixar none para TCC de graduacao
-  degree: "Bacharel em Ciencia da Computacao",
-  committee: (
+  titulo: "Sistema de Recomendacao de Filmes Baseado em Aprendizado de Maquina",
+  subtitulo: "Uma abordagem usando filtragem colaborativa",
+  autor: "Maria Silva Santos",
+  orientador: "Prof. Dr. Joao Carlos Oliveira",
+  coorientador: "Profa. Dra. Ana Paula Costa",
+  instituicao: "Universidade Federal de Exemplo",
+  departamento: "Departamento de Ciencia da Computacao",
+  programa: none, // Deixar none para TCC de graduacao
+  grau: "Bacharel em Ciencia da Computacao",
+  banca: (
     "Prof. Dr. Joao Carlos Oliveira (Orientador)",
     "Profa. Dra. Maria Lucia Ferreira",
     "Prof. Dr. Pedro Henrique Lima",
   ),
-  date: datetime(year: 2025, month: 3, day: 15),
-  primary-color: cores-academico.primary,
-  secondary-color: cores-academico.secondary,
+  data: datetime(year: 2025, month: 3, day: 15),
+  cor-primaria: cores-academico.primary,
+  cor-secundaria: cores-academico.secondary,
 )
 
 // ============================================================================
@@ -48,7 +48,7 @@
 // ============================================================================
 
 #slide-sumario(
-  items: (
+  itens: (
     "Introducao e Motivacao",
     "Objetivos",
     "Fundamentacao Teorica",
@@ -63,8 +63,8 @@
 // ============================================================================
 
 #slide-secao(
-  title: "Introducao",
-  subtitle: "Contexto e Motivacao",
+  titulo: "Introducao",
+  subtitulo: "Contexto e Motivacao",
 )
 
 == Contexto
@@ -97,7 +97,7 @@
 // SECAO 2: OBJETIVOS
 // ============================================================================
 
-#slide-secao(title: "Objetivos")
+#slide-secao(titulo: "Objetivos")
 
 == Objetivo Geral
 
@@ -117,22 +117,22 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
 // ============================================================================
 
 #slide-secao(
-  title: "Fundamentacao Teorica",
-  subtitle: "Conceitos e Trabalhos Relacionados",
+  titulo: "Fundamentacao Teorica",
+  subtitulo: "Conceitos e Trabalhos Relacionados",
 )
 
 == Sistemas de Recomendacao
 
 #slide-comparativo(
-  title: "Tipos de Sistemas de Recomendacao",
-  left-title: "Filtragem Colaborativa",
-  left-content: [
+  titulo: "Tipos de Sistemas de Recomendacao",
+  titulo-esquerda: "Filtragem Colaborativa",
+  conteudo-esquerda: [
     - Baseada em similaridade entre usuarios
     - Nao requer conhecimento do conteudo
     - Problema do "cold start"
   ],
-  right-title: "Filtragem por Conteudo",
-  right-content: [
+  titulo-direita: "Filtragem por Conteudo",
+  conteudo-direita: [
     - Baseada em caracteristicas dos itens
     - Requer metadados detalhados
     - Limitada a itens similares
@@ -142,9 +142,9 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
 // Exemplo de citacao em slide (segue NBR 10520:2023)
 #slide-citacao(
   quote: "A filtragem colaborativa e uma das tecnicas mais bem-sucedidas para construir sistemas de recomendacao, baseando-se na premissa de que usuarios com comportamentos similares no passado terao preferencias similares no futuro.",
-  author: "Ricci",
-  year: "2015",
-  page: "35",
+  autor: "Ricci",
+  ano: "2015",
+  pagina: "35",
 )
 
 == Trabalhos Relacionados
@@ -187,8 +187,8 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
 == Dataset MovieLens
 
 #slide-resultado-numerico(
-  title: "Dataset MovieLens 100K",
-  items: (
+  titulo: "Dataset MovieLens 100K",
+  itens: (
     ("100K", "Avaliacoes"),
     ("943", "Usuarios"),
     ("1.682", "Filmes"),
@@ -201,15 +201,15 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
 // ============================================================================
 
 #slide-secao(
-  title: "Resultados",
-  subtitle: "Experimentos e Analise",
+  titulo: "Resultados",
+  subtitulo: "Experimentos e Analise",
 )
 
 == Metricas de Avaliacao
 
 #slide-resultado-numerico(
-  title: "Resultados Obtidos",
-  items: (
+  titulo: "Resultados Obtidos",
+  itens: (
     ("0.89", "RMSE"),
     ("0.71", "MAE"),
     ("78%", "Precisao\@10"),
@@ -241,7 +241,7 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
 // SECAO 6: CONCLUSAO
 // ============================================================================
 
-#slide-secao(title: "Conclusao")
+#slide-secao(titulo: "Conclusao")
 
 == Contribuicoes
 
@@ -270,7 +270,7 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
 // ============================================================================
 
 #slide-referencias(
-  items: (
+  itens: (
     [KOREN, Y.; BELL, R.; VOLINSKY, C. Matrix factorization techniques for recommender systems. *Computer*, v. 42, n. 8, p. 30-37, 2009.],
     [HE, X. et al. Neural collaborative filtering. In: *WWW '17*, p. 173-182, 2017.],
     [RICCI, F. et al. *Recommender Systems Handbook*. 2. ed. New York: Springer, 2015.],

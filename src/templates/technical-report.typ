@@ -40,45 +40,45 @@
 /// Template principal para Relatorio Tecnico conforme NBR 10719:2015
 ///
 /// Parametros:
-/// - title: titulo do relatorio
-/// - subtitle: subtitulo (opcional)
-/// - report-number: numero do relatorio
-/// - report-code: codigo de identificacao (sigla+categoria+data+assunto+sequencial)
-/// - institution: nome do orgao ou entidade responsavel
-/// - institution-address: endereco da instituicao
-/// - project-title: titulo do projeto/programa/plano relacionado
-/// - authors: lista de autores (nome e qualificacao)
-/// - classification: classificacao de seguranca (opcional)
+/// - titulo: titulo do relatorio
+/// - subtitulo: subtitulo (opcional)
+/// - numero-relatorio: numero do relatorio
+/// - codigo-relatorio: codigo de identificacao (sigla+categoria+data+assunto+sequencial)
+/// - instituicao: nome do orgao ou entidade responsavel
+/// - endereco-instituicao: endereco da instituicao
+/// - titulo-projeto: titulo do projeto/programa/plano relacionado
+/// - autores: lista de autores (nome e qualificacao)
+/// - classificacao: classificacao de seguranca (opcional)
 /// - issn: ISSN se houver
-/// - location: cidade da instituicao
-/// - year: ano de publicacao
+/// - local: cidade da instituicao
+/// - ano: ano de publicacao
 /// - volume: numero do volume (se mais de um)
-/// - font: fonte a usar
-/// - bibliography-file: arquivo .bib (opcional)
-/// - bibliography-title: titulo da secao de referencias
+/// - fonte: fonte a usar
+/// - arquivo-bibliografia: arquivo .bib (opcional)
+/// - titulo-bibliografia: titulo da secao de referencias
 #let relatorio(
-  title: "",
-  subtitle: none,
-  report-number: none,
-  report-code: none,
-  institution: "",
-  institution-address: none,
-  project-title: none,
-  authors: (),
-  classification: none,
+  titulo: "",
+  subtitulo: none,
+  numero-relatorio: none,
+  codigo-relatorio: none,
+  instituicao: "",
+  endereco-instituicao: none,
+  titulo-projeto: none,
+  autores: (),
+  classificacao: none,
   issn: none,
-  location: "",
-  year: datetime.today().year(),
+  local: "",
+  ano: datetime.today().year(),
   volume: none,
-  font: "Times New Roman",
-  bibliography-file: none,
-  bibliography-title: "REFERENCIAS",
+  fonte: "Times New Roman",
+  arquivo-bibliografia: none,
+  titulo-bibliografia: "REFERENCIAS",
   body,
 ) = {
   // Configuracao do documento
   set document(
-    title: title,
-    author: authors.map(a => if type(a) == dictionary { a.name } else { a }).join(", "),
+    title: titulo,
+    author: autores.map(a => if type(a) == dictionary { a.name } else { a }).join(", "),
   )
 
   // Configuracao de pagina conforme NBR 10719
@@ -95,7 +95,7 @@
 
   // Configuracao de fonte
   set text(
-    font: font,
+    font: fonte,
     size: 12pt,
     lang: "pt",
     region: "BR",
@@ -179,7 +179,7 @@
   // Excluir indentacao de containers que nao devem ser indentados
   show heading: set par(first-line-indent: 0pt)
   show figure: set par(first-line-indent: 0pt)
-  show raw: set par(first-line-indent: 0pt)
+  show raw.where(block: true): set par(first-line-indent: 0pt)
   show outline: set par(first-line-indent: 0pt)
   show terms: set par(first-line-indent: 0pt)
 
@@ -192,8 +192,8 @@
   body
 
   // Bibliografia automatica
-  if bibliography-file != none {
-    abnt-bibliography(bibliography-file, title: bibliography-title)
+  if arquivo-bibliografia != none {
+    abnt-bibliography(arquivo-bibliografia, titulo: titulo-bibliografia)
   }
 }
 
@@ -205,33 +205,33 @@
 /// - Titulo e subtitulo (se houver)
 /// - Classificacao de seguranca (se houver)
 #let report-cover(
-  institution: none,
-  institution-address: none,
-  report-number: none,
+  instituicao: none,
+  endereco-instituicao: none,
+  numero-relatorio: none,
   issn: none,
-  title: none,
-  subtitle: none,
-  classification: none,
-  year: none,
+  titulo: none,
+  subtitulo: none,
+  classificacao: none,
+  ano: none,
 ) = {
   set page(numbering: none)
   set align(center)
 
   // Instituicao e endereco
-  if institution != none {
-    text(weight: "bold", size: 12pt, upper(institution))
+  if instituicao != none {
+    text(weight: "bold", size: 12pt, upper(instituicao))
     linebreak()
   }
 
-  if institution-address != none {
-    text(size: 10pt, institution-address)
+  if endereco-instituicao != none {
+    text(size: 10pt, endereco-instituicao)
   }
 
   v(1cm)
 
   // Numero do relatorio e ISSN
-  if report-number != none {
-    text(size: 11pt, "Relatorio n. " + str(report-number))
+  if numero-relatorio != none {
+    text(size: 11pt, "Relatorio n. " + str(numero-relatorio))
     linebreak()
   }
 
@@ -242,31 +242,31 @@
   v(1fr)
 
   // Titulo e subtitulo
-  if title != none {
-    text(weight: "bold", size: 14pt, upper(title))
+  if titulo != none {
+    text(weight: "bold", size: 14pt, upper(titulo))
   }
 
-  if subtitle != none {
+  if subtitulo != none {
     linebreak()
-    text(size: 14pt, ": " + subtitle)
+    text(size: 14pt, ": " + subtitulo)
   }
 
   v(1fr)
 
   // Classificacao de seguranca
-  if classification != none {
+  if classificacao != none {
     box(
       stroke: 1pt,
       inset: 0.5em,
     )[
-      #text(weight: "bold", classification)
+      #text(weight: "bold", classificacao)
     ]
     v(1cm)
   }
 
   // Ano
-  if year != none {
-    text(size: 12pt, str(year))
+  if ano != none {
+    text(size: 12pt, str(ano))
   }
 
   pagebreak()
@@ -286,41 +286,41 @@
 /// i) Local (cidade) da instituicao
 /// j) Ano de publicacao
 #let report-title-page(
-  institution: none,
-  project-title: none,
-  title: none,
-  subtitle: none,
+  instituicao: none,
+  titulo-projeto: none,
+  titulo: none,
+  subtitulo: none,
   volume: none,
-  report-code: none,
-  classification: none,
-  authors: (),
-  location: none,
-  year: none,
+  codigo-relatorio: none,
+  classificacao: none,
+  autores: (),
+  local: none,
+  ano: none,
 ) = {
   set page(numbering: none)
   set align(center)
 
   // Instituicao
-  if institution != none {
-    text(weight: "bold", size: 12pt, upper(institution))
+  if instituicao != none {
+    text(weight: "bold", size: 12pt, upper(instituicao))
     v(0.5cm)
   }
 
   // Titulo do projeto relacionado
-  if project-title != none {
-    text(size: 11pt, project-title)
+  if titulo-projeto != none {
+    text(size: 11pt, titulo-projeto)
     v(1cm)
   }
 
   v(1fr)
 
   // Titulo e subtitulo
-  if title != none {
-    text(weight: "bold", size: 14pt, upper(title))
+  if titulo != none {
+    text(weight: "bold", size: 14pt, upper(titulo))
   }
 
-  if subtitle != none {
-    text(size: 14pt, ": " + subtitle)
+  if subtitulo != none {
+    text(size: 14pt, ": " + subtitulo)
   }
 
   // Volume
@@ -332,34 +332,34 @@
   v(1cm)
 
   // Codigo de identificacao
-  if report-code != none {
-    text(size: 10pt, report-code)
+  if codigo-relatorio != none {
+    text(size: 10pt, codigo-relatorio)
     v(0.5cm)
   }
 
   // Classificacao de seguranca
-  if classification != none {
+  if classificacao != none {
     box(
       stroke: 1pt,
       inset: 0.5em,
     )[
-      #text(weight: "bold", size: 10pt, classification)
+      #text(weight: "bold", size: 10pt, classificacao)
     ]
   }
 
   v(1fr)
 
   // Autores
-  if authors.len() > 0 {
-    for author in authors {
-      if type(author) == dictionary {
-        text(size: 12pt, author.name)
-        if "qualification" in author {
+  if autores.len() > 0 {
+    for autor in autores {
+      if type(autor) == dictionary {
+        text(size: 12pt, autor.name)
+        if "qualification" in autor {
           linebreak()
-          text(size: 10pt, author.qualification)
+          text(size: 10pt, autor.qualification)
         }
       } else {
-        text(size: 12pt, author)
+        text(size: 12pt, autor)
       }
       v(0.5em)
     }
@@ -368,13 +368,13 @@
   v(1fr)
 
   // Local e ano
-  if location != none {
-    text(size: 12pt, location)
+  if local != none {
+    text(size: 12pt, local)
     linebreak()
   }
 
-  if year != none {
-    text(size: 12pt, str(year))
+  if ano != none {
+    text(size: 12pt, str(ano))
   }
 
   pagebreak()
@@ -383,21 +383,21 @@
 /// Verso da folha de rosto
 /// Contem equipe tecnica e/ou dados de catalogacao
 #let report-title-page-verso(
-  technical-team: none,
-  cataloging-data: none,
+  equipe-tecnica: none,
+  dados-catalogacao: none,
 ) = {
   set page(numbering: none)
 
   // Equipe tecnica (opcional)
-  if technical-team != none {
+  if equipe-tecnica != none {
     align(center)[
       #text(weight: "bold", size: 11pt, "EQUIPE TECNICA")
     ]
     v(1em)
 
-    for member in technical-team {
+    for member in equipe-tecnica {
       if type(member) == dictionary {
-        [*#member.role:* #member.name]
+        [*#member.funcao:* #member.nome]
       } else {
         member
       }
@@ -410,7 +410,7 @@
   // Dados de catalogacao (parte inferior)
   v(1fr)
 
-  if cataloging-data != none {
+  if dados-catalogacao != none {
     align(center)[
       #box(
         width: 12.5cm,
@@ -419,7 +419,7 @@
       )[
         #set text(size: 10pt)
         #set par(leading: 1em * 0.65)
-        #cataloging-data
+        #dados-catalogacao
       ]
     ]
   }
@@ -430,8 +430,8 @@
 /// Errata para Relatorio Tecnico
 /// Formato de tabela: Folha, Linha, Onde se le, Leia-se
 #let errata(
-  reference: none,
-  items: (),
+  referencia: none,
+  itens: (),
 ) = {
   align(center)[
     #text(weight: "bold", size: 12pt, "ERRATA")
@@ -440,14 +440,14 @@
   v(1.5em)
 
   // Referencia da publicacao
-  if reference != none {
+  if referencia != none {
     set par(first-line-indent: 0pt)
-    reference
+    referencia
     v(1em)
   }
 
   // Tabela de erros
-  if items.len() > 0 {
+  if itens.len() > 0 {
     table(
       columns: (auto, auto, 1fr, 1fr),
       stroke: 0.5pt,
@@ -458,11 +458,11 @@
 
       ..{
         let cells = ()
-        for item in items {
-          cells.push(str(item.page))
-          cells.push(str(item.line))
-          cells.push(item.wrong)
-          cells.push(item.correct)
+        for item in itens {
+          cells.push(str(item.pagina))
+          cells.push(str(item.linha))
+          cells.push(item.errado)
+          cells.push(item.correto)
         }
         cells
       }
@@ -473,17 +473,17 @@
 }
 
 /// Agradecimentos para Relatorio Tecnico
-#let agradecimentos-relatorio(content) = {
+#let agradecimentos-relatorio(conteudo) = {
   align(center)[
     #text(weight: "bold", size: 12pt, "AGRADECIMENTOS")
   ]
   v(1.5em)
-  content
+  conteudo
   pagebreak()
 }
 
 /// Resumo para Relatorio Tecnico conforme NBR 6028
-#let resumo-relatorio(content, keywords: ()) = {
+#let resumo-relatorio(conteudo, palavras-chave: ()) = {
   align(center)[
     #text(weight: "bold", size: 12pt, "RESUMO")
   ]
@@ -496,12 +496,12 @@
     justify: true,
   )
 
-  content
+  conteudo
 
   v(1.5em)
 
-  if keywords.len() > 0 {
-    [*Palavras-chave:* #keywords.join(". ").]
+  if palavras-chave.len() > 0 {
+    [*Palavras-chave:* #palavras-chave.join(". ").]
   }
 
   pagebreak()
@@ -510,23 +510,23 @@
 /// Formulario de identificacao para Relatorio Tecnico
 /// Obrigatorio quando nao utilizados dados de catalogacao-na-publicacao
 #let formulario-identificacao(
-  title: none,
-  classification: none,
-  report-number: none,
-  report-type: none,
-  date: none,
-  authors: (),
-  institutions: (),
-  abstract-text: none,
-  keywords: (),
-  edition: none,
-  pages: none,
+  titulo: none,
+  classificacao: none,
+  numero-relatorio: none,
+  tipo-relatorio: none,
+  data: none,
+  autores: (),
+  instituicoes: (),
+  texto-resumo: none,
+  palavras-chave: (),
+  edicao: none,
+  paginas: none,
   volume: none,
   issn: none,
-  distribution: none,
-  distributor: none,
-  price: none,
-  notes: none,
+  distribuicao: none,
+  distribuidor: none,
+  preco: none,
+  observacoes: none,
 ) = {
   heading(level: 1, numbering: none, "FORMULARIO DE IDENTIFICACAO")
 
@@ -539,25 +539,25 @@
 
   set par(first-line-indent: 0pt)
 
-  field("Titulo", title)
-  field("Classificacao de seguranca", classification)
-  field("Numero", report-number)
-  field("Tipo de relatorio", report-type)
-  field("Data", date)
+  field("Titulo", titulo)
+  field("Classificacao de seguranca", classificacao)
+  field("Numero", numero-relatorio)
+  field("Tipo de relatorio", tipo-relatorio)
+  field("Data", data)
 
-  if authors.len() > 0 {
+  if autores.len() > 0 {
     [*Autores:*]
     linebreak()
-    for author in authors {
-      [- #if type(author) == dictionary { author.name } else { author }]
+    for autor in autores {
+      [- #if type(autor) == dictionary { autor.name } else { autor }]
       linebreak()
     }
   }
 
-  if institutions.len() > 0 {
+  if instituicoes.len() > 0 {
     [*Instituicoes:*]
     linebreak()
-    for inst in institutions {
+    for inst in instituicoes {
       [- #inst]
       linebreak()
     }
@@ -565,28 +565,28 @@
 
   v(0.5em)
 
-  if abstract-text != none {
+  if texto-resumo != none {
     [*Resumo:*]
     linebreak()
-    abstract-text
+    texto-resumo
     linebreak()
   }
 
-  if keywords.len() > 0 {
-    [*Palavras-chave:* #keywords.join("; ")]
+  if palavras-chave.len() > 0 {
+    [*Palavras-chave:* #palavras-chave.join("; ")]
     linebreak()
   }
 
   v(0.5em)
 
-  field("Edicao", edition)
-  field("Numero de paginas", pages)
+  field("Edicao", edicao)
+  field("Numero de paginas", paginas)
   field("Volume", volume)
   field("ISSN", issn)
-  field("Distribuicao", distribution)
-  field("Distribuidor", distributor)
-  field("Preco", price)
-  field("Observacoes", notes)
+  field("Distribuicao", distribuicao)
+  field("Distribuidor", distribuidor)
+  field("Preco", preco)
+  field("Observacoes", observacoes)
 
   pagebreak()
 }
@@ -596,27 +596,17 @@
 ///
 /// Exemplo: INPE-RPE-2024-EST-001
 #let report-code(
-  institution-code: "",
-  category: "",
-  year: none,
-  subject: "",
-  sequence: 1,
-  separator: "-",
+  codigo-instituicao: "",
+  categoria: "",
+  ano: none,
+  assunto: "",
+  sequencia: 1,
+  separador: "-",
 ) = {
-  let parts = ()
-  parts.push(institution-code)
-  parts.push(category)
-  if year != none { parts.push(str(year)) }
-  parts.push(subject)
-  parts.push(str(sequence).clusters().rev().enumerate().map(((i, c)) => {
-    if i > 0 and calc.rem(i, 3) == 0 { c }
-    else { c }
-  }).rev().join(""))
-
   // Formatar numero com zeros a esquerda
-  let seq-str = if sequence < 10 { "00" + str(sequence) }
-                else if sequence < 100 { "0" + str(sequence) }
-                else { str(sequence) }
+  let seq-str = if sequencia < 10 { "00" + str(sequencia) }
+                else if sequencia < 100 { "0" + str(sequencia) }
+                else { str(sequencia) }
 
-  [#institution-code#separator#category#separator#if year != none {str(year) + separator}#subject#separator#seq-str]
+  [#codigo-instituicao#separador#categoria#separador#if ano != none {str(ano) + separador}#assunto#separador#seq-str]
 }

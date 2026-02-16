@@ -2,17 +2,17 @@
 
 /// Citação direta curta (até 3 linhas)
 /// Incorporada ao parágrafo, entre aspas duplas
-#let citacao-curta(text, author: none, year: none, page: none) = {
-  ["#text"]
-  if author != none or year != none or page != none {
+#let citacao-curta(texto, autor: none, ano: none, pagina: none) = {
+  ["#texto"]
+  if autor != none or ano != none or pagina != none {
     [ (]
-    if author != none { upper(author) }
-    if year != none {
-      if author != none { [, ] }
-      [#year]
+    if autor != none { upper(autor) }
+    if ano != none {
+      if autor != none { [, ] }
+      [#ano]
     }
-    if page != none {
-      [, p. #page]
+    if pagina != none {
+      [, p. #pagina]
     }
     [)]
   }
@@ -20,7 +20,7 @@
 
 /// Citação direta longa (mais de 3 linhas)
 /// Recuo de 4 cm da margem esquerda, fonte tamanho 10, espaçamento simples
-#let citacao-longa(body, author: none, year: none, page: none) = {
+#let citacao-longa(body, autor: none, ano: none, pagina: none) = {
   v(1em)
   pad(left: 4cm)[
     #set text(size: 10pt)
@@ -30,15 +30,15 @@
       justify: true,
     )
     #body
-    #if author != none or year != none or page != none {
+    #if autor != none or ano != none or pagina != none {
       [ (]
-      if author != none { upper(author) }
-      if year != none {
-        if author != none { [, ] }
-        [#year]
+      if autor != none { upper(autor) }
+      if ano != none {
+        if autor != none { [, ] }
+        [#ano]
       }
-      if page != none {
-        [, p. #page]
+      if pagina != none {
+        [, p. #pagina]
       }
       [)]
     }
@@ -50,16 +50,16 @@
 #let supressao = [[...]]
 
 /// Interpolação de texto [texto]
-#let interpolacao(text) = {
-  [\[#text\]]
+#let interpolacao(texto) = {
+  [\[#texto\]]
 }
 
 /// Ênfase adicionada pelo autor da citação
-#let grifo-nosso(text) = {
-  [#emph(text), grifo nosso]
+#let grifo-nosso(texto) = {
+  [#emph(texto), grifo nosso]
 }
 
 /// Ênfase do autor original
-#let grifo-do-autor(text) = {
-  [#emph(text), grifo do autor]
+#let grifo-do-autor(texto) = {
+  [#emph(texto), grifo do autor]
 }

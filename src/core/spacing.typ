@@ -51,8 +51,8 @@
 }
 
 /// Bloco com recuo específico (para citações longas: 4cm da margem esquerda)
-#let indented-block(indent: 4cm, body) = {
-  pad(left: indent)[
+#let indented-block(recuo: 4cm, body) = {
+  pad(left: recuo)[
     #set par(first-line-indent: 0pt)
     #body
   ]

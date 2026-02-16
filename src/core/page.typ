@@ -3,25 +3,25 @@
 // Margens: superior e esquerda 3 cm, inferior e direita 2 cm
 
 /// Configuração padrão de página ABNT
-/// - paper: formato do papel (default: "a4")
-/// - margin-top: margem superior (default: 3cm)
-/// - margin-bottom: margem inferior (default: 2cm)
-/// - margin-left: margem esquerda (default: 3cm)
-/// - margin-right: margem direita (default: 2cm)
+/// - papel: formato do papel (default: "a4")
+/// - margem-superior: margem superior (default: 3cm)
+/// - margem-inferior: margem inferior (default: 2cm)
+/// - margem-esquerda: margem esquerda (default: 3cm)
+/// - margem-direita: margem direita (default: 2cm)
 #let abnt-page-setup(
-  paper: "a4",
-  margin-top: 3cm,
-  margin-bottom: 2cm,
-  margin-left: 3cm,
-  margin-right: 2cm,
+  papel: "a4",
+  margem-superior: 3cm,
+  margem-inferior: 2cm,
+  margem-esquerda: 3cm,
+  margem-direita: 2cm,
 ) = {
   set page(
-    paper: paper,
+    paper: papel,
     margin: (
-      top: margin-top,
-      bottom: margin-bottom,
-      left: margin-left,
-      right: margin-right,
+      top: margem-superior,
+      bottom: margem-inferior,
+      left: margem-esquerda,
+      right: margem-direita,
     ),
   )
 }

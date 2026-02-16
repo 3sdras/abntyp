@@ -21,18 +21,18 @@
 
 // Configuração do documento usando o template research-project
 #show: projeto-pesquisa.with(
-  title: "Desenvolvimento de Aplicativo Mobile para Gestão de Saúde Mental",
-  subtitle: "uma abordagem baseada em técnicas de terapia cognitivo-comportamental",
-  author: "Carolina Beatriz Fernandes",
-  institution: "Universidade Federal de Exemplo",
-  location: "Cidade",
-  year: 2026,
-  project-type: "Projeto de pesquisa apresentado ao Programa de Pós-Graduação em Ciência da Computação da Universidade Federal de Exemplo como requisito para qualificação no Mestrado.",
-  advisor: "Prof. Dr. Marcelo Augusto Ribeiro",
-  co-advisor: "Profa. Dra. Juliana Costa (Psicologia)",
-  font: "Times New Roman",
+  titulo: "Desenvolvimento de Aplicativo Mobile para Gestão de Saúde Mental",
+  subtitulo: "uma abordagem baseada em técnicas de terapia cognitivo-comportamental",
+  autor: "Carolina Beatriz Fernandes",
+  instituicao: "Universidade Federal de Exemplo",
+  local: "Cidade",
+  ano: 2026,
+  tipo-projeto: "Projeto de pesquisa apresentado ao Programa de Pós-Graduação em Ciência da Computação da Universidade Federal de Exemplo como requisito para qualificação no Mestrado.",
+  orientador: "Prof. Dr. Marcelo Augusto Ribeiro",
+  coorientador: "Profa. Dra. Juliana Costa (Psicologia)",
+  fonte: "Times New Roman",
   // Para usar bibliografia automática, o caminho deve ser relativo à raiz:
-  // bibliography-file: "examples/referencias.bib",
+  // arquivo-bibliografia: "examples/referencias.bib",
 )
 
 // ============================================================================
@@ -41,25 +41,25 @@
 
 // Capa
 #project-cover(
-  institution: "Universidade Federal de Exemplo",
-  author: "Carolina Beatriz Fernandes",
-  title: "Desenvolvimento de Aplicativo Mobile para Gestão de Saúde Mental",
-  subtitle: "uma abordagem baseada em técnicas de terapia cognitivo-comportamental",
-  location: "Cidade",
-  year: 2026,
+  instituicao: "Universidade Federal de Exemplo",
+  autor: "Carolina Beatriz Fernandes",
+  titulo: "Desenvolvimento de Aplicativo Mobile para Gestão de Saúde Mental",
+  subtitulo: "uma abordagem baseada em técnicas de terapia cognitivo-comportamental",
+  local: "Cidade",
+  ano: 2026,
 )
 
 // Folha de rosto
 #project-title-page(
-  author: "Carolina Beatriz Fernandes",
-  title: "Desenvolvimento de Aplicativo Mobile para Gestão de Saúde Mental",
-  subtitle: "uma abordagem baseada em técnicas de terapia cognitivo-comportamental",
-  project-type: "Projeto de pesquisa apresentado ao Programa de Pós-Graduação em Ciência da Computação da Universidade Federal de Exemplo como requisito para qualificação no Mestrado.",
-  institution: "Universidade Federal de Exemplo",
-  advisor: "Prof. Dr. Marcelo Augusto Ribeiro",
-  co-advisor: "Profa. Dra. Juliana Costa (Psicologia)",
-  location: "Cidade",
-  year: 2026,
+  autor: "Carolina Beatriz Fernandes",
+  titulo: "Desenvolvimento de Aplicativo Mobile para Gestão de Saúde Mental",
+  subtitulo: "uma abordagem baseada em técnicas de terapia cognitivo-comportamental",
+  tipo-projeto: "Projeto de pesquisa apresentado ao Programa de Pós-Graduação em Ciência da Computação da Universidade Federal de Exemplo como requisito para qualificação no Mestrado.",
+  instituicao: "Universidade Federal de Exemplo",
+  orientador: "Prof. Dr. Marcelo Augusto Ribeiro",
+  coorientador: "Profa. Dra. Juliana Costa (Psicologia)",
+  local: "Cidade",
+  ano: 2026,
 )
 
 // Sumário
@@ -252,8 +252,8 @@ O projeto será submetido ao Comitê de Ética em Pesquisa da instituição. Tod
 = Cronograma
 
 #cronograma(
-  title: "CRONOGRAMA",
-  activities: (
+  titulo: "CRONOGRAMA",
+  atividades: (
     "Revisão sistemática da literatura",
     "Seleção de técnicas de TCC",
     "Design e prototipação",
@@ -268,8 +268,8 @@ O projeto será submetido ao Comitê de Ética em Pesquisa da instituição. Tod
     "Redação da dissertação",
     "Defesa",
   ),
-  periods: ("Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez", "Jan", "Fev"),
-  schedule: (
+  periodos: ("Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez", "Jan", "Fev"),
+  marcacoes: (
     (true, true, false, false, false, false, false, false, false, false, false, false),  // Revisão
     (true, true, false, false, false, false, false, false, false, false, false, false),  // Seleção TCC
     (false, true, true, true, false, false, false, false, false, false, false, false),   // Design

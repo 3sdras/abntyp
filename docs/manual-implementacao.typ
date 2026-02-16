@@ -169,39 +169,39 @@ Quando publicado no repositório oficial do Typst:
 #import "abntypst/lib.typ": *
 
 #show: abntcc.with(
-  title: "Uma proposta de pacote para normas ABNT em Typst",
-  subtitle: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
-  author: "Cláudio Código",
-  institution: "Universidade Federal de Jataí",
-  faculty: "Instituto de Ciências Exatas e Tecnológicas",
-  program: "PROFMAT - Programa de Mestrado Profissional em Rede em Matemática",
-  location: "Jataí",
-  year: 2026,
-  advisor: "Prof. Dr. Esdras Teixeira Costa",
+  titulo: "Uma proposta de pacote para normas ABNT em Typst",
+  subtitulo: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
+  autor: "Cláudio Código",
+  instituicao: "Universidade Federal de Jataí",
+  faculdade: "Instituto de Ciências Exatas e Tecnológicas",
+  programa: "PROFMAT - Programa de Mestrado Profissional em Rede em Matemática",
+  local: "Jataí",
+  ano: 2026,
+  orientador: "Prof. Dr. Esdras Teixeira Costa",
 )
 
 #capa(
-  institution: "Universidade Federal de Jataí",
-  faculty: "Instituto de Ciências Exatas e Tecnológicas",
-  author: "Cláudio Código",
-  title: "Uma proposta de pacote para normas ABNT em Typst",
-  subtitle: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
-  location: "Jataí",
-  year: 2026,
+  instituicao: "Universidade Federal de Jataí",
+  faculdade: "Instituto de Ciências Exatas e Tecnológicas",
+  autor: "Cláudio Código",
+  titulo: "Uma proposta de pacote para normas ABNT em Typst",
+  subtitulo: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
+  local: "Jataí",
+  ano: 2026,
 )
 
 #folha-rosto(
-  author: "Cláudio Código",
-  title: "Uma proposta de pacote para normas ABNT em Typst",
-  subtitle: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
-  nature: "Dissertação apresentada ao PROFMAT da Universidade Federal de Jataí",
-  objective: "como requisito parcial para obtenção do título de Mestre.",
-  advisor: "Prof. Dr. Esdras Teixeira Costa",
-  location: "Jataí",
-  year: 2026,
+  autor: "Cláudio Código",
+  titulo: "Uma proposta de pacote para normas ABNT em Typst",
+  subtitulo: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
+  natureza: "Dissertação apresentada ao PROFMAT da Universidade Federal de Jataí",
+  objetivo: "como requisito parcial para obtenção do título de Mestre.",
+  orientador: "Prof. Dr. Esdras Teixeira Costa",
+  local: "Jataí",
+  ano: 2026,
 )
 
-#resumo(keywords: ("Palavra1", "Palavra2", "Palavra3"))[
+#resumo(palavras-chave: ("Palavra1", "Palavra2", "Palavra3"))[
   Texto do resumo...
 ]
 
@@ -285,8 +285,8 @@ Define fontes e tamanhos conforme ABNT.
   normal: 12pt,      // Texto principal
   small: 10pt,       // Citações, notas, legendas
   footnote: 10pt,    // Notas de rodapé
-  caption: 10pt,     // Legendas
-  cover-title: 14pt, // Título na capa
+  legenda: 10pt,     // Legendas
+  titulo-capa: 14pt, // Título na capa
 )
 ```
 
@@ -364,7 +364,7 @@ Como o parâmetro `all: true` indenta o conteúdo dentro de _todos_ os contêine
 ```typst
 #show heading: set par(first-line-indent: 0pt)
 #show figure: set par(first-line-indent: 0pt)
-#show raw: set par(first-line-indent: 0pt)
+#show raw.where(block: true): set par(first-line-indent: 0pt)
 #show outline: set par(first-line-indent: 0pt)
 #show terms: set par(first-line-indent: 0pt)
 ```
@@ -662,15 +662,15 @@ CIÊNCIA DA INFORMAÇÃO. Brasília: IBICT, 1972-. #ref-issn("0100-1965")
 Cria a capa do trabalho conforme NBR 14724.
 
 ```typst
-#let cover(
-  institution: none,  // Nome da instituição
-  faculty: none,      // Faculdade/Unidade
-  program: none,      // Programa/Curso
-  author: none,       // Nome do autor
-  title: none,        // Título do trabalho
-  subtitle: none,     // Subtítulo (opcional)
-  location: none,     // Cidade
-  year: none,         // Ano
+#let capa(
+  instituicao: none,  // Nome da instituição
+  faculdade: none,    // Faculdade/Unidade
+  programa: none,     // Programa/Curso
+  autor: none,        // Nome do autor
+  titulo: none,       // Título do trabalho
+  subtitulo: none,    // Subtítulo (opcional)
+  local: none,        // Cidade
+  ano: none,          // Ano
 )
 ```
 
@@ -678,14 +678,14 @@ Cria a capa do trabalho conforme NBR 14724.
 
 ```typst
 #capa(
-  institution: "Universidade Federal de Jataí",
-  faculty: "Instituto de Ciências Exatas e Tecnológicas",
-  program: "PROFMAT - Programa de Mestrado Profissional em Rede em Matemática",
-  author: "Cláudio Código",
-  title: "Uma proposta de pacote para normas ABNT em Typst",
-  subtitle: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
-  location: "Jataí",
-  year: 2026,
+  instituicao: "Universidade Federal de Jataí",
+  faculdade: "Instituto de Ciências Exatas e Tecnológicas",
+  programa: "PROFMAT - Programa de Mestrado Profissional em Rede em Matemática",
+  autor: "Cláudio Código",
+  titulo: "Uma proposta de pacote para normas ABNT em Typst",
+  subtitulo: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
+  local: "Jataí",
+  ano: 2026,
 )
 ```
 
@@ -695,17 +695,17 @@ Cria a folha de rosto conforme NBR 14724.
 
 ```typst
 #let folha-rosto(
-  author: none,       // Nome do autor
-  title: none,        // Título
-  subtitle: none,     // Subtítulo
-  nature: none,       // Natureza do trabalho
-  objective: none,    // Objetivo (obtenção de grau)
-  institution: none,  // Instituição
+  autor: none,        // Nome do autor
+  titulo: none,       // Título
+  subtitulo: none,    // Subtítulo
+  natureza: none,     // Natureza do trabalho
+  objetivo: none,     // Objetivo (obtenção de grau)
+  instituicao: none,  // Instituição
   area: none,         // Área de concentração
-  advisor: none,      // Orientador
-  co-advisor: none,   // Coorientador
-  location: none,     // Cidade
-  year: none,         // Ano
+  orientador: none,   // Orientador
+  coorientador: none, // Coorientador
+  local: none,        // Cidade
+  ano: none,          // Ano
 )
 ```
 
@@ -713,22 +713,22 @@ Cria a folha de rosto conforme NBR 14724.
 
 ```typst
 #folha-rosto(
-  author: "Cláudio Código",
-  title: "Uma proposta de pacote para normas ABNT em Typst",
-  subtitle: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
-  nature: "Dissertação apresentada ao PROFMAT - Programa de Mestrado Profissional em Rede em Matemática do Instituto de Ciências Exatas e Tecnológicas da Universidade Federal de Jataí",
-  objective: "como requisito parcial para obtenção do título de Mestre.",
+  autor: "Cláudio Código",
+  titulo: "Uma proposta de pacote para normas ABNT em Typst",
+  subtitulo: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
+  natureza: "Dissertação apresentada ao PROFMAT - Programa de Mestrado Profissional em Rede em Matemática do Instituto de Ciências Exatas e Tecnológicas da Universidade Federal de Jataí",
+  objetivo: "como requisito parcial para obtenção do título de Mestre.",
   area: "Matemática",
-  advisor: "Prof. Dr. Esdras Teixeira Costa",
-  location: "Jataí",
-  year: 2026,
+  orientador: "Prof. Dr. Esdras Teixeira Costa",
+  local: "Jataí",
+  ano: 2026,
 )
 ```
 
 *Ficha catalográfica (verso):*
 
 ```typst
-#let ficha-catalografica(content)
+#let ficha-catalografica(conteudo)
 ```
 
 === abstract.typ - Resumo e Abstract
@@ -737,17 +737,17 @@ Cria páginas de resumo conforme NBR 6028.
 
 ```typst
 // Resumo em português
-#let resumo(content, keywords: ())
+#let resumo(conteudo, palavras-chave: ())
 
 // Abstract em inglês
-#let abstract(content, keywords: ())
+#let abstract(conteudo, palavras-chave: ())
 
 // Resumo em outra língua
 #let foreign-abstract(
-  title: "ABSTRACT",
-  content: none,
-  keywords: (),
-  keyword-label: "Keywords",
+  titulo: "ABSTRACT",
+  conteudo: none,
+  palavras-chave: (),
+  rotulo-palavras-chave: "Keywords",
 )
 ```
 
@@ -755,13 +755,13 @@ Cria páginas de resumo conforme NBR 6028.
 
 ```typst
 #resumo(
-  keywords: ("ABNT", "Typst", "Formatação", "Trabalho acadêmico"),
+  palavras-chave: ("ABNT", "Typst", "Formatação", "Trabalho acadêmico"),
 )[
   Este trabalho apresenta o desenvolvimento do pacote ABNTypst para formatação de documentos acadêmicos conforme as normas da ABNT, utilizando o sistema de composição tipográfica Typst. O objetivo é fornecer uma alternativa moderna e acessível para a produção de trabalhos acadêmicos no Brasil...
 ]
 
 #abstract(
-  keywords: ("ABNT", "Typst", "Formatting", "Academic work"),
+  palavras-chave: ("ABNT", "Typst", "Formatting", "Academic work"),
 )[
   This work presents the development of the ABNTypst package for formatting academic documents according to ABNT standards, using the Typst typesetting system. The objective is to provide a modern and accessible alternative for the production of academic works in Brazil...
 ]
@@ -774,8 +774,8 @@ Cria sumário e listas conforme NBR 6027. O sumário formata automaticamente as 
 ```typst
 // Sumário
 #let sumario(
-  title: "SUMÁRIO",
-  depth: 3,
+  titulo: "SUMÁRIO",
+  profundidade: 3,
 )
 
 // Lista de ilustrações
@@ -785,10 +785,10 @@ Cria sumário e listas conforme NBR 6027. O sumário formata automaticamente as 
 #let lista-tabelas()
 
 // Lista de siglas
-#let lista-siglas(items)  // items: dicionário sigla -> significado
+#let lista-siglas(itens)  // itens: dicionário sigla -> significado
 
 // Lista de símbolos
-#let lista-simbolos(items)
+#let lista-simbolos(itens)
 ```
 
 *Exemplo:*
@@ -851,10 +851,10 @@ A formatação segue a hierarquia:
 
 ```typst
 // Para Introdução, Conclusão, Referências
-#let unnumbered-section(title, level: 1)
+#let unnumbered-section(titulo, nivel: 1)
 
 // Título pré-textual (não aparece no sumário)
-#let pretextual-title(title)
+#let pretextual-title(titulo)
 ```
 
 === quotes.typ - Citações
@@ -864,23 +864,23 @@ Formata citações conforme NBR 10520.
 *Citação direta curta (até 3 linhas):*
 
 ```typst
-#let citacao-curta(text, author: none, year: none, page: none)
+#let citacao-curta(texto, autor: none, ano: none, pagina: none)
 ```
 
 *Exemplo:*
 ```typst
-Conforme o autor, #citacao-curta("a formatação adequada é essencial", author: "SILVA", year: "2023", page: "42").
+Conforme o autor, #citacao-curta("a formatação adequada é essencial", autor: "SILVA", ano: "2023", pagina: "42").
 ```
 
 *Citação direta longa (mais de 3 linhas):*
 
 ```typst
-#let citacao-longa(body, author: none, year: none, page: none)
+#let citacao-longa(body, autor: none, ano: none, pagina: none)
 ```
 
 *Exemplo:*
 ```typst
-#citacao-longa(author: "SILVA", year: "2023", page: "42-43")[
+#citacao-longa(autor: "SILVA", ano: "2023", pagina: "42-43")[
   A formatação adequada dos trabalhos acadêmicos é essencial para a clareza e a credibilidade da comunicação científica. As normas ABNT estabelecem padrões que facilitam a leitura e a compreensão dos textos.
 ]
 ```
@@ -889,13 +889,13 @@ Conforme o autor, #citacao-curta("a formatação adequada é essencial", author:
 
 ```typst
 // Citação com autor no texto: "Segundo Silva (2023)..."
-#let citar-autor(author, year)
+#let citar-autor(autor, ano)
 
 // Citação com autor fora do texto: "... (SILVA, 2023)"
-#let cite-parenthetical(author, year, page: none)
+#let cite-parenthetical(autor, ano, pagina: none)
 
 // Citação de citação (apud)
-#let citar-apud(original-author, original-year, secondary-author, secondary-year, page: none)
+#let citar-apud(autor-original, ano-original, autor-secundario, ano-secundario, pagina: none)
 ```
 
 *Elementos especiais:*
@@ -914,41 +914,53 @@ Conforme o autor, #citacao-curta("a formatação adequada é essencial", author:
 #let grifo-do-autor(text)
 ```
 
-=== figures.typ - Figuras e Ilustrações
+=== figures.typ - Container, Imagem, Quadro e Ilustrações
 
-Formata figuras conforme NBR 14724 e IBGE.
+Formata figuras, quadros e ilustrações conforme NBR 14724 e IBGE.
 
 ```typst
-// Figura padrão ABNT
-#let abnt-figure(
-  body,           // Conteúdo (imagem)
-  caption: none,  // Título
-  source: none,   // Fonte
-  label: none,    // Rótulo para referência
+// Container genérico (única forma de criar um figure ABNT)
+// O supplement é inferido do kind: image→"Figura", table→"Tabela", "quadro"→"Quadro"
+#let container(
+  body,              // Conteúdo (imagem, quadro, tabela, etc.)
+  legenda: none,     // Título (aparece acima)
+  origem: none,      // Fonte (aparece abaixo)
+  nota: none,        // Nota explicativa (aparece abaixo da fonte)
+  kind: image,       // Tipo: image, table, "quadro"
+  supplement: auto,  // Inferido do kind (ou definido manualmente)
+  ..args,            // Repassados ao figure()
 )
 
-// Quadro (informações textuais)
-#let abnt-quadro(body, caption: none, source: none)
+// Wrapper para image() em português
+#let imagem(source, ..args)
 
-// Gráfico
-#let abnt-grafico(body, caption: none, source: none)
+// Quadro: tabela textual com bordas fechadas (wrapper para table())
+#let quadro(..args)
 
-// Fonte da figura
+// Fonte da figura (para uso avulso)
 #let fonte(content)
 
-// Nota da figura
+// Nota da figura (para uso avulso)
 #let nota-figura(content)
 ```
 
-*Exemplo:*
+*Exemplo — Figura:*
 
 ```typst
-#figure(
-  image("grafico.png", width: 80%),
-  caption: [Comparação de desempenho dos algoritmos],
-)
+#container(legenda: [Comparação de desempenho], origem: [Elaborado pelo autor (2026).]) [
+  #imagem("grafico.png", width: 80%)
+]
+```
 
-#fonte[Elaborado pelo autor (2026).]
+*Exemplo — Quadro:*
+
+```typst
+#container(legenda: [Glossário de termos], kind: "quadro", origem: [Elaborado pelo autor.]) [
+  #quadro(columns: 2,
+    [*Termo*], [*Definição*],
+    [Algoritmo], [Sequência finita de instruções],
+  )
+]
 ```
 
 === tables.typ - Tabelas
@@ -956,23 +968,8 @@ Formata figuras conforme NBR 14724 e IBGE.
 Formata tabelas conforme IBGE e NBR 14724.
 
 ```typst
-// Tabela ABNT/IBGE
-#let abnt-table(
-  caption: none,   // Título
-  source: none,    // Fonte
-  columns: auto,   // Colunas
-  ..args,          // Conteúdo da tabela
-)
-
-// Tabela com figure
-#let tabela(body, caption: none, source: none)
-
-// Tabela estilo IBGE (linhas horizontais apenas)
-#let ibge-table(
-  columns: auto,
-  header: (),      // Lista de cabeçalhos
-  body-rows: (),   // Lista de linhas
-)
+// Tabela IBGE (sem bordas laterais) — usar dentro de container()
+#let tabela(..args)
 
 // Nota de tabela
 #let nota-tabela(content)
@@ -981,10 +978,13 @@ Formata tabelas conforme IBGE e NBR 14724.
 *Exemplo de tabela IBGE:*
 
 ```typst
-#figure(
-  table(
+#container(
+  legenda: [Complexidade dos algoritmos de ordenação],
+  kind: table,
+  origem: [Adaptado de Cormen et al. (2012).],
+)[
+  #tabela(
     columns: 3,
-    stroke: none,
     table.hline(stroke: 1.5pt),
     [*Algoritmo*], [*Melhor caso*], [*Pior caso*],
     table.hline(stroke: 0.75pt),
@@ -992,12 +992,8 @@ Formata tabelas conforme IBGE e NBR 14724.
     [Mergesort], [O(n log n)], [O(n log n)],
     [Heapsort], [O(n log n)], [O(n log n)],
     table.hline(stroke: 1.5pt),
-  ),
-  caption: [Complexidade dos algoritmos de ordenação],
-  kind: table,
-)
-
-#fonte[Adaptado de Cormen et al. (2012).]
+  )
+]
 ```
 
 == References (Referências)
@@ -1009,8 +1005,8 @@ Integração com arquivos `.bib` para formatação automática de referências.
 ```typst
 // Bibliografia com formatação ABNT
 #let abnt-bibliography(
-  file,                         // Arquivo .bib ou .yaml
-  title: "REFERÊNCIAS",         // Título da seção
+  arquivo,                      // Arquivo .bib ou .yaml
+  titulo: "REFERÊNCIAS",        // Título da seção
   full: false,                  // Mostrar todas ou só citadas
 )
 
@@ -1018,7 +1014,7 @@ Integração com arquivos `.bib` para formatação automática de referências.
 #let abnt-cite-setup(body)
 
 // Versão simplificada
-#let referencias(file, title: "REFERÊNCIAS")
+#let referencias(arquivo, titulo: "REFERÊNCIAS")
 ```
 
 *Uso com citações:*
@@ -1050,59 +1046,59 @@ Funções auxiliares para o sistema autor-data conforme NBR 6023 e NBR 10520.
 
 ```typst
 // Citação autor-data básica
-#let citar(author, year, page: none)
+#let citar(autor, ano, pagina: none)
 
 // Citação com autor no texto
-#let citar-autor(author, year)
+#let citar-autor(autor, ano)
 
 // Múltiplos autores (até 3)
-#let citar-multiplos(authors, year, page: none)
+#let citar-multiplos(autores, ano, pagina: none)
 
 // Mais de 3 autores (et al.)
-#let citar-etal(first-author, year, page: none)
+#let citar-etal(primeiro-autor, ano, pagina: none)
 
 // Entidade coletiva
-#let citar-entidade(entity, year, page: none)
+#let citar-entidade(entidade, ano, pagina: none)
 
 // Obra sem autoria (pelo título)
-#let citar-titulo(title, year, page: none)
+#let citar-titulo(titulo, ano, pagina: none)
 ```
 
 *Formatação manual de referências:*
 
 ```typst
 // Livro
-#let ref-book(
-  author: none,
-  title: none,
-  subtitle: none,
-  edition: none,
-  location: none,
-  publisher: none,
-  year: none,
+#let ref-livro(
+  autor: none,
+  titulo: none,
+  subtitulo: none,
+  edicao: none,
+  local: none,
+  editora: none,
+  ano: none,
 )
 
 // Artigo de periódico
-#let ref-article(
-  author: none,
-  title: none,
-  journal: none,
-  location: none,
+#let ref-artigo(
+  autor: none,
+  titulo: none,
+  revista: none,
+  local: none,
   volume: none,
-  number: none,
-  pages: none,
-  month: none,
-  year: none,
+  numero: none,
+  paginas: none,
+  mes: none,
+  ano: none,
 )
 
 // Documento eletrônico
 #let ref-online(
-  author: none,
-  title: none,
+  autor: none,
+  titulo: none,
   site: none,
-  year: none,
+  ano: none,
   url: none,
-  access-date: none,
+  data-acesso: none,
 )
 ```
 
@@ -1114,22 +1110,22 @@ Template completo para trabalhos acadêmicos.
 
 ```typst
 #show: abntcc.with(
-  title: "",           // Título
-  subtitle: none,      // Subtítulo
-  author: "",          // Autor
-  institution: "",     // Instituição
-  faculty: none,       // Faculdade
-  program: none,       // Programa
-  location: "",        // Cidade
-  year: 2026,          // Ano
-  nature: none,        // Natureza
-  objective: none,     // Objetivo
+  titulo: "",          // Título
+  subtitulo: none,     // Subtítulo
+  autor: "",           // Autor
+  instituicao: "",     // Instituição
+  faculdade: none,     // Faculdade
+  programa: none,      // Programa
+  local: "",           // Cidade
+  ano: 2026,           // Ano
+  natureza: none,      // Natureza
+  objetivo: none,      // Objetivo
   area: none,          // Área
-  advisor: none,       // Orientador
-  co-advisor: none,    // Coorientador
-  keywords-pt: (),     // Palavras-chave
-  keywords-en: (),     // Keywords
-  font: "Times New Roman",
+  orientador: none,    // Orientador
+  coorientador: none,  // Coorientador
+  palavras-chave: (),  // Palavras-chave
+  palavras-chave-en: (),  // Keywords
+  fonte: "Times New Roman",
 )
 ```
 
@@ -1152,15 +1148,15 @@ Template para artigos conforme NBR 6022.
 
 ```typst
 #show: artigo.with(
-  title: "",
-  subtitle: none,
-  authors: (),         // Lista de autores com afiliação
-  abstract-pt: none,
-  abstract-en: none,
-  keywords-pt: (),
-  keywords-en: (),
-  font: "Times New Roman",
-  columns: 1,          // 1 ou 2 colunas
+  titulo: "",
+  subtitulo: none,
+  autores: (),         // Lista de autores com afiliação
+  resumo: none,
+  resumo-en: none,
+  palavras-chave: (),
+  palavras-chave-en: (),
+  fonte: "Times New Roman",
+  colunas: 1,          // 1 ou 2 colunas
 )
 ```
 
@@ -1168,8 +1164,8 @@ Template para artigos conforme NBR 6022.
 
 ```typst
 #show: artigo.with(
-  title: "Título do Artigo",
-  authors: (
+  titulo: "Título do Artigo",
+  autores: (
     (name: "Maria da Silva", affiliation: "Universidade Federal de São Paulo"),
     (name: "João Santos", affiliation: "Universidade de São Paulo"),
   ),
@@ -1183,19 +1179,19 @@ Template para fascículos de publicações periódicas técnicas e/ou científic
 
 ```typst
 #show: periodical.with(
-  title: "Revista Brasileira de Ciência",
-  subtitle: none,
+  titulo: "Revista Brasileira de Ciência",
+  subtitulo: none,
   issn: "1234-5678",
   volume: 1,
-  number: 1,
-  year: 2026,
-  month-start: 1,       // Janeiro
-  month-end: 3,         // Março (para trimestral)
-  location: "São Paulo",
-  publisher: "Editora Exemplo",
-  institution: "Universidade Federal",
+  numero: 1,
+  ano: 2026,
+  mes-inicio: 1,        // Janeiro
+  mes-fim: 3,           // Março (para trimestral)
+  local: "São Paulo",
+  editora: "Editora Exemplo",
+  instituicao: "Universidade Federal",
   doi: none,
-  font: "Times New Roman",
+  fonte: "Times New Roman",
 )
 ```
 
@@ -1204,25 +1200,25 @@ Template para fascículos de publicações periódicas técnicas e/ou científic
 ```typst
 // Capa do fascículo
 #periodical-cover(
-  title: "Título do Periódico",
+  titulo: "Título do Periódico",
   issn: "1234-5678",
   volume: 1,
-  number: 1,
-  year: 2026,
-  month-start: 1,
-  month-end: 3,
+  numero: 1,
+  ano: 2026,
+  mes-inicio: 1,
+  mes-fim: 3,
 )
 
 // Legenda bibliográfica (para rodapé de cada página)
 #bibliographic-legend(
-  title: "Revista Brasileira de Ciência",
-  location: "São Paulo",
+  titulo: "Revista Brasileira de Ciência",
+  local: "São Paulo",
   volume: 1,
-  number: 1,
-  pages: "1-154",
-  month-start: 1,
-  month-end: 3,
-  year: 2026,
+  numero: 1,
+  paginas: "1-154",
+  mes-inicio: 1,
+  mes-fim: 3,
+  ano: 2026,
 )
 // Resultado: "R. bras. Ci., São Paulo, v. 1, n. 1, p. 1-154, jan./mar. 2026."
 
@@ -1233,10 +1229,10 @@ Template para fascículos de publicações periódicas técnicas e/ou científic
 
 // Artigo dentro do periódico
 #periodical-article(
-  title: "Título do Artigo",
-  authors: ((name: "Autor", affiliation: "Instituição"),),
-  abstract-pt: [...],
-  keywords-pt: ("palavra1", "palavra2"),
+  titulo: "Título do Artigo",
+  autores: ((name: "Autor", affiliation: "Instituição"),),
+  resumo: [...],
+  palavras-chave: ("palavra1", "palavra2"),
 )[
   Conteúdo do artigo...
 ]
@@ -1248,17 +1244,17 @@ Template para livros e folhetos com todos os elementos pré-textuais e pós-text
 
 ```typst
 #show: livro.with(
-  title: "Título do Livro",
-  subtitle: none,
-  author: "Nome do Autor",
-  publisher: "Editora Exemplo",
-  location: "São Paulo",
-  year: 2026,
-  edition: none,        // A partir da 2ª edição
+  titulo: "Título do Livro",
+  subtitulo: none,
+  autor: "Nome do Autor",
+  editora: "Editora Exemplo",
+  local: "São Paulo",
+  ano: 2026,
+  edicao: none,         // A partir da 2ª edição
   volume: none,
   isbn: "978-85-00000-00-0",
-  font: "Times New Roman",
-  running-header: "Título do Livro",  // Título corrente
+  fonte: "Times New Roman",
+  cabecalho: "Título do Livro",  // Título corrente
 )
 ```
 
@@ -1267,38 +1263,38 @@ Template para livros e folhetos com todos os elementos pré-textuais e pós-text
 ```typst
 // Capa
 #book-cover(
-  author: "Nome do Autor",
-  title: "Título",
-  subtitle: "Subtítulo",
-  publisher: "Editora",
-  edition: 2,
-  location: "São Paulo",
-  year: 2026,
+  autor: "Nome do Autor",
+  titulo: "Título",
+  subtitulo: "Subtítulo",
+  editora: "Editora",
+  edicao: 2,
+  local: "São Paulo",
+  ano: 2026,
 )
 
 // Falsa folha de rosto (opcional)
-#half-title-page(title: "Título")
+#half-title-page(titulo: "Título")
 
 // Folha de rosto (anverso)
 #book-title-page(
-  author: "Nome do Autor",
-  title: "Título",
-  subtitle: "Subtítulo",
-  collaborators: [Tradução de João Silva],
-  edition: 2,
+  autor: "Nome do Autor",
+  titulo: "Título",
+  subtitulo: "Subtítulo",
+  colaboradores: [Tradução de João Silva],
+  edicao: 2,
   volume: 1,
-  publisher: "Editora",
-  location: "São Paulo",
-  year: 2026,
+  editora: "Editora",
+  local: "São Paulo",
+  ano: 2026,
 )
 
 // Folha de rosto (verso com ficha catalográfica)
 #book-title-page-verso(
-  copyright-year: 2026,
-  copyright-holder: "Nome do Autor",
-  original-title: "Original Title",  // Se tradução
-  catalog-card: [...],
-  librarian: "Nome do Bibliotecário - CRB-0/0000",
+  ano-copyright: 2026,
+  detentor-copyright: "Nome do Autor",
+  titulo-original: "Original Title",  // Se tradução
+  ficha-catalografica: [...],
+  bibliotecario: "Nome do Bibliotecário - CRB-0/0000",
 )
 
 // Dedicatória, agradecimentos, epígrafe
@@ -1335,12 +1331,12 @@ Template para livros e folhetos com todos os elementos pré-textuais e pós-text
 ))
 
 // Apêndice (elaborado pelo autor)
-#book-appendix(letter: "A", title: "Questionário Aplicado")[
+#book-appendix(letra: "A", titulo: "Questionário Aplicado")[
   Conteúdo do apêndice...
 ]
 
 // Anexo (documento externo)
-#book-annex(letter: "A", title: "Documento de Referência")[
+#book-annex(letra: "A", titulo: "Documento de Referência")[
   Conteúdo do anexo...
 ]
 
@@ -1363,18 +1359,18 @@ Template para projetos de pesquisa.
 
 ```typst
 #show: projeto-pesquisa.with(
-  title: "",           // Título do projeto
-  subtitle: none,      // Subtítulo
-  author: "",          // Autor(es) - pode ser string ou array
-  institution: "",     // Nome da entidade
-  location: "",        // Cidade
-  year: 2026,          // Ano de entrega
-  project-type: none,  // Tipo de projeto
-  advisor: none,       // Orientador
-  co-advisor: none,    // Coorientador
-  coordinator: none,   // Coordenador
+  titulo: "",          // Título do projeto
+  subtitulo: none,     // Subtítulo
+  autor: "",           // Autor(es) - pode ser string ou array
+  instituicao: "",     // Nome da entidade
+  local: "",           // Cidade
+  ano: 2026,           // Ano de entrega
+  tipo-projeto: none,  // Tipo de projeto
+  orientador: none,    // Orientador
+  coorientador: none,  // Coorientador
+  coordenador: none,   // Coordenador
   volume: none,        // Número do volume
-  font: "Times New Roman",
+  fonte: "Times New Roman",
 )
 ```
 
@@ -1383,33 +1379,33 @@ Template para projetos de pesquisa.
 ```typst
 // Capa específica para projeto
 #project-cover(
-  institution: none,
-  author: none,
-  title: none,
-  subtitle: none,
+  instituicao: none,
+  autor: none,
+  titulo: none,
+  subtitulo: none,
   volume: none,
-  location: none,
-  year: none,
+  local: none,
+  ano: none,
 )
 
 // Folha de rosto específica
 #project-title-page(
-  author: none,
-  title: none,
-  subtitle: none,
+  autor: none,
+  titulo: none,
+  subtitulo: none,
   volume: none,
-  project-type: none,
-  institution: none,
-  advisor: none,
-  co-advisor: none,
-  coordinator: none,
-  location: none,
-  year: none,
+  tipo-projeto: none,
+  instituicao: none,
+  orientador: none,
+  coorientador: none,
+  coordenador: none,
+  local: none,
+  ano: none,
 )
 
 // Cronograma do projeto
 #cronograma(
-  title: "CRONOGRAMA",
+  titulo: "CRONOGRAMA",
   activities: ("Revisão bibliográfica", "Coleta de dados", "Análise"),
   periods: ("Jan", "Fev", "Mar", "Abr", "Mai", "Jun"),
   schedule: (
@@ -1421,7 +1417,7 @@ Template para projetos de pesquisa.
 
 // Recursos do projeto
 #recursos(
-  items: (
+  itens: (
     ("Material de consumo", 500.00),
     ("Equipamentos", 2000.00),
     ("Serviços", 1500.00),
@@ -1440,20 +1436,20 @@ Template para relatórios técnicos e/ou científicos.
 
 ```typst
 #show: relatorio.with(
-  title: "",              // Título do relatório
-  subtitle: none,         // Subtítulo
-  report-number: none,    // Número do relatório
-  report-code: none,      // Código de identificação
-  institution: "",        // Órgão responsável
-  institution-address: none,
-  project-title: none,    // Projeto relacionado
-  authors: (),            // Lista de autores
-  classification: none,   // Classificação de segurança
+  titulo: "",             // Título do relatório
+  subtitulo: none,        // Subtítulo
+  numero-relatorio: none, // Número do relatório
+  codigo-relatorio: none, // Código de identificação
+  instituicao: "",        // Órgão responsável
+  endereco-instituicao: none,
+  titulo-projeto: none,   // Projeto relacionado
+  autores: (),            // Lista de autores
+  classificacao: none,    // Classificação de segurança
   issn: none,
-  location: "",
-  year: 2026,
+  local: "",
+  ano: 2026,
   volume: none,
-  font: "Times New Roman",
+  fonte: "Times New Roman",
 )
 ```
 
@@ -1462,28 +1458,28 @@ Template para relatórios técnicos e/ou científicos.
 ```typst
 // Capa do relatório
 #report-cover(
-  institution: none,
-  institution-address: none,
-  report-number: none,
+  instituicao: none,
+  endereco-instituicao: none,
+  numero-relatorio: none,
   issn: none,
-  title: none,
-  subtitle: none,
-  classification: none,
-  year: none,
+  titulo: none,
+  subtitulo: none,
+  classificacao: none,
+  ano: none,
 )
 
 // Folha de rosto
 #report-title-page(
-  institution: none,
-  project-title: none,
-  title: none,
-  subtitle: none,
+  instituicao: none,
+  titulo-projeto: none,
+  titulo: none,
+  subtitulo: none,
   volume: none,
-  report-code: none,
-  classification: none,
-  authors: ((name: "Nome", qualification: "Cargo"),),
-  location: none,
-  year: none,
+  codigo-relatorio: none,
+  classificacao: none,
+  autores: ((name: "Nome", qualification: "Cargo"),),
+  local: none,
+  ano: none,
 )
 
 // Verso da folha de rosto
@@ -1494,31 +1490,31 @@ Template para relatórios técnicos e/ou científicos.
 
 // Errata
 #errata(
-  reference: [SILVA, M. *Relatório*. São Paulo, 2026.],
-  items: (
-    (page: 10, line: 5, wrong: "erro", correct: "correto"),
+  referencia: [SILVA, M. *Relatório*. São Paulo, 2026.],
+  itens: (
+    (pagina: 10, linha: 5, errado: "erro", correto: "correto"),
   ),
 )
 
 // Formulário de identificação
 #formulario-identificacao(
-  title: "Título",
-  classification: "Ostensivo",
-  report-number: "001/2026",
-  report-type: "Parcial",
-  date: "Janeiro 2026",
-  authors: (),
-  institutions: (),
-  abstract-text: [...],
-  keywords: ("Palavra1", "Palavra2"),
-  pages: "150",
+  titulo: "Título",
+  classificacao: "Ostensivo",
+  numero-relatorio: "001/2026",
+  tipo-relatorio: "Parcial",
+  data: "Janeiro 2026",
+  autores: (),
+  instituicoes: (),
+  texto-resumo: [...],
+  palavras-chave: ("Palavra1", "Palavra2"),
+  paginas: "150",
 )
 
 // Código de identificação formatado
 #report-code(
   institution-code: "INPE",
   category: "RPE",
-  year: 2026,
+  ano: 2026,
   subject: "EST",
   sequence: 1,
 )
@@ -1531,21 +1527,21 @@ Template para pôsteres técnicos e científicos.
 
 ```typst
 #show: poster.with(
-  title: "",           // Título (obrigatório)
-  subtitle: none,      // Subtítulo
-  authors: (),         // Lista de autores
-  institution: none,   // Instituição
-  contact: none,       // Contato
-  abstract-text: none, // Resumo (até 100 palavras)
-  keywords: (),        // Palavras-chave
-  columns: 3,          // Número de colunas
-  width: 90cm,         // Largura do pôster
-  height: 120cm,       // Altura do pôster
-  font: "Arial",
-  title-size: 72pt,
-  body-size: 24pt,
-  background: white,
-  accent-color: rgb("#003366"),
+  titulo: "",          // Título (obrigatório)
+  subtitulo: none,     // Subtítulo
+  autores: (),         // Lista de autores
+  instituicao: none,   // Instituição
+  contato: none,       // Contato
+  texto-resumo: none,  // Resumo (até 100 palavras)
+  palavras-chave: (),  // Palavras-chave
+  num-colunas: 3,      // Número de colunas
+  largura: 90cm,       // Largura do pôster
+  altura: 120cm,       // Altura do pôster
+  fonte: "Arial",
+  tamanho-titulo: 72pt,
+  tamanho-corpo: 24pt,
+  fundo: white,
+  cor-destaque: rgb("#003366"),
 )
 ```
 
@@ -1560,9 +1556,9 @@ Template para pôsteres técnicos e científicos.
 
 // Pôster acadêmico com orientador e logo
 #show: academic-poster.with(
-  advisor: "Prof. Dr. Nome",
+  orientador: "Prof. Dr. Nome",
   logo: image("logo.png", width: 3cm),
-  department: "Departamento de Computação",
+  departamento: "Departamento de Computação",
   ...
 )
 ```
@@ -1571,7 +1567,7 @@ Template para pôsteres técnicos e científicos.
 
 ```typst
 // Seção com caixa colorida
-#poster-section(title: "RESULTADOS")[
+#poster-section(titulo: "RESULTADOS")[
   Conteúdo da seção...
 ]
 
@@ -1583,8 +1579,8 @@ Template para pôsteres técnicos e científicos.
 // Figura para pôster
 #poster-figure(
   image("grafico.png"),
-  caption: "Resultados obtidos",
-  source: "Elaborado pelo autor",
+  legenda: "Resultados obtidos",
+  origem: "Elaborado pelo autor",
 )
 
 // Referências compactas
@@ -1603,26 +1599,26 @@ Funções para criar índices remissivos.
 ```typst
 // Registrar entrada no índice (no texto)
 A #idx("algoritmo") é uma sequência de instruções...
-O #idx("algoritmo", subterm: "de ordenação")[Quicksort] é eficiente...
+O #idx("algoritmo", subtermo: "de ordenação")[Quicksort] é eficiente...
 
 // Entrada sem exibir texto
-#index-entry("termo", subterm: none)
+#index-entry("termo", subtermo: none)
 
 // Remissivas
-#let see-entries = (
+#let entradas-ver = (
   index-see("Aviação", "Aeronáutica"),  // "ver"
 )
-#let see-also-entries = (
+#let entradas-ver-tambem = (
   index-see-also("Férias", "Licença"),  // "ver também"
 )
 
 // Gerar índice
 #indice(
-  type-label: "DE ASSUNTOS",
-  see-entries: see-entries,
-  see-also-entries: see-also-entries,
-  columns: 2,
-  letter-headers: true,
+  rotulo-tipo: "DE ASSUNTOS",
+  entradas-ver: entradas-ver,
+  entradas-ver-tambem: entradas-ver-tambem,
+  num-colunas: 2,
+  cabecalhos-letras: true,
 )
 
 // Variantes de índice
@@ -1639,29 +1635,29 @@ Funções para criar lombada de encadernação.
 ```typst
 // Gera página com lombada para impressão
 #lombada(
-  author: "SILVA",
-  title: "TÍTULO DO TRABALHO",
+  autor: "SILVA",
+  titulo: "TÍTULO DO TRABALHO",
   volume: 1,
-  year: 2026,
-  institution: "UFSC",
+  ano: 2026,
+  instituicao: "UFSC",
   logo: none,
-  orientation: "descendente",  // ou "horizontal"
-  spine-width: 2cm,
-  spine-height: 29.7cm,
-  reserved-space: 30mm,  // Espaço para etiquetas
+  orientacao: "descendente",  // ou "horizontal"
+  largura-lombada: 2cm,
+  altura-lombada: 29.7cm,
+  espaco-reservado: 30mm,  // Espaço para etiquetas
 )
 
 // Preview da lombada no documento
 #lombada-preview(
-  author: "SILVA",
-  title: "TÍTULO DO TRABALHO",
-  year: 2026,
-  institution: "UFSC",
+  autor: "SILVA",
+  titulo: "TÍTULO DO TRABALHO",
+  ano: 2026,
+  instituicao: "UFSC",
 )
 
 // Título de margem de capa (para documentos finos)
 #margem-capa(
-  title: "TÍTULO",
+  titulo: "TÍTULO",
   volume: 1,
 )
 ```
@@ -1809,7 +1805,7 @@ meu-tcc/
 ```typst
 #show: abntcc.with(
   // ...
-  font: "Arial",
+  fonte: "Arial",
 )
 ```
 
@@ -1858,8 +1854,8 @@ Sim! O pacote inclui suporte a arquivos `.bib` com formatação automática ABNT
 ```typst
 #show: abntcc.with(
   // ... outros parâmetros ...
-  bibliography-file: "referencias.bib",
-  bibliography-title: "REFERÊNCIAS",  // opcional
+  arquivo-bibliografia: "referencias.bib",
+  titulo-bibliografia: "REFERÊNCIAS",  // opcional
 )
 ```
 
@@ -1877,7 +1873,7 @@ O pacote usa um arquivo CSL baseado nas normas NBR 6023:2018 e NBR 10520:2023.
 - Títulos de obras sem autor devem ter a primeira palavra em MAIÚSCULAS no arquivo .bib
 - Legislação tem suporte limitado
 
-Para casos especiais, você pode usar as funções de formatação manual (`ref-book`, `ref-article`, `ref-online`)
+Para casos especiais, você pode usar as funções de formatação manual (`ref-livro`, `ref-artigo`, `ref-online`)
 
 = Changelog
 

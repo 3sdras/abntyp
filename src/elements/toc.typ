@@ -81,11 +81,11 @@
 
 /// Sumário customizado com mais controle
 #let sumario(
-  title: "SUMÁRIO",
-  depth: 3,
+  titulo: "SUMÁRIO",
+  profundidade: 3,
 ) = {
   align(center)[
-    #text(weight: "bold", size: 12pt, title)
+    #text(weight: "bold", size: 12pt, titulo)
   ]
 
   v(1.5em)
@@ -152,7 +152,7 @@
 
   outline(
     title: none,
-    depth: depth,
+    depth: profundidade,
     indent: 0pt,
   )
 
@@ -192,8 +192,8 @@
 }
 
 /// Lista de abreviaturas e siglas
-/// - items: dicionário de sigla -> significado
-#let lista-siglas(items) = {
+/// - itens: dicionário de sigla -> significado
+#let lista-siglas(itens) = {
   align(center)[
     #text(weight: "bold", size: 12pt, "LISTA DE ABREVIATURAS E SIGLAS")
   ]
@@ -202,7 +202,7 @@
 
   set par(first-line-indent: 0pt)
 
-  for (sigla, significado) in items {
+  for (sigla, significado) in itens {
     [#sigla #h(1em) #significado \ ]
   }
 
@@ -210,8 +210,8 @@
 }
 
 /// Lista de símbolos
-/// - items: dicionário de símbolo -> significado
-#let lista-simbolos(items) = {
+/// - itens: dicionário de símbolo -> significado
+#let lista-simbolos(itens) = {
   align(center)[
     #text(weight: "bold", size: 12pt, "LISTA DE SÍMBOLOS")
   ]
@@ -220,7 +220,7 @@
 
   set par(first-line-indent: 0pt)
 
-  for (simbolo, significado) in items {
+  for (simbolo, significado) in itens {
     [#simbolo #h(1em) #significado \ ]
   }
 

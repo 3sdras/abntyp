@@ -15,38 +15,38 @@
 /// Gera uma pagina de lombada para impressao separada
 ///
 /// Parametros:
-/// - author: nome do autor (pode ser abreviado)
-/// - title: titulo do trabalho (pode ser abreviado)
+/// - autor: nome do autor (pode ser abreviado)
+/// - titulo: titulo do trabalho (pode ser abreviado)
 /// - volume: numero do volume (opcional)
-/// - year: ano (opcional)
-/// - institution: sigla da instituicao (opcional)
+/// - ano: ano (opcional)
+/// - instituicao: sigla da instituicao (opcional)
 /// - logo: imagem da logomarca (opcional)
-/// - orientation: "descendente" ou "horizontal" (padrao: "descendente")
-/// - spine-width: largura da lombada (padrao: 2cm)
-/// - spine-height: altura da lombada (padrao: 29.7cm - A4)
-/// - reserved-space: espaco reservado na base (padrao: 30mm)
+/// - orientacao: "descendente" ou "horizontal" (padrao: "descendente")
+/// - largura-lombada: largura da lombada (padrao: 2cm)
+/// - altura-lombada: altura da lombada (padrao: 29.7cm - A4)
+/// - espaco-reservado: espaco reservado na base (padrao: 30mm)
 ///
 /// Nota: Esta funcao gera uma pagina separada com a lombada.
 /// Para impressao, a lombada deve ser cortada e aplicada ao dorso do trabalho.
 #let lombada(
-  author: none,
-  title: none,
+  autor: none,
+  titulo: none,
   volume: none,
-  year: none,
-  institution: none,
+  ano: none,
+  instituicao: none,
   logo: none,
-  orientation: "descendente",
-  spine-width: 2cm,
-  spine-height: 29.7cm,
-  reserved-space: 30mm,
+  orientacao: "descendente",
+  largura-lombada: 2cm,
+  altura-lombada: 29.7cm,
+  espaco-reservado: 30mm,
 ) = {
   set page(
-    width: spine-height,
-    height: spine-width,
+    width: altura-lombada,
+    height: largura-lombada,
     margin: 3mm,
   )
 
-  if orientation == "descendente" {
+  if orientacao == "descendente" {
     // Lombada descendente - legivel do alto para o pe
     // O texto e rotacionado 90 graus
     set align(left + horizon)
@@ -64,14 +64,14 @@
         align: horizon,
 
         // Autor
-        if author != none {
-          text(weight: "bold", upper(author))
+        if autor != none {
+          text(weight: "bold", upper(autor))
         },
 
         // Titulo (centralizado, ocupa espaco restante)
         align(center)[
-          #if title != none {
-            text(weight: "bold", upper(title))
+          #if titulo != none {
+            text(weight: "bold", upper(titulo))
           }
         ],
 
@@ -79,13 +79,13 @@
         {
           let elements = ()
           if volume != none { elements.push("v. " + str(volume)) }
-          if year != none { elements.push(str(year)) }
-          if institution != none { elements.push(institution) }
+          if ano != none { elements.push(str(ano)) }
+          if instituicao != none { elements.push(instituicao) }
           elements.join(" ")
         },
 
         // Espaco reservado (30mm) + logo
-        box(width: reserved-space)[
+        box(width: espaco-reservado)[
           #if logo != none {
             align(center + horizon, logo)
           }
@@ -103,16 +103,16 @@
       #set text(size: 9pt)
 
       // Autor
-      if author != none {
-        text(weight: "bold", size: 10pt, upper(author))
+      if autor != none {
+        text(weight: "bold", size: 10pt, upper(autor))
         v(0.5em)
       }
 
       v(1fr)
 
       // Titulo
-      if title != none {
-        text(weight: "bold", upper(title))
+      if titulo != none {
+        text(weight: "bold", upper(titulo))
       }
 
       v(1fr)
@@ -120,13 +120,13 @@
       // Elementos alfanumericos
       {
         if volume != none { [v. #volume] }
-        if year != none {
+        if ano != none {
           if volume != none { linebreak() }
-          str(year)
+          str(ano)
         }
-        if institution != none {
+        if instituicao != none {
           linebreak()
-          institution
+          instituicao
         }
       }
 
@@ -138,7 +138,7 @@
       }
 
       // Espaco reservado
-      v(reserved-space)
+      v(espaco-reservado)
     ]
   }
 
@@ -151,19 +151,19 @@
 /// Parametros: mesmos da funcao lombada()
 /// Retorna: uma caixa com a lombada renderizada verticalmente
 #let lombada-preview(
-  author: none,
-  title: none,
+  autor: none,
+  titulo: none,
   volume: none,
-  year: none,
-  institution: none,
+  ano: none,
+  instituicao: none,
   logo: none,
-  spine-width: 2cm,
-  spine-height: 20cm,
-  reserved-space: 30mm,
+  largura-lombada: 2cm,
+  altura-lombada: 20cm,
+  espaco-reservado: 30mm,
 ) = {
   box(
-    width: spine-width,
-    height: spine-height,
+    width: largura-lombada,
+    height: altura-lombada,
     stroke: 0.5pt + gray,
     inset: 2mm,
   )[
@@ -171,9 +171,9 @@
     #set align(center)
 
     // Autor (topo)
-    if author != none {
+    if autor != none {
       rotate(-90deg, reflow: true)[
-        #text(weight: "bold", size: 7pt, upper(author))
+        #text(weight: "bold", size: 7pt, upper(autor))
       ]
       v(0.3em)
     }
@@ -181,9 +181,9 @@
     v(1fr)
 
     // Titulo (rotacionado)
-    if title != none {
+    if titulo != none {
       rotate(-90deg, reflow: true)[
-        #text(weight: "bold", size: 8pt, upper(title))
+        #text(weight: "bold", size: 8pt, upper(titulo))
       ]
     }
 
@@ -194,15 +194,15 @@
       #{
         let elements = ()
         if volume != none { elements.push("v. " + str(volume)) }
-        if year != none { elements.push(str(year)) }
+        if ano != none { elements.push(str(ano)) }
         elements.join(" ")
       }
     ]
 
-    if institution != none {
+    if instituicao != none {
       v(0.3em)
       rotate(-90deg, reflow: true)[
-        #text(size: 7pt, institution)
+        #text(size: 7pt, instituicao)
       ]
     }
 
@@ -223,24 +223,24 @@
 /// Gera texto formatado para lombada descendente
 /// Retorna o texto rotacionado para ser usado em outros contextos
 #let spine-text-descending(
-  author: none,
-  title: none,
+  autor: none,
+  titulo: none,
   volume: none,
-  year: none,
+  ano: none,
 ) = {
   let parts = ()
 
-  if author != none {
-    parts.push(text(weight: "bold", upper(author)))
+  if autor != none {
+    parts.push(text(weight: "bold", upper(autor)))
   }
 
-  if title != none {
-    parts.push(text(weight: "bold", upper(title)))
+  if titulo != none {
+    parts.push(text(weight: "bold", upper(titulo)))
   }
 
   let elements = ()
   if volume != none { elements.push("v. " + str(volume)) }
-  if year != none { elements.push(str(year)) }
+  if ano != none { elements.push(str(ano)) }
 
   if elements.len() > 0 {
     parts.push(elements.join(" "))
@@ -254,22 +254,22 @@
 /// Titulo impresso longitudinalmente ao lado da lombada
 ///
 /// Parametros:
-/// - title: titulo do trabalho
+/// - titulo: titulo do trabalho
 /// - volume: numero do volume (opcional)
-/// - margin-width: largura da margem (padrao: 1.5cm)
+/// - largura-margem: largura da margem (padrao: 1.5cm)
 #let margem-capa(
-  title: none,
+  titulo: none,
   volume: none,
-  margin-width: 1.5cm,
+  largura-margem: 1.5cm,
 ) = {
   box(
-    width: margin-width,
+    width: largura-margem,
     height: 100%,
   )[
     #set align(center + horizon)
     #rotate(-90deg, reflow: true)[
       #set text(size: 10pt)
-      #if title != none { upper(title) }
+      #if titulo != none { upper(titulo) }
       #if volume != none { [ - v. #volume] }
     ]
   ]

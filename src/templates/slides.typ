@@ -37,33 +37,31 @@
 /// academicas comuns no Brasil, mas nao representa exigencia normativa.
 ///
 /// Parametros:
-/// - title: titulo da apresentacao
-/// - subtitle: subtitulo (opcional)
-/// - author: nome do autor/apresentador
-/// - advisor: orientador (opcional, para defesas de TCC/dissertacao/tese)
-/// - institution: nome da instituicao
-/// - department: departamento/programa (opcional)
-/// - date: data da apresentacao (padrao: data atual)
+/// - titulo: titulo da apresentacao
+/// - subtitulo: subtitulo (opcional)
+/// - autor: nome do autor/apresentador
+/// - orientador: orientador (opcional, para defesas de TCC/dissertacao/tese)
+/// - instituicao: nome da instituicao
+/// - departamento: departamento/programa (opcional)
+/// - data: data da apresentacao (padrao: data atual)
 /// - logo: logotipo da instituicao (opcional, imagem)
-/// - aspect-ratio: proporcao da tela ("16-9" ou "4-3", padrao: "16-9")
-/// - font: fonte a usar (padrao: "Arial")
-/// - theme: tema visual ("simple", "academic", "institutional")
-/// - primary-color: cor principal (padrao: azul institucional)
-/// - secondary-color: cor secundaria (opcional)
+/// - proporcao: proporcao da tela ("16-9" ou "4-3", padrao: "16-9")
+/// - fonte: fonte a usar (padrao: "Arial")
+/// - cor-primaria: cor principal (padrao: azul institucional)
+/// - cor-secundaria: cor secundaria (opcional)
 #let slides(
-  title: "",
-  subtitle: none,
-  author: "",
-  advisor: none,
-  institution: "",
-  department: none,
-  date: datetime.today(),
+  titulo: "",
+  subtitulo: none,
+  autor: "",
+  orientador: none,
+  instituicao: "",
+  departamento: none,
+  data: datetime.today(),
   logo: none,
-  aspect-ratio: "16-9",
-  font: "Arial",
-  theme: "academic",
-  primary-color: rgb("#003366"),
-  secondary-color: rgb("#666666"),
+  proporcao: "16-9",
+  fonte: "Arial",
+  cor-primaria: rgb("#003366"),
+  cor-secundaria: rgb("#666666"),
   body,
 ) = {
   // Nota sobre ausencia de norma ABNT
@@ -76,23 +74,23 @@
 
   // Configuracao do documento
   set document(
-    title: title,
-    author: author,
+    title: titulo,
+    author: autor,
   )
 
   // Configuracao de texto base
   set text(
-    font: font,
+    font: fonte,
     lang: "pt",
     region: "BR",
   )
 
   // Aplicar tema Touying com configuracoes academicas
   show: simple-theme.with(
-    aspect-ratio: aspect-ratio,
-    primary: primary-color,
-    secondary: secondary-color,
-    footer: [#institution #h(1fr) #author],
+    aspect-ratio: proporcao,
+    primary: cor-primaria,
+    secondary: cor-secundaria,
+    footer: [#instituicao #h(1fr) #autor],
   )
 
   // Slide de titulo personalizado
@@ -108,42 +106,42 @@
       }
 
       // Instituicao
-      #text(size: 18pt, fill: secondary-color, upper(institution))
+      #text(size: 18pt, fill: cor-secundaria, upper(instituicao))
 
-      #if department != none {
+      #if departamento != none {
         linebreak()
-        text(size: 14pt, fill: secondary-color, department)
+        text(size: 14pt, fill: cor-secundaria, departamento)
       }
 
       #v(1em)
 
       // Titulo
-      #text(size: 32pt, weight: "bold", fill: primary-color, title)
+      #text(size: 32pt, weight: "bold", fill: cor-primaria, titulo)
 
       // Subtitulo
-      #if subtitle != none {
+      #if subtitulo != none {
         linebreak()
         v(0.3em)
-        text(size: 20pt, fill: secondary-color, subtitle)
+        text(size: 20pt, fill: cor-secundaria, subtitulo)
       }
 
       #v(1.5em)
 
       // Autor
-      #text(size: 18pt, author)
+      #text(size: 18pt, autor)
 
       // Orientador (para defesas)
-      #if advisor != none {
+      #if orientador != none {
         linebreak()
         v(0.3em)
-        text(size: 14pt)[Orientador(a): #advisor]
+        text(size: 14pt)[Orientador(a): #orientador]
       }
 
       #v(1em)
 
       // Data
-      #text(size: 14pt, fill: secondary-color)[
-        #date.display("[day] de [month repr:long] de [year]")
+      #text(size: 14pt, fill: cor-secundaria)[
+        #data.display("[day] de [month repr:long] de [year]")
       ]
     ]
   })
@@ -162,45 +160,45 @@
 /// convencoes comuns em bancas de defesa no Brasil.
 ///
 /// Parametros adicionais alem de slides():
-/// - degree: grau pretendido (ex: "Bacharel em Ciencia da Computacao")
-/// - program: programa de pos-graduacao (para mestrado/doutorado)
-/// - committee: membros da banca (lista de nomes)
+/// - grau: grau pretendido (ex: "Bacharel em Ciencia da Computacao")
+/// - programa: programa de pos-graduacao (para mestrado/doutorado)
+/// - banca: membros da banca (lista de nomes)
 #let slides-defesa(
-  title: "",
-  subtitle: none,
-  author: "",
-  advisor: none,
-  co-advisor: none,
-  institution: "",
-  department: none,
-  degree: none,
-  program: none,
-  committee: (),
-  date: datetime.today(),
+  titulo: "",
+  subtitulo: none,
+  autor: "",
+  orientador: none,
+  coorientador: none,
+  instituicao: "",
+  departamento: none,
+  grau: none,
+  programa: none,
+  banca: (),
+  data: datetime.today(),
   logo: none,
-  aspect-ratio: "16-9",
-  font: "Arial",
-  primary-color: rgb("#003366"),
-  secondary-color: rgb("#666666"),
+  proporcao: "16-9",
+  fonte: "Arial",
+  cor-primaria: rgb("#003366"),
+  cor-secundaria: rgb("#666666"),
   body,
 ) = {
   // Configuracao do documento
   set document(
-    title: title,
-    author: author,
+    title: titulo,
+    author: autor,
   )
 
   set text(
-    font: font,
+    font: fonte,
     lang: "pt",
     region: "BR",
   )
 
   show: simple-theme.with(
-    aspect-ratio: aspect-ratio,
-    primary: primary-color,
-    secondary: secondary-color,
-    footer: [#institution #h(1fr) Defesa de #if program != none { "Dissertacao/Tese" } else { "TCC" }],
+    aspect-ratio: proporcao,
+    primary: cor-primaria,
+    secondary: cor-secundaria,
+    footer: [#instituicao #h(1fr) Defesa de #if programa != none { "Dissertacao/Tese" } else { "TCC" }],
   )
 
   // Slide de titulo para defesa
@@ -214,61 +212,61 @@
         v(0.3em)
       }
 
-      #text(size: 16pt, fill: secondary-color, upper(institution))
+      #text(size: 16pt, fill: cor-secundaria, upper(instituicao))
 
-      #if department != none {
+      #if departamento != none {
         linebreak()
-        text(size: 12pt, fill: secondary-color, department)
+        text(size: 12pt, fill: cor-secundaria, departamento)
       }
 
-      #if program != none {
+      #if programa != none {
         linebreak()
-        text(size: 12pt, fill: secondary-color, program)
+        text(size: 12pt, fill: cor-secundaria, programa)
       }
 
       #v(0.8em)
 
-      #text(size: 28pt, weight: "bold", fill: primary-color, title)
+      #text(size: 28pt, weight: "bold", fill: cor-primaria, titulo)
 
-      #if subtitle != none {
+      #if subtitulo != none {
         linebreak()
         v(0.2em)
-        text(size: 18pt, fill: secondary-color, subtitle)
+        text(size: 18pt, fill: cor-secundaria, subtitulo)
       }
 
       #v(1em)
 
-      #text(size: 16pt, author)
+      #text(size: 16pt, autor)
 
       #v(0.5em)
 
       #grid(
-        columns: if co-advisor != none { (1fr, 1fr) } else { (1fr,) },
+        columns: if coorientador != none { (1fr, 1fr) } else { (1fr,) },
         gutter: 1em,
         text(size: 12pt)[
           *Orientador(a):* \
-          #advisor
+          #orientador
         ],
-        if co-advisor != none {
+        if coorientador != none {
           text(size: 12pt)[
             *Coorientador(a):* \
-            #co-advisor
+            #coorientador
           ]
         },
       )
 
       #v(0.5em)
 
-      #if degree != none {
-        text(size: 11pt, fill: secondary-color)[
-          Trabalho apresentado para obtencao do grau de #degree
+      #if grau != none {
+        text(size: 11pt, fill: cor-secundaria)[
+          Trabalho apresentado para obtencao do grau de #grau
         ]
       }
 
       #v(0.3em)
 
-      #text(size: 12pt, fill: secondary-color)[
-        #date.display("[day] de [month repr:long] de [year]")
+      #text(size: 12pt, fill: cor-secundaria)[
+        #data.display("[day] de [month repr:long] de [year]")
       ]
     ]
   })
@@ -281,7 +279,7 @@
       set align(center + horizon)
       body
     })[
-      #text(size: 36pt, weight: "bold", fill: primary-color)[
+      #text(size: 36pt, weight: "bold", fill: cor-primaria)[
         Obrigado!
       ]
 
@@ -291,10 +289,10 @@
 
       #v(2em)
 
-      #if committee.len() > 0 {
-        text(size: 14pt, fill: secondary-color)[
+      #if banca.len() > 0 {
+        text(size: 14pt, fill: cor-secundaria)[
           *Banca Examinadora:* \
-          #committee.join(" | ")
+          #banca.join(" | ")
         ]
       }
     ]
@@ -309,19 +307,19 @@
 ///
 /// Uso comum em apresentacoes academicas para mostrar estrutura
 #let slide-sumario(
-  title: "Sumario",
-  items: (),
-  primary-color: rgb("#003366"),
+  titulo: "Sumario",
+  itens: (),
+  cor-primaria: rgb("#003366"),
 ) = {
   touying-slide-wrapper(self => {
     touying-slide(self: self)[
-      #text(size: 24pt, weight: "bold")[#title]
+      #text(size: 24pt, weight: "bold")[#titulo]
       #v(0.5em)
       #set text(size: 20pt)
       #set enum(numbering: "1.", body-indent: 1em)
 
-      #for (i, item) in items.enumerate() {
-        [#text(fill: primary-color, weight: "bold", str(i + 1) + ".") #item \ ]
+      #for (i, item) in itens.enumerate() {
+        [#text(fill: cor-primaria, weight: "bold", str(i + 1) + ".") #item \ ]
         v(0.5em)
       }
     ]
@@ -332,20 +330,20 @@
 ///
 /// Usado para marcar inicio de nova secao da apresentacao
 #let slide-secao(
-  title: "",
-  subtitle: none,
-  primary-color: rgb("#003366"),
+  titulo: "",
+  subtitulo: none,
+  cor-primaria: rgb("#003366"),
 ) = {
   touying-slide-wrapper(self => {
     touying-slide(self: self, setting: body => {
       set align(center + horizon)
       body
     })[
-      #text(size: 36pt, weight: "bold", fill: primary-color, title)
+      #text(size: 36pt, weight: "bold", fill: cor-primaria, titulo)
 
-      #if subtitle != none {
+      #if subtitulo != none {
         v(0.5em)
-        text(size: 20pt, fill: primary-color.lighten(30%), subtitle)
+        text(size: 20pt, fill: cor-primaria.lighten(30%), subtitulo)
       }
     ]
   })
@@ -357,10 +355,10 @@
 /// Segue NBR 10520:2023 para formato da citacao
 #let slide-citacao(
   quote: "",
-  author: "",
-  year: "",
-  page: none,
-  primary-color: rgb("#003366"),
+  autor: "",
+  ano: "",
+  pagina: none,
+  cor-primaria: rgb("#003366"),
 ) = {
   touying-slide-wrapper(self => {
     touying-slide(self: self, setting: body => {
@@ -370,8 +368,8 @@
       #box(
         width: 80%,
         inset: 2em,
-        stroke: (left: 4pt + primary-color),
-        fill: primary-color.lighten(95%),
+        stroke: (left: 4pt + cor-primaria),
+        fill: cor-primaria.lighten(95%),
       )[
         #set text(size: 22pt, style: "italic")
         #set par(leading: 1.2em)
@@ -381,8 +379,8 @@
       #v(1em)
 
       // Formato NBR 10520:2023 para citacao
-      #text(size: 16pt, fill: primary-color)[
-        (#upper(author), #year#if page != none [, p. #page])
+      #text(size: 16pt, fill: cor-primaria)[
+        (#upper(autor), #ano#if pagina != none [, p. #pagina])
       ]
     ]
   })
@@ -393,12 +391,12 @@
 /// NOTA: As referencias em slides devem seguir NBR 6023:2018
 /// Este e um dos poucos aspectos onde uma norma ABNT se aplica
 #let slide-referencias(
-  title: "Referencias",
-  items: (),
+  titulo: "Referencias",
+  itens: (),
 ) = {
   touying-slide-wrapper(self => {
     touying-slide(self: self)[
-      #text(size: 24pt, weight: "bold")[#title]
+      #text(size: 24pt, weight: "bold")[#titulo]
       #v(0.5em)
       #set text(size: 14pt)
       #set par(
@@ -414,7 +412,7 @@
 
       #v(0.5em)
 
-      #for item in items {
+      #for item in itens {
         item
         v(0.3em)
       }
@@ -427,33 +425,33 @@
 /// Quando incluir figuras de terceiros, a fonte deve ser citada
 /// seguindo as normas de citacao (NBR 10520:2023)
 #let slide-figura(
-  title: none,
-  image: none,
-  caption: none,
-  source: none,
-  source-year: none,
+  titulo: none,
+  imagem: none,
+  legenda: none,
+  origem: none,
+  ano-fonte: none,
 ) = {
   touying-slide-wrapper(self => {
     touying-slide(self: self)[
-      #if title != none {
-        text(size: 24pt, weight: "bold", title)
+      #if titulo != none {
+        text(size: 24pt, weight: "bold", titulo)
         v(0.5em)
       }
       #align(center)[
-        #if image != none { image }
+        #if imagem != none { imagem }
 
-        #if caption != none {
+        #if legenda != none {
           v(0.5em)
-          text(size: 14pt, weight: "bold", caption)
+          text(size: 14pt, weight: "bold", legenda)
         }
 
-        #if source != none {
+        #if origem != none {
           v(0.3em)
           text(size: 12pt, fill: gray)[
-            Fonte: #if source-year != none {
-              [(#upper(source), #source-year)]
+            Fonte: #if ano-fonte != none {
+              [(#upper(origem), #ano-fonte)]
             } else {
-              source
+              origem
             }
           ]
         }
@@ -464,16 +462,16 @@
 
 /// Slide comparativo (duas colunas)
 #let slide-comparativo(
-  title: "",
-  left-title: "",
-  left-content: [],
-  right-title: "",
-  right-content: [],
-  primary-color: rgb("#003366"),
+  titulo: "",
+  titulo-esquerda: "",
+  conteudo-esquerda: [],
+  titulo-direita: "",
+  conteudo-direita: [],
+  cor-primaria: rgb("#003366"),
 ) = {
   touying-slide-wrapper(self => {
     touying-slide(self: self)[
-      #text(size: 24pt, weight: "bold")[#title]
+      #text(size: 24pt, weight: "bold")[#titulo]
       #v(0.5em)
       #grid(
         columns: (1fr, 1fr),
@@ -482,19 +480,19 @@
         // Coluna esquerda
         [
           #align(center)[
-            #text(weight: "bold", fill: primary-color, size: 18pt, left-title)
+            #text(weight: "bold", fill: cor-primaria, size: 18pt, titulo-esquerda)
           ]
           #v(0.5em)
-          #left-content
+          #conteudo-esquerda
         ],
 
         // Coluna direita
         [
           #align(center)[
-            #text(weight: "bold", fill: primary-color, size: 18pt, right-title)
+            #text(weight: "bold", fill: cor-primaria, size: 18pt, titulo-direita)
           ]
           #v(0.5em)
-          #right-content
+          #conteudo-direita
         ],
       )
     ]
@@ -505,16 +503,16 @@
 ///
 /// Formato comum para apresentar metodologia de pesquisa
 #let slide-metodologia(
-  title: "Metodologia",
+  titulo: "Metodologia",
   tipo-pesquisa: none,
   abordagem: none,
   procedimentos: (),
   instrumentos: (),
-  primary-color: rgb("#003366"),
+  cor-primaria: rgb("#003366"),
 ) = {
   touying-slide-wrapper(self => {
     touying-slide(self: self)[
-      #text(size: 24pt, weight: "bold")[#title]
+      #text(size: 24pt, weight: "bold")[#titulo]
       #v(0.5em)
       #grid(
         columns: (1fr, 1fr),
@@ -523,28 +521,28 @@
 
         if tipo-pesquisa != none {
           [
-            #text(weight: "bold", fill: primary-color)[Tipo de Pesquisa] \
+            #text(weight: "bold", fill: cor-primaria)[Tipo de Pesquisa] \
             #tipo-pesquisa
           ]
         },
 
         if abordagem != none {
           [
-            #text(weight: "bold", fill: primary-color)[Abordagem] \
+            #text(weight: "bold", fill: cor-primaria)[Abordagem] \
             #abordagem
           ]
         },
 
         if procedimentos.len() > 0 {
           [
-            #text(weight: "bold", fill: primary-color)[Procedimentos] \
+            #text(weight: "bold", fill: cor-primaria)[Procedimentos] \
             #list(..procedimentos)
           ]
         },
 
         if instrumentos.len() > 0 {
           [
-            #text(weight: "bold", fill: primary-color)[Instrumentos] \
+            #text(weight: "bold", fill: cor-primaria)[Instrumentos] \
             #list(..instrumentos)
           ]
         },
@@ -555,26 +553,26 @@
 
 /// Slide de resultados com destaque numerico
 #let slide-resultado-numerico(
-  title: "Resultados",
-  items: (), // Lista de (valor, descricao)
-  primary-color: rgb("#003366"),
+  titulo: "Resultados",
+  itens: (), // Lista de (valor, descricao)
+  cor-primaria: rgb("#003366"),
 ) = {
   touying-slide-wrapper(self => {
     touying-slide(self: self)[
-      #text(size: 24pt, weight: "bold")[#title]
+      #text(size: 24pt, weight: "bold")[#titulo]
       #v(0.5em)
       #set align(center)
 
-      #if items.len() > 0 {
+      #if itens.len() > 0 {
         grid(
-          columns: items.len(),
+          columns: itens.len(),
           gutter: 2em,
 
-          ..items.map(item => {
+          ..itens.map(item => {
             box(
               inset: 1em,
               [
-                #text(size: 48pt, weight: "bold", fill: primary-color, item.at(0)) \
+                #text(size: 48pt, weight: "bold", fill: cor-primaria, item.at(0)) \
                 #text(size: 14pt, item.at(1))
               ]
             )

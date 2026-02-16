@@ -10,35 +10,35 @@
 /// Conforme NBR 6029:2023
 ///
 /// Parametros:
-/// - title: titulo da obra
-/// - subtitle: subtitulo (opcional)
-/// - author: nome do autor
-/// - publisher: nome da editora
-/// - location: cidade de publicacao
-/// - year: ano de publicacao
-/// - edition: numero da edicao (a partir da 2a)
+/// - titulo: titulo da obra
+/// - subtitulo: subtitulo (opcional)
+/// - autor: nome do autor
+/// - editora: nome da editora
+/// - local: cidade de publicacao
+/// - ano: ano de publicacao
+/// - edicao: numero da edicao (a partir da 2a)
 /// - volume: numero do volume (se houver)
 /// - isbn: numero ISBN
-/// - font: fonte a usar
-/// - running-header: titulo corrente (opcional)
+/// - fonte: fonte a usar
+/// - cabecalho: titulo corrente (opcional)
 #let livro(
-  title: "",
-  subtitle: none,
-  author: "",
-  publisher: "",
-  location: "",
-  year: datetime.today().year(),
-  edition: none,
+  titulo: "",
+  subtitulo: none,
+  autor: "",
+  editora: "",
+  local: "",
+  ano: datetime.today().year(),
+  edicao: none,
   volume: none,
   isbn: none,
-  font: "Times New Roman",
-  running-header: none,
+  fonte: "Times New Roman",
+  cabecalho: none,
   body,
 ) = {
   // Configuracao do documento
   set document(
-    title: title,
-    author: author,
+    title: titulo,
+    author: autor,
   )
 
   // Configuracao de pagina
@@ -52,17 +52,17 @@
     ),
     // Titulo corrente no alto da mancha
     header: context {
-      if running-header != none {
+      if cabecalho != none {
         let page-num = counter(page).get().first()
         // Paginas pares: autor/titulo a esquerda
         // Paginas impares: capitulo a direita
         if calc.rem(page-num, 2) == 0 {
           // Pagina par
-          text(size: 10pt, running-header)
+          text(size: 10pt, cabecalho)
         } else {
           // Pagina impar
           align(right)[
-            #text(size: 10pt, running-header)
+            #text(size: 10pt, cabecalho)
           ]
         }
       }
@@ -71,7 +71,7 @@
 
   // Configuracao de fonte
   set text(
-    font: font,
+    font: fonte,
     size: 12pt,
     lang: "pt",
     region: "BR",
@@ -155,7 +155,7 @@
   // Excluir indentacao de containers que nao devem ser indentados
   show heading: set par(first-line-indent: 0pt)
   show figure: set par(first-line-indent: 0pt)
-  show raw: set par(first-line-indent: 0pt)
+  show raw.where(block: true): set par(first-line-indent: 0pt)
   show outline: set par(first-line-indent: 0pt)
   show terms: set par(first-line-indent: 0pt)
 
@@ -175,23 +175,23 @@
 /// - Recomenda-se: edicao, local e ano
 ///
 /// Parametros:
-/// - author: nome do autor
-/// - title: titulo da obra
-/// - subtitle: subtitulo (opcional)
-/// - publisher: nome da editora
-/// - publisher-logo: logomarca da editora (opcional)
-/// - edition: numero da edicao (opcional)
-/// - location: cidade (opcional)
-/// - year: ano (opcional)
+/// - autor: nome do autor
+/// - titulo: titulo da obra
+/// - subtitulo: subtitulo (opcional)
+/// - editora: nome da editora
+/// - logo-editora: logomarca da editora (opcional)
+/// - edicao: numero da edicao (opcional)
+/// - local: cidade (opcional)
+/// - ano: ano (opcional)
 #let book-cover(
-  author: "",
-  title: "",
-  subtitle: none,
-  publisher: "",
-  publisher-logo: none,
-  edition: none,
-  location: none,
-  year: none,
+  autor: "",
+  titulo: "",
+  subtitulo: none,
+  editora: "",
+  logo-editora: none,
+  edicao: none,
+  local: none,
+  ano: none,
 ) = {
   set page(numbering: none)
   set align(center)
@@ -199,43 +199,43 @@
   v(2cm)
 
   // Autor
-  text(size: 14pt, upper(author))
+  text(size: 14pt, upper(autor))
 
   v(1fr)
 
   // Titulo
-  text(weight: "bold", size: 18pt, upper(title))
+  text(weight: "bold", size: 18pt, upper(titulo))
 
   // Subtitulo
-  if subtitle != none {
+  if subtitulo != none {
     linebreak()
-    text(size: 14pt, ": " + subtitle)
+    text(size: 14pt, ": " + subtitulo)
   }
 
   v(1fr)
 
   // Edicao
-  if edition != none {
-    text(size: 12pt)[#edition. edicao]
+  if edicao != none {
+    text(size: 12pt)[#edicao. edicao]
     v(0.5em)
   }
 
   // Editora
-  if publisher-logo != none {
-    publisher-logo
+  if logo-editora != none {
+    logo-editora
     v(0.5em)
   }
-  text(size: 12pt, publisher)
+  text(size: 12pt, editora)
 
   v(1em)
 
   // Local e ano
-  if location != none {
-    text(size: 12pt, location)
+  if local != none {
+    text(size: 12pt, local)
     linebreak()
   }
-  if year != none {
-    text(size: 12pt, str(year))
+  if ano != none {
+    text(size: 12pt, str(ano))
   }
 
   v(2cm)
@@ -250,30 +250,30 @@
 ///
 /// Parametros:
 /// - isbn: numero ISBN
-/// - barcode: codigo de barras (imagem, opcional)
-/// - summary: resumo do conteudo (opcional)
-/// - publisher-address: endereco da editora (opcional)
+/// - codigo-barras: codigo de barras (imagem, opcional)
+/// - resumo: resumo do conteudo (opcional)
+/// - endereco-editora: endereco da editora (opcional)
 #let book-back-cover(
   isbn: "",
-  barcode: none,
-  summary: none,
-  publisher-address: none,
+  codigo-barras: none,
+  resumo: none,
+  endereco-editora: none,
 ) = {
   set page(numbering: none)
 
   v(1fr)
 
   // Resumo
-  if summary != none {
+  if resumo != none {
     set par(first-line-indent: 0pt)
-    summary
+    resumo
     v(2em)
   }
 
   // Endereco da editora
-  if publisher-address != none {
+  if endereco-editora != none {
     set text(size: 10pt)
-    publisher-address
+    endereco-editora
     v(2em)
   }
 
@@ -284,9 +284,9 @@
     #text(size: 10pt)[ISBN #isbn]
   ]
 
-  if barcode != none {
+  if codigo-barras != none {
     v(0.5em)
-    barcode
+    codigo-barras
   }
 
   pagebreak()
@@ -294,12 +294,12 @@
 
 /// Falsa folha de rosto (opcional)
 /// Apenas o titulo da obra
-#let half-title-page(title: "") = {
+#let half-title-page(titulo: "") = {
   set page(numbering: none)
   set align(center)
 
   v(1fr)
-  text(size: 14pt, title)
+  text(size: 14pt, titulo)
   v(1fr)
 
   pagebreak()
@@ -317,56 +317,56 @@
 /// h) Ano de publicacao
 ///
 /// Parametros:
-/// - author: nome do autor
-/// - title: titulo
-/// - subtitle: subtitulo (opcional)
-/// - collaborators: outros colaboradores (tradutor, ilustrador, etc.)
-/// - edition: numero da edicao (a partir da 2a)
+/// - autor: nome do autor
+/// - titulo: titulo
+/// - subtitulo: subtitulo (opcional)
+/// - colaboradores: outros colaboradores (tradutor, ilustrador, etc.)
+/// - edicao: numero da edicao (a partir da 2a)
 /// - volume: numero do volume (se houver)
-/// - publisher: editora
-/// - location: cidade
-/// - year: ano
+/// - editora: editora
+/// - local: cidade
+/// - ano: ano
 #let book-title-page(
-  author: "",
-  title: "",
-  subtitle: none,
-  collaborators: none,
-  edition: none,
+  autor: "",
+  titulo: "",
+  subtitulo: none,
+  colaboradores: none,
+  edicao: none,
   volume: none,
-  publisher: "",
-  location: "",
-  year: none,
+  editora: "",
+  local: "",
+  ano: none,
 ) = {
   set page(numbering: none)
   set align(center)
 
   // Autor
-  text(size: 12pt, upper(author))
+  text(size: 12pt, upper(autor))
 
   v(1fr)
 
   // Titulo
-  text(weight: "bold", size: 16pt, upper(title))
+  text(weight: "bold", size: 16pt, upper(titulo))
 
   // Subtitulo (diferenciado tipograficamente)
-  if subtitle != none {
+  if subtitulo != none {
     linebreak()
-    text(size: 14pt, ": " + subtitle)
+    text(size: 14pt, ": " + subtitulo)
   }
 
   v(1em)
 
   // Colaboradores
-  if collaborators != none {
+  if colaboradores != none {
     set text(size: 11pt)
-    collaborators
+    colaboradores
   }
 
   v(1em)
 
   // Edicao
-  if edition != none {
-    text(size: 11pt)[#edition. edicao]
+  if edicao != none {
+    text(size: 11pt)[#edicao. edicao]
     v(0.5em)
   }
 
@@ -378,17 +378,17 @@
   v(1fr)
 
   // Editora
-  text(size: 12pt, publisher)
+  text(size: 12pt, editora)
 
   v(0.5em)
 
   // Local
-  text(size: 12pt, location)
+  text(size: 12pt, local)
 
   // Ano
-  if year != none {
+  if ano != none {
     linebreak()
-    text(size: 12pt, str(year))
+    text(size: 12pt, str(ano))
   }
 
   pagebreak()
@@ -405,64 +405,64 @@
 /// g) Dados da editora
 ///
 /// Parametros:
-/// - copyright-year: ano do copyright
-/// - copyright-holder: detentor dos direitos
-/// - original-title: titulo original (se traducao)
-/// - reproduction-rights: texto sobre direito de reproducao
-/// - other-formats: outros suportes disponiveis
-/// - credits: creditos diversos
-/// - catalog-card: conteudo da ficha catalografica
-/// - librarian: nome e CRB do bibliotecario
-/// - publisher-info: dados da editora
+/// - ano-copyright: ano do copyright
+/// - detentor-copyright: detentor dos direitos
+/// - titulo-original: titulo original (se traducao)
+/// - direitos-reproducao: texto sobre direito de reproducao
+/// - outros-formatos: outros suportes disponiveis
+/// - creditos: creditos diversos
+/// - ficha-catalografica: conteudo da ficha catalografica
+/// - bibliotecario: nome e CRB do bibliotecario
+/// - dados-editora: dados da editora
 #let book-title-page-verso(
-  copyright-year: none,
-  copyright-holder: none,
-  original-title: none,
-  reproduction-rights: none,
-  other-formats: none,
-  credits: none,
-  catalog-card: none,
-  librarian: none,
-  publisher-info: none,
+  ano-copyright: none,
+  detentor-copyright: none,
+  titulo-original: none,
+  direitos-reproducao: none,
+  outros-formatos: none,
+  creditos: none,
+  ficha-catalografica: none,
+  bibliotecario: none,
+  dados-editora: none,
 ) = {
   set page(numbering: none)
   set text(size: 10pt)
   set par(first-line-indent: 0pt, leading: 1em * 0.65)
 
   // Copyright
-  if copyright-year != none and copyright-holder != none {
-    [(c) #copyright-year #copyright-holder]
+  if ano-copyright != none and detentor-copyright != none {
+    [(c) #ano-copyright #detentor-copyright]
     v(1em)
   }
 
   // Direito de reproducao
-  if reproduction-rights != none {
-    reproduction-rights
+  if direitos-reproducao != none {
+    direitos-reproducao
     v(1em)
   }
 
   // Titulo original
-  if original-title != none {
-    [Titulo original: #emph[#original-title]]
+  if titulo-original != none {
+    [Titulo original: #emph[#titulo-original]]
     v(1em)
   }
 
   // Outros suportes
-  if other-formats != none {
-    other-formats
+  if outros-formatos != none {
+    outros-formatos
     v(1em)
   }
 
   // Creditos
-  if credits != none {
-    credits
+  if creditos != none {
+    creditos
     v(1em)
   }
 
   v(1fr)
 
   // Ficha catalografica (parte inferior)
-  if catalog-card != none {
+  if ficha-catalografica != none {
     align(center)[
       #box(
         width: 12.5cm,
@@ -470,11 +470,11 @@
         stroke: 0.5pt,
         inset: 0.5cm,
       )[
-        #catalog-card
+        #ficha-catalografica
 
-        #if librarian != none {
+        #if bibliotecario != none {
           v(0.5em)
-          text(size: 9pt, librarian)
+          text(size: 9pt, bibliotecario)
         }
       ]
     ]
@@ -482,9 +482,9 @@
   }
 
   // Dados da editora
-  if publisher-info != none {
+  if dados-editora != none {
     align(center)[
-      #text(size: 9pt, publisher-info)
+      #text(size: 9pt, dados-editora)
     ]
   }
 
@@ -493,14 +493,14 @@
 
 /// Dedicatoria
 /// Conforme NBR 6029:2023 - pagina impar
-#let book-dedication(content) = {
+#let book-dedication(conteudo) = {
   set page(numbering: none)
   v(1fr)
   align(right)[
     #box(width: 50%)[
       #set par(first-line-indent: 0pt)
       #set text(size: 11pt)
-      #content
+      #conteudo
     ]
   ]
   pagebreak()
@@ -508,18 +508,18 @@
 
 /// Agradecimentos
 /// Conforme NBR 6029:2023 - pagina impar
-#let book-acknowledgments(content) = {
+#let book-acknowledgments(conteudo) = {
   align(center)[
     #text(weight: "bold", size: 12pt, "AGRADECIMENTOS")
   ]
   v(1.5em)
-  content
+  conteudo
   pagebreak()
 }
 
 /// Epigrafe
 /// Conforme NBR 6029:2023 - pagina impar
-#let book-epigraph(quote, author) = {
+#let book-epigraph(quote, autor) = {
   set page(numbering: none)
   v(1fr)
   align(right)[
@@ -529,7 +529,7 @@
       "#quote"
       #linebreak()
       #set text(style: "normal")
-      [(#author)]
+      [(#autor)]
     ]
   ]
   pagebreak()
@@ -610,18 +610,18 @@
 /// Sumario do livro
 /// Conforme NBR 6027
 #let book-toc(
-  title: "SUMARIO",
-  depth: 3,
+  titulo: "SUMARIO",
+  profundidade: 3,
 ) = {
   align(center)[
-    #text(weight: "bold", size: 12pt, title)
+    #text(weight: "bold", size: 12pt, titulo)
   ]
 
   v(1.5em)
 
   outline(
     title: none,
-    depth: depth,
+    depth: profundidade,
     indent: auto,
   )
 
@@ -631,22 +631,22 @@
 /// Prefacio ou apresentacao
 /// Conforme NBR 6029:2023 - pagina impar, sem indicativo de secao
 /// Em novas edicoes: prefacio novo precede os anteriores
-#let book-preface(title: "PREFACIO", content) = {
-  heading(level: 1, numbering: none, upper(title))
-  content
+#let book-preface(titulo: "PREFACIO", conteudo) = {
+  heading(level: 1, numbering: none, upper(titulo))
+  conteudo
   pagebreak()
 }
 
 /// Apresentacao
-#let book-presentation(content) = {
-  book-preface(title: "APRESENTACAO", content)
+#let book-presentation(conteudo) = {
+  book-preface(titulo: "APRESENTACAO", conteudo)
 }
 
 /// Posfacio
 /// Conforme NBR 6029:2023 - elemento pos-textual opcional
-#let book-postface(content) = {
+#let book-postface(conteudo) = {
   heading(level: 1, numbering: none, "POSFACIO")
-  content
+  conteudo
   pagebreak()
 }
 
@@ -670,8 +670,8 @@
 /// Apendice
 /// Conforme NBR 6029:2023 - identificacao: termo + travessao + titulo
 /// Multiplos: letras maiusculas consecutivas (A, B, C...)
-#let book-appendix(letter: "A", title: "", body) = {
-  heading(level: 1, numbering: none)[APENDICE #letter -- #title]
+#let book-appendix(letra: "A", titulo: "", body) = {
+  heading(level: 1, numbering: none)[APENDICE #letra -- #titulo]
   body
   pagebreak()
 }
@@ -679,16 +679,16 @@
 /// Anexo
 /// Conforme NBR 6029:2023 - identificacao: termo + travessao + titulo
 /// Multiplos: letras maiusculas consecutivas (A, B, C...)
-#let book-annex(letter: "A", title: "", body) = {
-  heading(level: 1, numbering: none)[ANEXO #letter -- #title]
+#let book-annex(letra: "A", titulo: "", body) = {
+  heading(level: 1, numbering: none)[ANEXO #letra -- #titulo]
   body
   pagebreak()
 }
 
 /// Indice remissivo
 /// Conforme NBR 6034 - no final da publicacao
-#let book-index(title: "INDICE", entries) = {
-  heading(level: 1, numbering: none, upper(title))
+#let book-index(titulo: "INDICE", entries) = {
+  heading(level: 1, numbering: none, upper(titulo))
 
   set par(first-line-indent: 0pt)
   set text(size: 10pt)
@@ -718,12 +718,12 @@
 /// Colofao
 /// Conforme NBR 6029:2023 - ultima folha do miolo
 /// Especificacoes graficas da publicacao
-#let book-colophon(content) = {
+#let book-colophon(conteudo) = {
   v(1fr)
   set text(size: 10pt)
   set par(first-line-indent: 0pt)
   align(center)[
-    #content
+    #conteudo
   ]
 }
 

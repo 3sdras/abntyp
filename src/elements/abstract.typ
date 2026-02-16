@@ -1,19 +1,19 @@
 // Resumo e Abstract conforme NBR 6028:2021
 
 /// Cria página de resumo conforme ABNT
-/// - title: "RESUMO" ou "ABSTRACT"
-/// - content: texto do resumo (150-500 palavras para trabalhos acadêmicos)
-/// - keywords: lista de palavras-chave (3 a 5)
-/// - keyword-label: "Palavras-chave" ou "Keywords"
+/// - titulo: "RESUMO" ou "ABSTRACT"
+/// - conteudo: texto do resumo (150-500 palavras para trabalhos acadêmicos)
+/// - palavras-chave: lista de palavras-chave (3 a 5)
+/// - rotulo-palavras-chave: "Palavras-chave" ou "Keywords"
 #let abstract-page(
-  title: "RESUMO",
-  content: none,
-  keywords: (),
-  keyword-label: "Palavras-chave",
+  titulo: "RESUMO",
+  conteudo: none,
+  palavras-chave: (),
+  rotulo-palavras-chave: "Palavras-chave",
 ) = {
   // Título centralizado, negrito
   align(center)[
-    #text(weight: "bold", size: 12pt, title)
+    #text(weight: "bold", size: 12pt, titulo)
   ]
 
   v(1.5em)
@@ -25,50 +25,50 @@
     justify: true,
   )
 
-  content
+  conteudo
 
   v(1.5em)
 
   // Palavras-chave
-  if keywords.len() > 0 {
+  if palavras-chave.len() > 0 {
     set par(first-line-indent: 0pt)
-    [*#keyword-label:* #keywords.join(". "). ]
+    [*#rotulo-palavras-chave:* #palavras-chave.join(". "). ]
   }
 
   pagebreak()
 }
 
 /// Resumo em português
-#let resumo(content, keywords: ()) = {
+#let resumo(conteudo, palavras-chave: ()) = {
   abstract-page(
-    title: "RESUMO",
-    content: content,
-    keywords: keywords,
-    keyword-label: "Palavras-chave",
+    titulo: "RESUMO",
+    conteudo: conteudo,
+    palavras-chave: palavras-chave,
+    rotulo-palavras-chave: "Palavras-chave",
   )
 }
 
 /// Abstract em inglês
-#let abstract(content, keywords: ()) = {
+#let abstract(conteudo, palavras-chave: ()) = {
   abstract-page(
-    title: "ABSTRACT",
-    content: content,
-    keywords: keywords,
-    keyword-label: "Keywords",
+    titulo: "ABSTRACT",
+    conteudo: conteudo,
+    palavras-chave: palavras-chave,
+    rotulo-palavras-chave: "Keywords",
   )
 }
 
 /// Resumo em língua estrangeira (genérico)
 #let foreign-abstract(
-  title: "ABSTRACT",
-  content: none,
-  keywords: (),
-  keyword-label: "Keywords",
+  titulo: "ABSTRACT",
+  conteudo: none,
+  palavras-chave: (),
+  rotulo-palavras-chave: "Keywords",
 ) = {
   abstract-page(
-    title: title,
-    content: content,
-    keywords: keywords,
-    keyword-label: keyword-label,
+    titulo: titulo,
+    conteudo: conteudo,
+    palavras-chave: palavras-chave,
+    rotulo-palavras-chave: rotulo-palavras-chave,
   )
 }

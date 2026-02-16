@@ -135,14 +135,14 @@
 
 /// Seção sem numeração (para Introdução, Conclusão, Referências, etc.)
 /// Deve aparecer no sumário
-#let unnumbered-section(title, level: 1) = {
-  heading(level: level, numbering: none, upper(title))
+#let unnumbered-section(titulo, nivel: 1) = {
+  heading(level: nivel, numbering: none, upper(titulo))
 }
 
 /// Título de elemento pré-textual (não aparece no sumário)
-#let pretextual-title(title) = {
+#let pretextual-title(titulo) = {
   align(center)[
-    #text(weight: "bold", size: 12pt, upper(title))
+    #text(weight: "bold", size: 12pt, upper(titulo))
   ]
   v(1.5em)
 }

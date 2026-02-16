@@ -55,10 +55,10 @@
 /// para evitar conflitos.
 ///
 /// Parametros:
-/// - style: estilo de apresentacao ("parentheses" ou "superscript")
+/// - estilo: estilo de apresentacao ("parentheses" ou "superscript")
 ///   - "parentheses": (1), (2, p. 45) - padrao
 ///   - "superscript": ¹, ², p. 45 - sobrescrito
-/// - brackets: tipo de delimitador para estilo parentheses
+/// - colchetes: tipo de delimitador para estilo parentheses
 ///   - "()" - parenteses (padrao)
 ///   - "[]" - colchetes
 ///
@@ -69,8 +69,8 @@
 /// Conforme demonstrado #citar-num(<silva2023>), o resultado foi positivo.
 /// ```
 #let citacao-num-config(
-  style: "parentheses",
-  brackets: "()",
+  estilo: "parentheses",
+  colchetes: "()",
   body,
 ) = {
   // Aviso importante sobre notas de rodape
@@ -78,8 +78,8 @@
 
   // Armazenar configuracao no estado
   let config = state("abnt-numeric-config", (
-    style: style,
-    brackets: brackets,
+    estilo: estilo,
+    colchetes: colchetes,
   ))
 
   // Resetar contadores no inicio do documento
@@ -99,58 +99,58 @@
 /// reutiliza o mesmo numero.
 ///
 /// Parametros:
-/// - key: chave da referencia (string identificadora)
-/// - page: pagina (opcional)
-/// - style: "parentheses" ou "superscript" (opcional, usa padrao do documento)
+/// - chave: chave da referencia (string identificadora)
+/// - pagina: pagina (opcional)
+/// - estilo: "parentheses" ou "superscript" (opcional, usa padrao do documento)
 ///
 /// Exemplos:
 /// ```typst
 /// O resultado foi confirmado #citar-num("silva2023").
-/// Conforme demonstrado #citar-num("santos2022", page: "45").
+/// Conforme demonstrado #citar-num("santos2022", pagina: "45").
 /// ```
 ///
 /// Formatos de saida (NBR 10520:2023):
 /// - Parenteses: (1) ou (1, p. 45)
 /// - Sobrescrito: ¹ ou ¹, p. 45
 #let citar-num(
-  key,
-  page: none,
+  chave,
+  pagina: none,
   volume: none,
-  style: "parentheses",
-  brackets: "()",
+  estilo: "parentheses",
+  colchetes: "()",
 ) = {
   context {
     let citations = _numeric-citations.get()
-    let is-new = key not in citations
-    let num = if is-new { _numeric-counter.get() + 1 } else { citations.at(key) }
+    let is-new = chave not in citations
+    let num = if is-new { _numeric-counter.get() + 1 } else { citations.at(chave) }
 
     // Registrar nova citacao no estado (separado do calculo do numero)
     if is-new {
       _numeric-counter.update(num)
       _numeric-citations.update(c => {
-        c.insert(key, num)
+        c.insert(chave, num)
         c
       })
     }
 
     // Formatar localizacao (pagina, volume)
-    let loc = if page != none or volume != none {
+    let loc = if pagina != none or volume != none {
       let parts = ()
       if volume != none { parts.push([v. #volume]) }
-      if page != none { parts.push([p. #page]) }
+      if pagina != none { parts.push([p. #pagina]) }
       [, #parts.join(", ")]
     } else {
       []
     }
 
     // Formatar saida conforme estilo
-    if style == "superscript" {
+    if estilo == "superscript" {
       // Formato sobrescrito: ¹, p. 45
       // Nota: sem espaco antes do sobrescrito (NBR 10520:2023)
       super[#num#loc]
     } else {
       // Formato parenteses: (1, p. 45)
-      let (open, close) = if brackets == "[]" {
+      let (open, close) = if colchetes == "[]" {
         ("[", "]")
       } else {
         ("(", ")")
@@ -167,18 +167,18 @@
 ///
 /// Exemplo:
 /// ```typst
-/// Segundo Silva #citar-num-linha("silva2023", page: "45"), o resultado...
+/// Segundo Silva #citar-num-linha("silva2023", pagina: "45"), o resultado...
 /// ```
 ///
 /// Saida: Segundo Silva (1, p. 45), o resultado...
 #let citar-num-linha(
-  key,
-  page: none,
+  chave,
+  pagina: none,
   volume: none,
-  style: "parentheses",
-  brackets: "()",
+  estilo: "parentheses",
+  colchetes: "()",
 ) = {
-  citar-num(key, page: page, volume: volume, style: style, brackets: brackets)
+  citar-num(chave, pagina: pagina, volume: volume, estilo: estilo, colchetes: colchetes)
 }
 
 /// Citacao numerica multipla
@@ -192,9 +192,9 @@
 ///
 /// Saida: (1; 2; 3) ou ¹ ² ³
 #let citar-num-multiplos(
-  keys,
-  style: "parentheses",
-  brackets: "()",
+  chaves,
+  estilo: "parentheses",
+  colchetes: "()",
 ) = {
   context {
     let citations = _numeric-citations.get()
@@ -203,14 +203,14 @@
     let new-entries = (:)
     let next-num = counter-val
 
-    for key in keys {
-      if key in citations {
-        nums.push(citations.at(key))
-      } else if key in new-entries {
-        nums.push(new-entries.at(key))
+    for chave in chaves {
+      if chave in citations {
+        nums.push(citations.at(chave))
+      } else if chave in new-entries {
+        nums.push(new-entries.at(chave))
       } else {
         next-num += 1
-        new-entries.insert(key, next-num)
+        new-entries.insert(chave, next-num)
         nums.push(next-num)
       }
     }
@@ -226,10 +226,10 @@
       })
     }
 
-    if style == "superscript" {
+    if estilo == "superscript" {
       super[#nums.map(str).join(", ")]
     } else {
-      let (open, close) = if brackets == "[]" {
+      let (open, close) = if colchetes == "[]" {
         ("[", "]")
       } else {
         ("(", ")")
@@ -247,24 +247,24 @@
 /// NBR 10520:2023: Na lista de referencias, inclua SOMENTE a fonte consultada.
 ///
 /// Parametros:
-/// - original-key: chave da fonte original (nao acessada)
-/// - original-page: pagina na fonte original (opcional)
-/// - consulted-key: chave da fonte consultada
-/// - consulted-page: pagina na fonte consultada (opcional)
+/// - chave-original: chave da fonte original (nao acessada)
+/// - pagina-original: pagina na fonte original (opcional)
+/// - chave-consultada: chave da fonte consultada
+/// - pagina-consultada: pagina na fonte consultada (opcional)
 ///
 /// Exemplo:
 /// ```typst
-/// Segundo a teoria #citar-num-apud("freire1994", page: "13", "streck2017", page: "25").
+/// Segundo a teoria #citar-num-apud("freire1994", pagina-original: "13", "streck2017", pagina-consultada: "25").
 /// ```
 ///
 /// Saida: (1 apud 2, p. 25)
 #let citar-num-apud(
-  original-key,
-  consulted-key,
-  original-page: none,
-  consulted-page: none,
-  style: "parentheses",
-  brackets: "()",
+  chave-original,
+  chave-consultada,
+  pagina-original: none,
+  pagina-consultada: none,
+  estilo: "parentheses",
+  colchetes: "()",
 ) = {
   context {
     let citations = _numeric-citations.get()
@@ -273,22 +273,22 @@
     let new-entries = (:)
 
     // Numero para a referencia original
-    let orig-num = if original-key in citations {
-      citations.at(original-key)
+    let orig-num = if chave-original in citations {
+      citations.at(chave-original)
     } else {
       next-num += 1
-      new-entries.insert(original-key, next-num)
+      new-entries.insert(chave-original, next-num)
       next-num
     }
 
     // Numero para a referencia consultada
-    let cons-num = if consulted-key in citations {
-      citations.at(consulted-key)
-    } else if consulted-key in new-entries {
-      new-entries.at(consulted-key)
+    let cons-num = if chave-consultada in citations {
+      citations.at(chave-consultada)
+    } else if chave-consultada in new-entries {
+      new-entries.at(chave-consultada)
     } else {
       next-num += 1
-      new-entries.insert(consulted-key, next-num)
+      new-entries.insert(chave-consultada, next-num)
       next-num
     }
 
@@ -303,13 +303,13 @@
       })
     }
 
-    let orig-loc = if original-page != none { [, p. #original-page] } else { [] }
-    let cons-loc = if consulted-page != none { [, p. #consulted-page] } else { [] }
+    let orig-loc = if pagina-original != none { [, p. #pagina-original] } else { [] }
+    let cons-loc = if pagina-consultada != none { [, p. #pagina-consultada] } else { [] }
 
-    if style == "superscript" {
+    if estilo == "superscript" {
       super[#orig-num#orig-loc apud #cons-num#cons-loc]
     } else {
-      let (open, close) = if brackets == "[]" {
+      let (open, close) = if colchetes == "[]" {
         ("[", "]")
       } else {
         ("(", ")")
@@ -329,20 +329,20 @@
 ///
 /// Exemplo:
 /// ```typst
-/// #citacao-num-curta("silva2023", page: "45")[
+/// #citacao-num-curta("silva2023", pagina: "45")[
 ///   O resultado demonstrou significativa melhoria.
 /// ]
 /// ```
 ///
 /// Saida: "O resultado demonstrou significativa melhoria" (1, p. 45).
 #let citacao-num-curta(
-  key,
-  page: none,
-  style: "parentheses",
-  brackets: "()",
+  chave,
+  pagina: none,
+  estilo: "parentheses",
+  colchetes: "()",
   body,
 ) = {
-  ["#body" #citar-num(key, page: page, style: style, brackets: brackets).]
+  ["#body" #citar-num(chave, pagina: pagina, estilo: estilo, colchetes: colchetes).]
 }
 
 /// Citacao direta longa (mais de 3 linhas) com numero
@@ -352,7 +352,7 @@
 ///
 /// Exemplo:
 /// ```typst
-/// #citacao-num-longa("silva2023", page: "45-46")[
+/// #citacao-num-longa("silva2023", pagina: "45-46")[
 ///   A teleconferencia permite ao individuo participar de um encontro
 ///   nacional ou regional sem a necessidade de deixar seu local de
 ///   origem. Tipos comuns de teleconferencia incluem o uso de televisao,
@@ -360,10 +360,10 @@
 /// ]
 /// ```
 #let citacao-num-longa(
-  key,
-  page: none,
-  style: "parentheses",
-  brackets: "()",
+  chave,
+  pagina: none,
+  estilo: "parentheses",
+  colchetes: "()",
   body,
 ) = {
   set par(
@@ -374,7 +374,7 @@
 
   block(
     inset: (left: 4cm),
-    [#body #citar-num(key, page: page, style: style, brackets: brackets).]
+    [#body #citar-num(chave, pagina: pagina, estilo: estilo, colchetes: colchetes).]
   )
 }
 
@@ -391,9 +391,8 @@
 /// No sistema numerico, a ordenacao por ordem de citacao e mais intuitiva.
 ///
 /// Parametros:
-/// - items: lista de referencias no formato (chave, conteudo)
-/// - title: titulo da secao (padrao: "REFERENCIAS")
-/// - style: estilo dos numeros ("brackets" ou "plain")
+/// - itens: lista de referencias no formato (chave, conteudo)
+/// - titulo: titulo da secao (padrao: "REFERENCIAS")
 ///
 /// Exemplo:
 /// ```typst
@@ -405,11 +404,11 @@
 /// )
 /// ```
 #let bibliografia-numerica(
-  items,
-  title: "REFERÊNCIAS",
+  itens,
+  titulo: "REFERÊNCIAS",
 ) = {
   // Titulo da secao
-  heading(level: 1, numbering: none, title)
+  heading(level: 1, numbering: none, titulo)
 
   v(1em)
 
@@ -424,11 +423,11 @@
     let citations = _numeric-citations.get()
 
     // Ordenar itens pela ordem de citacao
-    let ordered = items.filter(item => item.at(0) in citations)
+    let ordered = itens.filter(item => item.at(0) in citations)
                        .sorted(key: item => citations.at(item.at(0)))
 
     // Itens nao citados vao ao final (se full: true)
-    let uncited = items.filter(item => item.at(0) not in citations)
+    let uncited = itens.filter(item => item.at(0) not in citations)
 
     // Renderizar referencias numeradas
     for item in ordered {
@@ -456,15 +455,15 @@
 ///
 /// Parametros:
 /// - num: numero da referencia
-/// - content: conteudo formatado da referencia (conforme NBR 6023:2018)
-#let ref-numerica(num, content) = {
+/// - conteudo: conteudo formatado da referencia (conforme NBR 6023:2018)
+#let ref-numerica(num, conteudo) = {
   set par(
     hanging-indent: 0pt,
     first-line-indent: 0pt,
   )
 
   block(spacing: 0.8em)[
-    #text(weight: "bold")[#num] #h(0.5em) #content
+    #text(weight: "bold")[#num] #h(0.5em) #conteudo
   ]
 }
 
@@ -490,11 +489,11 @@
 /// Obtem o numero atual de uma citacao (se ja foi citada)
 ///
 /// Util para referencias cruzadas manuais.
-#let get-citation-number(key) = {
+#let get-citation-number(chave) = {
   context {
     let citations = _numeric-citations.get()
-    if key in citations {
-      str(citations.at(key))
+    if chave in citations {
+      str(citations.at(chave))
     } else {
       "?"
     }

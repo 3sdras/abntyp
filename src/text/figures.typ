@@ -1,4 +1,4 @@
-// Figuras e ilustrações conforme NBR 14724:2024 e IBGE
+// Figuras, quadros, tabelas e ilustrações conforme NBR 14724:2024 e IBGE
 
 /// Configuração de figuras conforme ABNT
 /// - Legenda na parte superior: tipo, número, traço, título
@@ -16,84 +16,94 @@
   }
 }
 
-/// Figura com formatação ABNT
-/// - caption: título da figura (aparece acima)
-/// - source: fonte da figura (aparece abaixo)
-/// - body: conteúdo da figura (imagem)
-#let abnt-figure(
+/// Container genérico para elementos com título, numeração e fonte (ABNT).
+/// É a única forma de criar um `figure()` no ABNTypst.
+/// O `suplemento` é inferido automaticamente a partir do `tipo`:
+/// - `image` → "Figura" (padrão)
+/// - `table` → "Tabela"
+/// - `"quadro"` → "Quadro"
+///
+/// Uso:
+/// ```typst
+/// #container(legenda: "Meu título", origem: "O autor")[
+///   #imagem("foto.png")
+/// ]
+/// ```
+#let container(
   body,
-  caption: none,
-  source: none,
-  label: none,
+  legenda: none,
+  origem: none,
+  nota: none,
+  tipo: image,
+  suplemento: auto,
+  ..args,
 ) = {
+  let supp = if suplemento != auto { suplemento }
+    else if tipo == image { "Figura" }
+    else if tipo == table { "Tabela" }
+    else if tipo == "quadro" { "Quadro" }
+    else { "Figura" }
+
   figure(
     body,
-    caption: if caption != none { caption },
-    kind: image,
-    supplement: "Figura",
+    caption: if legenda != none { legenda },
+    kind: tipo,
+    supplement: supp,
+    ..args,
   )
 
-  if source != none {
-    set align(center)
-    set text(size: 10pt)
-    [Fonte: #source]
-  }
-}
-
-/// Quadro (informações textuais tabuladas)
-/// Similar à figura, mas com bordas fechadas
-#let abnt-quadro(
-  body,
-  caption: none,
-  source: none,
-) = {
-  figure(
-    kind: "quadro",
-    supplement: "Quadro",
-    caption: if caption != none { caption },
-  )[
-    #box(stroke: 0.5pt)[
-      #body
+  if origem != none {
+    align(center)[
+      #text(size: 10pt)[Fonte: #origem]
     ]
-  ]
+  }
 
-  if source != none {
-    set align(center)
-    set text(size: 10pt)
-    [Fonte: #source]
+  if nota != none {
+    align(left)[
+      #text(size: 10pt)[Nota: #nota]
+    ]
   }
 }
 
-/// Gráfico
-#let abnt-grafico(
-  body,
-  caption: none,
-  source: none,
-) = {
-  figure(
-    body,
-    caption: if caption != none { caption },
-    kind: "gráfico",
-    supplement: "Gráfico",
-  )
-
-  if source != none {
-    set align(center)
-    set text(size: 10pt)
-    [Fonte: #source]
-  }
+/// Wrapper para `image()` em português.
+/// Aceita os mesmos parâmetros de `image()`.
+///
+/// Uso (dentro de um `container`):
+/// ```typst
+/// #container(legenda: "Logo", origem: "O autor")[
+///   #imagem("logo.png", width: 80%)
+/// ]
+/// ```
+#let imagem(caminho, ..args) = {
+  image(caminho, ..args)
 }
 
-/// Fonte da figura (para usar abaixo da figura)
-#let fonte(content) = {
+/// Quadro: tabela textual com bordas fechadas (conforme IBGE).
+/// Aceita os mesmos parâmetros de `table()`.
+///
+/// Uso (dentro de um `container`):
+/// ```typst
+/// #container(legenda: "Glossário", tipo: "quadro", origem: "O autor")[
+///   #quadro(columns: 2,
+///     [*Termo*], [*Definição*],
+///     [Algoritmo], [Sequência finita de instruções],
+///   )
+/// ]
+/// ```
+#let quadro(..args) = {
+  table(..args)
+}
+
+/// Fonte da figura (para usar avulso abaixo de um elemento)
+#let fonte(conteudo) = {
   align(center)[
-    #text(size: 10pt)[Fonte: #content]
+    #text(size: 10pt)[Fonte: #conteudo]
   ]
 }
 
-/// Nota da figura
-#let nota-figura(content) = {
+/// Nota da figura (para usar avulso abaixo de um elemento)
+#let nota-figura(conteudo) = {
   align(left)[
-    #text(size: 10pt)[Nota: #content]
+    #text(size: 10pt)[Nota: #conteudo]
   ]
 }

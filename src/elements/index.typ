@@ -19,41 +19,41 @@
 /// Esta funcao deve ser chamada no local do texto onde o termo aparece
 ///
 /// Parametros:
-/// - term: termo principal (cabecalho)
-/// - subterm: subtermo/subcabecalho (opcional)
-/// - display: texto a exibir no documento (se diferente do termo)
+/// - termo: termo principal (cabecalho)
+/// - subtermo: subtermo/subcabecalho (opcional)
+/// - exibicao: texto a exibir no documento (se diferente do termo)
 ///
 /// Exemplo:
 /// ```typst
 /// A #idx("algoritmo") e uma sequencia de instrucoes...
-/// #idx("algoritmo", subterm: "de ordenacao")[Quicksort] e eficiente...
+/// #idx("algoritmo", subtermo: "de ordenacao")[Quicksort] e eficiente...
 /// ```
-#let idx(term, subterm: none, display: none) = {
+#let idx(termo, subtermo: none, exibicao: none) = {
   // Registrar entrada
   context {
     let current-page = counter(page).get().first()
     let entry = (
-      term: term,
-      subterm: subterm,
+      term: termo,
+      subterm: subtermo,
       page: current-page,
     )
     index-entries.update(entries => entries + (entry,))
   }
 
   // Exibir texto (se fornecido)
-  if display != none {
-    display
+  if exibicao != none {
+    exibicao
   }
 }
 
 /// Cria uma entrada de indice sem exibir texto
 /// Use quando quiser indexar um termo que ja aparece no texto
-#let index-entry(term, subterm: none) = {
+#let index-entry(termo, subtermo: none) = {
   context {
     let current-page = counter(page).get().first()
     let entry = (
-      term: term,
-      subterm: subterm,
+      term: termo,
+      subterm: subtermo,
       page: current-page,
     )
     index-entries.update(entries => entries + (entry,))
@@ -75,38 +75,38 @@
 /// Gera o indice alfabetico
 ///
 /// Parametros:
-/// - title: titulo do indice (padrao: "INDICE")
-/// - type-label: tipo do indice para o titulo (ex: "DE ASSUNTOS", "ONOMASTICO")
-/// - see-entries: lista de remissivas "ver"
-/// - see-also-entries: lista de remissivas "ver tambem"
-/// - columns: numero de colunas (padrao: 2)
-/// - letter-headers: se true, mostra letras como cabecalhos de secao
+/// - titulo: titulo do indice (padrao: "INDICE")
+/// - rotulo-tipo: tipo do indice para o titulo (ex: "DE ASSUNTOS", "ONOMASTICO")
+/// - entradas-ver: lista de remissivas "ver"
+/// - entradas-ver-tambem: lista de remissivas "ver tambem"
+/// - num-colunas: numero de colunas (padrao: 2)
+/// - cabecalhos-letras: se true, mostra letras como cabecalhos de secao
 ///
 /// Exemplo:
 /// ```typst
 /// #indice(
-///   type-label: "DE ASSUNTOS",
-///   see-entries: (
+///   rotulo-tipo: "DE ASSUNTOS",
+///   entradas-ver: (
 ///     index-see("Aviacao", "Aeronautica"),
 ///   ),
-///   see-also-entries: (
+///   entradas-ver-tambem: (
 ///     index-see-also("Ferias", "Licenca"),
 ///   ),
 /// )
 /// ```
 #let indice(
-  title: "INDICE",
-  type-label: none,
-  see-entries: (),
-  see-also-entries: (),
-  num-columns: 2,
-  letter-headers: true,
+  titulo: "INDICE",
+  rotulo-tipo: none,
+  entradas-ver: (),
+  entradas-ver-tambem: (),
+  num-colunas: 2,
+  cabecalhos-letras: true,
 ) = {
   // Titulo do indice
-  let full-title = if type-label != none {
-    title + " " + type-label
+  let full-title = if rotulo-tipo != none {
+    titulo + " " + rotulo-tipo
   } else {
-    title
+    titulo
   }
 
   align(center)[
@@ -152,7 +152,7 @@
 
     // Processar remissivas "ver"
     let see-map = (:)
-    for entry in see-entries {
+    for entry in entradas-ver {
       if type(entry) == dictionary and entry.type == "see" {
         see-map.insert(entry.from, entry.to)
       }
@@ -160,7 +160,7 @@
 
     // Processar remissivas "ver tambem"
     let see-also-map = (:)
-    for entry in see-also-entries {
+    for entry in entradas-ver-tambem {
       if type(entry) == dictionary and entry.type == "see-also" {
         if entry.from not in see-also-map {
           see-also-map.insert(entry.from, ())
@@ -209,10 +209,10 @@
     // Renderizar indice
     set par(first-line-indent: 0pt)
 
-    columns(num-columns, gutter: 1em)[
+    columns(num-colunas, gutter: 1em)[
       #for letter in by-letter.keys().sorted() {
         // Cabecalho da letra
-        if letter-headers {
+        if cabecalhos-letras {
           v(0.5em)
           text(weight: "bold", size: 11pt, letter)
           v(0.3em)
@@ -263,55 +263,55 @@
 
 /// Indice de assuntos (wrapper para indice)
 #let indice-assuntos(
-  see-entries: (),
-  see-also-entries: (),
-  columns: 2,
+  entradas-ver: (),
+  entradas-ver-tambem: (),
+  colunas: 2,
 ) = {
   indice(
-    type-label: "DE ASSUNTOS",
-    see-entries: see-entries,
-    see-also-entries: see-also-entries,
-    columns: columns,
+    rotulo-tipo: "DE ASSUNTOS",
+    entradas-ver: entradas-ver,
+    entradas-ver-tambem: entradas-ver-tambem,
+    num-colunas: colunas,
   )
 }
 
 /// Indice onomastico (de nomes/autores)
 #let indice-onomastico(
-  see-entries: (),
-  see-also-entries: (),
-  columns: 2,
+  entradas-ver: (),
+  entradas-ver-tambem: (),
+  colunas: 2,
 ) = {
   indice(
-    type-label: "ONOMASTICO",
-    see-entries: see-entries,
-    see-also-entries: see-also-entries,
-    columns: columns,
+    rotulo-tipo: "ONOMASTICO",
+    entradas-ver: entradas-ver,
+    entradas-ver-tambem: entradas-ver-tambem,
+    num-colunas: colunas,
   )
 }
 
 /// Indice de autores
 #let indice-autores(
-  see-entries: (),
-  columns: 2,
+  entradas-ver: (),
+  colunas: 2,
 ) = {
   indice(
-    type-label: "DE AUTORES",
-    see-entries: see-entries,
-    columns: columns,
+    rotulo-tipo: "DE AUTORES",
+    entradas-ver: entradas-ver,
+    num-colunas: colunas,
   )
 }
 
 /// Indice geral (combina categorias)
 #let indice-geral(
-  see-entries: (),
-  see-also-entries: (),
-  columns: 2,
+  entradas-ver: (),
+  entradas-ver-tambem: (),
+  colunas: 2,
 ) = {
   indice(
-    type-label: none,
-    see-entries: see-entries,
-    see-also-entries: see-also-entries,
-    columns: columns,
+    rotulo-tipo: none,
+    entradas-ver: entradas-ver,
+    entradas-ver-tambem: entradas-ver-tambem,
+    num-colunas: colunas,
   )
 }
 
@@ -319,49 +319,49 @@
 /// Use quando precisar de controle total sobre a entrada
 ///
 /// Parametros:
-/// - term: termo principal
-/// - qualifier: qualificador entre parenteses (opcional)
-/// - pages: paginas (string ou lista)
-/// - subentries: lista de subentradas
+/// - termo: termo principal
+/// - qualificador: qualificador entre parenteses (opcional)
+/// - paginas: paginas (string ou lista)
+/// - subentradas: lista de subentradas
 ///
 /// Exemplo:
 /// ```typst
 /// #manual-index-entry(
-///   term: "Pedro II",
-///   qualifier: "Imperador do Brasil",
-///   pages: "15-18, 45",
+///   termo: "Pedro II",
+///   qualificador: "Imperador do Brasil",
+///   paginas: "15-18, 45",
 /// )
 /// ```
 #let manual-index-entry(
-  term: none,
-  qualifier: none,
-  pages: none,
-  subentries: (),
+  termo: none,
+  qualificador: none,
+  paginas: none,
+  subentradas: (),
 ) = {
   set par(first-line-indent: 0pt)
 
   // Termo principal
-  term
+  termo
 
   // Qualificador
-  if qualifier != none {
-    [ (#qualifier)]
+  if qualificador != none {
+    [ (#qualificador)]
   }
 
   // Paginas
-  if pages != none {
-    [, #pages]
+  if paginas != none {
+    [, #paginas]
   }
 
   linebreak()
 
   // Subentradas
-  for sub in subentries {
+  for sub in subentradas {
     h(1em)
     if type(sub) == dictionary {
-      sub.term
-      if "pages" in sub and sub.pages != none {
-        [, #sub.pages]
+      sub.termo
+      if "paginas" in sub and sub.paginas != none {
+        [, #sub.paginas]
       }
     } else {
       sub

@@ -85,11 +85,11 @@ A metodologia utilizada foi baseada em estudos anteriores #citar-num("silva2023"
 
 == Citacao com Pagina
 
-Conforme demonstrado na pesquisa #citar-num("silva2023", page: "45"), "os resultados indicam uma correlacao positiva entre as variaveis analisadas".
+Conforme demonstrado na pesquisa #citar-num("silva2023", pagina: "45"), "os resultados indicam uma correlacao positiva entre as variaveis analisadas".
 
 == Citacao com Volume e Pagina
 
-O conceito foi originalmente proposto #citar-num("enciclopedia2020", volume: "2", page: "123-125") e posteriormente expandido por outros autores.
+O conceito foi originalmente proposto #citar-num("enciclopedia2020", volume: "2", pagina: "123-125") e posteriormente expandido por outros autores.
 
 == Citacoes Multiplas
 
@@ -97,23 +97,23 @@ Diversos estudos confirmam esta hipotese #citar-num-multiplos(("silva2023", "san
 
 == Citacao no Texto (Autor Mencionado)
 
-Segundo Silva #citar-num-linha("silva2023", page: "78"), a abordagem proposta apresenta vantagens significativas em relacao aos metodos tradicionais.
+Segundo Silva #citar-num-linha("silva2023", pagina: "78"), a abordagem proposta apresenta vantagens significativas em relacao aos metodos tradicionais.
 
 == Citacao de Citacao (Apud)
 
-Freire afirmou que a educacao e um ato politico #citar-num-apud("freire1994", "streck2017", original-page: "13", consulted-page: "25").
+Freire afirmou que a educacao e um ato politico #citar-num-apud("freire1994", "streck2017", pagina-original: "13", pagina-consultada: "25").
 
 = CITACOES DIRETAS
 
 == Citacao Curta (ate 3 linhas)
 
-#citacao-num-curta("santos2022", page: "67")[
+#citacao-num-curta("santos2022", pagina: "67")[
   A tecnologia transformou profundamente as relacoes sociais no seculo XXI
 ]
 
 == Citacao Longa (mais de 3 linhas)
 
-#citacao-num-longa("silva2023", page: "89-90")[
+#citacao-num-longa("silva2023", pagina: "89-90")[
   A teleconferencia permite ao individuo participar de um encontro nacional ou regional sem a necessidade de deixar seu local de origem. Tipos comuns de teleconferencia incluem o uso de televisao, telefone e computador. Atraves de audio-Loss conferencia, utilizando a companhia local de telefone, um sinal de audio pode ser emitido em um salao de qualquer dimensao
 ]
 
@@ -121,7 +121,7 @@ Freire afirmou que a educacao e um ato politico #citar-num-apud("freire1994", "s
 
 A NBR 10520:2023 tambem permite o formato sobrescrito (expoente) para citacoes numericas. Veja exemplos:
 
-O estudo comprovou a hipotese#citar-num("costa2021", style: "superscript"). Outros autores#citar-num("oliveira2020", page: "34", style: "superscript") chegaram a conclusoes similares.
+O estudo comprovou a hipotese#citar-num("costa2021", estilo: "superscript"). Outros autores#citar-num("oliveira2020", pagina: "34", estilo: "superscript") chegaram a conclusoes similares.
 
 *Nota:* No formato sobrescrito, nao deve haver espaco entre o texto e o numero.
 

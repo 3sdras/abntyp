@@ -8,35 +8,35 @@
 /// Template para artigo científico
 ///
 /// Parâmetros:
-/// - title: título do artigo
-/// - subtitle: subtítulo (opcional)
-/// - authors: lista de autores com afiliação
-/// - abstract-pt: resumo em português
-/// - abstract-en: abstract em inglês
-/// - keywords-pt: palavras-chave
-/// - keywords-en: keywords
-/// - font: fonte a usar
-/// - columns: número de colunas (1 ou 2)
-/// - bibliography-file: caminho para arquivo .bib (opcional)
-/// - bibliography-title: título da seção de referências (padrão: "REFERÊNCIAS")
+/// - titulo: título do artigo
+/// - subtitulo: subtítulo (opcional)
+/// - autores: lista de autores com afiliação
+/// - resumo: resumo em português
+/// - resumo-en: abstract em inglês
+/// - palavras-chave: palavras-chave
+/// - palavras-chave-en: keywords
+/// - fonte: fonte a usar
+/// - colunas: número de colunas (1 ou 2)
+/// - arquivo-bibliografia: caminho para arquivo .bib (opcional)
+/// - titulo-bibliografia: título da seção de referências (padrão: "REFERÊNCIAS")
 #let artigo(
-  title: "",
-  subtitle: none,
-  authors: (),
-  abstract-pt: none,
-  abstract-en: none,
-  keywords-pt: (),
-  keywords-en: (),
-  font: "Times New Roman",
-  columns: 1,
-  bibliography-file: none,
-  bibliography-title: "REFERÊNCIAS",
+  titulo: "",
+  subtitulo: none,
+  autores: (),
+  resumo: none,
+  resumo-en: none,
+  palavras-chave: (),
+  palavras-chave-en: (),
+  fonte: "Times New Roman",
+  colunas: 1,
+  arquivo-bibliografia: none,
+  titulo-bibliografia: "REFERÊNCIAS",
   body,
 ) = {
   // Configuração do documento
   set document(
-    title: title,
-    author: authors.map(a => a.name).join(", "),
+    title: titulo,
+    author: autores.map(a => a.name).join(", "),
   )
 
   // Configuração de página
@@ -54,7 +54,7 @@
 
   // Configuração de fonte
   set text(
-    font: font,
+    font: fonte,
     size: 12pt,
     lang: "pt",
     region: "BR",
@@ -99,27 +99,27 @@
   // Excluir indentação de containers que não devem ser indentados
   show heading: set par(first-line-indent: 0pt)
   show figure: set par(first-line-indent: 0pt)
-  show raw: set par(first-line-indent: 0pt)
+  show raw.where(block: true): set par(first-line-indent: 0pt)
   show outline: set par(first-line-indent: 0pt)
   show terms: set par(first-line-indent: 0pt)
 
   // Título centralizado, maiúsculas, negrito
   align(center)[
-    #text(weight: "bold", size: 14pt, upper(title))
-    #if subtitle != none {
+    #text(weight: "bold", size: 14pt, upper(titulo))
+    #if subtitulo != none {
       linebreak()
-      text(size: 14pt, ": " + subtitle)
+      text(size: 14pt, ": " + subtitulo)
     }
   ]
 
   v(1em)
 
   // Autores
-  for author in authors {
+  for autor in autores {
     align(center)[
-      #text(size: 12pt, author.name)
-      #if "affiliation" in author {
-        footnote(author.affiliation)
+      #text(size: 12pt, autor.name)
+      #if "affiliation" in autor {
+        footnote(autor.affiliation)
       }
     ]
   }
@@ -127,52 +127,52 @@
   v(2em)
 
   // Resumo
-  if abstract-pt != none {
+  if resumo != none {
     [*RESUMO*]
     linebreak()
     set par(first-line-indent: 0pt)
-    abstract-pt
-    if keywords-pt.len() > 0 {
+    resumo
+    if palavras-chave.len() > 0 {
       linebreak()
       linebreak()
-      [*Palavras-chave:* #keywords-pt.join(". ").]
+      [*Palavras-chave:* #palavras-chave.join(". ").]
     }
     v(2em)
   }
 
   // Abstract
-  if abstract-en != none {
+  if resumo-en != none {
     [*ABSTRACT*]
     linebreak()
     set par(first-line-indent: 0pt)
-    abstract-en
-    if keywords-en.len() > 0 {
+    resumo-en
+    if palavras-chave-en.len() > 0 {
       linebreak()
       linebreak()
-      [*Keywords:* #keywords-en.join(". ").]
+      [*Keywords:* #palavras-chave-en.join(". ").]
     }
     v(2em)
   }
 
   // Corpo do artigo
-  if columns == 2 {
+  if colunas == 2 {
     columns(2, body)
   } else {
     body
   }
 
   // Bibliografia automática (se arquivo .bib fornecido)
-  if bibliography-file != none {
-    abnt-bibliography(bibliography-file, title: bibliography-title)
+  if arquivo-bibliografia != none {
+    abnt-bibliography(arquivo-bibliografia, titulo: titulo-bibliografia)
   }
 }
 
 /// Seção de artigo (sem numeração)
-#let article-section(title) = {
-  heading(level: 1, numbering: none, title)
+#let article-section(titulo) = {
+  heading(level: 1, numbering: none, titulo)
 }
 
 /// Subseção de artigo
-#let article-subsection(title) = {
-  heading(level: 2, numbering: none, title)
+#let article-subsection(titulo) = {
+  heading(level: 2, numbering: none, titulo)
 }

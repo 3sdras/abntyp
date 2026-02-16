@@ -10,38 +10,38 @@
 /// Template principal para fasciculo de periodico
 ///
 /// Parametros:
-/// - title: titulo do periodico
-/// - subtitle: subtitulo (opcional)
+/// - titulo: titulo do periodico
+/// - subtitulo: subtitulo (opcional)
 /// - issn: numero ISSN
 /// - volume: numero do volume
-/// - number: numero do fasciculo
-/// - year: ano de publicacao
-/// - month-start: mes inicial (1-12)
-/// - month-end: mes final (1-12, opcional para periodo)
-/// - location: cidade de publicacao
-/// - publisher: editora
-/// - institution: instituicao responsavel
+/// - numero: numero do fasciculo
+/// - ano: ano de publicacao
+/// - mes-inicio: mes inicial (1-12)
+/// - mes-fim: mes final (1-12, opcional para periodo)
+/// - local: cidade de publicacao
+/// - editora: editora
+/// - instituicao: instituicao responsavel
 /// - doi: identificador DOI (opcional)
-/// - font: fonte a usar
+/// - fonte: fonte a usar
 #let periodical(
-  title: "",
-  subtitle: none,
+  titulo: "",
+  subtitulo: none,
   issn: none,
   volume: none,
-  number: none,
-  year: datetime.today().year(),
-  month-start: none,
-  month-end: none,
-  location: none,
-  publisher: none,
-  institution: none,
+  numero: none,
+  ano: datetime.today().year(),
+  mes-inicio: none,
+  mes-fim: none,
+  local: none,
+  editora: none,
+  instituicao: none,
   doi: none,
-  font: "Times New Roman",
+  fonte: "Times New Roman",
   body,
 ) = {
   // Configuracao do documento
   set document(
-    title: title,
+    title: titulo,
   )
 
   // Configuracao de pagina
@@ -57,12 +57,12 @@
     number-align: top + right,
     // Legenda bibliografica no rodape
     footer: context {
-      let abbrev-title = abbreviate-title(title)
-      let month-text = if month-start != none {
-        if month-end != none {
-          format-month-range(month-start, month-end)
+      let abbrev-title = abbreviate-title(titulo)
+      let month-text = if mes-inicio != none {
+        if mes-fim != none {
+          format-month-range(mes-inicio, mes-fim)
         } else {
-          get-month-abbrev(month-start)
+          get-month-abbrev(mes-inicio)
         }
       } else { "" }
 
@@ -70,13 +70,13 @@
 
       set text(size: 10pt)
       set align(left)
-      [#abbrev-title, #location, v. #volume, n. #number, p. #page-num, #month-text #year.]
+      [#abbrev-title, #local, v. #volume, n. #numero, p. #page-num, #month-text #ano.]
     },
   )
 
   // Configuracao de fonte
   set text(
-    font: font,
+    font: fonte,
     size: 12pt,
     lang: "pt",
     region: "BR",
@@ -121,7 +121,7 @@
   // Excluir indentacao de containers que nao devem ser indentados
   show heading: set par(first-line-indent: 0pt)
   show figure: set par(first-line-indent: 0pt)
-  show raw: set par(first-line-indent: 0pt)
+  show raw.where(block: true): set par(first-line-indent: 0pt)
   show outline: set par(first-line-indent: 0pt)
   show terms: set par(first-line-indent: 0pt)
 
@@ -132,27 +132,27 @@
 /// Primeira capa com elementos obrigatorios
 ///
 /// Parametros:
-/// - title: titulo do periodico
-/// - subtitle: subtitulo (opcional)
+/// - titulo: titulo do periodico
+/// - subtitulo: subtitulo (opcional)
 /// - issn: numero ISSN (obrigatorio, canto superior direito)
 /// - volume: numero do volume
-/// - number: numero do fasciculo
-/// - year: ano
-/// - month-start: mes inicial
-/// - month-end: mes final (opcional)
+/// - numero: numero do fasciculo
+/// - ano: ano
+/// - mes-inicio: mes inicial
+/// - mes-fim: mes final (opcional)
 /// - logo: logomarca (opcional)
-/// - supplement: indicacao de suplemento (opcional)
+/// - suplemento: indicacao de suplemento (opcional)
 #let periodical-cover(
-  title: "",
-  subtitle: none,
+  titulo: "",
+  subtitulo: none,
   issn: none,
   volume: none,
-  number: none,
-  year: none,
-  month-start: none,
-  month-end: none,
+  numero: none,
+  ano: none,
+  mes-inicio: none,
+  mes-fim: none,
   logo: none,
-  supplement: none,
+  suplemento: none,
 ) = {
   set page(numbering: none)
 
@@ -173,19 +173,19 @@
 
   // Titulo e subtitulo
   align(center)[
-    #text(weight: "bold", size: 16pt, upper(title))
-    #if subtitle != none {
+    #text(weight: "bold", size: 16pt, upper(titulo))
+    #if subtitulo != none {
       linebreak()
-      text(size: 14pt, subtitle)
+      text(size: 14pt, subtitulo)
     }
   ]
 
   v(1fr)
 
   // Indicacao de suplemento
-  if supplement != none {
+  if suplemento != none {
     align(center)[
-      #text(size: 12pt, supplement)
+      #text(size: 12pt, suplemento)
     ]
     v(1em)
   }
@@ -195,17 +195,17 @@
     #text(size: 12pt)[
       v. #volume
       #h(1em)
-      n. #number
+      n. #numero
       #h(1em)
-      #if month-start != none {
-        if month-end != none {
-          [#month-names.at(month-start)/#month-names.at(month-end)]
+      #if mes-inicio != none {
+        if mes-fim != none {
+          [#month-names.at(mes-inicio - 1)/#month-names.at(mes-fim - 1)]
         } else {
-          month-names.at(month-start)
+          month-names.at(mes-inicio - 1)
         }
       }
       #h(0.5em)
-      #year
+      #ano
     ]
   ]
 
@@ -217,31 +217,31 @@
 /// Conforme NBR 6021:2015 secao 4.3.1
 ///
 /// Parametros:
-/// - title: titulo do periodico
+/// - titulo: titulo do periodico
 /// - issn: numero ISSN
 /// - volume: numero do volume
-/// - number: numero do fasciculo
-/// - pages: intervalo de paginas (ex: "1-154")
-/// - year: ano
-/// - month-start: mes inicial
-/// - month-end: mes final (opcional)
-/// - location: cidade de publicacao
+/// - numero: numero do fasciculo
+/// - paginas: intervalo de paginas (ex: "1-154")
+/// - ano: ano
+/// - mes-inicio: mes inicial
+/// - mes-fim: mes final (opcional)
+/// - local: cidade de publicacao
 #let periodical-title-page(
-  title: "",
+  titulo: "",
   issn: none,
   volume: none,
-  number: none,
-  pages: none,
-  year: none,
-  month-start: none,
-  month-end: none,
-  location: none,
+  numero: none,
+  paginas: none,
+  ano: none,
+  mes-inicio: none,
+  mes-fim: none,
+  local: none,
 ) = {
   set page(numbering: none)
 
   // Titulo com destaque
   align(center)[
-    #text(weight: "bold", size: 14pt, upper(title))
+    #text(weight: "bold", size: 14pt, upper(titulo))
   ]
 
   v(2cm)
@@ -256,18 +256,18 @@
   v(1cm)
 
   // Legenda bibliografica completa
-  let abbrev-title = abbreviate-title(title)
-  let month-text = if month-start != none {
-    if month-end != none {
-      format-month-range(month-start, month-end)
+  let abbrev-title = abbreviate-title(titulo)
+  let month-text = if mes-inicio != none {
+    if mes-fim != none {
+      format-month-range(mes-inicio, mes-fim)
     } else {
-      get-month-abbrev(month-start)
+      get-month-abbrev(mes-inicio)
     }
   } else { "" }
 
   align(center)[
     #text(size: 10pt)[
-      #abbrev-title, #location, v. #volume, n. #number, p. #pages, #month-text #year.
+      #abbrev-title, #local, v. #volume, n. #numero, p. #paginas, #month-text #ano.
     ]
   ]
 
@@ -279,59 +279,59 @@
 /// Conforme NBR 6021:2015 secao 4.3.1.2
 ///
 /// Parametros:
-/// - copyright-year: ano do copyright
-/// - copyright-holder: detentor dos direitos
-/// - reproduction-rights: autorizacao de reproducao (opcional)
-/// - other-formats: outros suportes disponiveis (opcional)
-/// - cataloging: dados de catalogacao na publicacao
-/// - credits: creditos e outras informacoes
+/// - ano-copyright: ano do copyright
+/// - detentor-copyright: detentor dos direitos
+/// - direitos-reproducao: autorizacao de reproducao (opcional)
+/// - outros-formatos: outros suportes disponiveis (opcional)
+/// - catalogacao: dados de catalogacao na publicacao
+/// - creditos: creditos e outras informacoes
 #let periodical-title-page-verso(
-  copyright-year: none,
-  copyright-holder: none,
-  reproduction-rights: none,
-  other-formats: none,
-  cataloging: none,
-  credits: none,
+  ano-copyright: none,
+  detentor-copyright: none,
+  direitos-reproducao: none,
+  outros-formatos: none,
+  catalogacao: none,
+  creditos: none,
 ) = {
   set page(numbering: none)
   set text(size: 10pt)
   set par(first-line-indent: 0pt, leading: 1em * 0.65)
 
   // Copyright
-  if copyright-year != none and copyright-holder != none {
-    [(c) #copyright-year #copyright-holder]
+  if ano-copyright != none and detentor-copyright != none {
+    [(c) #ano-copyright #detentor-copyright]
     v(1em)
   }
 
   // Autorizacao de reproducao
-  if reproduction-rights != none {
-    reproduction-rights
+  if direitos-reproducao != none {
+    direitos-reproducao
     v(1em)
   }
 
   // Outros suportes
-  if other-formats != none {
-    other-formats
+  if outros-formatos != none {
+    outros-formatos
     v(1em)
   }
 
   // Creditos
-  if credits != none {
-    credits
+  if creditos != none {
+    creditos
     v(1em)
   }
 
   v(1fr)
 
   // Dados de catalogacao (parte inferior)
-  if cataloging != none {
+  if catalogacao != none {
     align(center)[
       #box(
         width: 12cm,
         stroke: 0.5pt,
         inset: 0.5cm,
       )[
-        #cataloging
+        #catalogacao
       ]
     ]
   }
@@ -342,10 +342,10 @@
 /// Sumario do fasciculo
 /// Conforme NBR 6027
 #let periodical-toc(
-  title: "SUMARIO",
+  titulo: "SUMARIO",
 ) = {
   align(center)[
-    #text(weight: "bold", size: 12pt, title)
+    #text(weight: "bold", size: 12pt, titulo)
   ]
 
   v(1.5em)
@@ -361,9 +361,9 @@
 
 /// Editorial
 /// Texto do editor apresentando o conteudo do fasciculo
-#let editorial(content) = {
+#let editorial(conteudo) = {
   heading(level: 1, numbering: none, "EDITORIAL")
-  content
+  conteudo
   pagebreak()
 }
 
@@ -371,36 +371,36 @@
 /// Para uso no rodape de cada pagina ou folha de rosto
 ///
 /// Parametros:
-/// - title: titulo do periodico (sera abreviado)
-/// - location: cidade
+/// - titulo: titulo do periodico (sera abreviado)
+/// - local: cidade
 /// - volume: numero do volume
-/// - number: numero do fasciculo
-/// - pages: paginas (ex: "1-154" para fasciculo, "9-21" para artigo)
-/// - month-start: mes inicial (1-12)
-/// - month-end: mes final (1-12, opcional)
-/// - year: ano
+/// - numero: numero do fasciculo
+/// - paginas: paginas (ex: "1-154" para fasciculo, "9-21" para artigo)
+/// - mes-inicio: mes inicial (1-12)
+/// - mes-fim: mes final (1-12, opcional)
+/// - ano: ano
 #let bibliographic-legend(
-  title: "",
-  location: "",
+  titulo: "",
+  local: "",
   volume: none,
-  number: none,
-  pages: none,
-  month-start: none,
-  month-end: none,
-  year: none,
+  numero: none,
+  paginas: none,
+  mes-inicio: none,
+  mes-fim: none,
+  ano: none,
 ) = {
-  let abbrev-title = abbreviate-title(title)
+  let abbrev-title = abbreviate-title(titulo)
 
-  let month-text = if month-start != none {
-    if month-end != none {
-      format-month-range(month-start, month-end)
+  let month-text = if mes-inicio != none {
+    if mes-fim != none {
+      format-month-range(mes-inicio, mes-fim)
     } else {
-      get-month-abbrev(month-start)
+      get-month-abbrev(mes-inicio)
     }
   } else { "" }
 
   text(size: 10pt)[
-    #abbrev-title, #location, v. #volume, n. #number, p. #pages, #month-text #year.
+    #abbrev-title, #local, v. #volume, n. #numero, p. #paginas, #month-text #ano.
   ]
 }
 
@@ -408,34 +408,34 @@
 /// Conforme NBR 6022:2018 (integrado com NBR 6021:2015)
 ///
 /// Parametros:
-/// - title: titulo do artigo
-/// - authors: lista de autores com afiliacao
-/// - abstract-pt: resumo em portugues
-/// - keywords-pt: palavras-chave
-/// - abstract-en: abstract em ingles (opcional)
-/// - keywords-en: keywords (opcional)
+/// - titulo: titulo do artigo
+/// - autores: lista de autores com afiliacao
+/// - resumo: resumo em portugues
+/// - palavras-chave: palavras-chave
+/// - resumo-en: abstract em ingles (opcional)
+/// - palavras-chave-en: keywords (opcional)
 #let periodical-article(
-  title: "",
-  authors: (),
-  abstract-pt: none,
-  keywords-pt: (),
-  abstract-en: none,
-  keywords-en: (),
+  titulo: "",
+  autores: (),
+  resumo: none,
+  palavras-chave: (),
+  resumo-en: none,
+  palavras-chave-en: (),
   body,
 ) = {
   // Titulo do artigo
   align(center)[
-    #text(weight: "bold", size: 12pt, upper(title))
+    #text(weight: "bold", size: 12pt, upper(titulo))
   ]
 
   v(1em)
 
   // Autores
-  for author in authors {
+  for autor in autores {
     align(center)[
-      #text(size: 12pt, author.name)
-      #if "affiliation" in author {
-        footnote(author.affiliation)
+      #text(size: 12pt, autor.name)
+      #if "affiliation" in autor {
+        footnote(autor.affiliation)
       }
     ]
   }
@@ -443,29 +443,29 @@
   v(2em)
 
   // Resumo
-  if abstract-pt != none {
+  if resumo != none {
     set par(first-line-indent: 0pt)
     [*RESUMO*]
     linebreak()
-    abstract-pt
-    if keywords-pt.len() > 0 {
+    resumo
+    if palavras-chave.len() > 0 {
       linebreak()
       linebreak()
-      [*Palavras-chave:* #keywords-pt.join(". ").]
+      [*Palavras-chave:* #palavras-chave.join(". ").]
     }
     v(2em)
   }
 
   // Abstract
-  if abstract-en != none {
+  if resumo-en != none {
     set par(first-line-indent: 0pt)
     [*ABSTRACT*]
     linebreak()
-    abstract-en
-    if keywords-en.len() > 0 {
+    resumo-en
+    if palavras-chave-en.len() > 0 {
       linebreak()
       linebreak()
-      [*Keywords:* #keywords-en.join(". ").]
+      [*Keywords:* #palavras-chave-en.join(". ").]
     }
     v(2em)
   }
@@ -476,30 +476,31 @@
 
 /// Instrucoes editoriais para autores
 /// Conforme NBR 6021:2015 secao 4.5.2
-#let author-guidelines(content) = {
+#let author-guidelines(conteudo) = {
   heading(level: 1, numbering: none, "INSTRUCOES PARA AUTORES")
   set par(first-line-indent: 0pt)
-  content
+  conteudo
 }
 
 /// Suplemento de periodico
 /// Conforme NBR 6021:2015 secao 5.4
 ///
 /// Parametros:
-/// - main-title: titulo do periodico principal
-/// - supplement-title: titulo do suplemento
+/// - titulo-principal: titulo do periodico principal
+/// - titulo-suplemento: titulo do suplemento
 /// - volume: volume do periodico principal
-/// - year: ano
+/// - ano: ano
 /// - issn: ISSN do periodico principal
 #let supplement-info(
-  main-title: "",
-  supplement-title: "",
+  titulo-principal: "",
+  titulo-suplemento: "",
   volume: none,
-  year: none,
+  ano: none,
   issn: none,
 ) = {
   text(size: 10pt)[
-    Suplemento de: #main-title, v. #volume, #year.
+    Suplemento de: #titulo-principal, v. #volume, #ano.
+    #titulo-suplemento
     #if issn != none { [ISSN #issn] }
   ]
 }

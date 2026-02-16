@@ -19,9 +19,9 @@
 )
 
 /// Aplica fonte padrão ABNT (Times New Roman, 12pt)
-#let abnt-font-setup(font-family: "Times New Roman") = {
+#let abnt-font-setup(fonte-familia: "Times New Roman") = {
   set text(
-    font: font-family,
+    font: fonte-familia,
     size: 12pt,
     lang: "pt",
     region: "BR",
@@ -29,9 +29,9 @@
 }
 
 /// Aplica configuração completa de fonte ABNT
-#let with-abnt-font(font-family: "Times New Roman", body) = {
+#let with-abnt-font(fonte-familia: "Times New Roman", body) = {
   set text(
-    font: font-family,
+    font: fonte-familia,
     size: 12pt,
     lang: "pt",
     region: "BR",

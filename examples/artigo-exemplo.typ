@@ -20,9 +20,9 @@
 
 // Configuração do documento usando o template article
 #show: artigo.with(
-  title: "Impacto da Inteligência Artificial na Educação Superior",
-  subtitle: "uma revisão sistemática da literatura",
-  authors: (
+  titulo: "Impacto da Inteligência Artificial na Educação Superior",
+  subtitulo: "uma revisão sistemática da literatura",
+  autores: (
     (
       name: "Maria Eduarda Oliveira",
       affiliation: "Doutoranda em Educação, Universidade Federal de Exemplo. E-mail: maria.oliveira@ufe.edu.br",
@@ -36,18 +36,18 @@
       affiliation: "Mestranda em Tecnologia Educacional, Universidade Estadual de Modelo. E-mail: ana.ferreira@uem.edu.br",
     ),
   ),
-  abstract-pt: [
+  resumo: [
     Este artigo apresenta uma revisão sistemática da literatura sobre o impacto da inteligência artificial (IA) na educação superior. A pesquisa analisou 85 estudos publicados entre 2019 e 2024, identificando as principais aplicações de IA no contexto universitário, incluindo sistemas tutores inteligentes, avaliação automatizada, personalização do aprendizado e análise preditiva de desempenho acadêmico. Os resultados indicam que a IA tem potencial significativo para melhorar a qualidade do ensino e a experiência dos estudantes, embora existam desafios relacionados à ética, privacidade de dados e formação docente. Conclui-se que a integração efetiva da IA na educação superior requer políticas institucionais claras e investimento em capacitação tecnológica.
   ],
-  abstract-en: [
+  resumo-en: [
     This article presents a systematic literature review on the impact of artificial intelligence (AI) in higher education. The research analyzed 85 studies published between 2019 and 2024, identifying the main applications of AI in the university context, including intelligent tutoring systems, automated assessment, personalized learning, and predictive analysis of academic performance. The results indicate that AI has significant potential to improve teaching quality and student experience, although there are challenges related to ethics, data privacy, and teacher training. It is concluded that the effective integration of AI in higher education requires clear institutional policies and investment in technological training.
   ],
-  keywords-pt: ("Inteligência artificial", "Educação superior", "Tecnologia educacional", "Aprendizado personalizado", "Revisão sistemática"),
-  keywords-en: ("Artificial intelligence", "Higher education", "Educational technology", "Personalized learning", "Systematic review"),
-  font: "Times New Roman",
-  columns: 1,
+  palavras-chave: ("Inteligência artificial", "Educação superior", "Tecnologia educacional", "Aprendizado personalizado", "Revisão sistemática"),
+  palavras-chave-en: ("Artificial intelligence", "Higher education", "Educational technology", "Personalized learning", "Systematic review"),
+  fonte: "Times New Roman",
+  colunas: 1,
   // Para usar bibliografia automática, descomente a linha abaixo:
-  // bibliography-file: "examples/referencias.bib",
+  // arquivo-bibliografia: "examples/referencias.bib",
 )
 
 // ============================================================================

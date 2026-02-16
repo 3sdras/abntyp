@@ -7,9 +7,9 @@
 /// das referências conforme NBR 6023:2018.
 ///
 /// Parâmetros:
-/// - file: caminho para arquivo .bib ou .yaml com as referências
-/// - title: título da seção (padrão: "REFERÊNCIAS")
-/// - full: se true, mostra todas as entradas; se false, apenas as citadas
+/// - arquivo: caminho para arquivo .bib ou .yaml com as referências
+/// - titulo: título da seção (padrão: "REFERÊNCIAS")
+/// - completa: se true, mostra todas as entradas; se false, apenas as citadas
 ///
 /// Exemplo:
 /// ```typst
@@ -20,9 +20,9 @@
 /// - Subtítulos aparecem em negrito junto com o título (limitação do CSL)
 /// - Títulos sem autor: a primeira palavra deve estar em MAIÚSCULAS no .bib
 /// - Legislação tem suporte limitado
-#let abnt-bibliography(file, title: "REFERÊNCIAS", full: false) = {
+#let abnt-bibliography(arquivo, titulo: "REFERÊNCIAS", completa: false) = {
   // Título da seção de referências
-  heading(level: 1, numbering: none, title)
+  heading(level: 1, numbering: none, titulo)
 
   // Configuração de parágrafo para referências
   // Recuo francês de 1,25cm, espaçamento simples
@@ -34,7 +34,7 @@
 
   // Usa o CSL ABNT incluído no pacote
   // O caminho é relativo a este arquivo
-  bibliography(file, style: "abnt.csl", title: none, full: full)
+  bibliography(arquivo, style: "abnt.csl", title: none, full: completa)
 }
 
 /// Configura citações para formato ABNT
@@ -66,8 +66,8 @@
 /// Ideal para uso no final do documento.
 ///
 /// Parâmetros:
-/// - file: caminho para arquivo .bib
-/// - title: título da seção (padrão: "REFERÊNCIAS")
-#let referencias(file, title: "REFERÊNCIAS") = {
-  abnt-bibliography(file, title: title, full: false)
+/// - arquivo: caminho para arquivo .bib
+/// - titulo: título da seção (padrão: "REFERÊNCIAS")
+#let referencias(arquivo, titulo: "REFERÊNCIAS") = {
+  abnt-bibliography(arquivo, titulo: titulo, completa: false)
 }

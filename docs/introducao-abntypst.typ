@@ -2,32 +2,16 @@
 // Documento tutorial para iniciantes
 // Inspirado no "Breve Introdução ao LaTeX 2ε" de Lenimar Nunes de Andrade
 
-#set document(
-  title: "Breve Introdução ao ABNTypst",
-  author: "ABNTypst",
-)
+#import "../lib.typ": *
 
-#set page(
-  paper: "a4",
-  margin: (top: 3cm, bottom: 2cm, left: 3cm, right: 2cm),
-  numbering: none,
+#show: livro.with(
+  titulo: "Breve Introdução ao ABNTypst",
+  autor: "ABNTypst",
+  editora: "",
+  local: "",
+  ano: 2026,
+  fonte: "Times New Roman",
 )
-
-#set text(
-  font: "Times New Roman",
-  size: 12pt,
-  lang: "pt",
-  region: "BR",
-)
-
-#set par(
-  leading: 0.65em,
-  spacing: 0.65em,
-  justify: true,
-  first-line-indent: (amount: 1.25cm, all: true),
-)
-
-#set heading(numbering: "1.1")
 
 // Latex escrito como LaTeX
 #let LaTeX = {
@@ -43,93 +27,6 @@
 }
 
 #show "LaTeX": LaTeX
-
-// ambiente de descrição
-#set terms(
-  indent: 0em,           // indentação do item
-  hanging-indent: 2em, // recuo da descrição
-  separator: [: ],       // separador entre termo e descrição
-)
-
-// recuo de listas e enumerações
-#set list(indent: 2em, body-indent: 0.5em)
-#set enum(indent: 2em, body-indent: 0.5em)
-
-// O first-line-indent com all: true indenta o primeiro parágrafo dentro
-// de qualquer contêiner. As show rules abaixo excluem os elementos que
-// não devem ser indentados (solução idiomática do Typst).
-#show heading: set par(first-line-indent: 0pt)
-#show figure: set par(first-line-indent: 0pt)
-#show raw: set par(first-line-indent: 0pt)
-#show outline: set par(first-line-indent: 0pt)
-#show terms: set par(first-line-indent: 0pt)
-
-// Formatação dos headings conforme NBR 6024
-// Nível 1 (primário): MAIÚSCULAS + negrito
-#show heading.where(level: 1): it => {
-  pagebreak(weak: true)
-  v(1.5em)
-  text(size: 12pt, weight: "bold")[
-    #if it.numbering != none {
-      counter(heading).display()
-      h(0.5em)
-    }
-    #upper(it.body)
-  ]
-  v(1.5em)
-}
-
-// Nível 2 (secundário): MAIÚSCULAS, sem negrito
-#show heading.where(level: 2): it => {
-  v(1.5em)
-  text(size: 12pt, weight: "regular")[
-    #if it.numbering != none {
-      counter(heading).display()
-      h(0.5em)
-    }
-    #upper(it.body)
-  ]
-  v(1em)
-}
-
-// Nível 3 (terciário): minúsculas + negrito
-#show heading.where(level: 3): it => {
-  v(1em)
-  text(size: 12pt, weight: "bold")[
-    #if it.numbering != none {
-      counter(heading).display()
-      h(0.5em)
-    }
-    #it.body
-  ]
-  v(0.5em)
-}
-
-// Nível 4 (quaternário): minúsculas, sem negrito
-#show heading.where(level: 4): it => {
-  v(1em)
-  text(size: 12pt, weight: "regular")[
-    #if it.numbering != none {
-      counter(heading).display()
-      h(0.5em)
-    }
-    #it.body
-  ]
-  v(0.5em)
-}
-
-// Nível 5 (quinário): minúsculas, itálico
-#show heading.where(level: 5): it => {
-  v(1em)
-  text(size: 12pt, weight: "regular", style: "italic")[
-    #if it.numbering != none {
-      counter(heading).display()
-      h(0.5em)
-    }
-    #it.body
-  ]
-  v(0.5em)
-}
 
 // Função auxiliar para exemplos numerados
 #let exemplo-counter = counter("exemplo")
@@ -165,12 +62,6 @@
 #align(center)[
   #v(2cm)
 
-  #text(size: 14pt)[UNIVERSIDADE FEDERAL DE JATAÍ]
-
-  #text(size: 12pt)[INSTITUTO DE CIÊNCIAS EXATAS E TECNOLÓGICAS]
-
-  #v(3cm)
-
   #text(size: 14pt)[Breve Introdução ao]
 
   #v(0.5cm)
@@ -190,8 +81,6 @@
   ]
 
   #v(1fr)
-
-  #text(size: 12pt)[Jataí -- GO]
 ]
 
 #pagebreak()
@@ -237,51 +126,40 @@
   ]
 }
 
-#outline(
-  title: [#align(center)[#text(weight: "bold")[SUMÁRIO]]],
-  indent: 0pt,
-  depth: 3,
-)
-
-#pagebreak()
+#book-toc(profundidade: 3)
 
 // ============================================================================
 // PREFÁCIO
 // ============================================================================
 
-#heading(level: 1, numbering: none)[Prefácio]
+#book-preface(titulo: "PREFÁCIO")[
+  Estas notas são uma adaptação dos trabalhos originais "Uma breve introdução ao $"LaTeX" 2 epsilon$", de Lenimar Nunes de Andrade e a documentação do pacote ABNTex2 de LaTeX, para o caso do Typst, com o objetivo de servir de material didático para a disciplina "Software Livre para digitação de textos matemáticos" na UFJ.
 
+  O ABNTypst é um pacote gratuito, de código aberto, desenvolvido para facilitar a produção de documentos técnicos e científicos brasileiros. Pode ser utilizado diretamente no navegador através do #link("https://typst.app")[typst.app], ou instalado localmente em qualquer sistema operacional.
 
+  No Capítulo 1 são introduzidos os conceitos básicos do Typst e do ABNTypst. O Capítulo 2 trata dos elementos pré-textuais (capa, folha de rosto, resumo, etc.) e o Capítulo 3 aborda os elementos textuais (seções, citações, alíneas). A leitura desses três primeiros capítulos deve habilitar o leitor a produzir um trabalho acadêmico básico.
 
-Estas notas são uma adaptação dos trabalhos originais "Uma breve introdução ao $"LaTeX" 2 epsilon$", de Lenimar Nunes de Andrade e a documentação do pacote ABNTex2 de LaTeX, para o caso do Typst, com o objetivo de servir de material didático para a disciplina "Software Livre para digitação de textos matemáticos" na UFJ.
+  O Capítulo 4 trata de figuras, quadros e tabelas. O Capítulo 5 apresenta uma cobertura completa de fórmulas matemáticas, e o Capítulo 6 aborda diagramas e gráficos.
 
-O ABNTypst é um pacote gratuito, de código aberto, desenvolvido para facilitar a produção de documentos técnicos e científicos brasileiros. Pode ser utilizado diretamente no navegador através do #link("https://typst.app")[typst.app], ou instalado localmente em qualquer sistema operacional.
+  Os Capítulos 7 e 8 tratam dos elementos pós-textuais e dos diferentes tipos de documentos suportados pelo ABNTypst.
 
-No Capítulo 1 são introduzidos os conceitos básicos do Typst e do ABNTypst. O Capítulo 2 trata dos elementos pré-textuais (capa, folha de rosto, resumo, etc.) e o Capítulo 3 aborda os elementos textuais (seções, citações, alíneas). A leitura desses três primeiros capítulos deve habilitar o leitor a produzir um trabalho acadêmico básico.
+  Os apêndices contêm tabelas de referência para símbolos matemáticos (Apêndice A), um guia de migração para quem vem do LaTeX (Apêndice B), recursos na Internet (Apêndice C) e uma tabela das normas ABNT implementadas (Apêndice D).
 
-O Capítulo 4 trata de figuras, quadros e tabelas. O Capítulo 5 apresenta uma cobertura completa de fórmulas matemáticas, e o Capítulo 6 aborda diagramas e gráficos.
+  #v(1cm)
 
-Os Capítulos 7 e 8 tratam dos elementos pós-textuais e dos diferentes tipos de documentos suportados pelo ABNTypst.
+  #align(right)[
+    Jataí, janeiro de 2026
 
-Os apêndices contêm tabelas de referência para símbolos matemáticos (Apêndice A), um guia de migração para quem vem do LaTeX (Apêndice B), recursos na Internet (Apêndice C) e uma tabela das normas ABNT implementadas (Apêndice D).
-
-#v(1cm)
-
-#align(right)[
-  Jataí, janeiro de 2026
-
-  _Equipe ABNTypst_
+    _Equipe ABNTypst_
+  ]
 ]
-
-#pagebreak()
 
 // ============================================================================
 // CAPÍTULO 1: CONCEITOS BÁSICOS
 // ============================================================================
 
-// Inicia numeração de páginas (arábica, canto superior direito)
-#set page(numbering: "1", number-align: top + right)
-#counter(page).update(1)
+// Inicia numeração de páginas
+#book-start-numbering()
 
 = Conceitos Básicos
 
@@ -387,11 +265,11 @@ Para um documento acadêmico usando ABNTypst, o exemplo mínimo seria:
   #raw(block: true, lang: "typst", "#import \"@preview/abntypst:0.1.0\": *
 
 #show: abntcc.with(
-  title: \"Meu Trabalho Acadêmico\",
-  author: \"Maria da Silva\",
-  institution: \"Universidade Federal\",
-  location: \"Cidade\",
-  year: 2026,
+  titulo: \"Meu Trabalho Acadêmico\",
+  autor: \"Maria da Silva\",
+  instituicao: \"Universidade Federal\",
+  local: \"Cidade\",
+  ano: 2026,
 )
 
 = Introdução
@@ -545,6 +423,8 @@ Para configurar o espaçamento entre linhas e o recuo de parágrafo:
 
 // Comportamento padrão do Typst (NÃO indenta o primeiro parágrafo)
 #set par(first-line-indent: 1.25cm)")
+
+  *Atenção:* ao usar `all: true`, evite `#show raw: set par(first-line-indent: 0pt)` --- essa regra genérica quebra o fluxo de código inline (backticks), forçando-o para linhas separadas. Use `#show raw.where(block: true): set par(first-line-indent: 0pt)` para excluir apenas blocos de código da indentação, sem afetar o inline.
 ]
 
 Para forçar uma quebra de linha sem iniciar novo parágrafo, use `\`:
@@ -611,14 +491,14 @@ No ABNTypst, a capa é criada com a função `#capa()`:
 
 #exemplo[
   #raw(block: true, lang: "typst", "#capa(
-  institution: \"Universidade Federal de Jataí\",
-  faculty: \"Instituto de Ciências Exatas e Tecnológicas\",
-  program: \"PROFMAT\",
-  author: \"Maria da Silva\",
-  title: \"Análise de Algoritmos de Ordenação\",
-  subtitle: \"Um estudo comparativo\",
-  location: \"Jataí\",
-  year: 2026,
+  instituicao: \"Universidade Federal de Jataí\",
+  faculdade: \"Instituto de Ciências Exatas e Tecnológicas\",
+  programa: \"PROFMAT\",
+  autor: \"Maria da Silva\",
+  titulo: \"Análise de Algoritmos de Ordenação\",
+  subtitulo: \"Um estudo comparativo\",
+  local: \"Jataí\",
+  ano: 2026,
 )")
 ]
 
@@ -632,18 +512,18 @@ A folha de rosto contém os mesmos elementos da capa, acrescidos de:
 
 #exemplo[
   #raw(block: true, lang: "typst", "#folha-rosto(
-  author: \"Maria da Silva\",
-  title: \"Análise de Algoritmos de Ordenação\",
-  subtitle: \"Um estudo comparativo\",
-  nature: \"Dissertação apresentada ao Programa de Pós-Graduação
+  autor: \"Maria da Silva\",
+  titulo: \"Análise de Algoritmos de Ordenação\",
+  subtitulo: \"Um estudo comparativo\",
+  natureza: \"Dissertação apresentada ao Programa de Pós-Graduação
     em Ciência da Computação da Universidade Federal de Jataí\",
-  objective: \"como requisito parcial para obtenção do título
+  objetivo: \"como requisito parcial para obtenção do título
     de Mestre em Ciência da Computação.\",
   area: \"Algoritmos e Estruturas de Dados\",
-  advisor: \"Prof. Dr. João Santos\",
-  co-advisor: \"Profa. Dra. Ana Costa\",  // opcional
-  location: \"Jataí\",
-  year: 2026,
+  orientador: \"Prof. Dr. João Santos\",
+  coorientador: \"Profa. Dra. Ana Costa\",  // opcional
+  local: \"Jataí\",
+  ano: 2026,
 )")
 ]
 
@@ -663,7 +543,7 @@ A ficha catalográfica deve ser elaborada por um bibliotecário. Na maioria das 
 
 O ABNTypst também oferece a função `#ficha-catalografica()`, que cria a moldura padrão da ficha (caixa de 12,5 × 7,5~cm, fonte 10pt, centralizada na parte inferior da página).
 
-Diferente de funções como `#capa()` ou `#folha-rosto()`, que possuem campos nomeados (`author:`, `title:`, etc.), a `#ficha-catalografica()` recebe conteúdo livre, pois a ficha segue uma notação biblioteconômica específica (código Cutter, CDU/CDD) que não se presta a campos parametrizados:
+Diferente de funções como `#capa()` ou `#folha-rosto()`, que possuem campos nomeados (`autor:`, `titulo:`, etc.), a `#ficha-catalografica()` recebe conteúdo livre, pois a ficha segue uma notação biblioteconômica específica (código Cutter, CDU/CDD) que não se presta a campos parametrizados:
 
 
 #exemplo[
@@ -693,11 +573,11 @@ A errata é elemento opcional, utilizado para correções após a impressão:
 
 #exemplo[
   #raw(block: true, lang: "typst", "#errata(
-  reference: [SILVA, Maria da. *Análise de algoritmos de
+  referencia: [SILVA, Maria da. *Análise de algoritmos de
     ordenação*. 2026. Dissertação (Mestrado) -- UFJ, Jataí, 2026.],
-  items: (
-    (page: 15, line: 3, wrong: \"ordenção\", correct: \"ordenação\"),
-    (page: 42, line: 10, wrong: \"algortimo\", correct: \"algoritmo\"),
+  itens: (
+    (pagina: 15, linha: 3, errado: \"ordenção\", correto: \"ordenação\"),
+    (pagina: 42, linha: 10, errado: \"algortimo\", correto: \"algoritmo\"),
   ),
 )")
 ]
@@ -707,23 +587,12 @@ A errata é elemento opcional, utilizado para correções após a impressão:
 A folha de aprovação contém os elementos da folha de rosto mais a data de aprovação e a composição da banca examinadora:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#approval-page(
-  author: \"Maria da Silva\",
-  title: \"Análise de Algoritmos de Ordenação\",
-  nature: \"Dissertação apresentada ao Programa...\",
-  date: \"15 de março de 2026\",
-  committee: (
-    (name: \"Prof. Dr. João Santos\",
-     role: \"Orientador\",
-     institution: \"UFJ\"),
-    (name: \"Profa. Dra. Ana Costa\",
-     role: \"Membro interno\",
-     institution: \"UFJ\"),
-    (name: \"Prof. Dr. Pedro Lima\",
-     role: \"Membro externo\",
-     institution: \"UFG\"),
-  ),
-)")
+  #raw(block: true, lang: "typst", "// NOTA: a folha de aprovação geralmente é fornecida pela
+// instituição em PDF, após a defesa. Para incluí-la:
+#page[
+  #v(1fr)
+  #image(\"folha-aprovacao.pdf\", page: 1, width: 100%)
+]")
 ]
 
 == Dedicatória e agradecimentos
@@ -769,7 +638,7 @@ O resumo deve apresentar de forma concisa os pontos relevantes do trabalho. Conf
 
 #exemplo[
   #raw(block: true, lang: "typst", "#resumo(
-  keywords: (\"Algoritmos\", \"Ordenação\", \"Complexidade\", \"Análise\"),
+  palavras-chave: (\"Algoritmos\", \"Ordenação\", \"Complexidade\", \"Análise\"),
 )[
   Este trabalho apresenta um estudo comparativo de algoritmos
   de ordenação, analisando sua complexidade temporal e espacial.
@@ -781,8 +650,8 @@ O resumo deve apresentar de forma concisa os pontos relevantes do trabalho. Conf
   deve considerar as características dos dados de entrada.
 ]
 
-#abstract-page(
-  keywords: (\"Algorithms\", \"Sorting\", \"Complexity\", \"Analysis\"),
+#abstract(
+  palavras-chave: (\"Algorithms\", \"Sorting\", \"Complexity\", \"Analysis\"),
 )[
   This work presents a comparative study of sorting algorithms,
   analyzing their time and space complexity. The Quicksort,
@@ -833,8 +702,8 @@ O sumário é elemento obrigatório conforme a NBR 6027:2012, que estabelece as 
 
 // Com opções personalizadas:
 #sumario(
-  title: \"SUMÁRIO\",
-  depth: 3,  // Até seções terciárias
+  titulo: \"SUMÁRIO\",
+  profundidade: 3,  // Até seções terciárias
 )")
 ]
 
@@ -902,9 +771,9 @@ Citações diretas de até três linhas são inseridas no texto entre aspas dupl
 #exemplo[
   #raw(block: true, lang: "typst", "Conforme o autor, #citacao-curta(
   \"a formatação adequada é essencial para a clareza\",
-  author: \"SILVA\",
-  year: \"2023\",
-  page: \"42\"
+  autor: \"SILVA\",
+  ano: \"2023\",
+  pagina: \"42\"
 ).")
 
   Resultado: Conforme o autor, "a formatação adequada é essencial para a clareza" (SILVA, 2023, p. 42).
@@ -916,9 +785,9 @@ Citações com mais de três linhas devem ser destacadas com recuo de 4 cm, font
 
 #exemplo[
   #raw(block: true, lang: "typst", "#citacao-longa(
-  author: \"SILVA\",
-  year: \"2023\",
-  page: \"42-43\"
+  autor: \"SILVA\",
+  ano: \"2023\",
+  pagina: \"42-43\"
 )[
   A formatação adequada dos trabalhos acadêmicos é
   essencial para a clareza e a credibilidade da
@@ -938,7 +807,7 @@ No sistema autor-data, a indicação da fonte é feita pelo sobrenome do autor e
 Segundo #citar-autor(\"Silva\", \"2023\"), a metodologia...
 
 // Autor entre parênteses
-A metodologia é importante #citar(\"SILVA\", \"2023\", page: \"45\").
+A metodologia é importante #citar(\"SILVA\", \"2023\", pagina: \"45\").
 
 // Múltiplos autores (até 3)
 Conforme #citar(\"SILVA; SANTOS; COSTA\", \"2023\")...
@@ -947,7 +816,7 @@ Conforme #citar(\"SILVA; SANTOS; COSTA\", \"2023\")...
 De acordo com #citar(\"SILVA et al.\", \"2023\")...
 
 // Citação de citação (apud)
-#citar-apud(\"FREUD\", \"1900\", \"LACAN\", \"1966\", page: \"123\")")
+#citar-apud(\"FREUD\", \"1900\", \"LACAN\", \"1966\", pagina: \"123\")")
 
   Resultados:
 
@@ -965,7 +834,7 @@ O sistema numérico, também previsto na seção 4.2 da NBR 10520:2023, usa núm
 #exemplo[
   #raw(block: true, lang: "typst", "#show: citacao-num-config
 
-O resultado foi positivo #citar-num(\"silva2023\", page: \"45\").
+O resultado foi positivo #citar-num(\"silva2023\", pagina: \"45\").
 
 Outros autores #citar-num-multiplos((\"santos2022\", \"costa2021\"))
 confirmam os resultados.
@@ -978,9 +847,46 @@ confirmam os resultados.
 ))")
 ]
 
+=== Citações com arquivo .bib
+
+Além das funções manuais apresentadas acima, o ABNTypst suporta citações automáticas via arquivo `.bib`, usando a sintaxe nativa `@chave` do Typst. Esse é o método recomendado para documentos com muitas referências, pois evita erros de formatação e mantém a consistência entre citações e lista de referências.
+
+Para habilitar, basta adicionar `abnt-cite-setup` no preâmbulo do documento:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// No preâmbulo do documento
+#show: abnt-cite-setup
+
+// Citação entre parênteses
+O resultado foi positivo @silva2023.
+
+// Citação com página
+O resultado foi positivo @silva2023[p. 45].
+
+// Autor no texto (suprime o nome entre parênteses)
+Segundo Silva [-@silva2023], o resultado foi positivo.")
+
+  Resultado: nas citações com `@chave`, o ABNTypst gera automaticamente o formato ABNT autor-data --- por exemplo, "(SILVA, 2023)" ou "(SILVA, 2023, p. 45)". A sintaxe `[-@chave]` suprime o nome do autor, útil quando ele já aparece no texto.
+]
+
+As chaves (como `silva2023`) devem corresponder às entradas do arquivo `.bib` usado na bibliografia. No final do documento, inclua `#abnt-bibliography("arquivo.bib")` para gerar a lista de referências (veja a @sec:ref-auto).
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: (left: 2pt + gray),
+  fill: luma(245),
+)[
+  #set par(first-line-indent: 0pt)
+  *Quando usar cada abordagem:*
+  - *Arquivo `.bib` + `@chave`:* recomendado para a maioria dos trabalhos. As referências são formatadas automaticamente e a consistência é garantida pelo CSL.
+  - *Funções manuais (`citar()`, `citar-autor()`, etc.):* úteis quando se precisa de controle total sobre o formato da citação, ou quando a entrada não existe no `.bib`.
+  - *Sistema numérico:* quando exigido pela instituição ou revista. Não pode ser combinado com notas de rodapé.
+]
+
 == Notas de rodapé
 
-Notas de rodapé são indicações ou observações complementares ao texto. Em Typst, são criadas com a função `#footnote()`:
+Notas de rodapé são indicações ou observações complementares ao texto, regulamentadas pela NBR 10520:2023 (seção 6). A norma distingue _notas de referência_ (que indicam a fonte consultada) e _notas explicativas_ (para comentários e esclarecimentos). A NBR 14724:2024 complementa: devem ser separadas do texto por filete de 5 cm, em fonte menor e espaçamento simples. Em Typst, são criadas com a função `#footnote()`:
 
 #exemplo[
   #raw(block: true, lang: "typst", "O Typst#footnote[Sistema de composição tipográfica criado
@@ -988,11 +894,11 @@ em 2019.] é uma alternativa moderna ao LaTeX#footnote[Criado
 por Leslie Lamport na década de 1980.].")
 ]
 
-O ABNTypst formata as notas automaticamente conforme a ABNT: fonte menor (10pt), espaçamento simples, separadas do texto por um filete.
+O ABNTypst formata as notas automaticamente conforme a ABNT: fonte menor (10pt), espaçamento simples, separadas do texto por um filete de 5 cm.
 
 == Alíneas e subalíneas
 
-Alíneas são subdivisões de uma seção, indicadas por letras minúsculas seguidas de parênteses. Subalíneas são subdivisões das alíneas, indicadas por travessão:
+Alíneas e subalíneas são regulamentadas pela NBR 6024:2012 (seções 4 e 5). Alíneas são subdivisões de um assunto dentro de uma seção, sem título próprio, indicadas por letras minúsculas seguidas de parêntese --- o texto que as antecede deve terminar em dois-pontos. Subalíneas são subdivisões das alíneas, indicadas por travessão seguido de espaço. Ambas terminam em ponto e vírgula, exceto a última (ponto final):
 
 #exemplo[
   #raw(block: true, lang: "typst", "Os elementos obrigatórios são:
@@ -1052,25 +958,62 @@ Para criar uma referência, use `<label>` após o elemento. Para citá-la, use `
 
 Figuras, quadros e tabelas são elementos essenciais em trabalhos acadêmicos. A ABNT estabelece regras específicas para sua apresentação.
 
+No ABNTypst, todos esses elementos são inseridos por meio da função `#container()`. Ela é um invólucro sobre a função nativa `figure()` do Typst e cuida automaticamente de título (caption), numeração sequencial, fonte e nota --- tudo formatado conforme a ABNT. Dentro do container, usamos funções auxiliares para o conteúdo: `#imagem()` para fotografias e ilustrações, `#quadro()` para tabelas textuais com bordas fechadas, e `#tabela()` para tabelas numéricas no padrão IBGE (sem bordas laterais).
+
+O parâmetro `kind` indica o tipo do elemento --- a partir dele, o `container` infere o `supplement` automaticamente:
+
+#figure(
+  table(
+    columns: (1fr, 1fr, 1fr),
+    inset: 6pt,
+    [*`kind`*], [*Supplement inferido*], [*Uso*],
+    [`image` (padrão)], ["Figura"], [Fotografias, ilustrações, gráficos],
+    [`table`], ["Tabela"], [Tabelas numéricas (IBGE)],
+    [`"quadro"`], ["Quadro"], [Tabelas textuais com bordas],
+  ),
+  caption: [Tipos de container],
+  kind: "quadro",
+  supplement: [Quadro],
+)
+
+== O container <sec:container>
+
+A função `#container()` é a _única_ forma de criar um elemento com título e numeração no ABNTypst. Seus parâmetros principais são:
+
+#raw(block: true, lang: "typst", "#container(
+  legenda: [Título do elemento],  // aparece acima
+  origem: [Elaborado pelo autor.],  // aparece abaixo (\"Fonte: ...\")
+  nota: [Nota opcional.],  // aparece abaixo da fonte (\"Nota: ...\")
+  kind: image,  // image (padrão), table ou \"quadro\"
+)[
+  // conteúdo: #imagem(), #quadro(), #tabela(), ou qualquer outro
+]")
+
+A NBR 14724:2024 estabelece que ilustrações e tabelas devem ter:
+- Identificação na parte superior: tipo, número sequencial (algarismos arábicos), travessão e título
+- Fonte na parte inferior (obrigatória, mesmo quando produção do próprio autor)
+- Notas e legendas em fonte menor
+
+O `container` cuida de tudo isso automaticamente.
+
 == Inserindo figuras
 
-Figuras são elementos visuais como gráficos, fotografias, desenhos, mapas, etc. Conforme a ABNT, devem ter:
-- Título na parte superior
-- Fonte na parte inferior
-- Numeração sequencial
+A NBR 14724:2024 classifica figuras como _ilustrações_ (assim como gráficos, fotografias, desenhos, mapas, etc.). Use `#imagem()` dentro de `#container()`:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#figure(
-  image(\"imagens/grafico.png\", width: 80%),
-  caption: [Comparação de desempenho dos algoritmos],
-) <fig:comparacao>
-
-#fonte[Elaborado pelo autor (2026).]")
+  #raw(block: true, lang: "typst", "#container(
+  legenda: [Comparação de desempenho dos algoritmos],
+  origem: [Elaborado pelo autor (2026).],
+)[
+  #imagem(\"imagens/grafico.png\", width: 80%)
+] <fig:comparacao>")
 ]
+
+Como o `kind` padrão é `image`, não é necessário informá-lo para figuras. Gráficos exportados como imagem (PNG, SVG, PDF) seguem o mesmo padrão --- são inseridos com `#imagem()`.
 
 Parâmetros úteis para imagens:
 
-#raw(block: true, lang: "typst", "image(\"arquivo.png\",
+#raw(block: true, lang: "typst", "#imagem(\"arquivo.png\",
   width: 80%,       // Largura relativa
   height: 5cm,      // Altura absoluta
   fit: \"contain\",   // Modo de ajuste
@@ -1078,38 +1021,47 @@ Parâmetros úteis para imagens:
 
 == Quadros <sec:quadros>
 
-Quadros são arranjos predominantemente textuais, com informações dispostas em linhas e colunas. Diferem das tabelas por serem fechados (com bordas em todos os lados):
+Pela NBR 14724:2024, quadros são um tipo de ilustração e seguem as mesmas regras de identificação (título na parte superior, fonte na parte inferior). O IBGE (Normas de Apresentação Tabular, 1993) define quadro como "arranjo predominantemente de palavras dispostas em linhas e colunas, com ou sem dados numéricos". Diferem das tabelas por serem fechados (com bordas em todos os lados) e conterem predominantemente texto.
+
+Use `#quadro()` dentro de `#container()` com `kind: "quadro"`:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#figure(
-  table(
+  #raw(block: true, lang: "typst", "#container(
+  legenda: [Glossário de termos],
+  kind: \"quadro\",
+  origem: [Elaborado pelo autor.],
+)[
+  #quadro(
     columns: (1fr, 2fr),
     inset: 8pt,
     [*Termo*], [*Definição*],
     [Algoritmo], [Sequência finita de instruções],
     [Complexidade], [Medida de recursos necessários],
     [Ordenação], [Organização de dados em sequência],
-  ),
-  caption: [Glossário de termos],
-  kind: \"quadro\",
-  supplement: [Quadro],
-)
-
-#fonte[Elaborado pelo autor.]")
+  )
+]")
 ]
+
+A função `#quadro()` é um wrapper sobre `table()` --- aceita todos os mesmos parâmetros.
 
 == Tabelas no padrão IBGE
 
-Tabelas contêm dados numéricos e seguem as normas de apresentação tabular do IBGE:
-- Sem bordas laterais (abertas)
-- Apenas linhas horizontais no topo, separando cabeçalho e no final
-- Fonte menor que o texto
+A ABNT não define regras próprias para a apresentação de tabelas --- a NBR 14724:2024 (seção sobre tabelas) determina explicitamente: "conforme IBGE - Normas de Apresentação Tabular (1993)". A NBR 6022:2018 (artigos científicos) reitera: "padronizadas conforme Normas de apresentação tabular do IBGE". O documento referenciado é: FUNDAÇÃO INSTITUTO BRASILEIRO DE GEOGRAFIA E ESTATÍSTICA -- IBGE. _Normas de apresentação tabular_. 3. ed. Rio de Janeiro: IBGE, 1993. As principais regras são:
+- Sem bordas laterais (tabelas são "abertas")
+- Traços horizontais obrigatórios apenas no topo, após o cabeçalho e no rodapé
+- O dado numérico é a informação central (dados textuais pertencem a quadros, não a tabelas)
+- Fonte obrigatória no rodapé, indicando a entidade responsável pelo levantamento
+
+Use `#tabela()` dentro de `#container()` com `kind: table`:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#figure(
-  table(
+  #raw(block: true, lang: "typst", "#container(
+  legenda: [Complexidade dos algoritmos de ordenação],
+  kind: table,
+  origem: [Adaptado de Cormen et al. (2012).],
+)[
+  #tabela(
     columns: 4,
-    stroke: none,
     inset: 8pt,
 
     // Linha superior
@@ -1129,17 +1081,15 @@ Tabelas contêm dados numéricos e seguem as normas de apresentação tabular do
 
     // Linha inferior
     table.hline(stroke: 1.5pt),
-  ),
-  caption: [Complexidade dos algoritmos de ordenação],
-  kind: table,
-)
-
-#fonte[Adaptado de Cormen et al. (2012).]")
+  )
+]")
 ]
+
+A função `#tabela()` é um wrapper sobre `table()` que aplica `stroke: none` automaticamente (padrão IBGE: sem bordas laterais). Você só precisa adicionar as linhas horizontais com `table.hline()`.
 
 == Legendas e fontes
 
-A legenda (caption) é obrigatória e deve ser concisa. A fonte indica a origem dos dados e é obrigatória mesmo quando elaborada pelo autor:
+O `container` já cuida da fonte e da nota por meio dos parâmetros `origem` e `nota`. Para casos em que você precise inserir fonte ou nota de forma avulsa (fora de um container), use as funções auxiliares:
 
 #raw(block: true, lang: "typst", "// Fonte elaborada pelo autor
 #fonte[Elaborado pelo autor (2026).]
@@ -1153,6 +1103,23 @@ A legenda (caption) é obrigatória e deve ser concisa. A fonte indica a origem 
 // Nota explicativa (opcional)
 #nota-figura[Os valores foram arredondados para duas casas decimais.]")
 
+Porém, o uso recomendado é sempre via `container`:
+
+#raw(block: true, lang: "typst", "#container(
+  legenda: [Minha tabela],
+  kind: table,
+  origem: [Elaborado pelo autor (2026).],
+  nota: [Os valores foram arredondados para duas casas decimais.],
+)[
+  #tabela(columns: 2,
+    table.hline(stroke: 1.5pt),
+    [*Região*], [*População*],
+    table.hline(stroke: 0.75pt),
+    [Nordeste], [57 366 598],
+    table.hline(stroke: 1.5pt),
+  )
+]")
+
 == Listas automáticas
 
 O ABNTypst gera automaticamente listas de figuras, tabelas e quadros:
@@ -1165,7 +1132,7 @@ O ABNTypst gera automaticamente listas de figuras, tabelas e quadros:
 
 #lista-quadros()      // Lista de quadros")
 
-As listas são geradas a partir das `caption` definidas em cada elemento.
+As listas são geradas a partir dos títulos definidos no parâmetro `legenda` de cada `#container()`.
 
 #pagebreak()
 
@@ -1684,19 +1651,59 @@ SANTOS, Maria; COSTA, Ana Paula. Análise de algoritmos.
 n. 3, p. 45-67, set. 2022.")
 ]
 
-=== Referências automáticas
+=== Referências automáticas <sec:ref-auto>
 
-O ABNTypst pode usar arquivos `.bib` para gerar referências automaticamente:
+O ABNTypst pode usar arquivos `.bib` para gerar referências automaticamente, seguindo o fluxo: configurar citações → citar no texto → gerar bibliografia.
 
-#raw(block: true, lang: "typst", "// No preâmbulo
-#show: abntcc.with(
-  bibliography-file: \"referencias.bib\",
-)
+#exemplo[
+  #raw(block: true, lang: "typst", "// 1. No preâmbulo: habilitar citações ABNT
+#show: abnt-cite-setup
 
-// Ou no final do documento
+// 2. No texto: citar com @chave
+O resultado foi positivo @silva2023.
+
+// 3. No final: gerar a lista de referências
 #abnt-bibliography(\"referencias.bib\")")
 
-Exemplo de arquivo `.bib`:
+  Os três passos são obrigatórios. Sem `abnt-cite-setup`, as citações usam o estilo padrão do Typst (não ABNT). Sem `abnt-bibliography`, o Typst não sabe onde buscar as entradas.
+]
+
+A função `referencias()` é um atalho equivalente a `abnt-bibliography()` com o título padrão "REFERÊNCIAS":
+
+#raw(block: true, lang: "typst", "// Equivalentes:
+#abnt-bibliography(\"referencias.bib\")
+#referencias(\"referencias.bib\")")
+
+Para listar *todas* as entradas do `.bib` (inclusive as não citadas no texto), use o parâmetro `full`:
+
+#raw(block: true, lang: "typst", "#abnt-bibliography(\"referencias.bib\", full: true)")
+
+==== Tipos de entrada `.bib` suportados
+
+O ABNTypst usa o estilo CSL `abnt.csl` para formatar as referências. Os principais tipos de entrada BibTeX/BibLaTeX suportados são:
+
+#figure(
+  table(
+    columns: (auto, 1fr),
+    align: (left, left),
+    table.header(
+      [*Tipo*], [*Uso*],
+    ),
+    [`@book`], [Livros e monografias],
+    [`@article`], [Artigos de periódicos e revistas],
+    [`@thesis`], [Teses e dissertações (BibLaTeX)],
+    [`@phdthesis`], [Tese de doutorado (BibTeX)],
+    [`@mastersthesis`], [Dissertação de mestrado (BibTeX)],
+    [`@inproceedings`], [Trabalhos publicados em anais de eventos],
+    [`@incollection`], [Capítulos de livros com organizador],
+    [`@online`], [Páginas web e recursos da internet],
+    [`@techreport`], [Relatórios técnicos e institucionais],
+    [`@legislation`], [Legislação (suporte limitado pelo CSL)],
+  ),
+  caption: [Tipos de entrada `.bib` suportados pelo CSL ABNT],
+)
+
+==== Exemplos de entradas `.bib`
 
 #raw(block: true, lang: "bibtex", "@book{silva2023,
   author = {Silva, João Carlos da},
@@ -1715,7 +1722,48 @@ Exemplo de arquivo `.bib`:
   number = {3},
   pages = {45-67},
   year = {2022},
+}
+
+@online{ibge2024,
+  author = {{Instituto Brasileiro de Geografia e Estatística}},
+  title = {Censo Demográfico 2022},
+  url = {https://www.ibge.gov.br/censo2022},
+  year = {2024},
+  urldate = {2024-03-15},
+}
+
+@thesis{oliveira2021,
+  author = {Oliveira, Pedro Henrique de},
+  title = {Aprendizado de máquina aplicado à saúde pública},
+  type = {Dissertação (Mestrado em Ciência da Computação)},
+  institution = {Universidade de Brasília},
+  address = {Brasília},
+  year = {2021},
+}
+
+@inproceedings{lima2023,
+  author = {Lima, Fernanda and Souza, Ricardo},
+  title = {Detecção de anomalias em séries temporais},
+  booktitle = {Anais do Simpósio Brasileiro de Computação},
+  address = {Porto Alegre},
+  year = {2023},
+  pages = {112-125},
 }")
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: (left: 2pt + gray),
+  fill: luma(245),
+)[
+  #set par(first-line-indent: 0pt)
+  *Limitações do CSL ABNT:* o formato CSL não suporta perfeitamente todos os casos da NBR 6023. Algumas limitações conhecidas:
+  - Subtítulos não são separados automaticamente com dois-pontos e sem negrito, como exige a norma.
+  - Obras sem autor pessoal (entrada pelo título) podem não aparecer em MAIÚSCULAS corretamente.
+  - Legislação brasileira tem suporte limitado --- para esses casos, considere usar referências manuais.
+
+  Para referências que o CSL não formata corretamente, use a formatação manual descrita na subseção anterior.
+]
 
 == Apêndices e Anexos
 
@@ -1795,21 +1843,21 @@ O ABNTypst oferece templates para diversos tipos de documentos acadêmicos e té
 O template `abntcc` é o mais completo, seguindo a NBR 14724:2024:
 
 #raw(block: true, lang: "typst", "#show: abntcc.with(
-  title: \"Título do Trabalho\",
-  subtitle: \"Subtítulo (se houver)\",
-  author: \"Nome do Autor\",
-  institution: \"Universidade Federal\",
-  faculty: \"Faculdade/Instituto\",
-  program: \"Programa de Pós-Graduação\",
-  location: \"Cidade\",
-  year: 2026,
-  nature: \"Dissertação apresentada ao...\",
-  objective: \"como requisito parcial para...\",
-  advisor: \"Prof. Dr. Nome\",
-  co-advisor: \"Profa. Dra. Nome\",
-  keywords-pt: (\"Palavra1\", \"Palavra2\"),
-  keywords-en: (\"Keyword1\", \"Keyword2\"),
-  font: \"Times New Roman\",  // ou \"Arial\"
+  titulo: \"Título do Trabalho\",
+  subtitulo: \"Subtítulo (se houver)\",
+  autor: \"Nome do Autor\",
+  instituicao: \"Universidade Federal\",
+  faculdade: \"Faculdade/Instituto\",
+  programa: \"Programa de Pós-Graduação\",
+  local: \"Cidade\",
+  ano: 2026,
+  natureza: \"Dissertação apresentada ao...\",
+  objetivo: \"como requisito parcial para...\",
+  orientador: \"Prof. Dr. Nome\",
+  coorientador: \"Profa. Dra. Nome\",
+  palavras-chave: (\"Palavra1\", \"Palavra2\"),
+  palavras-chave-en: (\"Keyword1\", \"Keyword2\"),
+  fonte: \"Times New Roman\",  // ou \"Arial\"
 )")
 
 == Artigo científico
@@ -1817,8 +1865,8 @@ O template `abntcc` é o mais completo, seguindo a NBR 14724:2024:
 O template `artigo` segue a NBR 6022:2018:
 
 #raw(block: true, lang: "typst", "#show: artigo.with(
-  title: \"Título do Artigo\",
-  authors: (
+  titulo: \"Título do Artigo\",
+  autores: (
     (name: \"Autor Um\",
      affiliation: \"Universidade A\",
      email: \"autor1@exemplo.com\"),
@@ -1826,11 +1874,11 @@ O template `artigo` segue a NBR 6022:2018:
      affiliation: \"Universidade B\",
      email: \"autor2@exemplo.com\"),
   ),
-  abstract-pt: [Resumo em português...],
-  abstract-en: [Abstract in English...],
-  keywords-pt: (\"palavra1\", \"palavra2\"),
-  keywords-en: (\"keyword1\", \"keyword2\"),
-  columns: 1,  // ou 2 para duas colunas
+  resumo: [Resumo em português...],
+  resumo-en: [Abstract in English...],
+  palavras-chave: (\"palavra1\", \"palavra2\"),
+  palavras-chave-en: (\"keyword1\", \"keyword2\"),
+  colunas: 1,  // ou 2 para duas colunas
 )")
 
 == Relatório técnico
@@ -1838,15 +1886,15 @@ O template `artigo` segue a NBR 6022:2018:
 O template `relatorio` segue a NBR 10719:2015:
 
 #raw(block: true, lang: "typst", "#show: relatorio.with(
-  title: \"Título do Relatório\",
-  report-number: \"RT-001/2026\",
-  institution: \"Instituição\",
-  authors: (
+  titulo: \"Título do Relatório\",
+  numero-relatorio: \"RT-001/2026\",
+  instituicao: \"Instituição\",
+  autores: (
     (name: \"Nome\", qualification: \"Pesquisador\"),
   ),
-  classification: \"Ostensivo\",  // ou \"Reservado\", \"Confidencial\"
-  location: \"Cidade\",
-  year: 2026,
+  classificacao: \"Ostensivo\",  // ou \"Reservado\", \"Confidencial\"
+  local: \"Cidade\",
+  ano: 2026,
 )")
 
 == Projeto de pesquisa
@@ -1854,13 +1902,13 @@ O template `relatorio` segue a NBR 10719:2015:
 O template `projeto-pesquisa` segue a NBR 15287:2025:
 
 #raw(block: true, lang: "typst", "#show: projeto-pesquisa.with(
-  title: \"Título do Projeto\",
-  author: \"Nome do Pesquisador\",
-  institution: \"Universidade\",
-  advisor: \"Prof. Dr. Orientador\",
-  project-type: \"Projeto de Mestrado\",
-  location: \"Cidade\",
-  year: 2026,
+  titulo: \"Título do Projeto\",
+  autor: \"Nome do Pesquisador\",
+  instituicao: \"Universidade\",
+  orientador: \"Prof. Dr. Orientador\",
+  tipo-projeto: \"Projeto de Mestrado\",
+  local: \"Cidade\",
+  ano: 2026,
 )
 
 = Introdução
@@ -1878,12 +1926,12 @@ O template `projeto-pesquisa` segue a NBR 15287:2025:
 O template `livro` segue a NBR 6029:2023:
 
 #raw(block: true, lang: "typst", "#show: livro.with(
-  title: \"Título do Livro\",
-  author: \"Nome do Autor\",
-  publisher: \"Editora\",
-  location: \"Cidade\",
-  year: 2026,
-  edition: 1,
+  titulo: \"Título do Livro\",
+  autor: \"Nome do Autor\",
+  editora: \"Editora\",
+  local: \"Cidade\",
+  ano: 2026,
+  edicao: 1,
   isbn: \"978-85-00000-00-0\",
 )")
 
@@ -1892,19 +1940,19 @@ O template `livro` segue a NBR 6029:2023:
 O template `poster` segue a NBR 15437:2006:
 
 #raw(block: true, lang: "typst", "#show: poster.with(
-  title: \"Título do Pôster\",
-  authors: ((name: \"Autor\", affiliation: \"Instituição\"),),
-  abstract-text: [Resumo em até 100 palavras...],
-  keywords: (\"palavra1\", \"palavra2\"),
-  columns: 3,
-  width: 90cm,
-  height: 120cm,
+  titulo: \"Título do Pôster\",
+  autores: ((name: \"Autor\", affiliation: \"Instituição\"),),
+  texto-resumo: [Resumo em até 100 palavras...],
+  palavras-chave: (\"palavra1\", \"palavra2\"),
+  num-colunas: 3,
+  largura: 90cm,
+  altura: 120cm,
 )
 
-#poster-section(title: \"INTRODUÇÃO\")[...]
-#poster-section(title: \"METODOLOGIA\")[...]
-#poster-section(title: \"RESULTADOS\")[...]
-#poster-section(title: \"CONCLUSÕES\")[...]
+#poster-section(titulo: \"INTRODUÇÃO\")[...]
+#poster-section(titulo: \"METODOLOGIA\")[...]
+#poster-section(titulo: \"RESULTADOS\")[...]
+#poster-section(titulo: \"CONCLUSÕES\")[...]
 #poster-references((...))
 ")
 
@@ -1916,10 +1964,10 @@ O template `slides` usa o pacote Touying para apresentações:
 #import \"@preview/abntypst:0.1.0\": slides-defesa
 
 #show: slides-defesa.with(
-  title: \"Título do Trabalho\",
-  author: \"Nome do Autor\",
-  institution: \"Universidade\",
-  date: \"15 de março de 2026\",
+  titulo: \"Título do Trabalho\",
+  autor: \"Nome do Autor\",
+  instituicao: \"Universidade\",
+  data: \"15 de março de 2026\",
 )
 
 == Introdução
@@ -2100,9 +2148,9 @@ Este apêndice é destinado a usuários que já conhecem LaTeX e desejam migrar 
     [`\section{...}`], [`= Título`],
     [`\subsection{...}`], [`== Título`],
     [`\includegraphics{...}`], [`#image("...")`],
-    [`\begin{figure}...\end{figure}`], [`#figure(...)`],
-    [`\begin{table}...\end{table}`], [`#figure(table(...), kind: table)`],
-    [`\caption{...}`], [`caption: [...]`],
+    [`\begin{figure}...\end{figure}`], [`#container(...)[#imagem(...)]`],
+    [`\begin{table}...\end{table}`], [`#container(kind: table)[#tabela(...)]`],
+    [`\caption{...}`], [`legenda: [...]`],
     [`\label{...}`], [`<label>`],
     [`\ref{...}`], [`@label`],
     [`\cite{...}`], [`@referencia` ou `#cite(<ref>)`],
@@ -2166,7 +2214,7 @@ Este apêndice é destinado a usuários que já conhecem LaTeX e desejam migrar 
     [#raw("\\imprimircapa")], [#raw("#capa(..)")],
     [#raw("\\imprimirfolhaderosto")], [#raw("#folha-rosto(..)")],
     [#raw("\\begin{resumo}...\\end{resumo}")], [#raw("#resumo(..)[...]")],
-    [#raw("\\begin{abstract}...\\end{abstract}")], [#raw("#abstract-page(..)[...]")],
+    [#raw("\\begin{abstract}...\\end{abstract}")], [#raw("#abstract(..)[...]")],
     [#raw("\\pdfbookmark{Sumário}{toc}\\tableofcontents")], [#raw("#sumario()")],
     [#raw("\\chapter{...}")], [#raw("= Título") (nível 1)],
     [#raw("\\section{...}")], [#raw("== Título") (nível 2)],
