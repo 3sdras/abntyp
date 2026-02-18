@@ -3,6 +3,7 @@
 // Inspirado no "Breve Introdução ao LaTeX 2ε" de Lenimar Nunes de Andrade
 
 #import "../lib.typ": *
+#import "../../matypst/lib.typ": *
 
 #show: livro.with(
   titulo: "Breve Introdução ao ABNTypst",
@@ -53,6 +54,20 @@
     radius: 2pt,
     raw(body)
   )
+}
+
+// Nota visual indicando conteúdo do matypst (pacote companheiro)
+#let matypst-nota(body) = {
+  block(
+    width: 100%,
+    inset: 1em,
+    stroke: (left: 3pt + eastern),
+    fill: eastern.lighten(95%),
+  )[
+    #set par(first-line-indent: 0pt)
+    #text(weight: "bold", fill: eastern)[matypst]
+    #h(0.5em) #body
+  ]
 }
 
 // ============================================================================
@@ -136,6 +151,8 @@
   Estas notas são uma adaptação dos trabalhos originais "Uma breve introdução ao $"LaTeX" 2 epsilon$", de Lenimar Nunes de Andrade e a documentação do pacote ABNTex2 de LaTeX, para o caso do Typst, com o objetivo de servir de material didático para a disciplina "Software Livre para digitação de textos matemáticos" na UFJ.
 
   O ABNTypst é um pacote gratuito, de código aberto, desenvolvido para facilitar a produção de documentos técnicos e científicos brasileiros. Pode ser utilizado diretamente no navegador através do #link("https://typst.app")[typst.app], ou instalado localmente em qualquer sistema operacional.
+
+  O *matypst* é o pacote companheiro do ABNTypst, fornecendo utilitários genéricos para matemática, código e caixas decorativas. Enquanto o ABNTypst cuida da formatação conforme normas ABNT, o matypst oferece funções auxiliares como operadores em português (`sen`), frações com estilo (`fracao`), raízes (`raiz`), e ambientes como teoremas, definições e demonstrações. As seções deste documento que utilizam funções do matypst estão identificadas com uma nota visual.
 
   No Capítulo 1 são introduzidos os conceitos básicos do Typst e do ABNTypst. O Capítulo 2 trata dos elementos pré-textuais (capa, folha de rosto, resumo, etc.) e o Capítulo 3 aborda os elementos textuais (seções, citações, alíneas). A leitura desses três primeiros capítulos deve habilitar o leitor a produzir um trabalho acadêmico básico.
 
@@ -851,11 +868,11 @@ confirmam os resultados.
 
 Além das funções manuais apresentadas acima, o ABNTypst suporta citações automáticas via arquivo `.bib`, usando a sintaxe nativa `@chave` do Typst. Esse é o método recomendado para documentos com muitas referências, pois evita erros de formatação e mantém a consistência entre citações e lista de referências.
 
-Para habilitar, basta adicionar `abnt-cite-setup` no preâmbulo do documento:
+Para habilitar, basta adicionar `configurar-citacoes-abnt` no preâmbulo do documento:
 
 #exemplo[
   #raw(block: true, lang: "typst", "// No preâmbulo do documento
-#show: abnt-cite-setup
+#show: configurar-citacoes-abnt
 
 // Citação entre parênteses
 O resultado foi positivo @silva2023.
@@ -869,7 +886,7 @@ Segundo Silva [-@silva2023], o resultado foi positivo.")
   Resultado: nas citações com `@chave`, o ABNTypst gera automaticamente o formato ABNT autor-data --- por exemplo, "(SILVA, 2023)" ou "(SILVA, 2023, p. 45)". A sintaxe `[-@chave]` suprime o nome do autor, útil quando ele já aparece no texto.
 ]
 
-As chaves (como `silva2023`) devem corresponder às entradas do arquivo `.bib` usado na bibliografia. No final do documento, inclua `#abnt-bibliography("arquivo.bib")` para gerar a lista de referências (veja a @sec:ref-auto).
+As chaves (como `silva2023`) devem corresponder às entradas do arquivo `.bib` usado na bibliografia. No final do documento, inclua `#referencias("arquivo.bib")` para gerar a lista de referências (veja a @sec:ref-auto).
 
 #block(
   width: 100%,
@@ -960,15 +977,15 @@ Figuras, quadros e tabelas são elementos essenciais em trabalhos acadêmicos. A
 
 No ABNTypst, todos esses elementos são inseridos por meio da função `#container()`. Ela é um invólucro sobre a função nativa `figure()` do Typst e cuida automaticamente de título (caption), numeração sequencial, fonte e nota --- tudo formatado conforme a ABNT. Dentro do container, usamos funções auxiliares para o conteúdo: `#imagem()` para fotografias e ilustrações, `#quadro()` para tabelas textuais com bordas fechadas, e `#tabela()` para tabelas numéricas no padrão IBGE (sem bordas laterais).
 
-O parâmetro `kind` indica o tipo do elemento --- a partir dele, o `container` infere o `supplement` automaticamente:
+O parâmetro `tipo` indica o tipo do elemento --- a partir dele, o `container` infere a legenda automaticamente:
 
 #figure(
   table(
     columns: (1fr, 1fr, 1fr),
     inset: 6pt,
-    [*`kind`*], [*Supplement inferido*], [*Uso*],
-    [`image` (padrão)], ["Figura"], [Fotografias, ilustrações, gráficos],
-    [`table`], ["Tabela"], [Tabelas numéricas (IBGE)],
+    [*`tipo`*], [*Legenda inferida*], [*Uso*],
+    [`"imagem"` (padrão)], ["Figura"], [Fotografias, ilustrações, gráficos],
+    [`"tabela"`], ["Tabela"], [Tabelas numéricas (IBGE)],
     [`"quadro"`], ["Quadro"], [Tabelas textuais com bordas],
   ),
   caption: [Tipos de container],
@@ -984,7 +1001,7 @@ A função `#container()` é a _única_ forma de criar um elemento com título e
   legenda: [Título do elemento],  // aparece acima
   origem: [Elaborado pelo autor.],  // aparece abaixo (\"Fonte: ...\")
   nota: [Nota opcional.],  // aparece abaixo da fonte (\"Nota: ...\")
-  kind: image,  // image (padrão), table ou \"quadro\"
+  tipo: \"imagem\",  // \"imagem\" (padrão), \"tabela\" ou \"quadro\"
 )[
   // conteúdo: #imagem(), #quadro(), #tabela(), ou qualquer outro
 ]")
@@ -994,7 +1011,26 @@ A NBR 14724:2024 estabelece que ilustrações e tabelas devem ter:
 - Fonte na parte inferior (obrigatória, mesmo quando produção do próprio autor)
 - Notas e legendas em fonte menor
 
-O `container` cuida de tudo isso automaticamente.
+O `container` cuida de tudo isso automaticamente, inclusive a centralização horizontal do elemento na página.
+
+#figure(
+  table(
+    columns: (auto, auto, auto, 1fr),
+    inset: 6pt,
+    table.hline(stroke: 1pt),
+    [*Parâmetro*], [*Aceita*], [*Padrão*], [*Descrição*],
+    table.hline(stroke: 0.5pt),
+    [`legenda`], [em branco ou conteúdo], [em branco], [Título do elemento. Aparece acima, com numeração automática (ex: "Figura 1 --- Título"). Se omitido, o elemento não recebe título nem numeração.],
+    [`origem`], [em branco ou conteúdo], [em branco], [Fonte do elemento. Aparece abaixo com o prefixo "Fonte:". Obrigatório pela ABNT, mesmo para produções do próprio autor (ex: `[Elaborado pelo autor (2026).]`).],
+    [`nota`], [em branco ou conteúdo], [em branco], [Nota explicativa. Aparece abaixo da fonte com o prefixo "Nota:". Opcional.],
+    [`tipo`], [texto], [`"imagem"`], [Tipo do elemento, usado para numeração e legenda automáticas. Valores: \ -- `"imagem"`: ilustrações, gráficos, fotos (legenda: "Figura") \ -- `"tabela"`: tabelas numéricas IBGE (legenda: "Tabela") \ -- `"quadro"`: tabelas textuais com bordas (legenda: "Quadro")],
+    [`suplemento`], [automático ou conteúdo], [automático], [Texto que precede o número (ex: "Figura", "Tabela"). Se automático, é inferido do `tipo`. Use para customizar: `suplemento: [Gráfico]`.],
+    table.hline(stroke: 1pt),
+  ),
+  caption: [Parâmetros da função `container()`],
+  kind: "quadro",
+  supplement: [Quadro],
+)
 
 == Inserindo figuras
 
@@ -1005,30 +1041,107 @@ A NBR 14724:2024 classifica figuras como _ilustrações_ (assim como gráficos, 
   legenda: [Comparação de desempenho dos algoritmos],
   origem: [Elaborado pelo autor (2026).],
 )[
-  #imagem(\"imagens/grafico.png\", width: 80%)
+  #imagem(\"imagens/grafico.png\", largura: 80%)
 ] <fig:comparacao>")
 ]
 
-Como o `kind` padrão é `image`, não é necessário informá-lo para figuras. Gráficos exportados como imagem (PNG, SVG, PDF) seguem o mesmo padrão --- são inseridos com `#imagem()`.
+Como o `tipo` padrão é `"imagem"`, não é necessário informá-lo para figuras. Gráficos exportados como imagem (PNG, SVG, PDF) seguem o mesmo padrão --- são inseridos com `#imagem()`.
 
-Parâmetros úteis para imagens:
+=== Parâmetros de `imagem()`
 
-#raw(block: true, lang: "typst", "#imagem(\"arquivo.png\",
-  width: 80%,       // Largura relativa
-  height: 5cm,      // Altura absoluta
-  fit: \"contain\",   // Modo de ajuste
-)")
+A função `#imagem()` é um wrapper sobre a função nativa `image()` do Typst, com todos os parâmetros traduzidos para o português. Formatos suportados: PNG, JPEG, GIF, SVG e PDF.
+
+#figure(
+  table(
+    columns: (auto, auto, auto, 1fr),
+    inset: 6pt,
+    table.hline(stroke: 1pt),
+    [*Parâmetro*], [*Aceita*], [*Padrão*], [*Descrição*],
+    table.hline(stroke: 0.5pt),
+    [`caminho`], [texto ou bytes], [obrigatório], [Caminho do arquivo de imagem (ex: `"imagens/foto.png"`) ou bytes brutos.],
+    [`largura`], [automático ou medida], [automático], [Largura: absoluta (`5cm`), relativa (`80%`) ou automático (tamanho original).],
+    [`altura`], [automático ou medida], [automático], [Altura da imagem. Se ambos forem definidos, `ajuste` controla a adaptação.],
+    [`ajuste`], [texto], [`"cobrir"`], [`"cobrir"` (preenche, pode cortar), `"conter"` (cabe inteira) ou `"esticar"` (deforma).],
+    [`alternativo`], [em branco ou texto], [em branco], [Texto alternativo para acessibilidade (leitores de tela).],
+    table.hline(stroke: 1pt),
+  ),
+  caption: [Parâmetros comuns da função `imagem()`],
+  kind: "quadro",
+  supplement: [Quadro],
+)
+
+#figure(
+  table(
+    columns: (auto, auto, auto, 1fr),
+    inset: 6pt,
+    table.hline(stroke: 1pt),
+    [*Parâmetro*], [*Aceita*], [*Padrão*], [*Descrição*],
+    table.hline(stroke: 0.5pt),
+    [`pagina`], [automático ou inteiro], [automático], [Página a extrair de arquivos PDF: `#imagem("doc.pdf", pagina: 3)`. Para outros formatos, deixe em automático.],
+    [`formato`], [automático ou texto], [automático], [Formato da imagem. Detectado automaticamente pela extensão. Valores: `"png"`, `"jpg"`, `"gif"`, `"svg"`, `"pdf"`.],
+    [`escala`], [automático ou texto], [automático], [Escala de renderização para imagens vetoriais (SVG).],
+    [`icc`], [automático, texto ou bytes], [automático], [Perfil de cor ICC. Normalmente não é necessário alterar.],
+    [`..outros`], [quaisquer], [---], [Parâmetros adicionais repassados diretamente a `image()`. Útil para compatibilidade com versões futuras do Typst.],
+    table.hline(stroke: 1pt),
+  ),
+  caption: [Parâmetros avançados da função `imagem()`],
+  kind: "quadro",
+  supplement: [Quadro],
+)
+
+*Exemplos de uso:*
+
+#raw(block: true, lang: "typst", "// Largura relativa (mais comum)
+#imagem(\"grafico.png\", largura: 80%)
+
+// Dimensões absolutas com ajuste
+#imagem(\"foto.jpg\", largura: 10cm, altura: 7cm, ajuste: \"conter\")
+
+// Página específica de um PDF
+#imagem(\"documento.pdf\", pagina: 2, largura: 100%)
+
+// Com texto alternativo para acessibilidade
+#imagem(\"diagrama.svg\", largura: 90%, alternativo: \"Diagrama de fluxo do algoritmo\")")
+
+== Centralização horizontal
+
+O `#container()` centraliza automaticamente seu conteúdo --- não é preciso fazer nada além de usá-lo. Para elementos _fora_ de um container (uma imagem avulsa, um diagrama, um gráfico), use `#align(center)`:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// Imagem dentro de container: já centralizada
+#container(
+  legenda: [Meu gráfico],
+  origem: [Elaborado pelo autor.],
+)[
+  #imagem(\"grafico.svg\", largura: 80%)
+]
+
+// Imagem avulsa (sem container): centralizar manualmente
+#align(center)[
+  #imagem(\"diagrama.svg\", largura: 60%)
+]
+
+// Diagrama ou gráfico avulso: mesmo padrão
+#align(center)[
+  #diagram(
+    node((0, 0), $A$),
+    node((1, 0), $B$),
+    edge((0, 0), (1, 0), \"->\"),
+  )
+]")
+]
 
 == Quadros <sec:quadros>
 
 Pela NBR 14724:2024, quadros são um tipo de ilustração e seguem as mesmas regras de identificação (título na parte superior, fonte na parte inferior). O IBGE (Normas de Apresentação Tabular, 1993) define quadro como "arranjo predominantemente de palavras dispostas em linhas e colunas, com ou sem dados numéricos". Diferem das tabelas por serem fechados (com bordas em todos os lados) e conterem predominantemente texto.
 
-Use `#quadro()` dentro de `#container()` com `kind: "quadro"`:
+Use `#quadro()` dentro de `#container()` com `tipo: "quadro"`:
+
 
 #exemplo[
   #raw(block: true, lang: "typst", "#container(
   legenda: [Glossário de termos],
-  kind: \"quadro\",
+  tipo: \"quadro\",
   origem: [Elaborado pelo autor.],
 )[
   #quadro(
@@ -1052,12 +1165,12 @@ A ABNT não define regras próprias para a apresentação de tabelas --- a NBR 1
 - O dado numérico é a informação central (dados textuais pertencem a quadros, não a tabelas)
 - Fonte obrigatória no rodapé, indicando a entidade responsável pelo levantamento
 
-Use `#tabela()` dentro de `#container()` com `kind: table`:
+Use `#tabela()` dentro de `#container()` com `tipo: "tabela"`:
 
 #exemplo[
   #raw(block: true, lang: "typst", "#container(
   legenda: [Complexidade dos algoritmos de ordenação],
-  kind: table,
+  tipo: \"tabela\",
   origem: [Adaptado de Cormen et al. (2012).],
 )[
   #tabela(
@@ -1107,7 +1220,7 @@ Porém, o uso recomendado é sempre via `container`:
 
 #raw(block: true, lang: "typst", "#container(
   legenda: [Minha tabela],
-  kind: table,
+  tipo: \"tabela\",
   origem: [Elaborado pelo autor (2026).],
   nota: [Os valores foram arredondados para duas casas decimais.],
 )[
@@ -1149,7 +1262,7 @@ Uma das grandes vantagens do Typst sobre processadores de texto convencionais é
 Em Typst, fórmulas são escritas entre cifrões (`$`). Existem dois modos:
 
 - *Inline* (na linha): `$x + y$` produz $x + y$
-- *Display* (destacado): `$ x + y $` (com espaços) produz uma equação centralizada
+- *Destaque* (display): `$ x + y $` (com espaços) produz uma equação centralizada
 
 #exemplo[
   #raw(block: true, lang: "typst", "A fórmula $a^2 + b^2 = c^2$ é o teorema de Pitágoras.
@@ -1158,9 +1271,56 @@ A mesma fórmula em destaque:
 $ a^2 + b^2 = c^2 $")
 ]
 
+
+== Espaçamentos
+
+O Typst oferece duas funções nativas para inserir espaço em qualquer ponto do documento:
+
+- `h(tamanho)` --- espaço *horizontal*
+- `v(tamanho)` --- espaço *vertical*
+
+Ambas aceitam qualquer unidade de medida (`cm`, `mm`, `pt`, `em`, `fr`, etc.) e funcionam tanto no texto quanto no modo matemático (com `#`):
+
+#exemplo[
+  #raw(block: true, lang: "typst", "Palavra#h(2cm)distante
+
+#v(1cm)
+
+Parágrafo com 1cm de distância vertical acima.
+
+// No modo matemático:
+$ f(x) #h(1cm) g(x) #h(1cm) h(x) $")
+]
+
+Palavra#h(2cm)distante
+
+#v(1cm)
+
+Parágrafo com 1cm de distância vertical acima.
+
+No modo matemático:
+
+$ f(x) #h(1cm) g(x) #h(1cm) h(x) $
+
+No modo matemático, existe também `quad` --- um espaço padrão usado para separar expressões dentro de uma equação. Compare sem e com `quad`:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// Sem quad: tudo colado
+$ f(x) g(x) h(x) $
+
+// Com quad: separação clara
+$ f(x) quad g(x) quad h(x) $")
+]
+
+Sem `quad`: $ f(x) g(x) h(x) $
+
+Com `quad`: $ f(x) quad g(x) quad h(x) $
+
 == Letras gregas
 
-As letras gregas são escritas pelo nome em inglês:
+#matypst-nota[O matypst fornece nomes em português para as letras gregas que diferem do inglês.]
+
+As letras gregas podem ser escritas em português ou inglês no modo matemático. A tabela abaixo mostra todas as minúsculas, com o nome em português quando disponível:
 
 #figure(
   table(
@@ -1168,15 +1328,15 @@ As letras gregas são escritas pelo nome em inglês:
     stroke: none,
     inset: 6pt,
     table.hline(stroke: 1pt),
-    [*Código*], [*Letra*], [*Código*], [*Letra*], [*Código*], [*Letra*],
+    [*Português*], [*Letra*], [*Português*], [*Letra*], [*Português*], [*Letra*],
     table.hline(stroke: 0.5pt),
-    [`alpha`], [$alpha$], [`beta`], [$beta$], [`gamma`], [$gamma$],
+    [`alfa`], [$alfa$], [`beta`], [$beta$], [`gama`], [$gama$],
     [`delta`], [$delta$], [`epsilon`], [$epsilon$], [`zeta`], [$zeta$],
-    [`eta`], [$eta$], [`theta`], [$theta$], [`iota`], [$iota$],
-    [`kappa`], [$kappa$], [`lambda`], [$lambda$], [`mu`], [$mu$],
-    [`nu`], [$nu$], [`xi`], [$xi$], [`pi`], [$pi$],
-    [`rho`], [$rho$], [`sigma`], [$sigma$], [`tau`], [$tau$],
-    [`upsilon`], [$upsilon$], [`phi`], [$phi$], [`chi`], [$chi$],
+    [`eta`], [$eta$], [`teta`], [$teta$], [`iota`], [$iota$],
+    [`capa`], [$capa$], [`lambda`], [$lambda$], [`mi`], [$mi$],
+    [`ni`], [$ni$], [`csi`], [$csi$], [`pi`], [$pi$],
+    [`ro`], [$ro$], [`sigma`], [$sigma$], [`tau`], [$tau$],
+    [`ipsilon`], [$ipsilon$], [`fi`], [$fi$], [`qui`], [$qui$],
     [`psi`], [$psi$], [`omega`], [$omega$], [], [],
     table.hline(stroke: 1pt),
   ),
@@ -1184,19 +1344,56 @@ As letras gregas são escritas pelo nome em inglês:
   kind: table,
 )
 
-Para maiúsculas, use a primeira letra em maiúsculo: `Gamma` $Gamma$, `Delta` $Delta$, `Theta` $Theta$, `Lambda` $Lambda$, `Pi` $Pi$, `Sigma` $Sigma$, `Phi` $Phi$, `Psi` $Psi$, `Omega` $Omega$.
+Quatro letras possuem variantes cursivas acessíveis com `.alt`:
+
+#figure(
+  table(
+    columns: (1fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
+    stroke: none,
+    inset: 6pt,
+    table.hline(stroke: 1pt),
+    [*Código*], [*Letra*], [*Código*], [*Letra*], [*Código*], [*Letra*], [*Código*], [*Letra*],
+    table.hline(stroke: 0.5pt),
+    [`teta.alt`], [$teta.alt$], [`capa.alt`], [$capa.alt$], [`ro.alt`], [$ro.alt$], [`fi.alt`], [$fi.alt$],
+    table.hline(stroke: 1pt),
+  ),
+  caption: [Variantes cursivas],
+  kind: table,
+)
+
+Para maiúsculas, use a primeira letra em maiúsculo. O matypst fornece os nomes em português para as que diferem:
+
+#figure(
+  table(
+    columns: (1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
+    stroke: none,
+    inset: 6pt,
+    table.hline(stroke: 1pt),
+    [*Português*], [*Letra*], [*Português*], [*Letra*], [*Português*], [*Letra*],
+    table.hline(stroke: 0.5pt),
+    [`Gama`], [$Gama$], [`Delta`], [$Delta$], [`Teta`], [$Teta$],
+    [`Lambda`], [$Lambda$], [`Csi`], [$Csi$], [`Pi`], [$Pi$],
+    [`Sigma`], [$Sigma$], [`Ipsilon`], [$Ipsilon$], [`Fi`], [$Fi$],
+    [`Psi`], [$Psi$], [`Omega`], [$Omega$], [], [],
+    table.hline(stroke: 1pt),
+  ),
+  caption: [Letras gregas maiúsculas],
+  kind: table,
+)
 
 == Nomes de funções
 
-Funções matemáticas são escritas sem formatação especial:
+#matypst-nota[As funções desta seção são fornecidas pelo matypst.]
+
+Funções matemáticas são escritas sem formatação especial. O matypst fornece o operador `sen` (seno em português), que substitui o `sin` padrão do Typst:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "$sin(x)$, $cos(x)$, $tan(x)$
+  #raw(block: true, lang: "typst", "$sen(x)$, $cos(x)$, $tan(x)$
 $log(x)$, $ln(x)$, $exp(x)$
 $lim_(x -> 0) f(x)$
 $max(a, b)$, $min(a, b)$")
 
-  Resultado: $sin(x)$, $cos(x)$, $tan(x)$, $log(x)$, $ln(x)$, $exp(x)$
+  Resultado: $sen(x)$, $cos(x)$, $tan(x)$, $log(x)$, $ln(x)$, $exp(x)$
 ]
 
 == Outros tipos de letras
@@ -1246,73 +1443,189 @@ $x_1^2$, $x_n^{k+1}$")
 
 Em Typst, use parênteses para agrupar quando necessário: `x^(n+1)` em vez de chaves.
 
-== Frações
+== Frações, binômios e tamanhos
 
-Frações são criadas com `frac(numerador, denominador)` ou com a notação `/`:
+#matypst-nota[As funções `fracao`, `binomio`, `exibicao`, `emLinha`, `subscrito` e `subSubscrito` são fornecidas pelo matypst.]
+
+Frações são criadas com `fracao(numerador, denominador)` ou com a notação `/`. O matypst fornece um wrapper que aceita o parâmetro `estilo` em português:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "$frac(a, b)$, $frac(x+1, x-1)$, $a/b$
+  #raw(block: true, lang: "typst", "// Inline — a fração fica compacta automaticamente
+$fracao(a, b)$, $fracao(x+1, x-1)$, $a/b$
 
-// Fração maior (display style)
-$ frac(a+b, c+d) $
-
-// Fração em linha com barra
-$a slash b$ ou $(a+b)/(c+d)$")
+// Destaque — a fração fica maior
+$ fracao(a+b, c+d) $")
 ]
 
-$frac(a, b)$, $frac(x+1, x-1)$, $a/b$
+Inline: $fracao(a, b)$, $fracao(x+1, x-1)$, $a/b$. Em destaque:
+
+$ fracao(a+b, c+d) $
+
+O parâmetro `estilo` controla o layout da fração:
+
+#figure(
+  table(
+    columns: (auto, 1fr, auto),
+    inset: 6pt,
+    table.hline(stroke: 1pt),
+    [*Estilo*], [*Descrição*], [*Resultado*],
+    table.hline(stroke: 0.5pt),
+    [`"vertical"`], [Numerador sobre denominador com barra (padrão)], [$fracao(a+b, c+d)$],
+    [`"inclinada"`], [Separados por barra inclinada], [$fracao(a+b, c+d, estilo: "inclinada")$],
+    [`"horizontal"`], [Em linha, mantendo parênteses], [$fracao(a+b, c+d, estilo: "horizontal")$],
+    table.hline(stroke: 1pt),
+  ),
+  caption: [Estilos de fração],
+  kind: table,
+)
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// Vertical (padrão)
+$fracao(a+b, c+d)$
+
+// Inclinada — útil para frações simples no meio do texto
+$fracao(a+b, c+d, estilo: \"inclinada\")$
+
+// Horizontal — mantém parênteses explícitos
+$fracao(a+b, c+d, estilo: \"horizontal\")$")
+]
+
+$fracao(a+b, c+d)$, #h(1em) $fracao(a+b, c+d, estilo: "inclinada")$, #h(1em) $fracao(a+b, c+d, estilo: "horizontal")$
+
+=== Binômios
+
+Coeficientes binomiais usam `binomio(n, k)`:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "$binomio(n, k)$
+
+$ binomio(n, k) = fracao(n!, k!(n-k)!) $
+
+// Multinomial (vários índices inferiores)
+$binomio(n, k_1, k_2, k_3)$")
+]
+
+$binomio(n, k)$, $binomio(n, k_1, k_2, k_3)$
+
+=== Tamanhos: destaque vs. inline
+
+No Typst, equações entre `$ ... $` (com espaço) ficam em _destaque_ (centralizadas, maiores) e equações `$...$` (sem espaço) ficam _inline_ (no meio do texto, menores). Compare a mesma fração e somatório nos dois modos:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// Inline — compacto, no meio do texto
+Sabemos que $sum_(i=1)^n i = fracao(n(n+1), 2)$ para todo $n$.
+
+// Destaque — centralizado, tamanho completo
+$ sum_(i=1)^n i = fracao(n(n+1), 2) $")
+]
+
+Inline: sabemos que $sum_(i=1)^n i = fracao(n(n+1), 2)$ para todo $n$. Destaque:
+
+$ sum_(i=1)^n i = fracao(n(n+1), 2) $
+
+Às vezes é preciso forçar o tamanho de destaque dentro de uma equação inline (equivalente ao `\displaystyle` do LaTeX) ou vice-versa. O matypst oferece funções para isso:
+
+#figure(
+  table(
+    columns: (auto, auto, 1fr),
+    inset: 6pt,
+    table.hline(stroke: 1pt),
+    [*matypst*], [*LaTeX*], [*Descrição*],
+    table.hline(stroke: 0.5pt),
+    [`exibicao()`], [`\displaystyle`], [Força tamanho de destaque (o maior)],
+    [`emLinha()`], [`\textstyle`], [Força tamanho inline],
+    [`subscrito()`], [`\scriptstyle`], [Tamanho de sub/sobrescrito],
+    [`subSubscrito()`], [`\scriptscriptstyle`], [Tamanho de sub/sobrescrito de 2º nível (o menor)],
+    table.hline(stroke: 1pt),
+  ),
+  caption: [Funções de tamanho matemático],
+  kind: table,
+)
+
+Todas aceitam o parâmetro `compacto:` (`false` por padrão em `exibicao`/`emLinha`, `true` em `subscrito`/`subSubscrito`), que restringe a altura dos expoentes.
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// Sem exibicao(): somatório inline fica compacto
+Temos $sum_(i=1)^n x_i$ como resultado.
+
+// Com exibicao(): somatório inline fica grande como destaque
+Temos $exibicao(sum_(i=1)^n x_i)$ como resultado.
+
+// Inverso: forçar inline dentro de destaque
+$ emLinha(sum_(i=1)^n x_i) quad \"versus\" quad sum_(i=1)^n x_i $")
+]
+
+Sem `exibicao`: temos $sum_(i=1)^n x_i$ como resultado. Com `exibicao`: temos $exibicao(sum_(i=1)^n x_i)$ como resultado.
 
 == Raízes
 
-Raízes são criadas com `sqrt()` ou `root()`:
+#matypst-nota[A função `raiz` é fornecida pelo matypst.]
+
+O matypst fornece `raiz()`: com um argumento é raiz quadrada, com dois é raiz n-ésima.
 
 #exemplo[
-  #raw(block: true, lang: "typst", "$sqrt(2)$, $sqrt(x+1)$
-$root(3, 8)$, $root(n, x)$")
+  #raw(block: true, lang: "typst", "// Raiz quadrada (um argumento)
+$raiz(2)$, $raiz(x+1)$
 
-  Resultado: $sqrt(2)$, $sqrt(x+1)$, $root(3, 8)$, $root(n, x)$
+// Raiz n-ésima (dois argumentos: índice, radicando)
+$raiz(3, 8)$, $raiz(n, x)$")
+
+  Resultado: $raiz(2)$, $raiz(x+1)$, $raiz(3, 8)$, $raiz(n, x)$
 ]
 
 == Somatórios, produtórios, uniões, interseções
 
+#matypst-nota[Os símbolos `somatorio`, `produtorio`, `uniao` e `inter` são fornecidos pelo matypst.]
+
 #exemplo[
   #raw(block: true, lang: "typst", "// Somatório
-$sum_(i=1)^n a_i$
+$somatorio_(i=1)^n a_i$
 
 // Produtório
-$product_(i=1)^n a_i$
+$produtorio_(i=1)^n a_i$
 
 // União
-$union.big_(i=1)^n A_i$
+$uniao.maior_(i=1)^n A_i$
 
 // Interseção
-$sect.big_(i=1)^n A_i$")
+$inter.maior_(i=1)^n A_i$")
 ]
 
 Resultado:
 
-$ sum_(i=1)^n a_i quad quad product_(i=1)^n a_i quad quad union.big_(i=1)^n A_i quad quad inter.big_(i=1)^n A_i $
+$ somatorio_(i=1)^n a_i quad quad produtorio_(i=1)^n a_i quad quad uniao.maior_(i=1)^n A_i quad quad inter.maior_(i=1)^n A_i $
 
 == Limites
 
 #exemplo[
-  #raw(block: true, lang: "typst", "$lim_(x -> 0) frac(sin x, x) = 1$
+  #raw(block: true, lang: "typst", "$lim_(x -> 0) fracao(sen x, x) = 1$
 
-$lim_(n -> infinity) (1 + 1/n)^n = e$
+$lim_(n -> infinito) (1 + 1/n)^n = e$
 
-$lim_(x -> 0^+) ln x = -infinity$")
+$lim_(x -> 0^+) ln x = -infinito$")
 ]
 
-$ lim_(x -> 0) frac(sin x, x) = 1 $
+$ lim_(x -> 0) fracao(sen x, x) = 1 $
+
+$ lim_(n -> infinito) (1 + 1/n)^n = e $
+
+$ lim_(x -> 0^+) ln x = -infinito $
 
 == Derivadas
 
+#matypst-nota[As funções `leibniz` e `parcial` são fornecidas pelo matypst.
+Em `leibniz`, a ordem é o terceiro argumento: `leibniz(y, x, 2)`.
+Em `parcial`, a ordem precisa ser nomeada (`ordem: 2`) para não ser confundida com uma segunda variável — `parcial(f, x, y)` é a derivada mista $partial^2 f \/ partial x partial y$.]
+
 #exemplo[
   #raw(block: true, lang: "typst", "// Derivada com notação de Leibniz
-$frac(dif y, dif x)$, $frac(dif^2 y, dif x^2)$
+$leibniz(y, x)$, $leibniz(y, x, 2)$
 
 // Derivadas parciais
-$frac(diff f, diff x)$, $frac(diff^2 f, diff x diff y)$
+$parcial(f, x)$, $parcial(f, x, ordem: 2)$
+
+// Derivada parcial mista
+$parcial(f, x, y)$
 
 // Notação de Newton (ponto)
 $dot(x)$, $dot.double(x)$
@@ -1321,61 +1634,76 @@ $dot(x)$, $dot.double(x)$
 $f'(x)$, $f''(x)$")
 ]
 
-$frac(dif y, dif x)$, $frac(dif^2 y, dif x^2)$, $frac(partial f, partial x)$, $dot(x)$, $dot.double(x)$, $f'(x)$, $f''(x)$
+$ leibniz(y, x) quad leibniz(y, x, 2) quad parcial(f, x) quad parcial(f, x, ordem: 2) quad parcial(f, x, y) $
+
+$ dot(x) comma dot.double(x) comma f'(x) comma f''(x) $
 
 == Integrais
+
+#matypst-nota[O símbolo `integral` com variantes em português é fornecido pelo matypst.]
 
 #exemplo[
   #raw(block: true, lang: "typst", "// Integral simples
 $integral_a^b f(x) dif x$
 
 // Integral dupla
-$integral.double_D f(x,y) dif x dif y$
+$integral.dupla_D f(x,y) dif x dif y$
 
 // Integral tripla
-$integral.triple_V f dif V$
+$integral.tripla_V f dif V$
 
-// Integral de linha
-$integral.cont_C bold(F) dot dif bold(r)$")
+// Integral de contorno
+$integral.contorno_C bold(F) dot dif bold(r)$")
 ]
 
-$ integral_a^b f(x) dif x quad quad integral.double_D f(x,y) dif x dif y $
+$ integral_a^b f(x) dif x quad quad integral.dupla_D f(x,y) dif x dif y quad quad integral.tripla_V f dif V quad quad integral.contorno_C bold(F) dot dif bold(r) $
 
 == Parênteses, colchetes e chaves (delimitadores)
+
+#matypst-nota[A função `delimitar` é fornecida pelo matypst como wrapper de `lr` (left-right).]
 
 Delimitadores podem ser redimensionados automaticamente:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "// Delimitadores automáticos
-$lr((frac(a, b)))$
+  #raw(block: true, lang: "typst", "// Com delimitar: delimitadores ajustam ao conteúdo
+$delimitar(chevron.l frac(1+frac(a,b), c) chevron.r)$
+$delimitar(( frac(1+frac(a,b), c) ))$
 
-// Delimitadores manuais
-$( frac(a, b) )$  // não ajusta
-$lr([ frac(a, b) ])$  // ajusta
-
-// Tipos de delimitadores
-$lr(| x |)$      // valor absoluto
-$lr(|| x ||)$    // norma
-$lr(angle.l x angle.r)$  // produto interno
-$lr({ x : x > 0 })$  // conjunto")
+// Sem delimitar: delimitadores ficam pequenos
+$chevron.l frac(1+frac(a,b), c) chevron.r$
+$( frac(1+frac(a,b), c) )$")
 ]
 
-$ lr((frac(a, b))) quad lr([frac(a, b)]) quad lr(|x|) quad lr(||x||) quad lr(chevron.l x, y chevron.r) $
+Com `delimitar`: $delimitar(chevron.l frac(1+frac(a,b), c) chevron.r)$ $delimitar((frac(1+frac(a,b), c)))$ #h(1em) Sem: $chevron.l frac(1+frac(a,b), c) chevron.r$ $(frac(1+frac(a,b), c))$
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// Tipos de delimitadores
+$delimitar(( frac(a, b) ))$  // parênteses
+$delimitar([ frac(a, b) ])$  // colchetes
+$delimitar(| x |)$           // valor absoluto
+$delimitar(|| x ||)$         // norma
+$delimitar(chevron.l x chevron.r)$  // produto interno
+$delimitar({ x : x > 0 })$  // conjunto")
+]
+
+$ delimitar((frac(a, b))) quad delimitar([frac(a, b)]) quad delimitar(|x|) quad delimitar(||x||) quad delimitar(chevron.l x chevron.r) quad delimitar({x : x > 0}) $
 
 == Vetores e conjugados
 
+#matypst-nota[As funções `vetor`, `vetorNegrito`, `conjugado` e `segmento` são fornecidas pelo matypst.]
+
 #exemplo[
   #raw(block: true, lang: "typst", "// Vetor com seta
-$arrow(v)$, $arrow(A B)$
+$vetor(v)$, $vetor(A B)$
 
 // Vetor em negrito
-$bold(v)$, $bold(F)$
+$vetorNegrito(v)$, $vetorNegrito(F)$
 
 // Conjugado
-$overline(z)$
+$conjugado(z)$
 
-// Barra superior
-$overline(A B)$
+// Segmento (barra superior)
+$segmento(A B)$
 
 // Chapéu
 $hat(x)$, $hat(i)$, $hat(j)$, $hat(k)$
@@ -1384,49 +1712,45 @@ $hat(x)$, $hat(i)$, $hat(j)$, $hat(k)$
 $tilde(x)$")
 ]
 
-$arrow(v)$, $bold(v)$, $overline(z)$, $hat(x)$, $tilde(x)$
+$vetor(v)$, $vetor(A B)$, $vetorNegrito(v)$, $vetorNegrito(F)$, $conjugado(z)$, $segmento(A B)$, $hat(x)$, $tilde(x)$
 
 == Matrizes e determinantes
 
+#matypst-nota[As funções `matriz`, `colchete`, `barra` e `norma` são fornecidas pelo matypst.]
+
+O matypst fornece quatro funções para matrizes, cada uma com seu delimitador:
+
+- `matriz()` --- parênteses $(med)$
+- `colchete()` --- colchetes $[med]$
+- `barra()` --- barras $|med|$ (determinante)
+- `norma()` --- barras duplas $‖med‖$
+
 #exemplo[
-  #raw(block: true, lang: "typst", "// Matriz com parênteses
-$mat(
-  a, b;
-  c, d;
-)$
+  #raw(block: true, lang: "typst", "// Parênteses
+$matriz(a, b; c, d)$
 
-// Matriz com colchetes
-$mat(delim: \"[\",
-  1, 2, 3;
-  4, 5, 6;
-)$
+// Colchetes
+$colchete(1, 2, 3; 4, 5, 6)$
 
-// Determinante
-$mat(delim: \"|\",
-  a, b;
-  c, d;
-)$
+// Barras (determinante)
+$barra(a, b; c, d)$
 
-// Matriz identidade
-$mat(delim: \"(\",
-  1, 0, 0;
-  0, 1, 0;
-  0, 0, 1;
-)$")
+// Barras duplas (norma)
+$norma(a, b; c, d)$")
 ]
 
-$ mat(a, b; c, d) quad quad mat(delim: "[", 1, 2, 3; 4, 5, 6) quad quad mat(delim: "|", a, b; c, d) $
+$ matriz(a, b; c, d) quad colchete(1, 2, 3; 4, 5, 6) quad barra(a, b; c, d) quad norma(a, b; c, d) $
 
 == Equações numeradas
 
-Para numerar equações, use o ambiente `math.equation` com `block: true`:
+Equações em destaque são numeradas automaticamente ao ativar `numbering` em `math.equation`. Cada equação pode receber um rótulo (`<nome>`) para ser referenciada no texto com `@nome`:
 
 #exemplo[
   #raw(block: true, lang: "typst", "#set math.equation(numbering: \"(1)\")
 
 $ E = m c^2 $ <eq:einstein>
 
-$ integral_0^infinity e^(-x^2) dif x = frac(sqrt(pi), 2) $ <eq:gauss>
+$ integral_0^infinito e^(-x^2) dif x = fracao(raiz(pi), 2) $ <eq:gauss>
 
 Pela equação @eq:einstein e @eq:gauss...")
 ]
@@ -1435,7 +1759,9 @@ Pela equação @eq:einstein e @eq:gauss...")
 
 $ E = m c^2 $ <eq:einstein>
 
-$ integral_0^infinity e^(-x^2) dif x = frac(sqrt(pi), 2) $ <eq:gauss>
+$ integral_0^infinito e^(-x^2) dif x = fracao(raiz(pi), 2) $ <eq:gauss>
+
+Pela equação @eq:einstein e @eq:gauss, temos resultados fundamentais da física e da análise.
 
 #set math.equation(numbering: none)
 
@@ -1459,46 +1785,234 @@ $
 
 == Teoremas, definições e demonstrações
 
-O Typst permite criar ambientes personalizados para teoremas:
+#matypst-nota[Os ambientes desta seção são fornecidos pelo matypst. Todos estão prontos para uso --- basta importar o matypst e usar diretamente.]
 
-#exemplo[
-  #raw(block: true, lang: "typst", "#let theorem = figure.with(
-  kind: \"theorem\",
-  supplement: [Teorema],
+O matypst fornece 14 ambientes matemáticos pré-configurados, divididos em quatro categorias:
+
+#figure(
+  table(
+    columns: (auto, auto, auto, auto),
+    align: (left, left, left, left),
+    table.header[*Ambiente*][*Categoria*][*Cor*][*Corpo*],
+    [`teorema`], [Enunciado], [azul], [itálico],
+    [`lema`], [Enunciado], [azul escuro], [itálico],
+    [`corolario`], [Enunciado], [azul claro], [itálico],
+    [`proposicao`], [Enunciado], [eastern], [itálico],
+    [`axioma`], [Enunciado], [navy], [itálico],
+    [`conjectura`], [Enunciado], [roxo], [itálico],
+    [`afirmacao`], [Enunciado], [teal], [itálico],
+    [`definicao`], [Definição], [verde], [normal],
+    [`notacao`], [Definição], [olive], [normal],
+    [`propriedade`], [Definição], [verde escuro], [normal],
+    [`exemplo`], [Exemplo], [cinza], [normal],
+    [`problema`], [Exemplo], [laranja], [normal],
+    [`observacao`], [Informal], [maroon], [normal (sem numeração)],
+    [`demonstracao`], [Informal], [---], [normal (com QED)],
+  ),
+  caption: [Ambientes matemáticos disponíveis no matypst],
+  kind: table,
 )
 
-#theorem(caption: [Teorema de Pitágoras])[
-  Em um triângulo retângulo, o quadrado da hipotenusa
-  é igual à soma dos quadrados dos catetos:
-  $ c^2 = a^2 + b^2 $
+=== Uso básico
+
+Cada ambiente aceita conteúdo direto e um título opcional:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#definicao[
+  Um *grupo* é um conjunto $G$ munido de uma operação
+  $dot : G times G -> G$ satisfazendo associatividade,
+  existência de elemento neutro e existência de inversos.
 ]
 
-*Demonstração.* Seja um triângulo retângulo com
-catetos $a$ e $b$ e hipotenusa $c$... $square$")
+#teorema(titulo: [de Lagrange])[
+  Se $H$ é um subgrupo de um grupo finito $G$, então
+  a ordem de $H$ divide a ordem de $G$.
 ]
 
-#let theorem-counter = counter("theorem")
-
-#let teorema(title: none, body) = {
-  theorem-counter.step()
-  block(
-    width: 100%,
-    inset: 1em,
-    stroke: (left: 3pt + blue),
-    fill: rgb("#f0f7ff"),
-  )[
-    #text(weight: "bold")[Teorema #context theorem-counter.display()#if title != none [: #title]]
-
-    #body
-  ]
-}
-
-#teorema(title: [Fundamental do Cálculo])[
-  Se $f$ é contínua em $[a, b]$ e $F$ é uma primitiva de $f$, então:
-  $ integral_a^b f(x) dif x = F(b) - F(a) $
+#demonstracao[
+  As classes laterais à esquerda de $H$ particionam $G$
+  em subconjuntos de mesmo tamanho $|H|$.
 ]
 
-#pagebreak()
+#observacao[Nem todo subconjunto de um grupo é subgrupo.]")
+]
+
+#definicao[
+  Um *grupo* é um conjunto $G$ munido de uma operação $dot : G times G -> G$ satisfazendo associatividade, existência de elemento neutro e existência de inversos.
+]
+
+#teorema(titulo: [de Lagrange])[
+  Se $H$ é um subgrupo de um grupo finito $G$, então a ordem de $H$ divide a ordem de $G$.
+]
+
+#demonstracao[
+  As classes laterais à esquerda de $H$ particionam $G$ em subconjuntos de mesmo tamanho $|H|$, logo $|G| = [G : H] dot |H|$.
+]
+
+#observacao[Nem todo subconjunto de um grupo é subgrupo.]
+
+=== Numeração
+
+A numeração dos ambientes é controlada por `configurar-numeracao`, que recebe três parâmetros:
+
+- *modo*: `"por-tipo"` (padrão) ou `"unificado"`
+- *por-secao*: `false` (padrão) ou `true`
+- *nivel*: nível do heading que dispara reinício dos contadores (padrão: `1`)
+
+O parâmetro `nivel` indica qual nível de heading delimita as "seções" para fins de numeração. O padrão `nivel: 1` é adequado para monografias e teses, onde `= Capítulo` é nível 1. Em artigos, onde `= Título do artigo` é nível 1 e as seções reais são `== Seção`, use `nivel: 2` para que os contadores reiniciem a cada `==` e a numeração exiba o formato "seção.subseção.número" (ex.: 1.2.1).
+
+Coloque no início do documento, como show rule:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#show: configurar-numeracao(\"por-tipo\")  // padrão")
+]
+
+Isso gera quatro combinações possíveis, detalhadas a seguir.
+
+==== Por tipo, global
+
+Cada tipo de ambiente tem seu próprio contador, numerado do início ao fim do documento. Este é o comportamento padrão:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#show: configurar-numeracao(\"por-tipo\")
+
+#definicao[...]   // Definição 1
+#teorema[...]    // Teorema 1
+#lema[...]       // Lema 1
+#teorema[...]    // Teorema 2
+#lema[...]       // Lema 2
+#definicao[...]  // Definição 2")
+]
+
+==== Por tipo, por seção
+
+Cada tipo mantém seu próprio contador, mas a numeração inclui o número da seção (ou capítulo) e reinicia automaticamente:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#show: configurar-numeracao(\"por-tipo\", por-secao: true)
+
+= Capítulo 1
+#definicao[...]  // Definição 1.1
+#teorema[...]   // Teorema 1.1
+#teorema[...]   // Teorema 1.2
+
+= Capítulo 2
+#teorema[...]   // Teorema 2.1 (reinicia)
+#definicao[...]  // Definição 2.1 (reinicia)")
+]
+
+==== Unificado, global
+
+Todos os ambientes compartilham um único contador sequencial. Isso facilita localizar resultados no texto:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#show: configurar-numeracao(\"unificado\")
+
+#definicao[...]   // Definição 1
+#teorema[...]    // Teorema 2
+#lema[...]       // Lema 3
+#teorema[...]    // Teorema 4")
+]
+
+==== Unificado, por seção
+
+Contador único com número da seção, reiniciando a cada capítulo:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#show: configurar-numeracao(\"unificado\", por-secao: true)
+
+= Capítulo 1
+#definicao[...]  // Definição 1.1
+#teorema[...]   // Teorema 1.2
+#lema[...]      // Lema 1.3
+
+= Capítulo 2
+#teorema[...]   // Teorema 2.1 (reinicia)")
+]
+
+==== Usando `nivel` em artigos
+
+Em artigos acadêmicos, o heading nível 1 (`=`) costuma ser o título do artigo, e as seções reais usam nível 2 (`==`). Use `nivel: 2` para que a numeração por seção reinicie a cada `==`:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#show: configurar-numeracao(\"por-tipo\", por-secao: true, nivel: 2)
+
+= Título do Artigo
+== Introdução
+#definicao[...]  // Definição 1.1.1
+#teorema[...]   // Teorema 1.1.1
+
+== Resultados
+#teorema[...]   // Teorema 1.2.1 (reinicia na subseção)
+#lema[...]      // Lema 1.2.1")
+]
+
+A numeração inclui todos os níveis de heading até o configurado. Com `nivel: 1` (padrão), o prefixo é "capítulo.número" (ex.: 2.1). Com `nivel: 2`, é "capítulo.seção.número" (ex.: 1.2.1).
+
+A função `num-equacao` também aceita o parâmetro `nivel` com a mesma semântica:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#show: num-equacao(por-secao: true, nivel: 2)")
+]
+
+=== Estilos visuais
+
+O matypst suporta três estilos globais, controlados por `configurar-ambientes`:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#configurar-ambientes(\"colorido\")  // padrão: cada ambiente com sua cor
+#configurar-ambientes(\"cinza\")      // todos em tons de cinza
+#configurar-ambientes(\"sem-caixa\")  // apenas rótulo em negrito, sem fundo/borda")
+]
+
+==== Estilo colorido (padrão)
+
+#teorema(titulo: [colorido])[Se $H$ é um subgrupo de $G$, então $|H|$ divide $|G|$.]
+
+#definicao[Um *anel* é um conjunto munido de duas operações satisfazendo certas propriedades.]
+
+==== Estilo cinza
+
+#configurar-ambientes("cinza")
+
+#teorema(titulo: [em cinza])[Se $H$ é um subgrupo de $G$, então $|H|$ divide $|G|$.]
+
+#definicao[Um *anel* é um conjunto munido de duas operações satisfazendo certas propriedades.]
+
+==== Estilo sem caixa
+
+#configurar-ambientes("sem-caixa")
+
+#teorema(titulo: [sem caixa])[Se $H$ é um subgrupo de $G$, então $|H|$ divide $|G|$.]
+
+#definicao[Um *anel* é um conjunto munido de duas operações satisfazendo certas propriedades.]
+
+#configurar-ambientes("colorido")
+
+=== Ambientes personalizados
+
+Para criar ambientes com configuração própria, use `ambiente-matematico`:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#let hipotese = ambiente-matematico(
+  cor: purple,
+  espessura: 5cm,
+  prefixo: \"Hipótese\",
+  contador: \"hipotese\",
+)
+
+#hipotese[Toda função contínua em $[a,b]$ é integrável.]")
+]
+
+#let hipotese = ambiente-matematico(
+  cor: purple,
+  espessura: 5cm,
+  prefixo: "Hipótese",
+  contador: "hipotese",
+)
+
+#hipotese[Toda função contínua em $[a,b]$ é integrável.]
+
 
 // ============================================================================
 // CAPÍTULO 6: DIAGRAMAS E GRÁFICOS
@@ -1506,28 +2020,19 @@ catetos $a$ e $b$ e hipotenusa $c$... $square$")
 
 = Diagramas e Gráficos
 
-Typst oferece recursos nativos e pacotes externos para criação de diagramas, gráficos e visualizações.
-
-== Pacotes para diagramas em Typst
-
-Os principais pacotes para diagramas são:
+Typst oferece pacotes externos para criação de diagramas, gráficos e visualizações. Os principais são:
 
 - *fletcher*: Diagramas de fluxo e comutativos
-- *cetz*: Gráficos vetoriais (similar ao TikZ)
-- *diagraph*: Grafos usando sintaxe DOT
-- *plotst*: Gráficos de funções simples
-
-Para usar um pacote:
-
-#raw(block: true, lang: "typst", "#import \"@preview/fletcher:0.5.0\": *
-#import \"@preview/cetz:0.2.0\"")
+- *cetz* e *cetz-plot*: Gráficos vetoriais e de funções (similar ao TikZ)
 
 == Diagramas comutativos
+
+#import "@preview/fletcher:0.5.8": diagram, node, edge, shapes
 
 Diagramas comutativos são essenciais em álgebra e teoria das categorias. Use o pacote `fletcher`:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#import \"@preview/fletcher:0.5.0\": diagram, node, edge
+  #raw(block: true, lang: "typst", "#import \"@preview/fletcher:0.5.8\": diagram, node, edge
 
 #diagram(
   node((0, 0), $A$),
@@ -1541,58 +2046,81 @@ Diagramas comutativos são essenciais em álgebra e teoria das categorias. Use o
 )")
 ]
 
-== Grafos e fluxogramas
+#align(center,
+  diagram(
+    node((0, 0), $A$),
+    node((1, 0), $B$),
+    node((0, 1), $C$),
+    node((1, 1), $D$),
+    edge((0, 0), (1, 0), $f$, "->"),
+    edge((0, 0), (0, 1), $g$, "->"),
+    edge((1, 0), (1, 1), $h$, "->"),
+    edge((0, 1), (1, 1), $k$, "->"),
+  )
+)
 
-Para grafos simples, o pacote `diagraph` permite usar a sintaxe DOT do Graphviz:
+== Fluxogramas
+
+O `fletcher` também serve para fluxogramas:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#import \"@preview/diagraph:0.2.0\": *
-
-#raw-render(```
-  digraph {
-    rankdir=LR
-    A -> B -> C
-    B -> D
-  }
-```)")
-]
-
-Para fluxogramas mais elaborados, use `fletcher` ou `cetz`:
-
-#exemplo[
-  #raw(block: true, lang: "typst", "#import \"@preview/fletcher:0.5.0\": *
+  #raw(block: true, lang: "typst", "#import \"@preview/fletcher:0.5.8\": diagram, node, edge, shapes
 
 #diagram(
-  node((0, 0), [Início], shape: ellipse),
+  node((0, 0), [Início], shape: shapes.ellipse),
   edge(\"->\"),
   node((0, 1), [Processar]),
   edge(\"->\"),
-  node((0, 2), [Decisão?], shape: diamond),
+  node((0, 2), [Decisão?], shape: shapes.diamond),
   edge(\"r\", \"->\", [Sim]),
   node((1, 2), [Ação A]),
   edge((0, 2), (0, 3), \"->\", [Não]),
   node((0, 3), [Ação B]),
   edge((1, 2), (0, 4), \"->\"),
   edge((0, 3), (0, 4), \"->\"),
-  node((0, 4), [Fim], shape: ellipse),
+  node((0, 4), [Fim], shape: shapes.ellipse),
 )")
 ]
 
+#align(center,
+  diagram(
+    node((0, 0), [Início], shape: shapes.ellipse),
+    edge("->"),
+    node((0, 1), [Processar]),
+    edge("->"),
+    node((0, 2), [Decisão?], shape: shapes.diamond),
+    edge("r", "->", [Sim]),
+    node((1, 2), [Ação A]),
+    edge((0, 2), (0, 3), "->", [Não]),
+    node((0, 3), [Ação B]),
+    edge((1, 2), (0, 4), "->"),
+    edge((0, 3), (0, 4), "->"),
+    node((0, 4), [Fim], shape: shapes.ellipse),
+  )
+)
+
 == Gráficos de funções
 
-Para gráficos matemáticos, use o pacote `cetz`:
+Para gráficos matemáticos, há duas abordagens principais: programar o gráfico diretamente em Typst com os pacotes `cetz` e `cetz-plot`, ou criá-lo em um software externo como o GeoGebra e importar a imagem.
+
+=== Gráficos com cetz-plot
+
+Os pacotes `cetz` e `cetz-plot` permitem criar gráficos diretamente no documento:
+
+#import "@preview/cetz:0.3.4": canvas, draw
+#import "@preview/cetz-plot:0.1.1": plot
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#import \"@preview/cetz:0.2.0\"
+  #raw(block: true, lang: "typst", "#import \"@preview/cetz:0.3.4\": canvas, draw
+#import \"@preview/cetz-plot:0.1.1\": plot
 
-#cetz.canvas({
-  import cetz.draw: *
-  import cetz.plot
+#canvas({
+  import draw: *
 
   plot.plot(
-    size: (8, 6),
+    size: (8, 5),
     x-label: $x$,
-    y-label: $y$,
+    y-label: rotate(90deg, $y$),
     x-min: -2, x-max: 2,
     y-min: -1, y-max: 4,
     {
@@ -1606,18 +2134,38 @@ Para gráficos matemáticos, use o pacote `cetz`:
 })")
 ]
 
-Para gráficos estatísticos simples, o ABNTypst inclui funções auxiliares:
+#let y-vertical = rotate(90deg, $y$)
+#align(center,
+  canvas({
+    import draw: *
 
-#raw(block: true, lang: "typst", "// Gráfico de barras (simplificado)
-#grafico-barras(
-  dados: ((\"A\", 30), (\"B\", 45), (\"C\", 25)),
-  titulo: \"Distribuição\",
+    plot.plot(
+      size: (8, 5),
+      x-label: $x$,
+      y-label: y-vertical,
+      x-min: -2, x-max: 2,
+      y-min: -1, y-max: 4,
+      {
+        plot.add(
+          domain: (-2, 2),
+          x => calc.pow(x, 2),
+          label: $y = x^2$,
+        )
+      }
+    )
+  })
 )
 
-// Gráfico de pizza
-#grafico-pizza(
-  dados: ((\"Sim\", 60), (\"Não\", 30), (\"Talvez\", 10)),
-)")
+=== Gráficos com GeoGebra
+
+Para gráficos mais elaborados ou interativos, o GeoGebra (#link("https://www.geogebra.org")[geogebra.org]) é uma excelente alternativa. Crie o gráfico no GeoGebra e exporte como SVG (_Arquivo → Exportar → Gráficos como SVG_). O formato SVG é o mais indicado para Typst porque é vetorial --- a imagem mantém qualidade perfeita em qualquer escala, diferente de formatos rasterizados como PNG.
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// Gráfico criado no GeoGebra e exportado como SVG
+#imagem(\"grafico-geogebra.svg\", largura: 80%)")
+
+  Gráficos complexos com múltiplas curvas, regiões hachuradas, pontos notáveis e anotações são muito mais fáceis de construir visualmente no GeoGebra do que programar com `cetz-plot`. A exportação em SVG garante que o resultado no PDF terá a mesma nitidez de um gráfico programado diretamente.
+]
 
 #pagebreak()
 
@@ -1633,7 +2181,7 @@ Os elementos pós-textuais complementam o trabalho e incluem referências, apên
 
 As referências são obrigatórias e devem seguir a NBR 6023:2018. O ABNTypst suporta referências manuais e automáticas via arquivo `.bib`.
 
-=== Referências manuais
+=== Referências manuais <sec:ref-manual>
 
 #exemplo[
   #raw(block: true, lang: "typst", "#heading(level: 1, numbering: none)[REFERÊNCIAS]
@@ -1657,30 +2205,26 @@ O ABNTypst pode usar arquivos `.bib` para gerar referências automaticamente, se
 
 #exemplo[
   #raw(block: true, lang: "typst", "// 1. No preâmbulo: habilitar citações ABNT
-#show: abnt-cite-setup
+#show: configurar-citacoes-abnt
 
 // 2. No texto: citar com @chave
 O resultado foi positivo @silva2023.
 
 // 3. No final: gerar a lista de referências
-#abnt-bibliography(\"referencias.bib\")")
-
-  Os três passos são obrigatórios. Sem `abnt-cite-setup`, as citações usam o estilo padrão do Typst (não ABNT). Sem `abnt-bibliography`, o Typst não sabe onde buscar as entradas.
-]
-
-A função `referencias()` é um atalho equivalente a `abnt-bibliography()` com o título padrão "REFERÊNCIAS":
-
-#raw(block: true, lang: "typst", "// Equivalentes:
-#abnt-bibliography(\"referencias.bib\")
 #referencias(\"referencias.bib\")")
 
-Para listar *todas* as entradas do `.bib` (inclusive as não citadas no texto), use o parâmetro `full`:
+  Os três passos são obrigatórios. Sem `configurar-citacoes-abnt`, as citações usam o estilo padrão do Typst (não ABNT). Sem `referencias()`, o Typst não sabe onde buscar as entradas.
+]
 
-#raw(block: true, lang: "typst", "#abnt-bibliography(\"referencias.bib\", full: true)")
+Os nomes em português `configurar-citacoes-abnt` e `referencias()` são equivalentes a `abnt-cite-setup` e `abnt-bibliography()`, respectivamente --- ambas as formas funcionam.
+
+Para listar *todas* as entradas do `.bib` (inclusive as não citadas no texto), use o parâmetro `completa`:
+
+#raw(block: true, lang: "typst", "#referencias(\"referencias.bib\", completa: true)")
 
 ==== Tipos de entrada `.bib` suportados
 
-O ABNTypst usa o estilo CSL `abnt.csl` para formatar as referências. Os principais tipos de entrada BibTeX/BibLaTeX suportados são:
+O ABNTypst usa o estilo CSL `abnt.csl` para formatar as referências, baseado no trabalho original de Jucá da Costa e Antenor Aguiar C. A. Matos (#link("https://github.com/virgilinojuca/csl-abnt")[csl-abnt], domínio público). Os principais tipos de entrada BibTeX/BibLaTeX suportados são:
 
 #figure(
   table(
@@ -1750,20 +2294,88 @@ O ABNTypst usa o estilo CSL `abnt.csl` para formatar as referências. Os princip
   pages = {112-125},
 }")
 
-#block(
-  width: 100%,
-  inset: 1em,
-  stroke: (left: 2pt + gray),
-  fill: luma(245),
-)[
-  #set par(first-line-indent: 0pt)
-  *Limitações do CSL ABNT:* o formato CSL não suporta perfeitamente todos os casos da NBR 6023. Algumas limitações conhecidas:
-  - Subtítulos não são separados automaticamente com dois-pontos e sem negrito, como exige a norma.
-  - Obras sem autor pessoal (entrada pelo título) podem não aparecer em MAIÚSCULAS corretamente.
-  - Legislação brasileira tem suporte limitado --- para esses casos, considere usar referências manuais.
+==== Limitações do CSL e soluções manuais
 
-  Para referências que o CSL não formata corretamente, use a formatação manual descrita na subseção anterior.
+O formato CSL (Citation Style Language) é um padrão internacional para formatação de referências. Ele funciona muito bem para a maioria dos casos, mas possui três limitações que afetam a conformidade com a NBR 6023. Essas limitações são da _especificação CSL em si_ --- não é possível corrigi-las no arquivo `.csl`, nem resolver o problema dentro do `.bib` (que não suporta formatação rica como negrito ou itálico).
+
+Também não é possível misturar referências automáticas (via `.bib`) com manuais na mesma lista --- o `bibliography()` do Typst gera sua própria lista, e entradas manuais não se mesclam alfabeticamente com ela.
+
+===== 1. Subtítulos em negrito
+
+A NBR 6023 exige que apenas o _título_ fique em negrito, e o subtítulo (após os dois-pontos) fique em texto normal. O CSL não possui uma variável separada para subtítulo --- ele trata o campo `title` como um bloco único e aplica negrito a tudo.
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// ❌ O CSL gera (incorretamente):
+// SILVA, J. C. *Introdução à programação: conceitos básicos*. ...
+//
+// ✅ A ABNT exige:
+// SILVA, J. C. *Introdução à programação*: conceitos básicos. ...
+//
+// Solução: referência manual
+SILVA, João Carlos da. *Introdução à programação*: conceitos
+básicos. 2. ed. São Paulo: Editora Atlas, 2023.")
 ]
+
+Resultado correto (manual):
+
+#block(inset: (left: 1.25cm, rest: 0pt))[
+  #set par(hanging-indent: 1.25cm, first-line-indent: 0pt)
+  SILVA, João Carlos da. *Introdução à programação*: conceitos básicos. 2. ed. São Paulo: Editora Atlas, 2023.
+]
+
+===== 2. Obras sem autor (entrada pelo título)
+
+Quando uma obra não tem autor pessoal, a NBR 6023 exige que a primeira palavra do título apareça em MAIÚSCULAS. O CSL nem sempre aplica essa regra. Uma solução parcial é escrever a primeira palavra em maiúsculas diretamente no campo `title` do `.bib` (`title = {DIRETRIZES curriculares...}`), mas isso pode afetar citações no texto.
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// ❌ O CSL pode gerar:
+// Diretrizes curriculares nacionais para o ensino médio. ...
+//
+// ✅ A ABNT exige:
+// DIRETRIZES curriculares nacionais para o ensino médio. ...
+//
+// Solução: referência manual
+DIRETRIZES curriculares nacionais para o ensino médio.
+Brasília: MEC, 2018. 56 p.")
+]
+
+Resultado correto (manual):
+
+#block(inset: (left: 1.25cm, rest: 0pt))[
+  #set par(hanging-indent: 1.25cm, first-line-indent: 0pt)
+  DIRETRIZES curriculares nacionais para o ensino médio. Brasília: MEC, 2018. 56 p.
+]
+
+===== 3. Legislação brasileira
+
+A NBR 6023 tem regras específicas para legislação (leis, decretos, portarias, etc.) que o CSL não consegue representar. A referência deve começar pela jurisdição em maiúsculas, seguida do tipo de norma, número e data --- uma estrutura que não se encaixa em nenhum tipo de entrada padrão do BibTeX.
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// Legislação deve ser sempre formatada manualmente:
+BRASIL. Lei nº 9.394, de 20 de dezembro de 1996. Estabelece as
+diretrizes e bases da educação nacional. *Diário Oficial da
+União*, Brasília, 23 dez. 1996.
+
+BRASIL. Decreto nº 9.235, de 15 de dezembro de 2017. Dispõe
+sobre o exercício das funções de regulação, supervisão e
+avaliação das instituições de educação superior. *Diário Oficial
+da União*, Brasília, 18 dez. 2017.")
+]
+
+Resultado correto (manual):
+
+#block(inset: (left: 1.25cm, rest: 0pt))[
+  #set par(hanging-indent: 1.25cm, first-line-indent: 0pt)
+  BRASIL. Lei nº 9.394, de 20 de dezembro de 1996. Estabelece as diretrizes e bases da educação nacional. *Diário Oficial da União*, Brasília, 23 dez. 1996.
+
+  BRASIL. Decreto nº 9.235, de 15 de dezembro de 2017. Dispõe sobre o exercício das funções de regulação, supervisão e avaliação das instituições de educação superior. *Diário Oficial da União*, Brasília, 18 dez. 2017.
+]
+
+===== Recomendação
+
+Para a maioria dos trabalhos acadêmicos, as referências automáticas via `.bib` funcionam bem --- livros, artigos, teses e sites são formatados corretamente.
+
+No entanto, se o seu trabalho depende fortemente de algum dos três casos acima (por exemplo, um trabalho de Direito com muitas referências legislativas, ou uma bibliografia com muitos subtítulos), recomendamos usar referências manuais para toda a bibliografia. Isso garante conformidade total com a ABNT e evita inconsistências entre entradas automáticas e manuais na mesma lista. Veja o modelo na @sec:ref-manual.
 
 == Apêndices e Anexos
 
@@ -2008,6 +2620,8 @@ O template `slides` usa o pacote Touying para apresentações:
 
 == Operadores binários
 
+#matypst-nota[Os nomes em português (`vezes`, `maisMenos`, `eLogico`, `uniao`, etc.) são fornecidos pelo matypst. Os símbolos nativos do Typst usam nomes em inglês (`times`, `plus.minus`, `and`, `union`, etc.).]
+
 #figure(
   table(
     columns: (1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
@@ -2016,12 +2630,12 @@ O template `slides` usa o pacote Touying para apresentações:
     table.hline(stroke: 1pt),
     [*Código*], [*Símbolo*], [*Código*], [*Símbolo*], [*Código*], [*Símbolo*],
     table.hline(stroke: 0.5pt),
-    [`+`], [$+$], [`-`], [$-$], [`times`], [$times$],
-    [`div`], [$div$], [`plus.minus`], [$plus.minus$], [`minus.plus`], [$minus.plus$],
-    [`dot`], [$dot$], [`ast`], [$ast$], [`star`], [$star$],
-    [`circle.small`], [$circle.small$], [`bullet`], [$bullet$], [`diamond`], [$diamond$],
-    [`and`], [$and$], [`or`], [$or$], [`xor`], [$xor$],
-    [`union`], [$union$], [`inter`], [$inter$], [`without`], [$without$],
+    [`+`], [$+$], [`-`], [$-$], [`vezes`], [$times$],
+    [`div`], [$div$], [`maisMenos`], [$plus.minus$], [`menosMais`], [$minus.plus$],
+    [`ponto`], [$dot$], [`ast`], [$ast$], [`estrela`], [$star$],
+    [`circulo`], [$circle.small$], [`marcador`], [$bullet$], [`losango`], [$diamond$],
+    [`eLogico`], [$and$], [`ou`], [$or$], [`ouExclusivo`], [$xor$],
+    [`uniao`], [$union$], [`inter`], [$inter$], [`sem`], [$without$],
     table.hline(stroke: 1pt),
   ),
   caption: [Operadores binários],
@@ -2029,6 +2643,8 @@ O template `slides` usa o pacote Touying para apresentações:
 )
 
 == Relações
+
+#matypst-nota[Os nomes em português (`aprox`, `pertence`, `estaContido`, `contem`, `proporcional`, etc.) são fornecidos pelo matypst. Os símbolos nativos do Typst usam nomes em inglês (`approx`, `in`, `subset`, `supset`, `prop`, etc.).]
 
 #figure(
   table(
@@ -2040,11 +2656,11 @@ O template `slides` usa o pacote Touying para apresentações:
     table.hline(stroke: 0.5pt),
     [`=`], [$=$], [`!=`], [$!=$], [`<`], [$<$],
     [`>`], [$>$], [`<= `], [$<=$], [`>=`], [$>=$],
-    [`approx`], [$approx$], [`equiv`], [$equiv$], [`tilde`], [$tilde$],
-    [`prec`], [$prec$], [`succ`], [$succ$], [`tilde.eq`], [$tilde.eq$],
-    [`subset`], [$subset$], [`supset`], [$supset$], [`in`], [$in$],
-    [`subset.eq`], [$subset.eq$], [`supset.eq`], [$supset.eq$], [`in.not`], [$in.not$],
-    [`prop`], [$prop$], [`parallel`], [$parallel$], [`perp`], [$perp$],
+    [`aprox`], [$approx$], [`equiv`], [$equiv$], [`tilde`], [$tilde$],
+    [`precede`], [$prec$], [`sucede`], [$succ$], [`tilde.eq`], [$tilde.eq$],
+    [`estaContido`], [$subset$], [`contem`], [$supset$], [`pertence`], [$in$],
+    [`estaContido.eq`], [$subset.eq$], [`contem.eq`], [$supset.eq$], [`pertence.nao`], [$in.not$],
+    [`proporcional`], [$prop$], [`paralelo`], [$parallel$], [`perpendicular`], [$perp$],
     table.hline(stroke: 1pt),
   ),
   caption: [Símbolos de relação],
@@ -2052,6 +2668,10 @@ O template `slides` usa o pacote Touying para apresentações:
 )
 
 == Setas
+
+#matypst-nota[As setas `->`, `<-` e `<->` são atalhos nativos do Typst. As demais (`implica`, `sse`, `seta.*`) são fornecidas pelo matypst. Os equivalentes nativos usam nomes em inglês (`arrow.t`, `arrow.r.long`, etc.).]
+
+A função `seta` do matypst usa subcampos direcionais baseados nas teclas WASD: *w* = cima (↑), *a* = esquerda (←), *s* = baixo (↓), *d* = direita (→). Combinações como `seta.w.s` (↕) e `seta.a.d` (↔) indicam dupla direção.
 
 #figure(
   table(
@@ -2062,10 +2682,10 @@ O template `slides` usa o pacote Touying para apresentações:
     [*Código*], [*Símbolo*], [*Código*], [*Símbolo*], [*Código*], [*Símbolo*],
     table.hline(stroke: 0.5pt),
     [`->`], [$->$], [`<-`], [$<-$], [`<->`], [$<->$],
-    [`=>`], [$=>$], [`<=`], [$<=$], [`<=>`], [$<=>$],
-    [`arrow.t`], [$arrow.t$], [`arrow.b`], [$arrow.b$], [`arrow.t.b`], [$arrow.t.b$],
-    [`arrow.r.long`], [$arrow.r.long$], [`arrow.l.long`], [$arrow.l.long$], [`arrow.l.r.long`], [$arrow.l.r.long$],
-    [`|-> `], [$|->$], [`arrow.hook`], [$arrow.hook$], [`arrow.r.tail`], [$arrow.r.tail$],
+    [`implica`], [$=>$], [`sse`], [$<=>$], [], [],
+    [`seta.w`], [$arrow.t$], [`seta.s`], [$arrow.b$], [`seta.w.s`], [$arrow.t.b$],
+    [`seta.d.longa`], [$arrow.r.long$], [`seta.a.longa`], [$arrow.l.long$], [`seta.a.d.longa`], [$arrow.l.r.long$],
+    [`seta.mapa`], [$|->$], [`seta.gancho`], [$arrow.hook$], [`seta.d.cauda`], [$arrow.r.tail$],
     table.hline(stroke: 1pt),
   ),
   caption: [Setas],
@@ -2073,6 +2693,8 @@ O template `slides` usa o pacote Touying para apresentações:
 )
 
 == Símbolos diversos
+
+#matypst-nota[Os nomes em português (`infinito`, `vazio`, `portanto`, `pois`, `paraTodo`, `existe`, `nao`, `parcial`, `alef`, `reticencias`) são fornecidos pelo matypst. Os equivalentes nativos do Typst são `infinity`, `emptyset`, `therefore`, `because`, `forall`, `exists`, `not`, `partial`, `aleph`, `dots`.]
 
 #figure(
   table(
@@ -2082,11 +2704,11 @@ O template `slides` usa o pacote Touying para apresentações:
     table.hline(stroke: 1pt),
     [*Código*], [*Símbolo*], [*Código*], [*Símbolo*], [*Código*], [*Símbolo*],
     table.hline(stroke: 0.5pt),
-    [`infinity`], [$infinity$], [`emptyset`], [$emptyset$], [`therefore`], [$therefore$],
-    [`because`], [$because$], [`forall`], [$forall$], [`exists`], [$exists$],
-    [`not`], [$not$], [`partial`], [$partial$], [`nabla`], [$nabla$],
+    [`infinito`], [$infinito$], [`vazio`], [$emptyset$], [`portanto`], [$therefore$],
+    [`pois`], [$because$], [`paraTodo`], [$forall$], [`existe`], [$exists$],
+    [`nao`], [$not$], [`parcial`], [$partial$], [`nabla`], [$nabla$],
     [`ell`], [$ell$], [`planck`], [$planck$], [`Re`], [$Re$],
-    [`Im`], [$Im$], [`aleph`], [$aleph$], [`dots`], [$dots$],
+    [`Im`], [$Im$], [`alef`], [$aleph$], [`reticencias`], [$dots$],
     table.hline(stroke: 1pt),
   ),
   caption: [Símbolos diversos],
@@ -2122,7 +2744,7 @@ Este apêndice é destinado a usuários que já conhecem LaTeX e desejam migrar 
     [Negrito], [`\textbf{texto}`], [`*texto*`],
     [Itálico], [`\textit{texto}`], [`_texto_`],
     [Matemática inline], [`$...$`], [`$...$`],
-    [Matemática display], [`$$...$$` ou `\[...\]`], [`$ ... $` (com espaços)],
+    [Matemática destaque], [`$$...$$` ou `\[...\]`], [`$ ... $` (com espaços)],
     [Potência], [`x^{n+1}`], [`x^(n+1)`],
     [Índice], [`a_{ij}`], [`a_(i j)`],
     [Fração], [`\frac{a}{b}`], [`frac(a, b)`],
@@ -2149,7 +2771,7 @@ Este apêndice é destinado a usuários que já conhecem LaTeX e desejam migrar 
     [`\subsection{...}`], [`== Título`],
     [`\includegraphics{...}`], [`#image("...")`],
     [`\begin{figure}...\end{figure}`], [`#container(...)[#imagem(...)]`],
-    [`\begin{table}...\end{table}`], [`#container(kind: table)[#tabela(...)]`],
+    [`\begin{table}...\end{table}`], [`#container(tipo: "tabela")[#tabela(...)]`],
     [`\caption{...}`], [`legenda: [...]`],
     [`\label{...}`], [`<label>`],
     [`\ref{...}`], [`@label`],
@@ -2254,9 +2876,9 @@ Este apêndice é destinado a usuários que já conhecem LaTeX e desejam migrar 
 
 == ABNTypst
 
-- *Repositório GitHub*: #link("https://github.com/esdras/abntypst")
-- *Documentação*: #link("https://github.com/esdras/abntypst/docs")
-- *Issues (problemas)*: #link("https://github.com/esdras/abntypst/issues")
+- *Repositório GitHub*: #link("https://github.com/3sdras/abntypst")
+- *Documentação*: #link("https://github.com/3sdras/abntypst/docs")
+- *Issues (problemas)*: #link("https://github.com/3sdras/abntypst/issues")
 
 == Normas ABNT
 

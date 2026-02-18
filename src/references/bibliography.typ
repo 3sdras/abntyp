@@ -60,6 +60,14 @@
   body
 }
 
+/// Wrapper em português para abnt-cite-setup
+///
+/// Exemplo:
+/// ```typst
+/// #show: configurar-citacoes-abnt
+/// ```
+#let configurar-citacoes-abnt = abnt-cite-setup
+
 /// Bibliografia ABNT simplificada (função wrapper)
 ///
 /// Versão simplificada que aplica todas as configurações necessárias.
@@ -68,6 +76,7 @@
 /// Parâmetros:
 /// - arquivo: caminho para arquivo .bib
 /// - titulo: título da seção (padrão: "REFERÊNCIAS")
-#let referencias(arquivo, titulo: "REFERÊNCIAS") = {
-  abnt-bibliography(arquivo, titulo: titulo, completa: false)
+/// - completa: se true, mostra todas as entradas; se false, apenas as citadas
+#let referencias(arquivo, titulo: "REFERÊNCIAS", completa: false) = {
+  abnt-bibliography(arquivo, titulo: titulo, completa: completa)
 }

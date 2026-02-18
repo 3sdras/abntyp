@@ -18,7 +18,7 @@
 ///
 /// Uso (dentro de um `container`):
 /// ```typst
-/// #container(legenda: "População", tipo: table, origem: "IBGE (2023)")[
+/// #container(legenda: "População", tipo: "tabela", origem: "IBGE (2023)")[
 ///   #tabela(columns: 2,
 ///     table.hline(stroke: 1.5pt),
 ///     [*Região*], [*População*],

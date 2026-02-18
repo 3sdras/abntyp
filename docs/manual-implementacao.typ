@@ -920,19 +920,31 @@ Formata figuras, quadros e ilustrações conforme NBR 14724 e IBGE.
 
 ```typst
 // Container genérico (única forma de criar um figure ABNT)
-// O supplement é inferido do kind: image→"Figura", table→"Tabela", "quadro"→"Quadro"
+// A legenda é inferida do tipo: "imagem"→"Figura", "tabela"→"Tabela", "quadro"→"Quadro"
+// Backward-compat: aceita também os tipos nativos `image` e `table`
 #let container(
   body,              // Conteúdo (imagem, quadro, tabela, etc.)
   legenda: none,     // Título (aparece acima)
   origem: none,      // Fonte (aparece abaixo)
   nota: none,        // Nota explicativa (aparece abaixo da fonte)
-  kind: image,       // Tipo: image, table, "quadro"
-  supplement: auto,  // Inferido do kind (ou definido manualmente)
+  tipo: "imagem",    // Tipo: "imagem", "tabela", "quadro" (aceita também image, table)
+  suplemento: auto,  // Inferido do tipo (ou definido manualmente)
   ..args,            // Repassados ao figure()
 )
 
 // Wrapper para image() em português
-#let imagem(source, ..args)
+#let imagem(
+  caminho,           // Caminho do arquivo (str ou bytes)
+  largura: auto,     // Largura (auto, relative, fraction)
+  altura: auto,      // Altura (auto, relative, fraction)
+  ajuste: "cobrir",   // Modo de ajuste: "cobrir", "conter", "esticar"
+  alternativo: none,  // Texto alternativo (acessibilidade)
+  pagina: auto,      // Página do PDF a extrair (auto = primeira)
+  formato: auto,     // Formato: auto, "png", "jpg", "gif", "svg", "pdf"
+  escala: auto,      // Escala de renderização (SVG)
+  icc: auto,         // Perfil de cor ICC
+  ..outros,          // Parâmetros adicionais repassados a image()
+)
 
 // Quadro: tabela textual com bordas fechadas (wrapper para table())
 #let quadro(..args)
@@ -948,14 +960,14 @@ Formata figuras, quadros e ilustrações conforme NBR 14724 e IBGE.
 
 ```typst
 #container(legenda: [Comparação de desempenho], origem: [Elaborado pelo autor (2026).]) [
-  #imagem("grafico.png", width: 80%)
+  #imagem("grafico.png", largura: 80%)
 ]
 ```
 
 *Exemplo — Quadro:*
 
 ```typst
-#container(legenda: [Glossário de termos], kind: "quadro", origem: [Elaborado pelo autor.]) [
+#container(legenda: [Glossário de termos], tipo: "quadro", origem: [Elaborado pelo autor.]) [
   #quadro(columns: 2,
     [*Termo*], [*Definição*],
     [Algoritmo], [Sequência finita de instruções],
@@ -980,7 +992,7 @@ Formata tabelas conforme IBGE e NBR 14724.
 ```typst
 #container(
   legenda: [Complexidade dos algoritmos de ordenação],
-  kind: table,
+  tipo: "tabela",
   origem: [Adaptado de Cormen et al. (2012).],
 )[
   #tabela(
@@ -995,6 +1007,10 @@ Formata tabelas conforme IBGE e NBR 14724.
   )
 ]
 ```
+
+=== math.typ _(removido)_
+
+As funções matemáticas em português (`sen`, `frac`, `binomio`, `raiz`, `exibicao`, `em-linha`, `subscrito`, `sub-subscrito`) foram movidas para o *matypst*, o pacote companheiro do ABNTypst. Consulte a documentação do matypst em `src/matematica.typ`.
 
 == References (Referências)
 
@@ -1012,9 +1028,10 @@ Integração com arquivos `.bib` para formatação automática de referências.
 
 // Configuração de citações autor-data
 #let abnt-cite-setup(body)
+#let configurar-citacoes-abnt = abnt-cite-setup  // alias em português
 
 // Versão simplificada
-#let referencias(arquivo, titulo: "REFERÊNCIAS")
+#let referencias(arquivo, titulo: "REFERÊNCIAS", completa: false)
 ```
 
 *Uso com citações:*

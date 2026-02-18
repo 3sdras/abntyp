@@ -19,8 +19,8 @@
 /// Container genérico para elementos com título, numeração e fonte (ABNT).
 /// É a única forma de criar um `figure()` no ABNTypst.
 /// O `suplemento` é inferido automaticamente a partir do `tipo`:
-/// - `image` → "Figura" (padrão)
-/// - `table` → "Tabela"
+/// - `"imagem"` → "Figura" (padrão)
+/// - `"tabela"` → "Tabela"
 /// - `"quadro"` → "Quadro"
 ///
 /// Uso:
@@ -34,20 +34,28 @@
   legenda: none,
   origem: none,
   nota: none,
-  tipo: image,
+  tipo: "imagem",
   suplemento: auto,
   ..args,
 ) = {
+  // Traduz strings em português para os tipos nativos do Typst.
+  // Backward-compat: aceita também os tipos nativos `image` e `table`
+  // (usados antes da renomeação para "imagem"/"tabela"), de modo que
+  // código existente com `tipo: image` ou `tipo: table` continue funcionando.
+  let resolved-kind = if tipo == "imagem" or tipo == image { image }
+    else if tipo == "tabela" or tipo == table { table }
+    else { tipo }
+
   let supp = if suplemento != auto { suplemento }
-    else if tipo == image { "Figura" }
-    else if tipo == table { "Tabela" }
-    else if tipo == "quadro" { "Quadro" }
+    else if resolved-kind == image { "Figura" }
+    else if resolved-kind == table { "Tabela" }
+    else if resolved-kind == "quadro" { "Quadro" }
     else { "Figura" }
 
   figure(
     body,
     caption: if legenda != none { legenda },
-    kind: tipo,
+    kind: resolved-kind,
     supplement: supp,
     ..args,
   )
@@ -66,16 +74,54 @@
 }
 
 /// Wrapper para `image()` em português.
-/// Aceita os mesmos parâmetros de `image()`.
+///
+/// Parâmetros nomeados:
+/// - largura: largura (auto, relativa ou fração)
+/// - altura: altura (auto, relativa ou fração)
+/// - ajuste: modo de ajuste ("cobrir", "conter", "esticar")
+/// - alternativo: texto alternativo para acessibilidade
+/// - pagina: página do PDF a extrair (auto = primeira)
+/// - formato: formato da imagem (auto ou string)
+/// - escala: escala de renderização (auto ou string)
+/// - icc: perfil de cor ICC (auto, string ou bytes)
+/// - ..outros: parâmetros adicionais repassados a `image()`
 ///
 /// Uso (dentro de um `container`):
 /// ```typst
 /// #container(legenda: "Logo", origem: "O autor")[
-///   #imagem("logo.png", width: 80%)
+///   #imagem("logo.png", largura: 80%)
 /// ]
 /// ```
-#let imagem(caminho, ..args) = {
-  image(caminho, ..args)
+#let imagem(
+  caminho,
+  largura: auto,
+  altura: auto,
+  ajuste: "cobrir",
+  alternativo: none,
+  pagina: auto,
+  formato: auto,
+  escala: auto,
+  icc: auto,
+  ..outros,
+) = {
+  // Traduz valores de ajuste para o Typst
+  let resolved-fit = if ajuste == "cobrir" { "cover" }
+    else if ajuste == "conter" { "contain" }
+    else if ajuste == "esticar" { "stretch" }
+    else { ajuste }
+
+  image(
+    caminho,
+    width: largura,
+    height: altura,
+    fit: resolved-fit,
+    alt: alternativo,
+    page: pagina,
+    format: formato,
+    scaling: escala,
+    icc: icc,
+    ..outros,
+  )
 }
 
 /// Quadro: tabela textual com bordas fechadas (conforme IBGE).
