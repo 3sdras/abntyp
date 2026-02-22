@@ -139,7 +139,7 @@ O ABNTyp implementa as seguintes normas ABNT (versões atualizadas):
 #capa(...)
 #folha-rosto(...)
 #resumo(keywords: keywords-pt)[Texto do resumo...]
-#abstract(keywords: keywords-en)[Abstract text...]
+#resumo-en(keywords: keywords-en)[Abstract text...]
 #sumario()
 
 // Elementos textuais
