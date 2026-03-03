@@ -121,25 +121,41 @@ O ABNTyp implementa as seguintes normas ABNT (versões atualizadas):
 #import "@preview/abntyp:0.1.0": *
 
 #show: abntcc.with(
-  title: "Uma proposta de pacote para normas ABNT em Typst",
-  subtitle: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
-  author: "Cláudio Código",
-  institution: "Universidade Federal de Jataí",
-  faculty: "Instituto de Ciências Exatas e Tecnológicas",
-  program: "PROFMAT - Programa de Mestrado Profissional em Rede em Matemática",
-  location: "Jataí",
-  year: 2026,
-  advisor: "Prof. Dr. Esdras Teixeira Costa",
-  keywords-pt: ("ABNT", "Typst", "formatação", "trabalho acadêmico"),
-  keywords-en: ("ABNT", "Typst", "formatting", "academic work"),
-  bibliography-file: "referencias.bib",
+  titulo: "Uma proposta de pacote para normas ABNT em Typst",
+  subtitulo: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
+  autor: "Cláudio Código",
+  instituicao: "Universidade Federal de Jataí",
+  faculdade: "Instituto de Ciências Exatas e Tecnológicas",
+  programa: "PROFMAT - Programa de Mestrado Profissional em Rede em Matemática",
+  local: "Jataí",
+  ano: 2026,
+  orientador: "Prof. Dr. Esdras Teixeira Costa",
+  arquivo-bibliografia: "referencias.bib",
 )
 
 // Elementos pré-textuais
-#capa()
-#folha-rosto()
-#resumo(keywords: keywords-pt)[Texto do resumo...]
-#resumo-en(keywords: keywords-en)[Abstract text...]
+#capa(
+  instituicao: "Universidade Federal de Jataí",
+  faculdade: "Instituto de Ciências Exatas e Tecnológicas",
+  autor: "Cláudio Código",
+  titulo: "Uma proposta de pacote para normas ABNT em Typst",
+  subtitulo: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
+  local: "Jataí",
+  ano: 2026,
+)
+#folha-rosto(
+  autor: "Cláudio Código",
+  titulo: "Uma proposta de pacote para normas ABNT em Typst",
+  subtitulo: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
+  natureza: "Dissertação",
+  objetivo: "Obtenção do título de Mestre",
+  instituicao: "Universidade Federal de Jataí",
+  orientador: "Prof. Dr. Esdras Teixeira Costa",
+  local: "Jataí",
+  ano: 2026,
+)
+#resumo(palavras-chave: ("ABNT", "Typst", "formatação"))[Texto do resumo...]
+#resumo-en(palavras-chave: ("ABNT", "Typst", "formatting"))[Abstract text...]
 #sumario()
 
 // Elementos textuais
@@ -150,8 +166,6 @@ Texto da introdução...
 = Desenvolvimento
 
 Texto do desenvolvimento...
-
-// Elementos pós-textuais são gerados automaticamente
 ```
 
 ### Artigo Científico
@@ -160,15 +174,15 @@ Texto do desenvolvimento...
 #import "@preview/abntyp:0.1.0": *
 
 #show: artigo.with(
-  title: "Título do Artigo",
-  authors: (
+  titulo: "Título do Artigo",
+  autores: (
     (name: "Autor Um", affiliation: "Universidade A", email: "autor1@exemplo.com"),
     (name: "Autor Dois", affiliation: "Universidade B", email: "autor2@exemplo.com"),
   ),
-  abstract-pt: [Resumo em português...],
-  keywords-pt: ("palavra 1", "palavra 2"),
-  abstract-en: [Abstract in English...],
-  keywords-en: ("keyword 1", "keyword 2"),
+  resumo: [Resumo em português...],
+  palavras-chave: ("palavra 1", "palavra 2"),
+  resumo-en: [Abstract in English...],
+  palavras-chave-en: ("keyword 1", "keyword 2"),
 )
 
 = Introdução
