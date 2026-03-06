@@ -2040,6 +2040,19 @@ Para casos especiais, você pode usar as funções de formatação manual (`ref-
 
 = Changelog
 
+== Versão 0.1.2 (Março 2026)
+
+- Aliases curtos para todas as funções principais
+  - Citações: `ccurta`, `clonga`, `cautor`, `capud`, `cmultiplos`, `cetal`, etc.
+  - Numérico: `cnum`, `cnmultiplos`, `cncurta`, `cnlonga`, `bibnum`, etc.
+  - Elementos: `rosto`, `ficha`, `dedica`, `agradece`, `siglas`, `simbolos`
+  - Texto: `interp`, `gnosso`, `gautor`
+- `citacao-curta` e `citacao-longa` aceitam parâmetros posicionais via `..args`
+  - `#citacao-curta("Silva", 2023, 45)[texto]` (posicional)
+  - `#citacao-curta(autor: "Silva", ano: 2023)[texto]` (nomeado)
+- Parâmetros numéricos (`ano`, `pagina`, `volume`, etc.) documentados como `int` (sem aspas)
+- Documentação atualizada: guia-rapido, manual-implementacao, introducao-abntyp, README
+
 == Versão 0.1.1 (Março 2026)
 
 - Nova função `dados()` para metadados centralizados
