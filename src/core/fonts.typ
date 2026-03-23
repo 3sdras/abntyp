@@ -60,3 +60,23 @@
     gap: 0.5em,
   )
 }
+
+// === Atalhos de formatação inline ===
+
+/// Sublinhado — wrapper de #underline
+/// Exemplo: #sub[texto sublinhado]
+#let sub(body) = underline(body)
+
+/// Riscado — wrapper de #strike
+/// Exemplo: #risc[texto riscado]
+#let risc(body) = strike(body)
+
+/// Versalete — primeira letra em tamanho normal, restante em caixa alta 0.8em
+/// Exemplo: #caps[Texto em Versalete]
+#let caps(texto) = {
+  let chars = texto.clusters()
+  if chars.len() > 0 {
+    chars.first()
+    text(size: 0.8em, upper(chars.slice(1).join()))
+  }
+}
