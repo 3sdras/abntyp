@@ -5,6 +5,8 @@
 
 # Typst output
 *.pdf
+examples/*.png
+examples/*.svg
 
 # Editor
 .vscode/
@@ -15,6 +17,9 @@
 
 # Documentação antiga
 docs/introducao-abntyp-COMPLETO-ANTIGO.typ
+
+# Arquivos de teste local (não publicar)
+examples/formatacao-inline-exemplo.typ
 
 # Temporary files
 *.tmp
