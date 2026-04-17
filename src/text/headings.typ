@@ -136,7 +136,10 @@
 /// Seção sem numeração — para Referências, Apêndices, Anexos, Glossário etc.
 /// Aparece no sumário. Nível padrão: 1 (seção primária).
 /// Exemplo: #secao[REFERÊNCIAS]  ou  #secao("REFERÊNCIAS")
+/// O suplemento é fixado em "Seção" para que @label produza "Seção X"
+/// e não "Capítulo X" mesmo em templates que usam suplemento-nivel1: "Capítulo".
 #let secao(titulo, nivel: 1) = {
+  show heading: set heading(supplement: "Seção")
   heading(level: nivel, numbering: none, upper(titulo))
 }
 
