@@ -82,7 +82,7 @@
     author: autores.map(a => if type(a) == dictionary { a.name } else { a }).join(", "),
   )
 
-  show: with-abnt-setup.with(fonte: fonte)
+  show: with-abnt-setup.with(fonte: fonte, suplemento-nivel1: "Capítulo")
 
   // Conteudo
   body

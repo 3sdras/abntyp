@@ -27,7 +27,7 @@
   titulo-bibliografia: "REFERÊNCIAS",
   body,
 ) = {
-  show: with-abnt-setup.with(fonte: fonte)
+  show: with-abnt-setup.with(fonte: fonte, suplemento-nivel1: "Capítulo")
 
   // Nota: metadados do PDF (title, author) são definidos por dados().
   // Se o usuário não usar dados(), o PDF ficará sem metadados.

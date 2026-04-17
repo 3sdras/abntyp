@@ -42,7 +42,7 @@
     author: autor,
   )
 
-  show: with-abnt-setup.with(fonte: fonte)
+  show: with-abnt-setup.with(fonte: fonte, suplemento-nivel1: "Capítulo")
 
   // Titulo corrente no alto da mancha (livro-especifico)
   set page(

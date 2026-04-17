@@ -72,11 +72,16 @@
 #let risc(body) = strike(body)
 
 /// Versalete — primeira letra em tamanho normal, restante em caixa alta 0.8em
-/// Exemplo: #caps[Texto em Versalete]
+/// Requer string: #caps("Texto em Versalete")
+/// Com content (#caps[...]) cai em smallcaps nativo
 #let caps(texto) = {
-  let chars = texto.clusters()
-  if chars.len() > 0 {
-    chars.first()
-    text(size: 0.8em, upper(chars.slice(1).join()))
+  if type(texto) == str {
+    let chars = texto.clusters()
+    if chars.len() > 0 {
+      chars.first()
+      text(size: 0.8em, upper(chars.slice(1).join()))
+    }
+  } else {
+    smallcaps(texto)
   }
 }

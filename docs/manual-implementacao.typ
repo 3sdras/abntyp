@@ -158,7 +158,7 @@ No seu documento:
 Quando publicado no repositório oficial do Typst:
 
 ```typst
-#import "@preview/abntyp:0.1.0": *
+#import "@preview/abntyp:0.1.2": *
 ```
 
 = Guia Rápido

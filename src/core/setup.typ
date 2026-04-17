@@ -17,10 +17,13 @@
 /// - fonte: família da fonte ("Times New Roman" ou "Arial")
 /// - headings-numeracao: numeração dos headings (padrão: "1.1")
 /// - level-1-pagebreak: se true, headings de nível 1 causam pagebreak (padrão: true)
+/// - suplemento-nivel1: texto usado em referências cruzadas para headings de nível 1
+///   (padrão: "Seção" — correto para artigos; use "Capítulo" para TCC, relatórios e livros)
 #let with-abnt-setup(
   fonte: "Times New Roman",
   headings-numeracao: "1.1",
   level-1-pagebreak: true,
+  suplemento-nivel1: "Seção",
   body,
 ) = {
   // Página A4 com margens ABNT
@@ -56,6 +59,7 @@
 
   // Headings conforme NBR 6024:2012
   set heading(numbering: headings-numeracao)
+  set heading(supplement: it => if it.level == 1 { suplemento-nivel1 } else { "Seção" })
 
   // Seção primária (nível 1): MAIÚSCULAS, negrito
   show heading.where(level: 1): it => {

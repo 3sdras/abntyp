@@ -205,7 +205,7 @@ O webapp oferece:
 
 Para usar o ABNTyp no webapp, basta importar o pacote no início do documento:
 
-#raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.0\": *")
+#raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.2\": *")
 
 === Instalação local (CLI)
 
@@ -259,7 +259,7 @@ Este código acima produz um documento de uma página contendo apenas "Olá, mun
 Para um documento acadêmico usando ABNTyp, o exemplo mínimo seria:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.0\": *
+  #raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.2\": *
 
 #show: dados.with(
   titulo: \"Meu Trabalho Acadêmico\",
@@ -296,7 +296,7 @@ Um documento Typst pode ser dividido em três partes:
 
 #exemplo[
   #raw(block: true, lang: "typst", "// 1. Preâmbulo (importações)
-#import \"@preview/abntyp:0.1.0\": *
+#import \"@preview/abntyp:0.1.2\": *
 
 // 2. Configuração
 #set page(paper: \"a4\", margin: 2cm)
@@ -327,9 +327,9 @@ O Typst oferece várias formas de alterar o estilo do texto. A @tab:estilos resu
     [`_itálico_`], [_itálico_],
     [`*_negrito itálico_*`], [*_negrito itálico_*],
     [#raw("`código`")], [`código`],
-    [`#underline[sublinhado]`], [#underline[sublinhado]],
-    [`#strike[riscado]`], [#strike[riscado]],
-    [`#smallcaps[Versalete]`], [V#text(size: 0.8em)[ERSALETE]],
+    [`#underline[sublinhado]` ou `#sub[sublinhado]`], [#underline[sublinhado]],
+    [`#strike[riscado]` ou `#risc[riscado]`], [#strike[riscado]],
+    [`#caps("Versalete")`], [V#text(size: 0.8em)[ERSALETE]],
     table.hline(stroke: 1pt),
   ),
   caption: [Estilos de texto em Typst],
@@ -344,17 +344,12 @@ O Typst oferece várias formas de alterar o estilo do texto. A @tab:estilos resu
 )[
   #set text(size: 10pt)
   #set par(first-line-indent: 0pt)
-  *Observação sobre versalete:* A função `#smallcaps` do Typst depende de a fonte possuir suporte nativo a small caps (feature OpenType "smcp"). Fontes como Times New Roman não possuem esse recurso. Para garantir versalete em qualquer fonte, pode-se criar uma função que simula o efeito:
+  *Observação sobre versalete:* A função `#smallcaps` do Typst depende de a fonte possuir suporte nativo a small caps (feature OpenType "smcp"). Fontes como Times New Roman não possuem esse recurso. O ABNTypst fornece `#caps` que simula versalete em qualquer fonte — desde que receba uma *string* (aspas):
 
-  #raw(block: true, lang: "typst", "#let versalete(texto) = {
-  let chars = texto.clusters()
-  if chars.len() > 0 {
-    chars.first()
-    text(size: 0.8em, upper(chars.slice(1).join()))
-  }
-}
+  #raw(block: true, lang: "typst", "#caps(\"Texto em Versalete\")  // correto: string
+#caps[Texto em Versalete]   // fallback: usa #smallcaps nativo")
 
-// Uso: #versalete(\"Texto em Versalete\")")
+  Internamente, `#caps` trata a primeira letra em tamanho normal e as demais em caixa alta a 0.8em. O modo `[colchetes]` não permite manipulação de caracteres — limitação do Typst — portanto cai automaticamente em `#smallcaps`.
 ]
 
 === Tamanhos de texto
@@ -415,15 +410,15 @@ Para configurar o espaçamento entre linhas e o recuo de parágrafo:
 )[
   #set text(size: 10pt)
   #set par(first-line-indent: 0pt)
-  *Observação sobre indentação no Brasil:* Por padrão, o Typst não indenta o primeiro parágrafo após um título --- seguindo a convenção tipográfica anglo-saxônica, conhecida em editoração portuguesa como "composição à inglesa". No entanto, no Brasil, a norma ABNT é indentar _todos_ os parágrafos, inclusive o primeiro. Para isso, é necessário usar `first-line-indent` com o parâmetro `all: true`:
+  *Indentação no Brasil:* Por padrão, o Typst não indenta o primeiro parágrafo após um título — seguindo a convenção tipográfica anglo-saxônica. A ABNT exige indentar _todos_ os parágrafos, inclusive o primeiro. O ABNTyp já aplica isso automaticamente via `#show: abntcc.with()`, incluindo a exclusão correta de blocos de código, figuras e sumário. Nenhuma configuração manual é necessária.
 
-  #raw(block: true, lang: "typst", "// Indenta TODOS os parágrafos (padrão brasileiro)
+  Ao usar Typst puro, sem o ABNTyp, a configuração equivalente é:
+
+  #raw(block: true, lang: "typst", "// Indenta TODOS os parágrafos (padrão brasileiro/ABNT)
 #set par(first-line-indent: (amount: 1.25cm, all: true))
 
-// Comportamento padrão do Typst (NÃO indenta o primeiro parágrafo)
-#set par(first-line-indent: 1.25cm)")
-
-  *Atenção:* ao usar `all: true`, evite `#show raw: set par(first-line-indent: 0pt)` --- essa regra genérica quebra o fluxo de código inline (backticks), forçando-o para linhas separadas. Use `#show raw.where(block: true): set par(first-line-indent: 0pt)` para excluir apenas blocos de código da indentação, sem afetar o inline.
+// Excluir blocos de código da indentação (NÃO use #show raw: — quebra o inline)
+#show raw.where(block: true): set par(first-line-indent: 0pt)")
 ]
 
 Para forçar uma quebra de linha sem iniciar novo parágrafo, use `\`:
@@ -476,6 +471,84 @@ Ao usar o typst.app, a compilação e visualização são automáticas. Ao usar 
 
 Os elementos pré-textuais são aqueles que antecedem o texto principal do trabalho. Conforme a NBR 14724:2024, eles incluem capa, folha de rosto, ficha catalográfica, errata, folha de aprovação, dedicatória, agradecimentos, epígrafe, resumo, abstract, listas e sumário.
 
+== Metadados e formatação (`dados()` + `abntcc`) <sec:dados>
+
+Todo documento ABNTyp começa com dois comandos obrigatórios, sempre nesta ordem:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// 1. Metadados: armazena título, autor, instituição etc. no state global
+#show: dados.with(
+  titulo: \"Análise de Algoritmos de Ordenação\",
+  subtitulo: \"Um estudo comparativo\",
+  autor: \"Maria da Silva\",
+  instituicao: \"Universidade Federal de Jataí\",
+  faculdade: \"Instituto de Ciências Exatas e Tecnológicas\",
+  programa: \"Programa de Pós-Graduação em Ciência da Computação\",
+  local: \"Jataí\",
+  ano: 2026,
+  natureza: \"Dissertação apresentada ao PPGCC da UFJ\",
+  objetivo: \"como requisito parcial para obtenção do grau de Mestre\",
+  area: \"Algoritmos e Estruturas de Dados\",
+  orientador: \"Prof. Dr. João Santos\",
+  palavras-chave: (\"Algoritmos\", \"Ordenação\", \"Complexidade\"),
+  palavras-chave-en: (\"Algorithms\", \"Sorting\", \"Complexity\"),
+)
+
+// 2. Formatação ABNT: margens, fonte, espaçamento, numeração de seções
+#show: abntcc.with()
+
+// A partir daqui, os elementos pré-textuais leem os dados automaticamente:
+#capa()
+#folha-rosto()
+#resumo[...]")
+]
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: 0.5pt + gray,
+  radius: 3pt,
+)[
+  #set text(size: 10pt)
+  #set par(first-line-indent: 0pt)
+
+  *O que acontece sem `#show: abntcc.with()`?*
+
+  Sem esse comando, o documento compila normalmente, mas *sem nenhuma formatação ABNT*: as margens ficam no padrão do Typst (2,5 cm uniformes em vez de 3/2/2/2 cm), a fonte não é configurada (sem Times New Roman ou Arial), o espaçamento entre linhas fica simples (sem o 1,5 exigido), e os títulos de seção não recebem numeração progressiva (NBR 6024). Os dados inseridos via `dados()` aparecem nos elementos como capa e folha de rosto, mas a apresentação visual estará fora da norma.
+
+  Em resumo: `dados()` cuida do *conteúdo*; `abntcc` cuida da *forma*. Os dois são necessários.
+]
+
+A tabela a seguir lista todos os parâmetros aceitos por `dados()`:
+
+#figure(
+  table(
+    columns: (auto, 1fr, auto),
+    align: (left, left, left),
+    table.header([*Parâmetro*], [*Descrição*], [*Obrigatório*]),
+    [`titulo`], [Título do trabalho], [sim],
+    [`subtitulo`], [Subtítulo (opcional)], [não],
+    [`autor`], [Nome do autor (templates de autor único)], [sim],
+    [`autores`], [Lista de autores (templates multi-autor, ex.: artigo)], [não],
+    [`instituicao`], [Nome da instituição], [sim],
+    [`faculdade`], [Faculdade ou unidade acadêmica], [não],
+    [`programa`], [Programa de pós-graduação], [não],
+    [`local`], [Cidade de depósito], [sim],
+    [`ano`], [Ano de depósito], [sim],
+    [`natureza`], [Natureza do trabalho (ex.: "Dissertação apresentada a…")], [não],
+    [`objetivo`], [Objetivo do trabalho (ex.: "como requisito para…")], [não],
+    [`area`], [Área de concentração], [não],
+    [`orientador`], [Nome do orientador], [não],
+    [`coorientador`], [Nome do coorientador], [não],
+    [`palavras-chave`], [Palavras-chave em português (array de strings)], [não],
+    [`palavras-chave-en`], [Keywords em inglês (array de strings)], [não],
+  ),
+  caption: [Parâmetros de `dados()`],
+  kind: table,
+)
+
+Parâmetros explícitos passados diretamente a cada função (ex.: `#capa(titulo: ...)`) sobrescrevem o state *apenas para aquele elemento*, sem alterar os demais. Esse recurso é raramente necessário em documentos comuns.
+
 == Capa
 
 A capa é elemento obrigatório e deve conter:
@@ -486,7 +559,7 @@ A capa é elemento obrigatório e deve conter:
 - Local (cidade)
 - Ano
 
-No ABNTyp, a capa é criada com a função `#capa()`. Se os metadados foram definidos via `#show: dados.with(...)`, basta chamar `#capa()` sem parâmetros:
+No ABNTyp, a capa é criada com a função `#capa()`. Quando `dados()` já foi declarado (ver @sec:dados), basta chamar `#capa()` sem nenhum parâmetro:
 
 #exemplo[
   #raw(block: true, lang: "typst", "// Se dados() já foi chamado, basta:
@@ -496,10 +569,13 @@ No ABNTyp, a capa é criada com a função `#capa()`. Se os metadados foram defi
 #capa(titulo: \"Título alternativo na capa\")")
 ]
 
-Também é possível passar todos os parâmetros explicitamente:
+Em casos excepcionais — como elementos isolados ou documentos que não usam `dados()` — é possível passar os parâmetros diretamente. Os valores explícitos têm prioridade sobre o state:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#capa(
+  #raw(block: true, lang: "typst", "// Uso sem dados(): todos os campos explícitos.
+// Em documentos normais com dados(), esses campos já vêm do state
+// e não precisam ser repetidos aqui.
+#capa(
   instituicao: \"Universidade Federal de Jataí\",
   faculdade: \"Instituto de Ciências Exatas e Tecnológicas\",
   programa: \"PROFMAT\",
@@ -519,13 +595,14 @@ A folha de rosto contém os mesmos elementos da capa, acrescidos de:
 - Nome do orientador
 - Nome do coorientador (se houver)
 
-Assim como a capa, lê do state quando os parâmetros são omitidos:
+Assim como a capa, lê automaticamente de `dados()`. Override parcial é útil em situações pontuais — por exemplo, quando a folha de rosto precisa exibir um orientador diferente do registrado nos metadados:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "// Se dados() já foi chamado:
+  #raw(block: true, lang: "typst", "// Uso normal: dados() já declarou todos os campos
 #folha-rosto()
 
-// Ou com override parcial:
+// Override pontual (raro): substitui apenas os campos indicados,
+// mantendo os demais de dados()
 #folha-rosto(
   orientador: \"Prof. Dr. Orientador Alternativo\",
   area: \"Outra Área\",
@@ -642,7 +719,7 @@ A epígrafe é uma citação relacionada ao conteúdo do trabalho:
 O resumo deve apresentar de forma concisa os pontos relevantes do trabalho. Conforme a NBR 6028:2021, deve ter entre 150 e 500 palavras para trabalhos acadêmicos.
 
 #exemplo[
-  #raw(block: true, lang: "typst", "// Se palavras-chave foram definidas em dados(), basta:
+  #raw(block: true, lang: "typst", "// título e palavras-chave são lidos de dados() automaticamente:
 #resumo[
   Este trabalho apresenta um estudo comparativo de algoritmos
   de ordenação, analisando sua complexidade temporal e espacial.
@@ -1699,7 +1776,7 @@ O template `poster` segue a NBR 15437:2006:
 O template `slides` usa o pacote Touying para apresentações:
 
 #raw(block: true, lang: "typst", "#import \"@preview/touying:0.4.0\": *
-#import \"@preview/abntyp:0.1.0\": slides-defesa
+#import \"@preview/abntyp:0.1.2\": slides-defesa
 
 #show: slides-defesa.with(
   titulo: \"Título do Trabalho\",
