@@ -471,7 +471,46 @@ Ao usar o typst.app, a compilação e visualização são automáticas. Ao usar 
 
 = Elementos Pré-textuais
 
-Os elementos pré-textuais são aqueles que antecedem o texto principal do trabalho. Conforme a NBR 14724:2024, eles incluem capa, folha de rosto, ficha catalográfica, errata, folha de aprovação, dedicatória, agradecimentos, epígrafe, resumo, abstract, listas e sumário.
+Os elementos pré-textuais são aqueles que antecedem o texto principal do trabalho. A NBR 14724:2024 define a seguinte ordem obrigatória:
+
+#figure(
+  table(
+    columns: (auto, 1fr, auto),
+    stroke: none,
+    inset: 7pt,
+    table.hline(stroke: 1pt),
+    table.header([*Elemento*], [*Função ABNTyp*], [*Obrigatório*]),
+    table.hline(stroke: 0.5pt),
+    [Capa],                    [`#capa()`],                    [sim],
+    [Folha de rosto],          [`#folha-rosto()`],             [sim],
+    [Ficha catalográfica],     [`#ficha-catalografica[...]`],  [sim],
+    [Errata],                  [`#errata(...)`],               [não],
+    [Folha de aprovação],      [_(PDF institucional)_],        [sim],
+    [Dedicatória],             [`#dedicatoria[...]`],          [não],
+    [Agradecimentos],          [`#agradecimentos[...]`],       [não],
+    [Epígrafe],                [`#epigrafe(...)`],             [não],
+    [Resumo em português],     [`#resumo[...]`],               [sim],
+    [Resumo em língua estrang.],[`#resumo-en[...]`],           [sim],
+    [Listas],                  [`#lista-ilustracoes()` etc.],  [não],
+    [Sumário],                 [`#sumario()`],                 [sim],
+    table.hline(stroke: 1pt),
+  ),
+  caption: [Ordem dos elementos pré-textuais conforme NBR 14724:2024],
+  kind: table,
+)
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: 0.5pt + gray,
+  radius: 3pt,
+)[
+  #set text(size: 10pt)
+  #set par(first-line-indent: 0pt)
+  *Por que o ABNTypst não força esta ordem?* A norma define a sequência, mas não todos os elementos são usados em todos os trabalhos — errata, dedicatória, epígrafe e listas são opcionais, e algumas instituições têm exigências próprias. Forçar a ordem exigiria que o pacote conhecesse de antemão quais elementos o documento vai incluir, o que tornaria a API rígida e difícil de adaptar a casos não-padrão. O mesmo vale para o ABNTex2, referência em LaTeX: ele fornece os comandos na ordem certa, mas deixa a responsabilidade com o autor.
+
+  O arquivo `tcc-exemplo.typ` serve de modelo completo na ordem correta; a tabela acima é o gabarito de referência.
+]
 
 == Paginação e transição entre partes (`pretextual`, `textual`, `postextual`) <sec:paginacao>
 
