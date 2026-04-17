@@ -37,9 +37,18 @@
     ),
   )
 
-  // Fonte padrão ABNT
+  // Fonte padrão ABNT — com fallbacks para Mac, Windows, Linux e Typst.app.
+  // "New Computer Modern" é embutida no compilador Typst e funciona em qualquer ambiente.
+  let font-stack = if fonte == "Times New Roman" {
+    ("Times New Roman", "Times", "Linux Libertine", "New Computer Modern")
+  } else if fonte == "Arial" {
+    ("Arial", "Helvetica", "Liberation Sans", "Linux Biolinum", "Noto Sans")
+  } else {
+    (fonte,)
+  }
+
   set text(
-    font: fonte,
+    font: font-stack,
     size: 12pt,
     lang: "pt",
     region: "BR",
