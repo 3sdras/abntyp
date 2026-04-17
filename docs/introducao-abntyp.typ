@@ -664,9 +664,9 @@ A ficha catalográfica deve ser elaborada por um bibliotecário. Na maioria das 
 ]
 
 
-O ABNTyp também oferece a função `#ficha-catalografica()`, que cria a moldura padrão da ficha (caixa de 12,5 × 7,5~cm, fonte 10pt, centralizada na parte inferior da página).
+O ABNTyp também oferece a função `#ficha-catalografica[...]`, que cria a moldura padrão da ficha (caixa de 12,5 × 7,5~cm, fonte 10pt, centralizada na parte inferior da página).
 
-Diferente de funções como `#capa()` ou `#folha-rosto()`, que possuem campos nomeados (`autor:`, `titulo:`, etc.), a `#ficha-catalografica()` recebe conteúdo livre, pois a ficha segue uma notação biblioteconômica específica (código Cutter, CDU/CDD) que não se presta a campos parametrizados:
+Diferente de funções como `#capa()` ou `#folha-rosto()`, que possuem campos nomeados (`autor:`, `titulo:`, etc.), a `#ficha-catalografica[...]` recebe conteúdo livre entre colchetes, pois a ficha segue uma notação biblioteconômica específica (código Cutter, CDU/CDD) que não se presta a campos parametrizados:
 
 
 #exemplo[
