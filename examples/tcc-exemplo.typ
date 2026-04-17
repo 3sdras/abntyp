@@ -782,7 +782,7 @@ Como sugestões para trabalhos futuros, destacam-se:
 // - Recuo deslocado (segunda linha em diante recuada)
 // - Espaçamento simples entre referências, com espaço entre elas
 
-#heading(level: 1, numbering: none, "REFERÊNCIAS")
+#secao("REFERÊNCIAS")
 
 // Configuração do recuo deslocado (hanging indent)
 #set par(
@@ -829,7 +829,7 @@ SILVA, João. Formatação de trabalhos acadêmicos: desafios e soluções. *Rev
 
 /*
 #pagebreak()
-#heading(level: 1, numbering: none, "APÊNDICE A - QUESTIONÁRIO APLICADO")
+#secao("APÊNDICE A - QUESTIONÁRIO APLICADO")
 
 #set par(first-line-indent: 0pt)
 
@@ -856,7 +856,7 @@ Observações: _______________________________________________
 
 
 #pagebreak()
-#heading(level: 1, numbering: none, "APÊNDICE B - CÓDIGO-FONTE DO MÓDULO PRINCIPAL")
+#secao("APÊNDICE B - CÓDIGO-FONTE DO MÓDULO PRINCIPAL")
 
 // Se quiser incluir código, use blocos de código:
 ```typst
@@ -870,7 +870,7 @@ Observações: _______________________________________________
 
 
 #pagebreak()
-#heading(level: 1, numbering: none, "ANEXO A - NORMA NBR 14724:2024 (EXCERTOS)")
+#secao("ANEXO A - NORMA NBR 14724:2024 (EXCERTOS)")
 
 // Aqui você incluiria trechos relevantes da norma, se permitido.
 // Lembre-se de respeitar direitos autorais.

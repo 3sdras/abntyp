@@ -133,9 +133,10 @@
   body
 }
 
-/// Seção sem numeração (para Introdução, Conclusão, Referências, etc.)
-/// Deve aparecer no sumário
-#let unnumbered-section(titulo, nivel: 1) = {
+/// Seção sem numeração — para Referências, Apêndices, Anexos, Glossário etc.
+/// Aparece no sumário. Nível padrão: 1 (seção primária).
+/// Exemplo: #secao[REFERÊNCIAS]  ou  #secao("REFERÊNCIAS")
+#let secao(titulo, nivel: 1) = {
   heading(level: nivel, numbering: none, upper(titulo))
 }
 

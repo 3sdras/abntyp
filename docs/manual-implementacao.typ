@@ -214,7 +214,7 @@ Seu texto aqui...
 
 Conclusão do trabalho...
 
-#heading(level: 1, numbering: none, "REFERÊNCIAS")
+#secao("REFERÊNCIAS")
 
 // Lista de referências...
 ```
@@ -930,7 +930,7 @@ A formatação segue a hierarquia:
 
 ```typst
 // Para Introdução, Conclusão, Referências
-#let unnumbered-section(titulo, nivel: 1)
+#let secao(titulo, nivel: 1)
 
 // Título pré-textual (não aparece no sumário)
 #let pretextual-title(titulo)
@@ -1915,7 +1915,7 @@ meu-tcc/
 #include "capitulos/conclusao.typ"
 
 // Pós-textuais
-#heading(level: 1, numbering: none, "REFERÊNCIAS")
+#secao("REFERÊNCIAS")
 // ...
 ```
 
@@ -1989,13 +1989,13 @@ Por padrão, os elementos pré-textuais não são numerados. Se quiser usar roma
 == Como criar seção sem numeração?
 
 ```typst
-#heading(level: 1, numbering: none, "REFERÊNCIAS")
+#secao("REFERÊNCIAS")
 ```
 
 Ou use a função auxiliar:
 
 ```typst
-#unnumbered-section("REFERÊNCIAS")
+#secao("REFERÊNCIAS")
 ```
 
 == Como ajustar o recuo da citação longa?

@@ -911,11 +911,11 @@ A NBR 6024:2012 estabelece as regras para numeração progressiva das seções d
 Para seções sem numeração (Referências, Apêndices, Anexos), usa-se `numbering: none`:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#heading(level: 1, numbering: none)[REFERÊNCIAS]
+  #raw(block: true, lang: "typst", "#secao[REFERÊNCIAS]
 
-#heading(level: 1, numbering: none)[APÊNDICES]
+#secao[APÊNDICES]
 
-#heading(level: 1, numbering: none)[ANEXOS]")
+#secao[ANEXOS]")
 
   Resultado: os títulos aparecem centralizados, em caixa alta e negrito, sem numeração.
 ]
@@ -1476,7 +1476,7 @@ As referências são obrigatórias e devem seguir a NBR 6023:2018. O ABNTyp supo
 === Referências manuais <sec:ref-manual>
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#heading(level: 1, numbering: none)[REFERÊNCIAS]
+  #raw(block: true, lang: "typst", "#secao[REFERÊNCIAS]
 
 #set par(
   hanging-indent: 1.25cm,
@@ -1675,7 +1675,7 @@ Apêndices são documentos elaborados pelo próprio autor. Anexos são documento
 
 #exemplo[
   #raw(block: true, lang: "typst", "// Inicia seção de apêndices
-#heading(level: 1, numbering: none)[APÊNDICES]
+#secao[APÊNDICES]
 
 == Apêndice A -- Questionário aplicado <apendice-a>
 
@@ -1690,7 +1690,7 @@ Texto do apêndice...
     ...\")
 
 // Inicia seção de anexos
-#heading(level: 1, numbering: none)[ANEXOS]
+#secao[ANEXOS]
 
 == Anexo A -- Norma ABNT NBR 14724 <anexo-a>
 
@@ -1702,7 +1702,7 @@ Texto do anexo...")
 O glossário lista termos técnicos em ordem alfabética:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#heading(level: 1, numbering: none)[GLOSSÁRIO]
+  #raw(block: true, lang: "typst", "#secao[GLOSSÁRIO]
 
 #glossario((
   \"Algoritmo\": \"Sequência finita de instruções bem definidas
@@ -1727,7 +1727,7 @@ Um #idx[algoritmo] é uma sequência de instruções...
 O #idx[Quicksort] é um algoritmo de #idx[ordenação]...
 
 // No final do documento
-#heading(level: 1, numbering: none)[ÍNDICE]
+#secao[ÍNDICE]
 
 #indice()")
 ]
@@ -1918,7 +1918,7 @@ O template `slides` usa o pacote Touying para apresentações:
 // APÊNDICE A: GUIA DE MIGRAÇÃO LATEX -> TYPST
 // ============================================================================
 
-#heading(level: 1, numbering: none)[APÊNDICE A -- Guia de Migração LaTeX → Typst]
+#secao[APÊNDICE A -- Guia de Migração LaTeX → Typst]
 #label("apendice-a")
 
 #set heading(numbering: "A.1")
@@ -2058,7 +2058,7 @@ Este apêndice é destinado a usuários que já conhecem LaTeX e desejam migrar 
 // APÊNDICE B: RECURSOS NA INTERNET
 // ============================================================================
 
-#heading(level: 1, numbering: none)[APÊNDICE B -- Recursos na Internet]
+#secao[APÊNDICE B -- Recursos na Internet]
 #label("apendice-b")
 
 #counter(heading).update((1,))
@@ -2140,7 +2140,7 @@ Por exemplo, `#ccurta("Silva", 2023, 42)[texto]` é idêntico a `#citacao-curta(
 // APÊNDICE C: NORMAS ABNT IMPLEMENTADAS
 // ============================================================================
 
-#heading(level: 1, numbering: none)[APÊNDICE C -- Normas ABNT Implementadas]
+#secao[APÊNDICE C -- Normas ABNT Implementadas]
 #label("apendice-c")
 
 #counter(heading).update((2,))
@@ -2220,7 +2220,7 @@ Por exemplo, `#ccurta("Silva", 2023, 42)[texto]` é idêntico a `#citacao-curta(
 // REFERÊNCIAS
 // ============================================================================
 
-#heading(level: 1, numbering: none)[REFERÊNCIAS]
+#secao[REFERÊNCIAS]
 
 #set par(
   hanging-indent: 1.25cm,
