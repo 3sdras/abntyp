@@ -133,15 +133,18 @@
   body
 }
 
-/// Seção sem numeração — para Referências, Glossário etc.
+/// Título sem numeração — para Referências, Glossário, Apêndices etc.
 /// Aparece no sumário. Nível padrão: 1 (seção primária).
-/// Exemplo: #secao[REFERÊNCIAS]  ou  #secao("REFERÊNCIAS")
+/// Exemplo: #titulo-sem-num[REFERÊNCIAS]  ou  #titulo-sem-num("REFERÊNCIAS")
 /// O suplemento é fixado em "Seção" para que @label produza "Seção X"
 /// e não "Capítulo X" mesmo em templates que usam suplemento-nivel1: "Capítulo".
-#let secao(titulo, nivel: 1) = {
+#let titulo-sem-num(titulo, nivel: 1) = {
   show heading: set heading(supplement: "Seção")
   heading(level: nivel, numbering: none, upper(titulo))
 }
+
+// Alias de retrocompatibilidade
+#let secao = titulo-sem-num
 
 /// Apêndice ABNT — material elaborado pelo próprio autor.
 /// Cria heading nível 1 sem numeração automática; a letra é fornecida pelo autor (A, B, C...).

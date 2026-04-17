@@ -908,19 +908,44 @@ A NBR 6024:2012 estabelece as regras para numeração progressiva das seções d
 ===== Primeiros experimentos    // 1.1.1.1.1 Primeiros experimentos")
 ]
 
-Para seções sem numeração (Referências, Apêndices, Anexos), usa-se `numbering: none`:
+Para títulos sem numeração (Referências, Apêndices, Anexos, Glossário etc.), usa-se `#titulo-sem-num`. A função cria um heading nível 1 sem numeração, em caixa alta, que aparece no sumário. O parâmetro `nivel:` permite usá-la em outros níveis quando necessário:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#secao[REFERÊNCIAS]
+  #raw(block: true, lang: "typst", "#titulo-sem-num[REFERÊNCIAS]
 
-#secao[APÊNDICES]
+#titulo-sem-num[APÊNDICES]
 
-#secao[ANEXOS]")
+#titulo-sem-num[GLOSSÁRIO]
 
-  Resultado: os títulos aparecem centralizados, em caixa alta e negrito, sem numeração.
+// Em nível 2 (subseção sem número):
+#titulo-sem-num(\"Obras consultadas\", nivel: 2)")
+
+  Resultado: os títulos aparecem em caixa alta e negrito, sem numeração, e entram no sumário. O alias `#secao` ainda funciona para retrocompatibilidade.
 ]
 
 == Citações (NBR 10520) <sec:citacoes>
+
+Toda citação é uma chamada no texto que aponta para uma entrada na lista de referências ao final do documento. Há três formas de construir essa lista:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// 1. Referências manuais (sistema autor-data) — funções ref-livro, ref-artigo etc.:
+#titulo-sem-num[REFERÊNCIAS]
+#ref-livro(autor: \"SILVA, João\", titulo: \"Metodologia Científica\",
+  local: \"São Paulo\", editora: \"Atlas\", ano: 2023)
+#ref-artigo(autor: \"SANTOS, M.\", titulo: \"Pesquisa qualitativa\",
+  revista: \"Rev. Bras. Educ.\", volume: \"28\", ano: 2022)
+
+// 2. Lista numerada manual — para o sistema numérico:
+#bibliografia-numerica((
+  (\"silva2023\", [SILVA, J. *Metodologia Científica*. São Paulo: Atlas, 2023.]),
+  (\"santos2022\", [SANTOS, M. Pesquisa qualitativa. *Rev. Bras. Educ.*, v. 28, 2022.]),
+))
+
+// 3. Arquivo .bib (recomendado) — formatação automática:
+#referencias(\"refs.bib\")")
+]
+
+A abordagem com arquivo `.bib` é a mais recomendada para trabalhos com muitas referências, pois formata tudo automaticamente e garante consistência. Ela é detalhada na @sec:ref-auto; aqui nos concentramos nas chamadas de citação dentro do texto.
 
 A NBR 10520:2023 organiza as citações em dois eixos independentes:
 
@@ -1563,7 +1588,7 @@ As referências são obrigatórias e devem seguir a NBR 6023:2018. O ABNTyp supo
 === Referências manuais <sec:ref-manual>
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#secao[REFERÊNCIAS]
+  #raw(block: true, lang: "typst", "#titulo-sem-num[REFERÊNCIAS]
 
 #set par(
   hanging-indent: 1.25cm,
@@ -1762,7 +1787,7 @@ Apêndices são documentos elaborados pelo próprio autor. Anexos são documento
 
 #exemplo[
   #raw(block: true, lang: "typst", "// Inicia seção de apêndices
-#secao[APÊNDICES]
+#titulo-sem-num[APÊNDICES]
 
 == Apêndice A -- Questionário aplicado <apendice-a>
 
@@ -1777,7 +1802,7 @@ Texto do apêndice...
     ...\")
 
 // Inicia seção de anexos
-#secao[ANEXOS]
+#titulo-sem-num[ANEXOS]
 
 == Anexo A -- Norma ABNT NBR 14724 <anexo-a>
 
@@ -1789,7 +1814,7 @@ Texto do anexo...")
 O glossário lista termos técnicos em ordem alfabética:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#secao[GLOSSÁRIO]
+  #raw(block: true, lang: "typst", "#titulo-sem-num[GLOSSÁRIO]
 
 #glossario((
   \"Algoritmo\": \"Sequência finita de instruções bem definidas
@@ -1814,7 +1839,7 @@ Um #idx[algoritmo] é uma sequência de instruções...
 O #idx[Quicksort] é um algoritmo de #idx[ordenação]...
 
 // No final do documento
-#secao[ÍNDICE]
+#titulo-sem-num[ÍNDICE]
 
 #indice()")
 ]
@@ -2307,7 +2332,7 @@ Por exemplo, `#ccurta("Silva", 2023, 42)[texto]` é idêntico a `#citacao-curta(
 // REFERÊNCIAS
 // ============================================================================
 
-#secao[REFERÊNCIAS]
+#titulo-sem-num[REFERÊNCIAS]
 
 #set par(
   hanging-indent: 1.25cm,
