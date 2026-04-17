@@ -920,13 +920,22 @@ Para seções sem numeração (Referências, Apêndices, Anexos), usa-se `number
   Resultado: os títulos aparecem centralizados, em caixa alta e negrito, sem numeração.
 ]
 
-== Citações (NBR 10520)
+== Citações (NBR 10520) <sec:citacoes>
 
-A NBR 10520:2023 estabelece as regras para citações em documentos. A seção 4.2 da norma prevê dois sistemas de chamada: *autor-data* e *numérico*. Ambos são embasados pela ABNT, porém o sistema autor-data é amplamente predominante nos trabalhos acadêmicos brasileiros. Uma vez escolhido um sistema, ele deve ser utilizado de forma consistente em todo o documento.
+A NBR 10520:2023 organiza as citações em dois eixos independentes:
 
-=== Citação direta curta
+- *Tipo*: *direta* (transcrição literal do texto original) × *indireta* (paráfrase das ideias do autor)
+- *Sistema de chamada*: *autor-data* (SILVA, 2023) × *numérico* \[1\]
 
-Citações diretas de até três linhas são inseridas no texto entre aspas duplas:
+Os dois eixos são ortogonais: uma citação direta pode usar o sistema autor-data ou o numérico, e o mesmo vale para uma indireta. O sistema escolhido deve ser consistente em todo o documento.
+
+=== Citações diretas
+
+Uma citação direta reproduz literalmente as palavras da fonte. A apresentação varia conforme o tamanho:
+
+==== Curta (até 3 linhas)
+
+Inserida no próprio parágrafo, entre aspas duplas. A referência aparece ao final, entre parênteses.
 
 #exemplo[
   #raw(block: true, lang: "typst", "// Forma posicional (autor, ano, página):
@@ -940,19 +949,20 @@ Conforme o autor, #citacao-curta(autor: \"SILVA\", ano: 2023,
 // Sem referência (apenas aspas):
 A expressão #citacao-curta()[sic transit gloria mundi] é conhecida.
 
-// Nota: ano e página aceitam int (sem aspas) ou string.
-// Para intervalos de páginas, use string: pagina: \"42-43\"")
+// Intervalos de página: usar string
+#citacao-curta(\"SILVA\", 2023, pagina: \"42-43\")[texto...]")
 
   Resultado: Conforme o autor, \u{201C}a formatação adequada é essencial para a clareza\u{201D} (SILVA, 2023, p. 42).
 ]
 
-=== Citação direta longa
+Alias curto disponível: `#ccurta(...)`.
 
-Citações com mais de três linhas devem ser destacadas com recuo de 4 cm, fonte menor e espaçamento simples:
+==== Longa (mais de 3 linhas)
+
+Destacada do texto com recuo de 4 cm, fonte 10pt e espaçamento simples. Sem aspas.
 
 #exemplo[
-  #raw(block: true, lang: "typst", "// Forma posicional:
-#citacao-longa(\"SILVA\", 2023, \"42-43\")[
+  #raw(block: true, lang: "typst", "#citacao-longa(\"SILVA\", 2023, \"42-43\")[
   A formatação adequada dos trabalhos acadêmicos é
   essencial para a clareza e a credibilidade da
   comunicação científica. As normas ABNT estabelecem
@@ -962,96 +972,173 @@ Citações com mais de três linhas devem ser destacadas com recuo de 4 cm, font
 ]
 
 // Forma nomeada (equivalente):
-#citacao-longa(autor: \"SILVA\", ano: 2023,
-  pagina: \"42-43\")[
+#citacao-longa(autor: \"SILVA\", ano: 2023, pagina: \"42-43\")[
   Texto longo da citação...
 ]")
 ]
 
-=== Sistema autor-data
+Alias curto disponível: `#clonga(...)`.
 
-No sistema autor-data, a indicação da fonte é feita pelo sobrenome do autor e o ano de publicação:
+==== Marcações especiais dentro de citações
+
+Quando o trecho citado é modificado em relação ao original, a ABNT exige indicações precisas:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "// Autor no texto
-Segundo #citar-autor(\"Silva\", 2023), a metodologia...
+  #raw(block: true, lang: "typst", "// Omissão de trecho (reticências entre colchetes):
+#citacao-curta(\"SILVA\", 2023, 10)[O texto #supressao revela...]
 
-// Autor entre parênteses
-A metodologia é importante #citar(\"SILVA\", 2023, pagina: 45).
+// Interpolação (acréscimo do citador):
+#citacao-curta(\"SILVA\", 2023, 10)[O resultado #interpolacao[deste experimento] foi positivo.]
 
-// Múltiplos autores (até 3)
-Conforme #citar(\"SILVA; SANTOS; COSTA\", 2023)...
+// Grifo do citador (ênfase adicionada por quem cita):
+#citacao-curta(\"SILVA\", 2023, 10)[A #grifo-nosso[clareza] é fundamental.]
 
-// Mais de 3 autores (et al.)
-De acordo com #citar(\"SILVA et al.\", 2023)...
-
-// Citação de citação (apud)
-#citar-apud(\"FREUD\", 1900, \"LACAN\", 1966, pagina: 123)")
+// Grifo do autor (ênfase já existia no original):
+#citacao-curta(\"SILVA\", 2023, 10)[A #grifo-do-autor[clareza] é fundamental.]")
 
   Resultados:
+  / `#supressao`: insere `[...]` (constante, não função)
+  / `#interpolacao[...]`: envolve o texto entre colchetes
+  / `#grifo-nosso(...)`: aplica itálico e acrescenta ", grifo nosso" após a citação
+  / `#grifo-do-autor(...)`: aplica itálico e acrescenta ", grifo do autor" após a citação
+]
 
-  / Autor no texto: Segundo Silva (2023), a metodologia...
-  / Autor entre parênteses: A metodologia é importante (SILVA, 2023, p. 45).
-  / Múltiplos autores: Conforme (SILVA; SANTOS; COSTA, 2023)...
-  / Mais de 3 autores: De acordo com (SILVA ET AL., 2023)...
-  / Citação de citação: (FREUD, 1900 apud LACAN, 1966, p. 123)
+Aliases curtos: `#interp`, `#gnosso`, `#gautor`.
+
+=== Citações indiretas
+
+Uma citação indireta (paráfrase) reproduz as *ideias* do autor com as palavras do redator --- sem aspas, sem bloco recuado. A referência é obrigatória.
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// Paráfrase simples:
+A norma ABNT orienta que a formatação seja padronizada
+#citar-indireto(\"SILVA\", 2023).
+
+// Citação de citação (apud) --- quando não se teve acesso à fonte original:
+A ideia foi elaborada originalmente por Freud
+#citar-apud(\"FREUD\", 1900, \"LACAN\", 1966, pagina: 123).
+
+// Múltiplos autores (até 3):
+#citar-multiplos((\"SILVA\", \"SANTOS\", \"COSTA\"), 2023)
+
+// Mais de 3 autores (et al.):
+#citar-etal(\"SILVA\", 2023)")
+
+  Resultados:
+  / `#citar-indireto`: `(SILVA, 2023)`
+  / `#citar-apud`: `(FREUD, 1900 apud LACAN, 1966, p. 123)`
+  / `#citar-multiplos`: `(SILVA; SANTOS; COSTA, 2023)`
+  / `#citar-etal`: `(SILVA et al., 2023)`
+]
+
+=== Sistema autor-data
+
+No sistema autor-data, a chamada indica o sobrenome do autor e o ano de publicação. É o sistema predominante nos trabalhos acadêmicos brasileiros.
+
+A posição da chamada no texto determina qual função usar:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// Autor integrado à frase (forma discursiva):
+Segundo #citar-autor(\"Silva\", 2023), a metodologia...
+
+// Autor entre parênteses (forma parentética):
+A metodologia é eficiente #citar(\"SILVA\", 2023, pagina: 45).
+
+// Entidade coletiva como autora:
+O relatório recomenda mudanças #citar-entidade(\"BRASIL\", 2023).
+
+// Obra sem autor identificado (entrada pelo título):
+O manual orienta que #citar-titulo(\"MANUAL\", 2022)...")
+
+  Resultados:
+  / `#citar-autor`: Segundo Silva (2023)...
+  / `#citar`: ...(SILVA, 2023, p. 45).
+  / `#citar-entidade`: ...(BRASIL, 2023).
+  / `#citar-titulo`: ...(MANUAL, 2022).
+]
+
+*Abordagem recomendada: arquivo `.bib` com `@chave`*
+
+Para documentos com muitas referências, a abordagem recomendada é usar um arquivo `.bib` com a sintaxe nativa `@chave` do Typst. As chamadas são geradas automaticamente no formato ABNT e a consistência com a lista de referências é garantida. Para habilitar, adicione `configurar-citacoes-abnt` no preâmbulo:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// No preâmbulo do documento:
+#show: configurar-citacoes-abnt
+
+// Citação entre parênteses:
+O resultado foi positivo @silva2023.
+
+// Citação com página:
+O resultado foi positivo @silva2023[p. 45].
+
+// Autor no texto (suprime o nome entre parênteses):
+Segundo Silva [-@silva2023], o resultado foi positivo.")
+
+  O ABNTyp gera automaticamente "(SILVA, 2023)", "(SILVA, 2023, p. 45)" etc. A sintaxe `[-@chave]` suprime o nome do autor quando ele já aparece no texto.
+]
+
+As chaves do `@chave` devem corresponder às entradas do arquivo `.bib`. Para gerar a lista de referências, veja a @sec:ref-auto.
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: (left: 2pt + blue.lighten(40%)),
+  fill: blue.lighten(93%),
+)[
+  #set par(first-line-indent: 0pt)
+  *Funções manuais vs. arquivo `.bib`:*
+  - *`@chave` (recomendado):* formatação automática, consistência garantida pelo CSL, ideal para trabalhos com bibliografias extensas. Detalhes na @sec:ref-auto.
+  - *`citar()`, `citar-autor()` etc.:* controle total sobre o texto da chamada; úteis em situações pontuais ou quando a entrada não existe no `.bib`.
 ]
 
 === Sistema numérico
 
-O sistema numérico, também previsto na seção 4.2 da NBR 10520:2023, usa números arábicos consecutivos para indicar as fontes. A numeração remete à lista de referências ao final do documento. *Importante*: conforme a própria norma, o sistema numérico *não* pode ser usado quando houver notas de rodapé, pois haveria conflito na numeração.
+O sistema numérico, previsto na seção 4.2 da NBR 10520:2023, usa números arábicos consecutivos entre parênteses ou colchetes para indicar as fontes. A numeração remete à lista de referências ao final.
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: (left: 2pt + orange),
+  fill: orange.lighten(90%),
+)[
+  #set par(first-line-indent: 0pt)
+  *Restrição normativa (NBR 10520:2023, seção 4.2):* o sistema numérico *não pode* ser usado quando o documento contiver notas de rodapé, pois os números conflitariam. Se o trabalho usar notas de rodapé, adote o sistema autor-data.
+]
+
+Para ativar o sistema numérico, aplique `citacao-num-config` no preâmbulo. Todas as citações do documento devem então usar as funções `citar-num-*`:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#show: citacao-num-config
+  #raw(block: true, lang: "typst", "// No preâmbulo:
+#show: citacao-num-config
 
+// Citação simples:
 O resultado foi positivo #citar-num(\"silva2023\", pagina: \"45\").
 
-Outros autores #citar-num-multiplos((\"santos2022\", \"costa2021\"))
+// Múltiplas referências:
+Vários estudos #citar-num-multiplos((\"santos2022\", \"costa2021\"))
 confirmam os resultados.
 
-// No final do documento:
+// Autor integrado à frase:
+#citar-num-linha(\"silva2023\") demonstra que...
+
+// Citação de citação (apud):
+#citar-num-apud(\"freud1900\", \"lacan1966\", pagina: \"123\")
+
+// Citação direta curta numerada:
+O autor afirma #citacao-num-curta(\"silva2023\", pagina: \"10\")[que o resultado é positivo].
+
+// Citação direta longa numerada:
+#citacao-num-longa(\"silva2023\", pagina: \"10-11\")[
+  Texto longo da citação que ocupa mais de três linhas e
+  deve ser apresentado em bloco recuado conforme a ABNT.
+]
+
+// Lista de referências numerada (no final do documento):
 #bibliografia-numerica((
   (\"silva2023\", [SILVA, J. *Título*. São Paulo: Editora, 2023.]),
   (\"santos2022\", [SANTOS, M. Artigo. *Revista*, v. 1, 2022.]),
   (\"costa2021\", [COSTA, A. Outro título. Rio: Ed., 2021.]),
 ))")
-]
-
-=== Citações com arquivo .bib
-
-Além das funções manuais apresentadas acima, o ABNTyp suporta citações automáticas via arquivo `.bib`, usando a sintaxe nativa `@chave` do Typst. Esse é o método recomendado para documentos com muitas referências, pois evita erros de formatação e mantém a consistência entre citações e lista de referências.
-
-Para habilitar, basta adicionar `configurar-citacoes-abnt` no preâmbulo do documento:
-
-#exemplo[
-  #raw(block: true, lang: "typst", "// No preâmbulo do documento
-#show: configurar-citacoes-abnt
-
-// Citação entre parênteses
-O resultado foi positivo @silva2023.
-
-// Citação com página
-O resultado foi positivo @silva2023[p. 45].
-
-// Autor no texto (suprime o nome entre parênteses)
-Segundo Silva [-@silva2023], o resultado foi positivo.")
-
-  Resultado: nas citações com `@chave`, o ABNTyp gera automaticamente o formato ABNT autor-data --- por exemplo, "(SILVA, 2023)" ou "(SILVA, 2023, p. 45)". A sintaxe `[-@chave]` suprime o nome do autor, útil quando ele já aparece no texto.
-]
-
-As chaves (como `silva2023`) devem corresponder às entradas do arquivo `.bib` usado na bibliografia. No final do documento, inclua `#referencias("arquivo.bib")` para gerar a lista de referências (veja a @sec:ref-auto).
-
-#block(
-  width: 100%,
-  inset: 1em,
-  stroke: (left: 2pt + gray),
-  fill: luma(245),
-)[
-  #set par(first-line-indent: 0pt)
-  *Quando usar cada abordagem:*
-  - *Arquivo `.bib` + `@chave`:* recomendado para a maioria dos trabalhos. As referências são formatadas automaticamente e a consistência é garantida pelo CSL.
-  - *Funções manuais (`citar()`, `citar-autor()`, etc.):* úteis quando se precisa de controle total sobre o formato da citação, ou quando a entrada não existe no `.bib`.
-  - *Sistema numérico:* quando exigido pela instituição ou revista. Não pode ser combinado com notas de rodapé.
 ]
 
 == Notas de rodapé
