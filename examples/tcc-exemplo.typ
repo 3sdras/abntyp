@@ -276,18 +276,12 @@
 
 
 // ----------------------------------------------------------------------------
-// INÍCIO DA PARTE TEXTUAL - NUMERAÇÃO ARÁBICA
+// INÍCIO DA PARTE TEXTUAL
 // ----------------------------------------------------------------------------
-// IMPORTANTE: A partir daqui começa a parte textual do trabalho.
-// A numeração de páginas deve ser em algarismos arábicos (1, 2, 3...)
-// começando do 1.
-//
-// Os comandos abaixo:
-// 1. Reiniciam o contador de páginas para 1
-// 2. Configuram numeração arábica no canto superior direito
+// A contagem de páginas já vem da folha de rosto (NBR 14724:2024).
+// #textual() torna a numeração visível sem reiniciar o contador.
 
-#counter(page).update(1)
-#set page(numbering: "1", number-align: top + right)
+#textual()
 
 
 // ============================================================================
@@ -770,6 +764,13 @@ Como sugestões para trabalhos futuros, destacam-se:
 //
 // OPÇÃO 2: Referências manuais (mostrado abaixo)
 // Use quando não tiver arquivo .bib ou precisar de controle total.
+
+// ----------------------------------------------------------------------------
+// INÍCIO DA PARTE PÓS-TEXTUAL
+// ----------------------------------------------------------------------------
+// #postextual() mantém a numeração arábica contínua (NBR 14724:2024).
+
+#postextual()
 
 // ----------------------------------------------------------------------------
 // SEÇÃO DE REFERÊNCIAS (manual)

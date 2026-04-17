@@ -473,6 +473,45 @@ Ao usar o typst.app, a compilação e visualização são automáticas. Ao usar 
 
 Os elementos pré-textuais são aqueles que antecedem o texto principal do trabalho. Conforme a NBR 14724:2024, eles incluem capa, folha de rosto, ficha catalográfica, errata, folha de aprovação, dedicatória, agradecimentos, epígrafe, resumo, abstract, listas e sumário.
 
+== Paginação e transição entre partes (`pretextual`, `textual`, `postextual`) <sec:paginacao>
+
+A NBR 14724:2024 define três regras para a paginação:
+
+- *Contagem*: inicia na folha de rosto (a capa não é contada)
+- *Numeração visível*: apenas a partir da primeira folha textual, em algarismos arábicos
+- *Posição*: canto superior direito, a 2 cm da borda
+
+O ABNTyp fornece três funções para marcar essas transições:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// Após a capa — inicia contagem (página 1 = folha de rosto)
+#pretextual()
+#folha-rosto()
+#resumo[...]
+#sumario()
+
+// Início do texto — torna numeração visível, SEM reiniciar o contador
+#textual()
+= Introdução
+...
+
+// Início dos pós-textuais — mantém numeração contínua
+#postextual()
+= Referências
+...")
+]
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: 0.5pt + gray,
+  radius: 3pt,
+)[
+  #set text(size: 10pt)
+  #set par(first-line-indent: 0pt)
+  *Por que `#textual()` não reinicia o contador?* A norma exige que a numeração reflita a posição real da página no documento — se o sumário termina na página 14, a introdução deve aparecer como página 15. Reiniciar para 1 estaria em desacordo com a NBR 14724:2024.
+]
+
 == Metadados e formatação (`dados()` + `abntcc`) <sec:dados>
 
 Todo documento ABNTyp começa com dois comandos obrigatórios, sempre nesta ordem:
@@ -797,7 +836,7 @@ O sumário é elemento obrigatório conforme a NBR 6027:2012, que estabelece as 
 
 = Elementos Textuais
 
-Os elementos textuais constituem o núcleo do trabalho, onde o autor desenvolve o conteúdo propriamente dito. Incluem introdução, desenvolvimento e conclusão.
+Os elementos textuais constituem o núcleo do trabalho, onde o autor desenvolve o conteúdo propriamente dito. Incluem introdução, desenvolvimento e conclusão. Lembre-se de chamar `#textual()` antes da primeira seção (ver @sec:paginacao).
 
 == Seções e numeração progressiva (NBR 6024)
 
@@ -1389,7 +1428,7 @@ As listas são geradas a partir dos títulos definidos no parâmetro `legenda` d
 
 = Elementos Pós-textuais
 
-Os elementos pós-textuais complementam o trabalho e incluem referências, apêndices, anexos, glossário e índice.
+Os elementos pós-textuais complementam o trabalho e incluem referências, apêndices, anexos, glossário e índice. Chame `#postextual()` antes do primeiro elemento pós-textual para sinalizar a transição (ver @sec:paginacao).
 
 == Referências bibliográficas (NBR 6023)
 

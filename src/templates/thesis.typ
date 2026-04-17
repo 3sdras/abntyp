@@ -41,24 +41,25 @@
   }
 }
 
-/// Marca início da parte pré-textual (sem numeração visível)
+/// Marca início da parte pré-textual (sem numeração visível).
+/// Deve ser chamado após a capa, antes da folha de rosto.
+/// A contagem inicia na folha de rosto conforme NBR 14724:2024.
 #let pretextual() = {
   counter(page).update(1)
   set page(numbering: none)
 }
 
-/// Marca início da parte textual (numeração arábica)
+/// Marca início da parte textual (numeração arábica visível).
+/// NÃO reinicia o contador — a numeração continua da contagem
+/// iniciada na folha de rosto, conforme NBR 14724:2024.
 #let textual() = {
-  counter(page).update(1)
-  set page(
-    numbering: "1",
-    number-align: top + right,
-  )
+  set page(numbering: "1", number-align: top + right)
 }
 
-/// Marca início da parte pós-textual
+/// Marca início da parte pós-textual (referências, apêndices, anexos).
+/// A numeração arábica continua sem interrupção, conforme NBR 14724:2024.
 #let postextual() = {
-  // Continua numeração
+  set page(numbering: "1", number-align: top + right)
 }
 
 /// Página de dedicatória
