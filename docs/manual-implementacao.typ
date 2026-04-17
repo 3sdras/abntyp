@@ -158,7 +158,7 @@ No seu documento:
 Quando publicado no repositório oficial do Typst:
 
 ```typst
-#import "@preview/abntyp:0.1.2": *
+#import "@preview/abntyp:0.1.3": *
 ```
 
 = Guia Rápido
@@ -2039,6 +2039,21 @@ O pacote usa um arquivo CSL baseado nas normas NBR 6023:2018 e NBR 10520:2023.
 Para casos especiais, você pode usar as funções de formatação manual (`ref-livro`, `ref-artigo`, `ref-online`)
 
 = Changelog
+
+== Versão 0.1.3 (Abril 2026)
+
+- `#titulo-sem-num()` — novo nome para títulos sem numeração (Referências, Apêndices, etc.)
+  - `#secao` mantido como alias de retrocompatibilidade
+- `#apendice("A", "Título")` e `#anexo("A", "Título")` — headings com suplemento correto para `@label`
+  - Referências cruzadas agora produzem "Apêndice A" e "Anexo A" em vez de "Capítulo A"
+- `#sub`, `#risc`, `#caps` — atalhos de formatação inline (sublinhado, riscado, versalete)
+- `suplemento-nivel1` em `with-abnt-setup()` — "Seção" para artigos/projetos, "Capítulo" para TCC/relatórios/livros
+- Corrigido `textual()` — não reinicia mais o contador de páginas (conformidade NBR 14724:2024)
+- Renomeado `abntcc` → `normasABNT` (nome mais descritivo para o template principal de TCC/tese)
+- Fallback de fontes para Typst.app e Linux:
+  - Times New Roman → Times → Linux Libertine → New Computer Modern
+  - Arial → Helvetica → Liberation Sans → Linux Biolinum → Noto Sans
+- Documentação: seção de citações (3.2) reorganizada com estrutura clara por tipo e sistema
 
 == Versão 0.1.2 (Março 2026)
 
