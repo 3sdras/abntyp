@@ -1918,7 +1918,7 @@ O template `slides` usa o pacote Touying para apresentações:
 // APÊNDICE A: GUIA DE MIGRAÇÃO LATEX -> TYPST
 // ============================================================================
 
-#secao[APÊNDICE A -- Guia de Migração LaTeX → Typst]
+#apendice("A", "Guia de Migração LaTeX → Typst")
 #label("apendice-a")
 
 #set heading(numbering: "A.1")
@@ -2058,7 +2058,7 @@ Este apêndice é destinado a usuários que já conhecem LaTeX e desejam migrar 
 // APÊNDICE B: RECURSOS NA INTERNET
 // ============================================================================
 
-#secao[APÊNDICE B -- Recursos na Internet]
+#apendice("B", "Recursos na Internet")
 #label("apendice-b")
 
 #counter(heading).update((1,))
@@ -2140,7 +2140,7 @@ Por exemplo, `#ccurta("Silva", 2023, 42)[texto]` é idêntico a `#citacao-curta(
 // APÊNDICE C: NORMAS ABNT IMPLEMENTADAS
 // ============================================================================
 
-#secao[APÊNDICE C -- Normas ABNT Implementadas]
+#apendice("C", "Normas ABNT Implementadas")
 #label("apendice-c")
 
 #counter(heading).update((2,))

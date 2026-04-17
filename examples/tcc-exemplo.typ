@@ -829,7 +829,7 @@ SILVA, João. Formatação de trabalhos acadêmicos: desafios e soluções. *Rev
 
 /*
 #pagebreak()
-#secao("APÊNDICE A - QUESTIONÁRIO APLICADO")
+#apendice("A", "Questionário aplicado")
 
 #set par(first-line-indent: 0pt)
 
@@ -856,7 +856,7 @@ Observações: _______________________________________________
 
 
 #pagebreak()
-#secao("APÊNDICE B - CÓDIGO-FONTE DO MÓDULO PRINCIPAL")
+#apendice("B", "Código-fonte do módulo principal")
 
 // Se quiser incluir código, use blocos de código:
 ```typst
@@ -870,7 +870,7 @@ Observações: _______________________________________________
 
 
 #pagebreak()
-#secao("ANEXO A - NORMA NBR 14724:2024 (EXCERTOS)")
+#anexo("A", "Norma NBR 14724:2024 (excertos)")
 
 // Aqui você incluiria trechos relevantes da norma, se permitido.
 // Lembre-se de respeitar direitos autorais.

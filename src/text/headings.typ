@@ -133,7 +133,7 @@
   body
 }
 
-/// Seção sem numeração — para Referências, Apêndices, Anexos, Glossário etc.
+/// Seção sem numeração — para Referências, Glossário etc.
 /// Aparece no sumário. Nível padrão: 1 (seção primária).
 /// Exemplo: #secao[REFERÊNCIAS]  ou  #secao("REFERÊNCIAS")
 /// O suplemento é fixado em "Seção" para que @label produza "Seção X"
@@ -141,6 +141,24 @@
 #let secao(titulo, nivel: 1) = {
   show heading: set heading(supplement: "Seção")
   heading(level: nivel, numbering: none, upper(titulo))
+}
+
+/// Apêndice ABNT — material elaborado pelo próprio autor.
+/// Cria heading nível 1 sem numeração automática; a letra é fornecida pelo autor (A, B, C...).
+/// Aparece no sumário. @label produz "Apêndice A".
+/// Exemplo: #apendice("A", "Questionário aplicado") <apendice-a>
+#let apendice(letra, titulo) = {
+  show heading: set heading(supplement: "Apêndice " + upper(letra))
+  heading(level: 1, numbering: none)[APÊNDICE #upper(letra) -- #upper(titulo)]
+}
+
+/// Anexo ABNT — material NÃO elaborado pelo autor.
+/// Cria heading nível 1 sem numeração automática; a letra é fornecida pelo autor (A, B, C...).
+/// Aparece no sumário. @label produz "Anexo A".
+/// Exemplo: #anexo("A", "Norma NBR 14724") <anexo-a>
+#let anexo(letra, titulo) = {
+  show heading: set heading(supplement: "Anexo " + upper(letra))
+  heading(level: 1, numbering: none)[ANEXO #upper(letra) -- #upper(titulo)]
 }
 
 /// Título de elemento pré-textual (não aparece no sumário)

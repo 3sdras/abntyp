@@ -386,22 +386,4 @@
   pagebreak()
 }
 
-/// Apendice para projeto de pesquisa
-/// Formato: APENDICE A - TITULO EM MAIUSCULAS
-#let apendice(letra, titulo) = {
-  pagebreak()
-  align(center)[
-    #text(weight: "bold", size: 12pt)[APENDICE #letra -- #upper(titulo)]
-  ]
-  v(1.5em)
-}
-
-/// Anexo para projeto de pesquisa
-/// Formato: ANEXO A - TITULO EM MAIUSCULAS
-#let anexo(letra, titulo) = {
-  pagebreak()
-  align(center)[
-    #text(weight: "bold", size: 12pt)[ANEXO #letra -- #upper(titulo)]
-  ]
-  v(1.5em)
-}
+// apendice() e anexo() são definidos em src/text/headings.typ (funções globais do pacote)
