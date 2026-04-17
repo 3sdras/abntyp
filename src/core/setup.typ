@@ -59,7 +59,8 @@
 
   // Headings conforme NBR 6024:2012
   set heading(numbering: headings-numeracao)
-  set heading(supplement: it => if it.level == 1 { suplemento-nivel1 } else { "Seção" })
+  show heading: set heading(supplement: "Seção")
+  show heading.where(level: 1): set heading(supplement: suplemento-nivel1)
 
   // Seção primária (nível 1): MAIÚSCULAS, negrito
   show heading.where(level: 1): it => {

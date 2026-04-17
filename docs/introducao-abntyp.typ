@@ -344,6 +344,8 @@ O Typst oferece várias formas de alterar o estilo do texto. A @tab:estilos resu
 )[
   #set text(size: 10pt)
   #set par(first-line-indent: 0pt)
+  *Atalhos do ABNTypst:* As funções `#sub`, `#risc` e `#caps` não existem no Typst puro — são exportadas pelo pacote ABNTypst como atalhos de escrita para `#underline`, `#strike` e versalete, respectivamente. Ao importar o pacote com `#import "@preview/abntyp:0.1.2": *`, essas funções ficam disponíveis automaticamente.
+
   *Observação sobre versalete:* A função `#smallcaps` do Typst depende de a fonte possuir suporte nativo a small caps (feature OpenType "smcp"). Fontes como Times New Roman não possuem esse recurso. O ABNTypst fornece `#caps` que simula versalete em qualquer fonte — desde que receba uma *string* (aspas):
 
   #raw(block: true, lang: "typst", "#caps(\"Texto em Versalete\")  // correto: string
@@ -1037,6 +1039,29 @@ A @eq:einstein demonstra...")
 ]
 
 Para criar uma referência, use `<label>` após o elemento. Para citá-la, use `@label`.
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: 0.5pt + gray,
+  radius: 3pt,
+)[
+  #set text(size: 10pt)
+  #set par(first-line-indent: 0pt)
+  *Suplemento de headings de nível 1:* Ao referenciar uma seção de nível 1 (ex.: `@cap:intro`), o Typst antepõe automaticamente o "suplemento" ao número — por exemplo, "Capítulo 1". O ABNTypst configura esse suplemento conforme o template:
+
+  - `abntcc`, `livro`, `relatorio` → *"Capítulo"* (nível 1 corresponde a capítulo nesses documentos)
+  - `artigo` → *"Seção"* (artigos não têm capítulos, apenas seções)
+
+  Portanto, `@cap:intro` produz "Capítulo 1" em uma tese, e "Seção 1" em um artigo, sem nenhuma configuração manual.
+
+  Usuários que constroem templates customizados com `with-abnt-setup` diretamente podem ajustar esse texto via o parâmetro `suplemento-nivel1`:
+
+  #raw(block: true, lang: "typst", "#show: with-abnt-setup.with(
+  fonte: \"Times New Roman\",
+  suplemento-nivel1: \"Parte\",  // ex.: para documentos divididos em partes
+)")
+]
 
 #pagebreak()
 
