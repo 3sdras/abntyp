@@ -21,7 +21,7 @@
 /// - fonte: fonte a usar ("Times New Roman" ou "Arial")
 /// - arquivo-bibliografia: caminho para arquivo .bib (opcional)
 /// - titulo-bibliografia: título da seção de referências (padrão: "REFERÊNCIAS")
-#let abntcc(
+#let normasABNT(
   fonte: "Times New Roman",
   arquivo-bibliografia: none,
   titulo-bibliografia: "REFERÊNCIAS",

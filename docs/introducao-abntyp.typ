@@ -269,7 +269,7 @@ Para um documento acadêmico usando ABNTyp, o exemplo mínimo seria:
   ano: 2026,
 )
 
-#show: abntcc.with()
+#show: normasABNT.with()
 
 = Introdução
 
@@ -284,7 +284,7 @@ Este é o desenvolvimento do trabalho.
 Esta é a conclusão.")
 ]
 
-O comando `#show: dados.with(...)` armazena os metadados do trabalho, e `#show: abntcc.with()` aplica a formatação ABNT (margens, fontes, espaçamentos, numeração de seções). Os elementos pré-textuais (`#capa()`, `#folha-rosto()`, `#resumo()`) leem os dados automaticamente.
+O comando `#show: dados.with(...)` armazena os metadados do trabalho, e `#show: normasABNT.with()` aplica a formatação ABNT (margens, fontes, espaçamentos, numeração de seções). Os elementos pré-textuais (`#capa()`, `#folha-rosto()`, `#resumo()`) leem os dados automaticamente.
 
 == Estrutura de um documento Typst
 
@@ -412,7 +412,7 @@ Para configurar o espaçamento entre linhas e o recuo de parágrafo:
 )[
   #set text(size: 10pt)
   #set par(first-line-indent: 0pt)
-  *Indentação no Brasil:* Por padrão, o Typst não indenta o primeiro parágrafo após um título — seguindo a convenção tipográfica anglo-saxônica. A ABNT exige indentar _todos_ os parágrafos, inclusive o primeiro. O ABNTyp já aplica isso automaticamente via `#show: abntcc.with()`, incluindo a exclusão correta de blocos de código, figuras e sumário. Nenhuma configuração manual é necessária.
+  *Indentação no Brasil:* Por padrão, o Typst não indenta o primeiro parágrafo após um título — seguindo a convenção tipográfica anglo-saxônica. A ABNT exige indentar _todos_ os parágrafos, inclusive o primeiro. O ABNTyp já aplica isso automaticamente via `#show: normasABNT.with()`, incluindo a exclusão correta de blocos de código, figuras e sumário. Nenhuma configuração manual é necessária.
 
   Ao usar Typst puro, sem o ABNTyp, a configuração equivalente é:
 
@@ -512,7 +512,7 @@ O ABNTyp fornece três funções para marcar essas transições:
   *Por que `#textual()` não reinicia o contador?* A norma exige que a numeração reflita a posição real da página no documento — se o sumário termina na página 14, a introdução deve aparecer como página 15. Reiniciar para 1 estaria em desacordo com a NBR 14724:2024.
 ]
 
-== Metadados e formatação (`dados()` + `abntcc`) <sec:dados>
+== Metadados e formatação (`dados()` + `normasABNT`) <sec:dados>
 
 Todo documento ABNTyp começa com dois comandos obrigatórios, sempre nesta ordem:
 
@@ -536,7 +536,7 @@ Todo documento ABNTyp começa com dois comandos obrigatórios, sempre nesta orde
 )
 
 // 2. Formatação ABNT: margens, fonte, espaçamento, numeração de seções
-#show: abntcc.with()
+#show: normasABNT.with()
 
 // A partir daqui, os elementos pré-textuais leem os dados automaticamente:
 #capa()
@@ -553,11 +553,11 @@ Todo documento ABNTyp começa com dois comandos obrigatórios, sempre nesta orde
   #set text(size: 10pt)
   #set par(first-line-indent: 0pt)
 
-  *O que acontece sem `#show: abntcc.with()`?*
+  *O que acontece sem `#show: normasABNT.with()`?*
 
   Sem esse comando, o documento compila normalmente, mas *sem nenhuma formatação ABNT*: as margens ficam no padrão do Typst (2,5 cm uniformes em vez de 3/2/2/2 cm), a fonte não é configurada (sem Times New Roman ou Arial), o espaçamento entre linhas fica simples (sem o 1,5 exigido), e os títulos de seção não recebem numeração progressiva (NBR 6024). Os dados inseridos via `dados()` aparecem nos elementos como capa e folha de rosto, mas a apresentação visual estará fora da norma.
 
-  Em resumo: `dados()` cuida do *conteúdo*; `abntcc` cuida da *forma*. Os dois são necessários.
+  Em resumo: `dados()` cuida do *conteúdo*; `normasABNT` cuida da *forma*. Os dois são necessários.
 ]
 
 A tabela a seguir lista todos os parâmetros aceitos por `dados()`:
@@ -1089,7 +1089,7 @@ Para criar uma referência, use `<label>` após o elemento. Para citá-la, use `
   #set par(first-line-indent: 0pt)
   *Suplemento de headings de nível 1:* Ao referenciar uma seção de nível 1 (ex.: `@cap:intro`), o Typst antepõe automaticamente o "suplemento" ao número — por exemplo, "Capítulo 1". O ABNTypst configura esse suplemento conforme o template:
 
-  - `abntcc`, `livro`, `relatorio` → *"Capítulo"* (nível 1 corresponde a capítulo nesses documentos)
+  - `normasABNT`, `livro`, `relatorio` → *"Capítulo"* (nível 1 corresponde a capítulo nesses documentos)
   - `artigo` → *"Seção"* (artigos não têm capítulos, apenas seções)
 
   Portanto, `@cap:intro` produz "Capítulo 1" em uma tese, e "Seção 1" em um artigo, sem nenhuma configuração manual.
@@ -1705,7 +1705,7 @@ O ABNTyp oferece templates para diversos tipos de documentos acadêmicos e técn
 
 == Trabalho acadêmico (tese, dissertação, TCC)
 
-O template `abntcc` é o mais completo, seguindo a NBR 14724:2024:
+O template `normasABNT` é o mais completo, seguindo a NBR 14724:2024:
 
 #raw(block: true, lang: "typst", "// 1. Metadados
 #show: dados.with(
@@ -1726,7 +1726,7 @@ O template `abntcc` é o mais completo, seguindo a NBR 14724:2024:
 )
 
 // 2. Formatação ABNT
-#show: abntcc.with(
+#show: normasABNT.with(
   fonte: \"Times New Roman\",  // ou \"Arial\"
 )
 
@@ -1991,7 +1991,7 @@ Este apêndice é destinado a usuários que já conhecem LaTeX e desejam migrar 
     table.hline(stroke: 1pt),
     [*abnTeX2 (LaTeX)*], [*ABNTyp (Typst)*],
     table.hline(stroke: 0.5pt),
-    [#raw("\\documentclass{abntex2}")], [#raw("#show: dados.with(..)") + linebreak() + #raw("#show: abntcc.with()")],
+    [#raw("\\documentclass{abntex2}")], [#raw("#show: dados.with(..)") + linebreak() + #raw("#show: normasABNT.with()")],
     [#raw("\\imprimircapa")], [#raw("#capa()")],
     [#raw("\\imprimirfolhaderosto")], [#raw("#folha-rosto()")],
     [#raw("\\begin{resumo}...\\end{resumo}")], [#raw("#resumo(..)[...]")],

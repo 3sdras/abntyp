@@ -36,7 +36,7 @@ Coloque a pasta `abntyp` no seu projeto e importe:
   palavras-chave: ("A", "B"),
 )
 
-#show: abntcc.with()
+#show: normasABNT.with()
 
 #capa()
 #folha-rosto()
@@ -55,7 +55,7 @@ Texto...
 ```
 
 A função `dados()` armazena os metadados
-e `abntcc()` aplica a formatação ABNT.
+e `normasABNT()` aplica a formatação ABNT.
 Os elementos `capa()`, `folha-rosto()` e
 `resumo()` leem tudo automaticamente.
 
@@ -182,7 +182,7 @@ São Paulo: Editora, 2023.
 
 *Fonte Arial:*
 ```typst
-#show: abntcc.with(fonte: "Arial")
+#show: normasABNT.with(fonte: "Arial")
 ```
 
 *Margens padrão:*
