@@ -99,12 +99,12 @@
 // FORMATAÇÃO ABNT
 // ----------------------------------------------------------------------------
 //
-// #show: normasABNT.with(...) aplica a formatação ABNT ao documento:
+// #show: normas-abnt.with(...) aplica a formatação ABNT ao documento:
 //   - Fonte (Times New Roman ou Arial), margens, espaçamento, headings, etc.
 //
 // Os dados do trabalho já foram definidos acima em dados().
 
-#show: normasABNT.with(
+#show: normas-abnt.with(
   // Opções: "Times New Roman" (padrão) ou "Arial"
   fonte: "Times New Roman",
 
@@ -925,7 +925,7 @@ Observações: _______________________________________________
 ERRO: "cannot find file"
 SOLUÇÃO: Verifique o caminho do import. Use caminho relativo correto.
 
-ERRO: "unknown variable: normasABNT"
+ERRO: "unknown variable: normas-abnt"
 SOLUÇÃO: Certifique-se de importar com: #import "abntyp/lib.typ": *
 
 ERRO: Numeração de páginas incorreta
@@ -943,7 +943,7 @@ SOLUÇÃO: Use referências manuais ou verifique se o arquivo .bib existe.
 // ============================================================================
 
 // USAR FONTE ARIAL:
-#show: normasABNT.with(
+#show: normas-abnt.with(
   fonte: "Arial",
   // ... outros parâmetros
 )

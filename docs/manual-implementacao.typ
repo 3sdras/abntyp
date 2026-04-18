@@ -165,7 +165,7 @@ Quando publicado no repositório oficial do Typst:
 
 == Documento Mínimo
 
-O fluxo recomendado separa metadados (`dados()`) e formatação (`normasABNT()`). Os elementos pré-textuais leem tudo automaticamente do state:
+O fluxo recomendado separa metadados (`dados()`) e formatação (`normas-abnt()`). Os elementos pré-textuais leem tudo automaticamente do state:
 
 ```typst
 #import "abntyp/lib.typ": *
@@ -186,7 +186,7 @@ O fluxo recomendado separa metadados (`dados()`) e formatação (`normasABNT()`)
 )
 
 // 2. Formatação ABNT
-#show: normasABNT.with()
+#show: normas-abnt.with()
 
 // 3. Elementos pré-textuais — leem do state
 #capa()
@@ -434,7 +434,7 @@ Os templates também configuram recuo para listas e enumerações:
 #set terms(indent: 0em, hanging-indent: 2em, separator: [: ])
 ```
 
-Todas essas configurações são aplicadas automaticamente ao usar qualquer template (`normasABNT`, `artigo`, `relatorio`, etc.). Se estiver montando o documento manualmente sem template, inclua-as no preâmbulo.
+Todas essas configurações são aplicadas automaticamente ao usar qualquer template (`normas-abnt`, `artigo`, `relatorio`, etc.). Se estiver montando o documento manualmente sem template, inclua-as no preâmbulo.
 
 === sorting.typ - Ordenação Alfabética (NBR 6033:1989)
 
@@ -1245,7 +1245,7 @@ Template completo para trabalhos acadêmicos. Os metadados são definidos separa
 )
 
 // 2. Formatação ABNT (só recebe fonte)
-#show: normasABNT.with(
+#show: normas-abnt.with(
   fonte: "Times New Roman",  // ou "Arial"
 )
 ```
@@ -1895,7 +1895,7 @@ meu-tcc/
 ```typst
 #import "abntyp/lib.typ": *
 
-#show: normasABNT.with(...)
+#show: normas-abnt.with(...)
 
 // Pré-textuais
 #capa(...)
@@ -1966,7 +1966,7 @@ Todas as funções públicas do ABNTyp possuem aliases curtos equivalentes. Use 
 == Como mudar a fonte para Arial?
 
 ```typst
-#show: normasABNT.with(
+#show: normas-abnt.with(
   // ...
   fonte: "Arial",
 )
@@ -2015,7 +2015,7 @@ Sim! O pacote inclui suporte a arquivos `.bib` com formatação automática ABNT
 *Opção 1: Via template*
 
 ```typst
-#show: normasABNT.with(
+#show: normas-abnt.with(
   // ... outros parâmetros ...
   arquivo-bibliografia: "referencias.bib",
   titulo-bibliografia: "REFERÊNCIAS",  // opcional
@@ -2049,7 +2049,7 @@ Para casos especiais, você pode usar as funções de formatação manual (`ref-
 - `#sub`, `#risc`, `#caps` — atalhos de formatação inline (sublinhado, riscado, versalete)
 - `suplemento-nivel1` em `with-abnt-setup()` — "Seção" para artigos/projetos, "Capítulo" para TCC/relatórios/livros
 - Corrigido `textual()` — não reinicia mais o contador de páginas (conformidade NBR 14724:2024)
-- Renomeado `abntcc` → `normasABNT` (nome mais descritivo para o template principal de TCC/tese)
+- Renomeado `abntcc` → `normas-abnt` (nome mais descritivo para o template principal de TCC/tese)
 - Fallback de fontes para Typst.app e Linux:
   - Times New Roman → Times → Linux Libertine → New Computer Modern
   - Arial → Helvetica → Liberation Sans → Linux Biolinum → Noto Sans
@@ -2089,7 +2089,7 @@ Para casos especiais, você pode usar as funções de formatação manual (`ref-
 - Índice (`index.typ`): `num-colunas` renomeado para `colunas`; `from`/`to` renomeados para `de`/`para`
 - `footnote-text` e `caption-text` são aliases de `small-text` (sem duplicação)
 - Sumário (`toc.typ`): show rules extraídas em `_abnt-outline-rules()`
-- `normasABNT()` simplificado: recebe apenas `fonte` e `arquivo-bibliografia`
+- `normas-abnt()` simplificado: recebe apenas `fonte` e `arquivo-bibliografia`
 - Dependência `touying` restaurada em `typst.toml`
 
 == Versão 0.5.0 (Fevereiro 2026)
@@ -2107,7 +2107,7 @@ Para casos especiais, você pode usar as funções de formatação manual (`ref-
   - Entradas do sumário agora espelham a formatação dos headings (5 níveis)
   - Nível 1: MAIÚSCULAS + negrito; Nível 2: MAIÚSCULAS; Nível 3: negrito; Nível 4: normal; Nível 5: itálico
 - Funções renomeadas para português (nomes públicos)
-  - Templates: `normasABNT`, `artigo`, `relatorio`, `projeto-pesquisa`, `livro`, `slides`, `slides-defesa`
+  - Templates: `normas-abnt`, `artigo`, `relatorio`, `projeto-pesquisa`, `livro`, `slides`, `slides-defesa`
   - Elementos: `capa()`, `folha-rosto()`, `ficha-catalografica()`, `resumo()`, `sumario()`
   - Citações: `citar()`, `citar-autor()`, `citar-multiplos()`, `citar-etal()`, `citar-apud()`, etc.
   - Citações diretas: `citacao-curta()`, `citacao-longa()`, `supressao`, `interpolacao()`, `grifo-nosso()`, `grifo-do-autor()`
