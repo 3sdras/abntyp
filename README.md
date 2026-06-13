@@ -24,7 +24,7 @@ O objetivo aqui é adaptar o projeto abnTeX2 para o caso do Typst, para servir c
 ### Via Typst Universe (recomendado)
 
 ```typst
-#import "@preview/abntyp:0.1.3": *
+#import "@preview/abntyp:0.1.4": *
 ```
 
 ### Via Clone Local
@@ -122,7 +122,7 @@ O ABNTyp implementa as seguintes normas ABNT (versões atualizadas):
 ### Trabalho Acadêmico (Tese/Dissertação/TCC)
 
 ```typst
-#import "@preview/abntyp:0.1.3": *
+#import "@preview/abntyp:0.1.4": *
 
 // Metadados do trabalho — definidos uma única vez
 #show: dados.with(
@@ -167,7 +167,7 @@ Texto do desenvolvimento...
 ### Artigo Científico
 
 ```typst
-#import "@preview/abntyp:0.1.3": *
+#import "@preview/abntyp:0.1.4": *
 
 #show: artigo.with(
   titulo: "Título do Artigo",
@@ -218,7 +218,7 @@ O ABNTyp suporta os dois sistemas de chamada permitidos pela NBR 10520:2023:
 O sistema numérico foi implementado inspirado no `abntex2-num.bst` do abnTeX2.
 
 ```typst
-#import "@preview/abntyp:0.1.3": *
+#import "@preview/abntyp:0.1.4": *
 
 #show: citacao-num-config
 
