@@ -2150,7 +2150,7 @@ O template `poster` segue a NBR 15437:2006:
 
 O template `slides` usa o pacote Touying para apresentações:
 
-#raw(block: true, lang: "typst", "#import \"@preview/touying:0.4.0\": *
+#raw(block: true, lang: "typst", "#import \"@preview/touying:0.7.4\": *
 #import \"@preview/abntyp:0.1.4\": slides-defesa
 
 #show: slides-defesa.with(
