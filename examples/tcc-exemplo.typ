@@ -425,7 +425,7 @@ Conforme a NBR 14724:2024, um trabalho acadêmico deve conter elementos pré-tex
 Segundo Silva (2023), a padronização é essencial para a comunicação científica, pois permite que pesquisadores de diferentes instituições compreendam e avaliem os trabalhos de seus pares de forma consistente.
 
 // Outra forma de citar (autor entre parênteses):
-A padronização de documentos científicos surgiu da necessidade de facilitar a comunicação entre pesquisadores #citar("SILVA", "2023", pagina: "15").
+A padronização de documentos científicos surgiu da necessidade de facilitar a comunicação entre pesquisadores #citar("Silva", "2023", pagina: "15").
 
 
 // ----------------------------------------------------------------------------
@@ -461,7 +461,7 @@ A importância da normalização para a comunicação científica é amplamente 
 Oliveira (1998 apud SANTOS, 2022, p. 78) já destacava a importância da padronização documental. O uso do apud indica que você está citando um autor (Oliveira) através de outro (Santos), pois não teve acesso direto à obra original.
 
 // Usando a função citar-apud:
-Essa perspectiva histórica demonstra que a preocupação com normas técnicas não é recente #citar-apud("OLIVEIRA", "1998", "SANTOS", "2022", pagina: "78").
+Essa perspectiva histórica demonstra que a preocupação com normas técnicas não é recente #citar-apud("Oliveira", "1998", "Santos", "2022", pagina: "78").
 
 
 // ----------------------------------------------------------------------------
@@ -760,7 +760,7 @@ Como sugestões para trabalhos futuros, destacam-se:
 // OPÇÃO 1: Referências automáticas com arquivo .bib
 // Se você configurou bibliography-file no template, as referências serão
 // inseridas automaticamente ao final. Você também pode usar:
-//   #abnt-bibliography("referencias.bib")
+//   #abnt-bibliography(read("referencias.bib"))
 //
 // OPÇÃO 2: Referências manuais (mostrado abaixo)
 // Use quando não tiver arquivo .bib ou precisar de controle total.

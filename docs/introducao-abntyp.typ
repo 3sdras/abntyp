@@ -205,7 +205,7 @@ O webapp oferece:
 
 Para usar o ABNTyp no webapp, basta importar o pacote no início do documento:
 
-#raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.3\": *")
+#raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.4\": *")
 
 === Instalação local (CLI)
 
@@ -259,7 +259,7 @@ Este código acima produz um documento de uma página contendo apenas "Olá, mun
 Para um documento acadêmico usando ABNTyp, o exemplo mínimo seria:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.3\": *
+  #raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.4\": *
 
 #show: dados.with(
   titulo: \"Meu Trabalho Acadêmico\",
@@ -296,7 +296,7 @@ Um documento Typst pode ser dividido em três partes:
 
 #exemplo[
   #raw(block: true, lang: "typst", "// 1. Preâmbulo (importações)
-#import \"@preview/abntyp:0.1.3\": *
+#import \"@preview/abntyp:0.1.4\": *
 
 // 2. Configuração
 #set page(paper: \"a4\", margin: 2cm)
@@ -344,7 +344,7 @@ O Typst oferece várias formas de alterar o estilo do texto. A @tab:estilos resu
 )[
   #set text(size: 10pt)
   #set par(first-line-indent: 0pt)
-  *Atalhos do ABNTypst:* As funções `#sub`, `#risc` e `#caps` não existem no Typst puro — são exportadas pelo pacote ABNTypst como atalhos de escrita para `#underline`, `#strike` e versalete, respectivamente. Ao importar o pacote com `#import "@preview/abntyp:0.1.3": *`, essas funções ficam disponíveis automaticamente.
+  *Atalhos do ABNTypst:* As funções `#sub`, `#risc` e `#caps` não existem no Typst puro — são exportadas pelo pacote ABNTypst como atalhos de escrita para `#underline`, `#strike` e versalete, respectivamente. Ao importar o pacote com `#import "@preview/abntyp:0.1.4": *`, essas funções ficam disponíveis automaticamente.
 
   *Observação sobre versalete:* A função `#smallcaps` do Typst depende de a fonte possuir suporte nativo a small caps (feature OpenType "smcp"). Fontes como Times New Roman não possuem esse recurso. O ABNTypst fornece `#caps` que simula versalete em qualquer fonte — desde que receba uma *string* (aspas):
 
@@ -925,34 +925,96 @@ Para títulos sem numeração (Referências, Apêndices, Anexos, Glossário etc.
 
 == Citações (NBR 10520) <sec:citacoes>
 
-Toda citação é uma chamada no texto que aponta para uma entrada na lista de referências ao final do documento. Há três formas de construir essa lista:
-
-#exemplo[
-  #raw(block: true, lang: "typst", "// 1. Referências manuais (sistema autor-data) — funções ref-livro, ref-artigo etc.:
-#titulo-sem-num[REFERÊNCIAS]
-#ref-livro(autor: \"SILVA, João\", titulo: \"Metodologia Científica\",
-  local: \"São Paulo\", editora: \"Atlas\", ano: 2023)
-#ref-artigo(autor: \"SANTOS, M.\", titulo: \"Pesquisa qualitativa\",
-  revista: \"Rev. Bras. Educ.\", volume: \"28\", ano: 2022)
-
-// 2. Lista numerada manual — para o sistema numérico:
-#bibliografia-numerica((
-  (\"silva2023\", [SILVA, J. *Metodologia Científica*. São Paulo: Atlas, 2023.]),
-  (\"santos2022\", [SANTOS, M. Pesquisa qualitativa. *Rev. Bras. Educ.*, v. 28, 2022.]),
-))
-
-// 3. Arquivo .bib (recomendado) — formatação automática:
-#referencias(\"refs.bib\")")
-]
-
-A abordagem com arquivo `.bib` é a mais recomendada para trabalhos com muitas referências, pois formata tudo automaticamente e garante consistência. Ela é detalhada na @sec:ref-auto; aqui nos concentramos nas chamadas de citação dentro do texto.
+Toda citação é uma chamada no texto que aponta para uma entrada na lista de referências ao final do documento. Essa lista pode ser construída de três formas --- arquivo `.bib` (recomendado), referências manuais autor-data (`ref-livro` etc.) ou lista numerada manual ---, todas detalhadas na @sec:ref-auto. Aqui nos concentramos nas *chamadas de citação* dentro do texto.
 
 A NBR 10520:2023 organiza as citações em dois eixos independentes:
 
 - *Tipo*: *direta* (transcrição literal do texto original) × *indireta* (paráfrase das ideias do autor)
-- *Sistema de chamada*: *autor-data* (SILVA, 2023) × *numérico* \[1\]
+- *Sistema de chamada*: *autor-data* (Silva, 2023) × *numérico* \[1\]
 
 Os dois eixos são ortogonais: uma citação direta pode usar o sistema autor-data ou o numérico, e o mesmo vale para uma indireta. O sistema escolhido deve ser consistente em todo o documento.
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: (left: 3pt + green.darken(10%)),
+  fill: green.lighten(90%),
+)[
+  #set par(first-line-indent: 0pt)
+  *Como citar, em uma frase:* use `@chave` com um arquivo `.bib`. Essa é a forma *padrão* --- o sobrenome, o ano e o "et al." vêm da entrada, e a lista de referências se monta sozinha:
+
+  #set text(size: 10pt)
+  / Padrão (`.bib`): `@silva2023`, `@silva2023[p. 45]`, `@a @b` (várias obras), e os auxiliares `#pag` (autor na frase) e `#apud` --- estes dois usam `#` apenas porque a sintaxe `@` do Typst não expressa "autor na frase" nem "apud", mas *também leem do `.bib`*.
+  / Fallback (`#citar*`): as funções `#citar(...)`, `#citar-autor(...)`, `#citar-etal(...)` etc. recebem autor e ano como *texto* e existem só para obras que *não estão* num `.bib`. A referência completa delas está no _Manual de Implementação_.
+
+  Em resumo: com `.bib`, você digita `@chave` em quase tudo; as funções `#citar*` (texto) são exceção.
+]
+
+=== Forma recomendada: `@chave` com arquivo `.bib` <sec:chave-recomendado>
+
+Com a sintaxe nativa `@chave` do Typst, a chamada é *mais curta que o resultado* e o sobrenome, o ano e o "et al." vêm da entrada do `.bib` --- nada é redigitado. Basta existir um `#referencias(...)` no documento (ver @sec:ref-auto): as citações adotam o estilo ABNT automaticamente. Não é preciso nenhum comando de configuração.
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: (left: 2pt + orange),
+  fill: orange.lighten(90%),
+)[
+  #set par(first-line-indent: 0pt)
+  *Caixa do sobrenome (NBR 10520:2023):* na chamada --- tanto na sentença quanto entre parênteses --- o sobrenome leva *apenas a inicial maiúscula*: (Silva, 2023) e Silva (2023). A CAIXA ALTA do sobrenome entre parênteses --- (SILVA, 2023) --- era a regra da *NBR 10520:2002*, hoje revogada. A caixa alta permanece *somente na lista de referências* (NBR 6023:2018): "SILVA, João...". Siglas (IBGE) e nomes próprios são informados na grafia desejada.
+]
+
+A *regra mental é trivial* --- a posição da citação no texto já indica qual função usar:
+
+- *Autor na frase* ("Segundo Silva...") → `#pag(<chave>)`
+- *Entre parênteses* ("...(Silva, 2023)") → `@chave`
+- *Apud* (citação de citação) → `#apud(...)`
+
+Os exemplos abaixo seguem exatamente essa regra.
+
+#exemplo[
+  Entre parênteses (sobrenome + ano vêm do `.bib`):
+  #raw(block: true, lang: "typst", "O resultado foi positivo @silva2023.")
+  *Resultado:* O resultado foi positivo (Silva, 2023).
+
+  Com página:
+  #raw(block: true, lang: "typst", "O resultado foi positivo @silva2023[p. 45].")
+  *Resultado:* O resultado foi positivo (Silva, 2023, p. 45).
+
+  Várias obras juntas (basta citá-las lado a lado):
+  #raw(block: true, lang: "typst", "Diversos estudos confirmam @silva2023@santos2022.")
+  *Resultado:* Diversos estudos confirmam (Santos, 2022; Silva, 2023).
+
+  Quatro ou mais autores (o _et al._ é automático):
+  #raw(block: true, lang: "typst", "Conforme @cormen2012, o algoritmo é eficiente.")
+  *Resultado:* Conforme (Cormen et al., 2012), o algoritmo é eficiente.
+
+  Autor na sentença, com página:
+  #raw(block: true, lang: "typst", "Segundo #pag(<silva2023>, 45), o método é válido.")
+  *Resultado:* Segundo Silva (2023, p. 45), o método é válido.
+
+  Autor na sentença, sem página (basta omitir o número):
+  #raw(block: true, lang: "typst", "Como aponta #pag(<silva2023>), o método é eficiente.")
+  *Resultado:* Como aponta Silva (2023), o método é eficiente.
+
+  Citação de citação (apud) --- a fonte consultada é a chave do `.bib`; a original (não acessada) vai como texto:
+  #raw(block: true, lang: "typst", "A ideia é de Freud #apud(\"Freud\", 1900, <lacan1966>, 123).")
+  *Resultado:* A ideia é de Freud (Freud, 1900 apud Lacan, 1966, p. 123).
+]
+
+Repare que `et al.` (4+ autores) e a lista de vários autores de uma mesma obra ("Silva; Santos") são gerados *sozinhos* pelo CSL --- não há função a digitar. As chaves do `@chave` devem corresponder às entradas do `.bib`. Para gerar a lista de referências, veja a @sec:ref-auto.
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: (left: 2pt + blue.lighten(40%)),
+  fill: blue.lighten(93%),
+)[
+  #set par(first-line-indent: 0pt)
+  *`@chave` vs. funções `citar*` manuais:*
+  - *`@chave`, `#pag`, `#apud` (recomendado):* sobrenome, ano e "et al." vêm do `.bib`; a lista de referências é gerada e mantida em sincronia. Menos digitação, sem risco de inconsistência. Detalhes na @sec:ref-auto.
+  - *`citar()`, `citar-autor()`, `citar-varios()` etc.:* não dependem de `.bib`, mas exigem redigitar autor e ano. Use apenas quando a obra não está no `.bib` ou para um ajuste pontual do texto da chamada.
+]
 
 === Citações diretas
 
@@ -963,21 +1025,18 @@ Uma citação direta reproduz literalmente as palavras da fonte. A apresentaçã
 Inserida no próprio parágrafo, entre aspas duplas. A referência aparece ao final, entre parênteses.
 
 #exemplo[
-  #raw(block: true, lang: "typst", "// Forma posicional (autor, ano, página):
-Conforme o autor, #citacao-curta(\"SILVA\", 2023,
-  42)[a formatação adequada é essencial para a clareza].
+  Forma posicional (autor, ano, página); a forma nomeada (`autor:`, `ano:`, `pagina:`) é equivalente:
+  #raw(block: true, lang: "typst", "Conforme o autor, #citacao-curta(\"Silva\", 2023,
+  42)[a formatação adequada é essencial para a clareza].")
+  *Resultado:* Conforme o autor, “a formatação adequada é essencial para a clareza” (Silva, 2023, p. 42).
 
-// Forma nomeada (equivalente):
-Conforme o autor, #citacao-curta(autor: \"SILVA\", ano: 2023,
-  pagina: 42)[a formatação adequada é essencial para a clareza].
+  Sem referência (apenas aspas):
+  #raw(block: true, lang: "typst", "A expressão #citacao-curta()[sic transit gloria mundi] é conhecida.")
+  *Resultado:* A expressão “sic transit gloria mundi” é conhecida.
 
-// Sem referência (apenas aspas):
-A expressão #citacao-curta()[sic transit gloria mundi] é conhecida.
-
-// Intervalos de página: usar string
-#citacao-curta(\"SILVA\", 2023, pagina: \"42-43\")[texto...]")
-
-  Resultado: Conforme o autor, \u{201C}a formatação adequada é essencial para a clareza\u{201D} (SILVA, 2023, p. 42).
+  Intervalos de página (usar string):
+  #raw(block: true, lang: "typst", "Veja #citacao-curta(\"Silva\", 2023, pagina: \"42-43\")[o trecho citado].")
+  *Resultado:* Veja “o trecho citado” (Silva, 2023, p. 42-43).
 ]
 
 Alias curto disponível: `#ccurta(...)`.
@@ -987,17 +1046,21 @@ Alias curto disponível: `#ccurta(...)`.
 Destacada do texto com recuo de 4 cm, fonte 10pt e espaçamento simples. Sem aspas.
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#citacao-longa(\"SILVA\", 2023, \"42-43\")[
+  #raw(block: true, lang: "typst", "#citacao-longa(\"Silva\", 2023, \"42-43\")[
   A formatação adequada dos trabalhos acadêmicos é
   essencial para a clareza e a credibilidade da
   comunicação científica. As normas ABNT estabelecem
   padrões que facilitam a leitura e a compreensão
   dos textos, além de uniformizar a apresentação
   dos documentos técnicos e científicos no Brasil.
-]
+]")
+  *Resultado:*
+  #citacao-longa("Silva", 2023, "42-43")[
+    A formatação adequada dos trabalhos acadêmicos é essencial para a clareza e a credibilidade da comunicação científica. As normas ABNT estabelecem padrões que facilitam a leitura e a compreensão dos textos, além de uniformizar a apresentação dos documentos técnicos e científicos no Brasil.
+  ]
 
-// Forma nomeada (equivalente):
-#citacao-longa(autor: \"SILVA\", ano: 2023, pagina: \"42-43\")[
+  A forma nomeada (`autor:`, `ano:`, `pagina:`) é equivalente:
+  #raw(block: true, lang: "typst", "#citacao-longa(autor: \"Silva\", ano: 2023, pagina: \"42-43\")[
   Texto longo da citação...
 ]")
 ]
@@ -1006,26 +1069,28 @@ Alias curto disponível: `#clonga(...)`.
 
 ==== Marcações especiais dentro de citações
 
-Quando o trecho citado é modificado em relação ao original, a ABNT exige indicações precisas:
+Quando o trecho citado é modificado em relação ao original, a ABNT exige indicações precisas. Conforme a NBR 10520:2023 (seções 3.2 e 5.1), a indicação de *grifo* ou *tradução* vai ao final da citação, *dentro dos parênteses, depois da página* --- ex.: (Souto, 1916, p. 46, grifo nosso). Por isso `#grifo-nosso[...]` apenas aplica o itálico ao trecho, e o indicador é passado pelo parâmetro `grifo:` (ou `traducao:`) da função de citação:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "// Omissão de trecho (reticências entre colchetes):
-#citacao-curta(\"SILVA\", 2023, 10)[O texto #supressao revela...]
+  Omissão de trecho (reticências entre colchetes; `#supressao` é constante, não função):
+  #raw(block: true, lang: "typst", "#citacao-curta(\"Silva\", 2023, 10)[O texto #supressao revela...]")
+  *Resultado:* “O texto \[...\] revela...” (Silva, 2023, p. 10)
 
-// Interpolação (acréscimo do citador):
-#citacao-curta(\"SILVA\", 2023, 10)[O resultado #interpolacao[deste experimento] foi positivo.]
+  Interpolação (acréscimo do citador):
+  #raw(block: true, lang: "typst", "#citacao-curta(\"Silva\", 2023, 10)[O resultado #interpolacao[deste experimento] foi positivo.]")
+  *Resultado:* “O resultado \[deste experimento\] foi positivo.” (Silva, 2023, p. 10)
 
-// Grifo do citador (ênfase adicionada por quem cita):
-#citacao-curta(\"SILVA\", 2023, 10)[A #grifo-nosso[clareza] é fundamental.]
+  Grifo do citador (itálico no trecho + indicador na citação):
+  #raw(block: true, lang: "typst", "#citacao-curta(\"Silva\", 2023, 10, grifo: \"nosso\")[A #grifo-nosso[clareza] é fundamental.]")
+  *Resultado:* “A _clareza_ é fundamental.” (Silva, 2023, p. 10, grifo nosso)
 
-// Grifo do autor (ênfase já existia no original):
-#citacao-curta(\"SILVA\", 2023, 10)[A #grifo-do-autor[clareza] é fundamental.]")
+  Grifo já existente no original:
+  #raw(block: true, lang: "typst", "#citacao-curta(\"Silva\", 2023, 10, grifo: \"do autor\")[A #grifo-do-autor[clareza] é fundamental.]")
+  *Resultado:* “A _clareza_ é fundamental.” (Silva, 2023, p. 10, grifo do autor)
 
-  Resultados:
-  / `#supressao`: insere `[...]` (constante, não função)
-  / `#interpolacao[...]`: envolve o texto entre colchetes
-  / `#grifo-nosso(...)`: aplica itálico e acrescenta ", grifo nosso" após a citação
-  / `#grifo-do-autor(...)`: aplica itálico e acrescenta ", grifo do autor" após a citação
+  Tradução feita por quem cita:
+  #raw(block: true, lang: "typst", "#citacao-curta(\"Olin\", 2003, 21, traducao: \"nossa\")[texto traduzido pelo citador...]")
+  *Resultado:* “texto traduzido pelo citador...” (Olin, 2003, p. 21, tradução nossa)
 ]
 
 Aliases curtos: `#interp`, `#gnosso`, `#gautor`.
@@ -1034,86 +1099,61 @@ Aliases curtos: `#interp`, `#gnosso`, `#gautor`.
 
 Uma citação indireta (paráfrase) reproduz as *ideias* do autor com as palavras do redator --- sem aspas, sem bloco recuado. A referência é obrigatória.
 
-#exemplo[
-  #raw(block: true, lang: "typst", "// Paráfrase simples:
-A norma ABNT orienta que a formatação seja padronizada
-#citar-indireto(\"SILVA\", 2023).
-
-// Citação de citação (apud) --- quando não se teve acesso à fonte original:
-A ideia foi elaborada originalmente por Freud
-#citar-apud(\"FREUD\", 1900, \"LACAN\", 1966, pagina: 123).
-
-// Múltiplos autores (até 3):
-#citar-multiplos((\"SILVA\", \"SANTOS\", \"COSTA\"), 2023)
-
-// Mais de 3 autores (et al.):
-#citar-etal(\"SILVA\", 2023)")
-
-  Resultados:
-  / `#citar-indireto`: `(SILVA, 2023)`
-  / `#citar-apud`: `(FREUD, 1900 apud LACAN, 1966, p. 123)`
-  / `#citar-multiplos`: `(SILVA; SANTOS; COSTA, 2023)`
-  / `#citar-etal`: `(SILVA et al., 2023)`
-]
-
-=== Sistema autor-data
-
-No sistema autor-data, a chamada indica o sobrenome do autor e o ano de publicação. É o sistema predominante nos trabalhos acadêmicos brasileiros.
-
-A posição da chamada no texto determina qual função usar:
+#text(size: 10pt, fill: gray)[*Fallback (sem `.bib`):* as funções abaixo recebem autor e ano como texto. Com `.bib`, prefira `@chave` --- inclusive o "et al." é automático e a paráfrase é apenas `@silva2023` no fim da frase.]
 
 #exemplo[
-  #raw(block: true, lang: "typst", "// Autor integrado à frase (forma discursiva):
-Segundo #citar-autor(\"Silva\", 2023), a metodologia...
+  Paráfrase simples:
+  #raw(block: true, lang: "typst", "A norma ABNT orienta que a formatação seja padronizada
+#citar-indireto(\"Silva\", 2023).")
+  *Resultado:* A norma ABNT orienta que a formatação seja padronizada (Silva, 2023).
 
-// Autor entre parênteses (forma parentética):
-A metodologia é eficiente #citar(\"SILVA\", 2023, pagina: 45).
+  Citação de citação (apud) --- quando não se teve acesso à fonte original:
+  #raw(block: true, lang: "typst", "A ideia foi elaborada originalmente por Freud
+#citar-apud(\"Freud\", 1900, \"Lacan\", 1966, pagina-original: 13, pagina: 123).")
+  *Resultado:* A ideia foi elaborada originalmente por Freud (Freud, 1900, p. 13 apud Lacan, 1966, p. 123).
 
-// Entidade coletiva como autora:
-O relatório recomenda mudanças #citar-entidade(\"BRASIL\", 2023).
+  Múltiplos autores de uma mesma obra (até 3):
+  #raw(block: true, lang: "typst", "#citar-multiplos((\"Silva\", \"Santos\", \"Costa\"), 2023)")
+  *Resultado:* (Silva; Santos; Costa, 2023)
 
-// Obra sem autor identificado (entrada pelo título):
-O manual orienta que #citar-titulo(\"MANUAL\", 2022)...")
-
-  Resultados:
-  / `#citar-autor`: Segundo Silva (2023)...
-  / `#citar`: ...(SILVA, 2023, p. 45).
-  / `#citar-entidade`: ...(BRASIL, 2023).
-  / `#citar-titulo`: ...(MANUAL, 2022).
+  Mais de 3 autores (_et al._):
+  #raw(block: true, lang: "typst", "#citar-etal(\"Silva\", 2023)")
+  *Resultado:* (Silva et al., 2023)
 ]
 
-*Abordagem recomendada: arquivo `.bib` com `@chave`*
+=== Fallback: autor-data manual (sem `.bib`)
 
-Para documentos com muitas referências, a abordagem recomendada é usar um arquivo `.bib` com a sintaxe nativa `@chave` do Typst. As chamadas são geradas automaticamente no formato ABNT e a consistência com a lista de referências é garantida. Para habilitar, adicione `configurar-citacoes-abnt` no preâmbulo:
+Quando a obra *não está* num `.bib`, use estas funções manuais --- autor e ano vão como *texto*. Com `.bib`, prefira `@chave` (ver _Forma recomendada_, acima). A posição da chamada no texto determina qual função usar:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "// No preâmbulo do documento:
-#show: configurar-citacoes-abnt
+  Autor integrado à frase (forma discursiva), com página opcional:
+  #raw(block: true, lang: "typst", "Segundo #citar-autor(\"Silva\", 2023, pagina: 45), a metodologia...")
+  *Resultado:* Segundo Silva (2023, p. 45), a metodologia...
 
-// Citação entre parênteses:
-O resultado foi positivo @silva2023.
+  Autor entre parênteses (forma parentética):
+  #raw(block: true, lang: "typst", "A metodologia é eficiente #citar(\"Silva\", 2023, pagina: 45).")
+  *Resultado:* A metodologia é eficiente (Silva, 2023, p. 45).
 
-// Citação com página:
-O resultado foi positivo @silva2023[p. 45].
+  Volume/tomo antes da página:
+  #raw(block: true, lang: "typst", "#citar(\"Senac\", 1979, volume: 1, pagina: 16)")
+  *Resultado:* (Senac, 1979, v. 1, p. 16)
 
-// Autor no texto (suprime o nome entre parênteses):
-Segundo Silva [-@silva2023], o resultado foi positivo.")
+  Fonte não paginada (localização livre):
+  #raw(block: true, lang: "typst", "#citar(\"Brasil\", 1998, localizacao: [cap. V, art. 49, inc. I])")
+  *Resultado:* (Brasil, 1998, cap. V, art. 49, inc. I)
 
-  O ABNTyp gera automaticamente "(SILVA, 2023)", "(SILVA, 2023, p. 45)" etc. A sintaxe `[-@chave]` suprime o nome do autor quando ele já aparece no texto.
-]
+  Entidade coletiva como autora:
+  #raw(block: true, lang: "typst", "O relatório recomenda mudanças #citar-entidade(\"Brasil\", 2023).")
+  *Resultado:* O relatório recomenda mudanças (Brasil, 2023).
 
-As chaves do `@chave` devem corresponder às entradas do arquivo `.bib`. Para gerar a lista de referências, veja a @sec:ref-auto.
+  Obra sem autor identificado (entrada pelo título):
+  #raw(block: true, lang: "typst", "O manual orienta que #citar-titulo(\"Manual\", 2022)...")
+  *Resultado:* O manual orienta que (Manual, 2022)...
 
-#block(
-  width: 100%,
-  inset: 1em,
-  stroke: (left: 2pt + blue.lighten(40%)),
-  fill: blue.lighten(93%),
-)[
-  #set par(first-line-indent: 0pt)
-  *Funções manuais vs. arquivo `.bib`:*
-  - *`@chave` (recomendado):* formatação automática, consistência garantida pelo CSL, ideal para trabalhos com bibliografias extensas. Detalhes na @sec:ref-auto.
-  - *`citar()`, `citar-autor()` etc.:* controle total sobre o texto da chamada; úteis em situações pontuais ou quando a entrada não existe no `.bib`.
+  Várias obras simultâneas (autores/anos distintos, ordem alfabética):
+  #raw(block: true, lang: "typst", "Diversos estudos confirmam o efeito
+#citar-varios(((\"Fonseca\", 1997), (\"Paiva\", 1997), (\"Silva\", 1997))).")
+  *Resultado:* Diversos estudos confirmam o efeito (Fonseca, 1997; Paiva, 1997; Silva, 1997).
 ]
 
 === Sistema numérico
@@ -1136,23 +1176,23 @@ Para ativar o sistema numérico, aplique `citacao-num-config` no preâmbulo. Tod
   #raw(block: true, lang: "typst", "// No preâmbulo:
 #show: citacao-num-config
 
-// Citação simples:
+// Citação simples --- gera (1, p. 45):
 O resultado foi positivo #citar-num(\"silva2023\", pagina: \"45\").
 
-// Múltiplas referências:
+// Múltiplas referências --- gera (2; 3):
 Vários estudos #citar-num-multiplos((\"santos2022\", \"costa2021\"))
 confirmam os resultados.
 
-// Autor integrado à frase:
+// Autor integrado à frase --- gera (1) (reusa o nº de silva2023):
 #citar-num-linha(\"silva2023\") demonstra que...
 
-// Citação de citação (apud):
-#citar-num-apud(\"freud1900\", \"lacan1966\", pagina: \"123\")
+// Citação de citação (apud) --- gera (4 apud 5, p. 123):
+#citar-num-apud(\"freud1900\", \"lacan1966\", pagina-consultada: \"123\")
 
-// Citação direta curta numerada:
+// Citação direta curta numerada --- \"...\" (1, p. 10).:
 O autor afirma #citacao-num-curta(\"silva2023\", pagina: \"10\")[que o resultado é positivo].
 
-// Citação direta longa numerada:
+// Citação direta longa numerada --- bloco recuado + (1, p. 10-11):
 #citacao-num-longa(\"silva2023\", pagina: \"10-11\")[
   Texto longo da citação que ocupa mais de três linhas e
   deve ser apresentado em bloco recuado conforme a ABNT.
@@ -1166,6 +1206,68 @@ O autor afirma #citacao-num-curta(\"silva2023\", pagina: \"10\")[que o resultado
 ))")
 ]
 
+=== Quadro-resumo: todas as citações <sec:resumo-citacoes>
+
+Referência rápida de todos os comandos de citação, com um exemplo mínimo e o resultado. A coluna *Alias* indica a forma curta equivalente.
+
+// Tabela longa: torná-la quebrável evita que colapse no fim da página.
+// O escopo #[...] limita a regra a este único quadro.
+#[
+#show figure: set block(breakable: true)
+#figure(
+  table(
+    columns: (auto, auto, auto),
+    inset: 6pt,
+    align: (left, left, left),
+    table.hline(stroke: 1pt),
+    table.header([*Comando (exemplo)*], [*Resultado*], [*Alias*]),
+    table.hline(stroke: 0.5pt),
+    table.cell(colspan: 3)[*`.bib` / `@chave` --- forma padrão (recomendada)*],
+    [`@silva2023`], [(Silva, 2023)], [---],
+    [`@silva2023[p. 45]`], [(Silva, 2023, p. 45)], [---],
+    [`@silva2023@santos2022`], [(Santos, 2022; Silva, 2023)], [---],
+    [`@cormen2012` (4+ autores)], [(Cormen et al., 2012)], [---],
+    [`#pag(<silva2023>, 45)`], [Silva (2023, p. 45)], [---],
+    [`#apud("Freire", 1994, <ol21>, 25)`], [(Freire, 1994 apud Oliveira, 2021, p. 25)], [---],
+    table.hline(stroke: 0.5pt),
+    table.cell(colspan: 3)[*Autor-data manual --- _fallback_, só para obra fora do `.bib` (ref. completa no Manual de Implementação)*],
+    [`#citar("Silva", 2023, pagina: 45)`], [(Silva, 2023, p. 45)], [---],
+    [`#citar("Senac", 1979, volume: 1, pagina: 16)`], [(Senac, 1979, v. 1, p. 16)], [---],
+    [`#citar("Brasil", 1998, localizacao: [cap. V])`], [(Brasil, 1998, cap. V)], [---],
+    [`#citar-autor("Silva", 2023, pagina: 45)`], [Silva (2023, p. 45)], `cautor`,
+    [`#citar-indireto("Silva", 2023)`], [(Silva, 2023)], `cindireto`,
+    [`#citar-apud("Freire", 1994, "Streck", 2017, pagina: 25)`], [(Freire, 1994 apud Streck, 2017, p. 25)], `capud`,
+    [`#citar-multiplos(("Silva", "Santos"), 2023)`], [(Silva; Santos, 2023)], `cmultiplos`,
+    [`#citar-varios((("Fonseca", 1997), ("Silva", 1999)))`], [(Fonseca, 1997; Silva, 1999)], `cvarios`,
+    [`#citar-etal("Silva", 2023)`], [(Silva et al., 2023)], `cetal`,
+    [`#citar-entidade("Brasil", 2023)`], [(Brasil, 2023)], `centidade`,
+    [`#citar-titulo("Manual", 2022)`], [(Manual, 2022)], `ctitulo`,
+    table.hline(stroke: 0.5pt),
+    table.cell(colspan: 3)[*Citação direta*],
+    [`#citacao-curta("Silva", 2023, 45)[texto]`], [“texto” (Silva, 2023, p. 45)], `ccurta`,
+    [`#citacao-curta("Olin", 2003, 21, traducao: "nossa")[…]`], [“…” (Olin, 2003, p. 21, tradução nossa)], `ccurta`,
+    [`#citacao-longa("Silva", 2023, "42-43")[texto]`], [bloco recuado 4 cm + (Silva, 2023, p. 42-43)], `clonga`,
+    [`#supressao`], [\[...\]], [---],
+    [`#interpolacao[texto]`], [\[texto\]], `interp`,
+    [`#grifo-nosso[clareza]` + `grifo: "nosso"`], [_clareza_ … , grifo nosso], `gnosso`,
+    [`#grifo-do-autor[clareza]` + `grifo: "do autor"`], [_clareza_ … , grifo do autor], `gautor`,
+    table.hline(stroke: 0.5pt),
+    table.cell(colspan: 3)[*Sistema numérico* (após `#show: citacao-num-config`)],
+    [`#citar-num("silva2023", pagina: "45")`], [(1, p. 45)], `cnum`,
+    [`#citar-num-linha("silva2023")`], [(1) --- autor na frase], `cnlinha`,
+    [`#citar-num-multiplos(("a", "b"))`], [(1; 2)], `cnmultiplos`,
+    [`#citar-num-apud("freud", "lacan", pagina-consultada: "25")`], [(1 apud 2, p. 25)], `cnapud`,
+    [`#citacao-num-curta("silva2023", pagina: "10")[texto]`], [“texto” (1, p. 10).], `cncurta`,
+    [`#citacao-num-longa("silva2023", pagina: "10")[texto]`], [bloco recuado + (1, p. 10)], `cnlonga`,
+    [`#bibliografia-numerica((...))`], [lista por ordem de citação], `bibnum`,
+    table.hline(stroke: 1pt),
+  ),
+  caption: [Quadro-resumo dos comandos de citação do ABNTyp],
+  kind: "quadro",
+  supplement: [Quadro],
+) <quad:citacoes>
+]
+
 == Notas de rodapé
 
 Notas de rodapé são indicações ou observações complementares ao texto, regulamentadas pela NBR 10520:2023 (seção 6). A norma distingue _notas de referência_ (que indicam a fonte consultada) e _notas explicativas_ (para comentários e esclarecimentos). A NBR 14724:2024 complementa: devem ser separadas do texto por filete de 5 cm, em fonte menor e espaçamento simples. Em Typst, são criadas com a função `#footnote()`:
@@ -1177,6 +1279,48 @@ por Leslie Lamport na década de 1980.].")
 ]
 
 O ABNTyp formata as notas automaticamente conforme a ABNT: fonte menor (10pt), espaçamento simples, separadas do texto por um filete de 5 cm.
+
+=== Notas de referência e expressões latinas
+
+A NBR 10520:2023 (seção 6.1) admite o uso de notas de referência como forma de chamada: a primeira citação de uma obra traz a referência completa em nota e as citações seguintes usam formas abreviadas com expressões latinas. Essas expressões são escritas manualmente dentro de `#footnote[...]` --- o ABNTyp não as gera automaticamente, pois seu uso depende do contexto (e algumas só valem na mesma página).
+
+#figure(
+  table(
+    columns: (auto, 1fr, auto),
+    inset: 6pt,
+    table.hline(stroke: 1pt),
+    table.header([*Expressão*], [*Uso*], [*Exemplo*]),
+    table.hline(stroke: 0.5pt),
+    [_Id._ (Idem)], [Mesma autoria, obra diferente], [`Id., 2006, p. 12`],
+    [_Ibid._ (Ibidem)], [Mesma autoria e mesma obra], [`Ibid., p. 52`],
+    [_op. cit._], [Mesma obra, citações não subsequentes], [`MINAYO, op. cit., p. 23`],
+    [_loc. cit._], [Mesma fonte e localização], [`SHAKESPEARE, loc. cit.`],
+    [_passim_], [Informação em diversos trechos], [`BECHARA, 2009, passim`],
+    [_Cf._], [Sugestão de consulta/confronto], [`Cf. BECHARA, 2009, p. 337`],
+    [_et seq._], [Página e seguintes], [`ABNT, 2020, p. 17 et seq.`],
+    [_apud_], [Citado por (fonte não acessada)], [`EVANS, 1987 apud SAGE, 1992`],
+    table.hline(stroke: 1pt),
+  ),
+  caption: [Expressões latinas para notas de referência (NBR 10520:2023, seção 6.1)],
+  kind: "quadro",
+  supplement: [Quadro],
+)
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: (left: 2pt + orange),
+  fill: orange.lighten(90%),
+)[
+  #set par(first-line-indent: 0pt)
+  *Restrição da norma:* _Id._, _Ibid._, _op. cit._ e _loc. cit._ só podem ser usadas na *mesma página ou folha* da citação a que se referem. Por isso o ABNTyp não as automatiza --- a escolha cabe ao autor.
+]
+
+#exemplo[
+  #raw(block: true, lang: "typst", "Conforme a norma#footnote[ABNT. *NBR 10520*: citações. Rio de
+Janeiro, 2023.], a padronização é essencial. O mesmo documento
+reforça o ponto#footnote[Ibid., p. 5.].")
+]
 
 == Alíneas e subalíneas
 
@@ -1605,26 +1749,42 @@ n. 3, p. 45-67, set. 2022.")
 
 === Referências automáticas <sec:ref-auto>
 
-O ABNTyp pode usar arquivos `.bib` para gerar referências automaticamente, seguindo o fluxo: configurar citações → citar no texto → gerar bibliografia.
+O ABNTyp usa arquivos `.bib` para gerar referências automaticamente. O fluxo tem apenas *dois passos*: citar no texto com `@chave` e gerar a lista com `#referencias(...)`.
 
 #exemplo[
-  #raw(block: true, lang: "typst", "// 1. No preâmbulo: habilitar citações ABNT
-#show: configurar-citacoes-abnt
-
-// 2. No texto: citar com @chave
+  #raw(block: true, lang: "typst", "// 1. No texto: citar com @chave
 O resultado foi positivo @silva2023.
 
-// 3. No final: gerar a lista de referências
-#referencias(\"referencias.bib\")")
+// 2. No final: gerar a lista de referências
+#referencias(read(\"referencias.bib\"))")
 
-  Os três passos são obrigatórios. Sem `configurar-citacoes-abnt`, as citações usam o estilo padrão do Typst (não ABNT). Sem `referencias()`, o Typst não sabe onde buscar as entradas.
+  O `#referencias(...)` aplica o estilo ABNT (CSL) a *todas* as citações `@chave` do documento automaticamente --- não é preciso configurar nada antes. Sem `#referencias()`, o Typst não sabe onde buscar as entradas e a citação não resolve.
 ]
 
-Os nomes em português `configurar-citacoes-abnt` e `referencias()` são equivalentes a `abnt-cite-setup` e `abnt-bibliography()`, respectivamente --- ambas as formas funcionam.
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: (left: 2pt + orange),
+  fill: orange.lighten(90%),
+)[
+  #set par(first-line-indent: 0pt)
+  *Por que `read("referencias.bib")` e não só `"referencias.bib"`?* O `#referencias` é uma função do _pacote_, e o Typst resolve um caminho em string em relação ao pacote --- não ao seu documento. Assim, `#referencias("referencias.bib")` procuraria o `.bib` dentro do ABNTyp, não ao lado do seu `.typ`, e falharia. O `read("referencias.bib")` é avaliado no _seu_ arquivo, então o caminho fica relativo a ele. Regra prática: *sempre envolva o caminho do `.bib` em `read(...)`*.
+]
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: 0.5pt + gray,
+  radius: 3pt,
+)[
+  #set text(size: 10pt)
+  #set par(first-line-indent: 0pt)
+  *E o `configurar-citacoes-abnt`?* Antes era exigido no preâmbulo; *hoje é dispensável* --- o estilo das citações já vem da bibliografia declarada por `#referencias(...)`. A função foi mantida apenas como _no-op_ para que documentos antigos com `#show: configurar-citacoes-abnt` continuem compilando. Pode removê-la dos documentos novos. (`configurar-citacoes-abnt` ≡ `abnt-cite-setup`; `referencias()` ≡ `abnt-bibliography()`.)
+]
 
 Para listar *todas* as entradas do `.bib` (inclusive as não citadas no texto), use o parâmetro `completa`:
 
-#raw(block: true, lang: "typst", "#referencias(\"referencias.bib\", completa: true)")
+#raw(block: true, lang: "typst", "#referencias(read(\"referencias.bib\"), completa: true)")
 
 ==== Tipos de entrada `.bib` suportados
 
@@ -1991,7 +2151,7 @@ O template `poster` segue a NBR 15437:2006:
 O template `slides` usa o pacote Touying para apresentações:
 
 #raw(block: true, lang: "typst", "#import \"@preview/touying:0.4.0\": *
-#import \"@preview/abntyp:0.1.3\": slides-defesa
+#import \"@preview/abntyp:0.1.4\": slides-defesa
 
 #show: slides-defesa.with(
   titulo: \"Título do Trabalho\",

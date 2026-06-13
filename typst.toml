@@ -1,6 +1,6 @@
 [package]
 name = "abntyp"
-version = "0.1.3"
+version = "0.1.4"
 entrypoint = "lib.typ"
 authors = ["Esdras"]
 license = "MIT"
@@ -8,4 +8,4 @@ description = "Format academic documents following Brazilian ABNT standards."
 repository = "https://github.com/3sdras/abntyp"
 keywords = ["abnt", "tcc", "tese", "thesis", "artigo", "paper", "acadêmico", "brasileiro"]
 categories = ["paper", "thesis", "report"]
-exclude = ["docs/*", "examples/*", "*.pdf", "CREDITS.md", "README-typst.md", ".gitignore", ".claude/*", ".DS_Store"]
+exclude = ["docs/*", "examples/*", "*.pdf", "CREDITS.md", "README-typst.md", ".gitignore", ".claude/*", ".DS_Store", ".kilo/*", "ABNTypst.code-workspace", "bugfixes.md"]

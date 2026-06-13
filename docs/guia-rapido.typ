@@ -71,35 +71,37 @@ Os elementos `capa()`, `folha-rosto()` e
 
 == Citações (NBR 10520)
 
-*Citação curta (até 3 linhas):*
+*Forma padrão --- `.bib` com `@chave`* (recomendada): sobrenome, ano e "et al."
+vêm da entrada; a lista monta-se sozinha. Basta um `#referencias(read("refs.bib"))`
+no documento.
 ```typst
-// Posicional (ano e página sem aspas):
-#citacao-curta("SILVA", 2023, 42)[
-  texto da citação].
-
-// Nomeado:
-#citacao-curta(autor: "SILVA",
-  ano: 2023)[texto da citação].
-
-// Sem referência:
-#citacao-curta()[sic transit gloria mundi]
+@silva2023              // (Silva, 2023)
+@silva2023[p. 45]       // (Silva, 2023, p. 45)
+@silva2023 @santos2022  // (Santos, 2022; Silva, 2023) — várias obras
+@cormen2012             // (Cormen et al., 2012) — et al. automático
+#pag(<silva2023>, 45)   // Silva (2023, p. 45) — autor na frase
+#apud("Freire", 1994, <silva2023>, 25)  // (Freire, 1994 apud Silva, 2023, p. 25)
 ```
 
-*Citação longa (mais de 3 linhas):*
+*Citação direta curta (até 3 linhas):*
 ```typst
-#citacao-longa("SILVA", 2023)[
-  Texto longo da citação
-  com mais de três linhas...
+#citacao-curta("Silva", 2023, 42)[texto da citação].
+#citacao-curta()[sic transit gloria mundi]   // sem fonte
+```
+
+*Citação direta longa (mais de 3 linhas):*
+```typst
+#citacao-longa("Silva", 2023)[
+  Texto longo da citação com mais de três linhas...
 ]
 ```
 
-*Sistema autor-data:*
+*Fallback --- autor-data manual (só para obras fora do `.bib`):* recebem autor e
+ano como texto. Referência completa no Manual de Implementação.
 ```typst
-// No texto
-Segundo #citar-autor("Silva", 2023)
-
-// Entre parênteses
-#citar("SILVA", 2023, pagina: 45)
+#citar("Silva", 2023, pagina: 45)        // (Silva, 2023, p. 45)
+#citar-autor("Silva", 2023, pagina: 45)  // Silva (2023, p. 45)
+#citar-etal("Silva", 2023)               // (Silva et al., 2023)
 ```
 
 == Figuras, tabelas e quadros

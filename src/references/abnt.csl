@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<style class="in-text" version="1.0" et-al-use-last="true" default-locale="pt-BR" xmlns="http://purl.org/net/xbiblio/csl">
+<style class="in-text" version="1.0" default-locale="pt-BR" xmlns="http://purl.org/net/xbiblio/csl">
   <!--
     ABNT NBR 6023:2018 / NBR 10520:2023 - Estilo autor-data
 
@@ -56,15 +56,10 @@
         <single>ed</single>
         <multiple>ed</multiple>
       </term>
-      <term name="container-author" form="short">
-        <single/>
-        <multiple/>
-      </term>
       <term name="collection-editor" form="short">
         <single>org</single>
         <multiple>org</multiple>
       </term>
-      <term name="editorial-director" form="short"/>
       <term name="script-writer">roteirista</term>
       <term name="in">in</term>
       <term name="accessed">acesso em</term>
@@ -532,14 +527,7 @@
     </choose>
   </macro>
   <macro name="page-locator">
-    <choose>
-      <if match="any" is-numeric="page">
-        <text variable="page" prefix="p. "/>
-      </if>
-      <else>
-        <text variable="page"/>
-      </else>
-    </choose>
+    <text variable="page" prefix="p. "/>
   </macro>
   <citation et-al-min="3" et-al-use-first="1" disambiguate-add-year-suffix="true" collapse="year">
     <sort>
@@ -611,7 +599,6 @@
                   <text macro="container-contributors"/>
                 </group>
               </if>
-              <else/>
             </choose>
             <text macro="container-title"/>
             <text macro="advisor-or-recipient"/>
@@ -661,7 +648,6 @@
                 <if match="all" variable="title author">
                   <text term="in" text-case="capitalize-first" font-style="italic"/>
                 </if>
-                <else/>
               </choose>
               <group delimiter=". ">
                 <text macro="container-contributors" text-case="uppercase"/>
@@ -764,7 +750,6 @@
                   <text term="in" text-case="capitalize-first" font-style="italic" suffix=": "/>
                   <text variable="collection-title" text-case="capitalize-first" font-weight="bold"/>
                 </group>
-                <text value=""/>
               </else-if>
               <else-if type="song" match="all">
                 <text macro="author"/>

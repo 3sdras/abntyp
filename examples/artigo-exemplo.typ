@@ -166,7 +166,7 @@ Como limitação deste estudo, destaca-se a restrição linguística que pode te
 // OPÇÃO 1: Bibliografia automática
 // Se você usou o parâmetro bibliography-file no template, as referências
 // são inseridas automaticamente. Também pode usar diretamente:
-// #abnt-bibliography("examples/referencias.bib")
+// #abnt-bibliography(read("referencias.bib"))
 
 // OPÇÃO 2: Referências manuais (demonstração abaixo)
 

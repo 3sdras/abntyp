@@ -158,7 +158,7 @@ No seu documento:
 Quando publicado no repositório oficial do Typst:
 
 ```typst
-#import "@preview/abntyp:0.1.3": *
+#import "@preview/abntyp:0.1.4": *
 ```
 
 = Guia Rápido
@@ -951,13 +951,13 @@ Aceita parâmetros posicionais (autor, ano, página) ou nomeados. Os parâmetros
 *Exemplos:*
 ```typst
 // Posicional (ano e página sem aspas)
-#citacao-curta("SILVA", 2023, 42)[a formatação adequada é essencial].
+#citacao-curta("Silva", 2023, 42)[a formatação adequada é essencial].
 
 // Nomeado
-#citacao-curta(autor: "SILVA", ano: 2023, pagina: 42)[a formatação adequada é essencial].
+#citacao-curta(autor: "Silva", ano: 2023, pagina: 42)[a formatação adequada é essencial].
 
 // Intervalo de páginas (string)
-#citacao-curta("SILVA", 2023, "42-43")[texto].
+#citacao-curta("Silva", 2023, "42-43")[texto].
 
 // Sem referência
 #citacao-curta()[sic transit gloria mundi]
@@ -974,12 +974,12 @@ Mesma flexibilidade de parâmetros:
 *Exemplos:*
 ```typst
 // Posicional
-#citacao-longa("SILVA", 2023, "42-43")[
+#citacao-longa("Silva", 2023, "42-43")[
   Texto longo da citação...
 ]
 
 // Nomeado
-#citacao-longa(autor: "SILVA", ano: 2023)[
+#citacao-longa(autor: "Silva", ano: 2023)[
   Texto longo da citação...
 ]
 ```
@@ -1144,7 +1144,7 @@ Conforme @silva2023, a metodologia é importante.
 Outros autores @santos2022[p. 45] concordam.
 
 // No final do documento:
-#abnt-bibliography("referencias.bib")
+#abnt-bibliography(read("referencias.bib"))
 ```
 
 *Tipos de documento suportados:*
@@ -1158,17 +1158,48 @@ Outros autores @santos2022[p. 45] concordam.
 
 === citation.typ - Citações e Referências
 
-Funções auxiliares para o sistema autor-data conforme NBR 6023 e NBR 10520. Em todas, `ano` e `pagina` aceitam int ou string.
+*Forma padrão é `@chave` (com `.bib`).* As funções `#citar*` abaixo são o
+*fallback* do sistema autor-data: recebem autor e ano como *texto* e existem
+apenas para obras que não estão num `.bib`. Tendo `.bib`, prefira sempre
+`@chave` (e os auxiliares `pag`/`apud`, que leem do `.bib`). Este é o local
+canônico da referência completa dessas funções de fallback. Em todas, `ano`,
+`pagina`, `volume` etc. aceitam int ou string.
+
+*Auxiliares integrados ao `.bib` (parte da forma padrão, não fallback):*
 
 ```typst
-// Citação autor-data básica
-#let citar(autor, ano, pagina: none)
+// Autor na frase, página posicional opcional — "Silva (2023, p. 45)"
+#let pag(chave, ..args)            // #pag(<silva2023>, 45)
 
-// Citação com autor no texto
-#let citar-autor(autor, ano)
+// Citação de citação (apud): fonte consultada é chave do .bib;
+// a original (não acessada) vai como texto. Página posicional opcional.
+#let apud(autor-original, ano-original, chave-consultada,
+          pagina-original: none, ..args)   // #apud("Freire", 1994, <silva2023>, 25)
+```
 
-// Múltiplos autores (até 3)
+*Fallback — autor-data manual (obra fora do `.bib`):*
+
+```typst
+// Entre parênteses — (Silva, 2023, p. 45). volume/localizacao para
+// fontes paginadas por v./t. ou não paginadas; grifo/traducao no fim.
+#let citar(autor, ano, pagina: none, volume: none,
+           localizacao: none, grifo: none, traducao: none)
+
+// Autor na sentença — "Silva (2023, p. 45)"
+#let citar-autor(autor, ano, pagina: none, volume: none)
+
+// Citação indireta (paráfrase) — página opcional (NBR 10520:2023, 5.2)
+#let citar-indireto(autor, ano, pagina: none)
+
+// Citação de citação (apud) com strings — página da fonte original e consultada
+#let citar-apud(autor-original, ano-original, autor-secundario,
+                ano-secundario, pagina-original: none, pagina: none)
+
+// Vários autores de uma MESMA obra (até 3) — (Silva; Santos; Costa, 2023)
 #let citar-multiplos(autores, ano, pagina: none)
+
+// Várias OBRAS simultâneas — (Fonseca, 1997; Paiva, 1997; Silva, 1997)
+#let citar-varios(obras)   // lista de (autor, ano) ou (autor, ano, pagina)
 
 // Mais de 3 autores (et al.)
 #let citar-etal(primeiro-autor, ano, pagina: none)
@@ -1937,6 +1968,7 @@ Todas as funções públicas do ABNTyp possuem aliases curtos equivalentes. Use 
 - `citar-indireto` → `cindireto`
 - `citar-apud` → `capud`
 - `citar-multiplos` → `cmultiplos`
+- `citar-varios` → `cvarios`
 - `citar-etal` → `cetal`
 - `citar-entidade` → `centidade`
 - `citar-titulo` → `ctitulo`
@@ -2026,7 +2058,7 @@ Sim! O pacote inclui suporte a arquivos `.bib` com formatação automática ABNT
 
 ```typst
 // No final do documento:
-#abnt-bibliography("referencias.bib")
+#abnt-bibliography(read("referencias.bib"))
 ```
 
 O pacote usa um arquivo CSL baseado nas normas NBR 6023:2018 e NBR 10520:2023.
@@ -2039,6 +2071,21 @@ O pacote usa um arquivo CSL baseado nas normas NBR 6023:2018 e NBR 10520:2023.
 Para casos especiais, você pode usar as funções de formatação manual (`ref-livro`, `ref-artigo`, `ref-online`)
 
 = Changelog
+
+== Versão 0.1.4 (Junho 2026)
+
+- Corrigido o carregamento do estilo `abnt.csl` no Typst 0.14 — removidos elementos vazios (`<else/>`, `<single/>`, `<text value=""/>`) que impediam o Typst de ler o CSL
+- `#referencias(...)` agora aceita `read(...)` para resolver o arquivo `.bib` relativo ao documento do usuário
+- Caixa do sobrenome conforme NBR 10520:2023 — inicial maiúscula na chamada (na frase e entre parênteses), CAIXA ALTA apenas na lista de referências
+- Novas funções de citação com leitura do `.bib`:
+  - `#pag(<chave>)` — autor na frase, com página opcional
+  - `#apud("Original", ano, <chave-consultada>)` — citação de citação (apud)
+  - `citar-varios(...)` — várias obras numa única chamada (autor-data)
+- `et al.` automático para 4+ autores (removido `et-al-use-last` do CSL)
+- Página em `citar-autor(...)`
+- "p." nas páginas de artigos em publicação periódica
+- `configurar-citacoes-abnt` agora é no-op — o estilo ABNT é aplicado automaticamente pelo `#referencias`
+- Documentação: caminho `@chave` apresentado primeiro e `#citar*` como fallback; quadro-resumo de citações tornado quebrável entre páginas; regra mental (`#pag` / `@` / `#apud`) destacada; novo exemplo `examples/citacao-autordata-exemplo.typ`
 
 == Versão 0.1.3 (Abril 2026)
 
