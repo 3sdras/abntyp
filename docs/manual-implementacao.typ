@@ -158,7 +158,7 @@ No seu documento:
 Quando publicado no repositório oficial do Typst:
 
 ```typst
-#import "@preview/abntyp:0.1.4": *
+#import "@preview/abntyp:0.1.5": *
 ```
 
 = Guia Rápido
@@ -1169,7 +1169,9 @@ canônico da referência completa dessas funções de fallback. Em todas, `ano`,
 
 ```typst
 // Autor na frase, página posicional opcional — "Silva (2023, p. 45)"
-#let pag(chave, ..args)            // #pag(<silva2023>, 45)
+// autor: (opcional) sobrenomes na grafia da frase, para 2–3 autores — o Typst
+// só junta nomes com ";", mas a sentença pede "e". O ano vem do .bib.
+#let pag(chave, autor: none, ..args)   // #pag(<lima2024>, autor: "Lima e Serrano")
 
 // Citação de citação (apud): fonte consultada é chave do .bib;
 // a original (não acessada) vai como texto. Página posicional opcional.
@@ -2071,6 +2073,10 @@ O pacote usa um arquivo CSL baseado nas normas NBR 6023:2018 e NBR 10520:2023.
 Para casos especiais, você pode usar as funções de formatação manual (`ref-livro`, `ref-artigo`, `ref-online`)
 
 = Changelog
+
+== Versão 0.1.5 (Junho 2026)
+
+- `#pag(<chave>)` ganhou o parâmetro opcional `autor:` para citações na sentença com 2–3 autores. O motor de citações do Typst (Hayagriva) junta os sobrenomes sempre com `;`, mas a NBR 10520:2023 pede `e` na frase (`Lima; Serrano` entre parênteses, mas `Lima e Serrano` na sentença). Informe a grafia da frase em `autor:` — o ano continua vindo do `.bib`: `#pag(<lima2024>, autor: "Lima e Serrano")` → Lima e Serrano (2024)
 
 == Versão 0.1.4 (Junho 2026)
 

@@ -150,9 +150,19 @@
 ///   #pag(<silva2023>)      ->  Silva (2023)
 /// - chave: label da entrada, ex.: <silva2023>
 /// - pagina (posicional, opcional): número ou intervalo de página
-#let pag(chave, ..args) = {
+/// - autor (nomeado, opcional): sobrenomes na grafia da sentença. Use para 2–3
+///   autores, pois o motor do Typst só sabe juntar nomes com ";" — na sentença a
+///   NBR 10520:2023 pede "e" (Lima; Serrano entre parênteses, mas Lima e Serrano
+///   na frase). O ano continua vindo do `.bib`.
+///   #pag(<lima2024>, autor: "Lima e Serrano")      -> Lima e Serrano (2024)
+///   #pag(<lima2024>, 45, autor: "Lima e Serrano")  -> Lima e Serrano (2024, p. 45)
+#let pag(chave, autor: none, ..args) = {
   let pagina = if args.pos().len() >= 1 { args.pos().at(0) } else { none }
-  cite(chave, form: "prose", supplement: if pagina != none [p. #pagina])
+  if autor != none {
+    [#autor (#cite(chave, form: "year")#if pagina != none [, p. #pagina])]
+  } else {
+    cite(chave, form: "prose", supplement: if pagina != none [p. #pagina])
+  }
 }
 
 /// Citação de citação (apud) integrada ao .bib.

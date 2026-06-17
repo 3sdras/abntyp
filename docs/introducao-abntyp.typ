@@ -205,7 +205,7 @@ O webapp oferece:
 
 Para usar o ABNTyp no webapp, basta importar o pacote no início do documento:
 
-#raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.4\": *")
+#raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.5\": *")
 
 === Instalação local (CLI)
 
@@ -259,7 +259,7 @@ Este código acima produz um documento de uma página contendo apenas "Olá, mun
 Para um documento acadêmico usando ABNTyp, o exemplo mínimo seria:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.4\": *
+  #raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.5\": *
 
 #show: dados.with(
   titulo: \"Meu Trabalho Acadêmico\",
@@ -296,7 +296,7 @@ Um documento Typst pode ser dividido em três partes:
 
 #exemplo[
   #raw(block: true, lang: "typst", "// 1. Preâmbulo (importações)
-#import \"@preview/abntyp:0.1.4\": *
+#import \"@preview/abntyp:0.1.5\": *
 
 // 2. Configuração
 #set page(paper: \"a4\", margin: 2cm)
@@ -344,7 +344,7 @@ O Typst oferece várias formas de alterar o estilo do texto. A @tab:estilos resu
 )[
   #set text(size: 10pt)
   #set par(first-line-indent: 0pt)
-  *Atalhos do ABNTypst:* As funções `#sub`, `#risc` e `#caps` não existem no Typst puro — são exportadas pelo pacote ABNTypst como atalhos de escrita para `#underline`, `#strike` e versalete, respectivamente. Ao importar o pacote com `#import "@preview/abntyp:0.1.4": *`, essas funções ficam disponíveis automaticamente.
+  *Atalhos do ABNTypst:* As funções `#sub`, `#risc` e `#caps` não existem no Typst puro — são exportadas pelo pacote ABNTypst como atalhos de escrita para `#underline`, `#strike` e versalete, respectivamente. Ao importar o pacote com `#import "@preview/abntyp:0.1.5": *`, essas funções ficam disponíveis automaticamente.
 
   *Observação sobre versalete:* A função `#smallcaps` do Typst depende de a fonte possuir suporte nativo a small caps (feature OpenType "smcp"). Fontes como Times New Roman não possuem esse recurso. O ABNTypst fornece `#caps` que simula versalete em qualquer fonte — desde que receba uma *string* (aspas):
 
@@ -997,6 +997,12 @@ Os exemplos abaixo seguem exatamente essa regra.
   #raw(block: true, lang: "typst", "Como aponta #pag(<silva2023>), o método é eficiente.")
   *Resultado:* Como aponta Silva (2023), o método é eficiente.
 
+  Autor na sentença com 2--3 autores --- passe `autor:` na grafia da frase. Entre
+  parênteses a NBR 10520:2023 usa `;` (`(Lima; Serrano, 2024)`), mas na sentença pede
+  *e* (e o motor do Typst só sabe juntar nomes com `;`). O ano continua vindo do `.bib`:
+  #raw(block: true, lang: "typst", "Para #pag(<lima2024>, autor: \"Lima e Serrano\"), a IA generativa...")
+  *Resultado:* Para Lima e Serrano (2024), a IA generativa...
+
   Citação de citação (apud) --- a fonte consultada é a chave do `.bib`; a original (não acessada) vai como texto:
   #raw(block: true, lang: "typst", "A ideia é de Freud #apud(\"Freud\", 1900, <lacan1966>, 123).")
   *Resultado:* A ideia é de Freud (Freud, 1900 apud Lacan, 1966, p. 123).
@@ -1228,6 +1234,7 @@ Referência rápida de todos os comandos de citação, com um exemplo mínimo e 
     [`@silva2023@santos2022`], [(Santos, 2022; Silva, 2023)], [---],
     [`@cormen2012` (4+ autores)], [(Cormen et al., 2012)], [---],
     [`#pag(<silva2023>, 45)`], [Silva (2023, p. 45)], [---],
+    [`#pag(<lima2024>, autor: "Lima e Serrano")`], [Lima e Serrano (2024)], [---],
     [`#apud("Freire", 1994, <ol21>, 25)`], [(Freire, 1994 apud Oliveira, 2021, p. 25)], [---],
     table.hline(stroke: 0.5pt),
     table.cell(colspan: 3)[*Autor-data manual --- _fallback_, só para obra fora do `.bib` (ref. completa no Manual de Implementação)*],
@@ -2151,7 +2158,7 @@ O template `poster` segue a NBR 15437:2006:
 O template `slides` usa o pacote Touying para apresentações:
 
 #raw(block: true, lang: "typst", "#import \"@preview/touying:0.7.4\": *
-#import \"@preview/abntyp:0.1.4\": slides-defesa
+#import \"@preview/abntyp:0.1.5\": slides-defesa
 
 #show: slides-defesa.with(
   titulo: \"Título do Trabalho\",

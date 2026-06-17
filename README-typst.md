@@ -24,7 +24,7 @@ O objetivo aqui é adaptar o projeto abnTeX2 para o caso do Typst, para servir c
 ### Via Typst Universe (recomendado)
 
 ```typst
-#import "@preview/abntyp:0.1.4": *
+#import "@preview/abntyp:0.1.5": *
 ```
 
 ### Via Clone Local
@@ -47,22 +47,22 @@ A documentação do ABNTyp consiste nos seguintes arquivos:
 
 | Arquivo                | Descrição                           |
 | ---------------------- | ----------------------------------- |
-| [`docs/manual-implementacao.typ`](https://github.com/3sdras/abntyp/blob/v0.1.4/docs/manual-implementacao.typ) | Manual completo da classe e funções |
-| [`docs/guia-rapido.typ`](https://github.com/3sdras/abntyp/blob/v0.1.4/docs/guia-rapido.typ) | Guia rápido para começar |
+| [`docs/manual-implementacao.typ`](https://github.com/3sdras/abntyp/blob/v0.1.5/docs/manual-implementacao.typ) | Manual completo da classe e funções |
+| [`docs/guia-rapido.typ`](https://github.com/3sdras/abntyp/blob/v0.1.5/docs/guia-rapido.typ) | Guia rápido para começar |
 
 ### Modelos Canônicos (Exemplos)
 
 | Arquivo                                 | Tipo de Documento                           | Norma Principal |
 | --------------------------------------- | ------------------------------------------- | --------------- |
-| [`examples/tcc-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.4/examples/tcc-exemplo.typ) | Trabalho acadêmico (tese, dissertação, TCC) | NBR 14724:2024 |
-| [`examples/artigo-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.4/examples/artigo-exemplo.typ) | Artigo científico | NBR 6022:2018 |
-| [`examples/relatorio-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.4/examples/relatorio-exemplo.typ) | Relatório técnico | NBR 10719:2015 |
-| [`examples/projeto-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.4/examples/projeto-exemplo.typ) | Projeto de pesquisa | NBR 15287:2025 |
-| [`examples/livro-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.4/examples/livro-exemplo.typ) | Livro | NBR 6029:2023 |
-| [`examples/periodico-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.4/examples/periodico-exemplo.typ) | Publicação periódica | NBR 6021:2015 |
-| [`examples/poster-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.4/examples/poster-exemplo.typ) | Pôster científico | NBR 15437:2006 |
-| [`examples/slides-defesa-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.4/examples/slides-defesa-exemplo.typ) | Apresentação de slides | Boas práticas\* |
-| [`examples/citacao-numerica-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.4/examples/citacao-numerica-exemplo.typ) | Sistema numérico de citações | NBR 10520:2023 |
+| [`examples/tcc-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.5/examples/tcc-exemplo.typ) | Trabalho acadêmico (tese, dissertação, TCC) | NBR 14724:2024 |
+| [`examples/artigo-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.5/examples/artigo-exemplo.typ) | Artigo científico | NBR 6022:2018 |
+| [`examples/relatorio-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.5/examples/relatorio-exemplo.typ) | Relatório técnico | NBR 10719:2015 |
+| [`examples/projeto-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.5/examples/projeto-exemplo.typ) | Projeto de pesquisa | NBR 15287:2025 |
+| [`examples/livro-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.5/examples/livro-exemplo.typ) | Livro | NBR 6029:2023 |
+| [`examples/periodico-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.5/examples/periodico-exemplo.typ) | Publicação periódica | NBR 6021:2015 |
+| [`examples/poster-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.5/examples/poster-exemplo.typ) | Pôster científico | NBR 15437:2006 |
+| [`examples/slides-defesa-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.5/examples/slides-defesa-exemplo.typ) | Apresentação de slides | Boas práticas\* |
+| [`examples/citacao-numerica-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.1.5/examples/citacao-numerica-exemplo.typ) | Sistema numérico de citações | NBR 10520:2023 |
 
 _\* A ABNT não possui norma específica para slides. O template segue boas práticas acadêmicas._
 
@@ -122,7 +122,7 @@ O ABNTyp implementa as seguintes normas ABNT (versões atualizadas):
 ### Trabalho Acadêmico (Tese/Dissertação/TCC)
 
 ```typst
-#import "@preview/abntyp:0.1.4": *
+#import "@preview/abntyp:0.1.5": *
 
 // Metadados do trabalho — definidos uma única vez
 #show: dados.with(
@@ -167,7 +167,7 @@ Texto do desenvolvimento...
 ### Artigo Científico
 
 ```typst
-#import "@preview/abntyp:0.1.4": *
+#import "@preview/abntyp:0.1.5": *
 
 #show: artigo.with(
   titulo: "Título do Artigo",
@@ -218,7 +218,7 @@ O ABNTyp suporta os dois sistemas de chamada permitidos pela NBR 10520:2023:
 O sistema numérico foi implementado inspirado no `abntex2-num.bst` do abnTeX2.
 
 ```typst
-#import "@preview/abntyp:0.1.4": *
+#import "@preview/abntyp:0.1.5": *
 
 #show: citacao-num-config
 

@@ -80,6 +80,7 @@ no documento.
 @silva2023 @santos2022  // (Santos, 2022; Silva, 2023) — várias obras
 @cormen2012             // (Cormen et al., 2012) — et al. automático
 #pag(<silva2023>, 45)   // Silva (2023, p. 45) — autor na frase
+#pag(<lima2024>, autor: "Lima e Serrano")  // Lima e Serrano (2024) — 2–3 autores na frase
 #apud("Freire", 1994, <silva2023>, 25)  // (Freire, 1994 apud Silva, 2023, p. 25)
 ```
 
