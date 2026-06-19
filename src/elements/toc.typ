@@ -8,7 +8,10 @@
     v(0.5em)
     block[
       #link(it.element.location())[
-        #text(weight: "bold")[#upper(it.body())]
+        #text(weight: "bold")[
+          #if it.prefix() != none [#it.prefix()#h(0.5em)]
+          #upper(it.body())
+        ]
         #box(width: 1fr, it.fill)
         #it.page()
       ]
@@ -20,6 +23,7 @@
     block[
       #link(it.element.location())[
         #h(1em)
+        #if it.prefix() != none [#it.prefix()#h(0.5em)]
         #upper(it.body())
         #box(width: 1fr, it.fill)
         #it.page()
@@ -32,7 +36,10 @@
     block[
       #link(it.element.location())[
         #h(2em)
-        #text(weight: "bold")[#it.body()]
+        #text(weight: "bold")[
+          #if it.prefix() != none [#it.prefix()#h(0.5em)]
+          #it.body()
+        ]
         #box(width: 1fr, it.fill)
         #it.page()
       ]
@@ -44,6 +51,7 @@
     block[
       #link(it.element.location())[
         #h(3em)
+        #if it.prefix() != none [#it.prefix()#h(0.5em)]
         #it.body()
         #box(width: 1fr, it.fill)
         #it.page()
@@ -56,6 +64,7 @@
     block[
       #link(it.element.location())[
         #h(4em)
+        #if it.prefix() != none [#it.prefix()#h(0.5em)]
         #text(style: "italic")[#it.body()]
         #box(width: 1fr, it.fill)
         #it.page()
