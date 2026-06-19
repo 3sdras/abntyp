@@ -164,6 +164,27 @@
   heading(level: 1, numbering: none)[ANEXO #upper(letra) -- #upper(titulo)]
 }
 
+/// Glossário ABNT — lista de termos técnicos em ordem alfabética (pós-textual).
+/// Imprime o título "GLOSSÁRIO" (sem indicativo numérico, em caixa alta, que
+/// aparece no sumário) e lista cada par em ordem alfabética. Não precisa de
+/// `#titulo-sem-num` antes — a função já cria o título.
+/// Para o template de projeto use `glossario-projeto`; para livro, `book-glossary`.
+/// - itens: dicionário termo -> definição
+/// Exemplo: #glossario(("Algoritmo": "Sequência finita de instruções."))
+#let glossario(itens) = {
+  titulo-sem-num[GLOSSÁRIO]
+
+  set par(first-line-indent: 0pt)
+
+  for (termo, definicao) in itens.pairs().sorted(key: p => p.at(0)) {
+    [*#termo:* #definicao]
+    linebreak()
+    v(0.5em)
+  }
+
+  pagebreak()
+}
+
 /// Título de elemento pré-textual (não aparece no sumário)
 #let pretextual-title(titulo) = {
   align(center)[

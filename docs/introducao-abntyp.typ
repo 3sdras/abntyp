@@ -1978,12 +1978,12 @@ Texto do anexo...")
 
 == Glossário
 
-O glossário lista termos técnicos em ordem alfabética:
+O glossário lista termos técnicos em ordem alfabética. A função `#glossario` já
+cria o título "GLOSSÁRIO" (sem indicativo numérico, aparece no sumário) — não
+precisa de `#titulo-sem-num` antes:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#titulo-sem-num[GLOSSÁRIO]
-
-#glossario((
+  #raw(block: true, lang: "typst", "#glossario((
   \"Algoritmo\": \"Sequência finita de instruções bem definidas
     que, quando executadas, realizam uma tarefa específica.\",
 

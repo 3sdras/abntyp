@@ -2077,6 +2077,7 @@ Para casos especiais, você pode usar as funções de formatação manual (`ref-
 == Versão 0.1.5 (Junho 2026)
 
 - `#pag(<chave>)` ganhou o parâmetro opcional `autor:` para citações na sentença com 2–3 autores. O motor de citações do Typst (Hayagriva) junta os sobrenomes sempre com `;`, mas a NBR 10520:2023 pede `e` na frase (`Lima; Serrano` entre parênteses, mas `Lima e Serrano` na sentença). Informe a grafia da frase em `autor:` — o ano continua vindo do `.bib`: `#pag(<lima2024>, autor: "Lima e Serrano")` → Lima e Serrano (2024)
+- Nova função `#glossario(itens)` (genérica), que faltava: cria o título "GLOSSÁRIO" (sem indicativo numérico, entra no sumário) e lista os termos em ordem alfabética. Antes só existiam `glossario-projeto` (template de projeto) e `book-glossary` (livro), e a documentação referia `#glossario` por engano. Corrigido o exemplo na introdução.
 
 == Versão 0.1.4 (Junho 2026)
 
