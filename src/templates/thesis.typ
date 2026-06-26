@@ -19,15 +19,22 @@
 ///
 /// Parâmetros:
 /// - fonte: fonte a usar ("Times New Roman" ou "Arial")
+/// - quebra-capitulo: se true, cada seção de nível 1 (capítulo) começa em nova
+///   página (padrão: true, conforme NBR 14724). Use false para fluxo contínuo.
 /// - arquivo-bibliografia: caminho para arquivo .bib (opcional)
 /// - titulo-bibliografia: título da seção de referências (padrão: "REFERÊNCIAS")
 #let normas-abnt(
   fonte: "Times New Roman",
+  quebra-capitulo: true,
   arquivo-bibliografia: none,
   titulo-bibliografia: "REFERÊNCIAS",
   body,
 ) = {
-  show: with-abnt-setup.with(fonte: fonte, suplemento-nivel1: "Capítulo")
+  show: with-abnt-setup.with(
+    fonte: fonte,
+    level-1-pagebreak: quebra-capitulo,
+    suplemento-nivel1: "Capítulo",
+  )
 
   // Nota: metadados do PDF (title, author) são definidos por dados().
   // Se o usuário não usar dados(), o PDF ficará sem metadados.
