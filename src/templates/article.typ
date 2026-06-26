@@ -37,7 +37,7 @@
   // Configuração do documento
   set document(
     title: titulo,
-    author: autores.map(a => a.name).join(", "),
+    author: if autores.len() > 0 { autores.map(a => a.name).join(", ") } else { () },
   )
 
   show: with-abnt-setup.with(fonte: fonte, level-1-pagebreak: false)
