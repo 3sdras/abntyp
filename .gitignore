@@ -21,6 +21,7 @@ docs/introducao-abntyp-COMPLETO-ANTIGO.typ
 # Arquivos de teste local (não publicar)
 examples/formatacao-inline-exemplo.typ
 testeCit.typ
+_bncc.bib
 
 # Notas internas de desenvolvimento
 bugfixes.md
