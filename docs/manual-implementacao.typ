@@ -961,6 +961,10 @@ Aceita parâmetros posicionais (autor, ano, página) ou nomeados. Os parâmetros
 
 // Sem referência
 #citacao-curta()[sic transit gloria mundi]
+
+// Com .bib: autor é um <chave> — cita de verdade (entra na bibliografia,
+// vira link clicável). ano vem do .bib; use pagina: nomeado.
+#citacao-curta(<silva2023>, pagina: 42)[a formatação adequada é essencial].
 ```
 
 *Citação direta longa (mais de 3 linhas):*
@@ -980,6 +984,11 @@ Mesma flexibilidade de parâmetros:
 
 // Nomeado
 #citacao-longa(autor: "Silva", ano: 2023)[
+  Texto longo da citação...
+]
+
+// Com .bib: autor é um <chave> — mesma integração de citacao-curta acima.
+#citacao-longa(<silva2023>, pagina: "42-43")[
   Texto longo da citação...
 ]
 ```
@@ -1158,11 +1167,7 @@ Outros autores @santos2022[p. 45] concordam.
 
 === citation.typ - Citações e Referências
 
-*Forma padrão é `@chave` (com `.bib`).* As funções `#citar*` abaixo são o
-*fallback* do sistema autor-data: recebem autor e ano como *texto* e existem
-apenas para obras que não estão num `.bib`. Tendo `.bib`, prefira sempre
-`@chave` (e os auxiliares `pag`/`apud`, que leem do `.bib`). Este é o local
-canônico da referência completa dessas funções de fallback. Em todas, `ano`,
+*Forma padrão é `@chave` (com `.bib`).* Em todas as funções abaixo, `ano`,
 `pagina`, `volume` etc. aceitam int ou string.
 
 *Auxiliares integrados ao `.bib` (parte da forma padrão, não fallback):*
@@ -1179,24 +1184,58 @@ canônico da referência completa dessas funções de fallback. Em todas, `ano`,
           pagina-original: none, ..args)   // #apud("Freire", 1994, <silva2023>, 25)
 ```
 
-*Fallback — autor-data manual (obra fora do `.bib`):*
+*Fallback — autor-data manual (obra fora do `.bib`), COM integração `.bib`:*
+
+`citar`, `citar-autor`, `citar-indireto`, `citar-entidade`, `citar-titulo` e
+`citar-apud` recebem autor/entidade/título como *texto* — modo fallback para
+obras que não estão num `.bib`. Mas também aceitam um `<chave>` de entrada
+`.bib` nesse mesmo argumento: nesse caso a função delega para `#cite()`
+nativo, autor/ano vêm do `.bib` (`ano`/`ano-secundario` são ignorados), a
+citação entra automaticamente na bibliografia e o texto renderizado vira link
+clicável — sem precisar de `pag`/`apud`. Use `pagina:` nomeado (não
+posicional) nesse modo, já que o 2º argumento posicional é sempre
+interpretado como `ano`:
+```typst
+#citar(<silva2023>, pagina: "45")            // -> (Silva, 2023, p. 45), citado no .bib
+#citar-autor(<silva2023>, pagina: "45")      // -> Silva (2023, p. 45), citado no .bib
+#citar-apud("Freire", 1994, <silva2023>, pagina: "25")  // fonte consultada = .bib
+```
 
 ```typst
 // Entre parênteses — (Silva, 2023, p. 45). volume/localizacao para
 // fontes paginadas por v./t. ou não paginadas; grifo/traducao no fim.
+// autor aceita <chave> do .bib (ver acima).
 #let citar(autor, ano, pagina: none, volume: none,
            localizacao: none, grifo: none, traducao: none)
 
-// Autor na sentença — "Silva (2023, p. 45)"
+// Autor na sentença — "Silva (2023, p. 45)". autor aceita <chave> do .bib.
 #let citar-autor(autor, ano, pagina: none, volume: none)
 
 // Citação indireta (paráfrase) — página opcional (NBR 10520:2023, 5.2)
+// autor aceita <chave> do .bib.
 #let citar-indireto(autor, ano, pagina: none)
 
-// Citação de citação (apud) com strings — página da fonte original e consultada
+// Citação de citação (apud) com strings — página da fonte original e consultada.
+// autor-secundario (fonte CONSULTADA) aceita <chave> do .bib.
 #let citar-apud(autor-original, ano-original, autor-secundario,
                 ano-secundario, pagina-original: none, pagina: none)
 
+// Entidade coletiva. entidade aceita <chave> do .bib.
+#let citar-entidade(entidade, ano, pagina: none)
+
+// Obra sem autoria (pelo título). titulo aceita <chave> do .bib.
+#let citar-titulo(titulo, ano, pagina: none)
+```
+
+*Fallback — autor-data manual (SEM integração `.bib`):*
+
+`citar-multiplos`, `citar-varios` e `citar-etal` continuam string-only — o
+caso de uso delas (múltiplos autores de uma obra, várias obras simultâneas,
+et al.) já é coberto automaticamente pela sintaxe nativa `@chave` com o CSL
+ABNT do pacote quando há `.bib` (ver `@silva2023@santos2022` e "4+ autores"
+acima).
+
+```typst
 // Vários autores de uma MESMA obra (até 3) — (Silva; Santos; Costa, 2023)
 #let citar-multiplos(autores, ano, pagina: none)
 
@@ -1205,12 +1244,6 @@ canônico da referência completa dessas funções de fallback. Em todas, `ano`,
 
 // Mais de 3 autores (et al.)
 #let citar-etal(primeiro-autor, ano, pagina: none)
-
-// Entidade coletiva
-#let citar-entidade(entidade, ano, pagina: none)
-
-// Obra sem autoria (pelo título)
-#let citar-titulo(titulo, ano, pagina: none)
 ```
 
 *Formatação manual de referências (`ano`, `edicao`, `volume`, `numero` aceitam int):*
@@ -2073,6 +2106,12 @@ O pacote usa um arquivo CSL baseado nas normas NBR 6023:2018 e NBR 10520:2023.
 Para casos especiais, você pode usar as funções de formatação manual (`ref-livro`, `ref-artigo`, `ref-online`)
 
 = Changelog
+
+== Versão 0.1.6 (Julho 2026)
+
+- `normas-abnt` ganhou o parâmetro `quebra-capitulo: true` (passa para `level-1-pagebreak`; `false` desliga a quebra de página antes de capítulos).
+- Corrigido crash do template `artigo` quando chamado sem `autores`.
+- `citacao-curta`, `citacao-longa`, `citar`, `citar-autor`, `citar-indireto`, `citar-entidade`, `citar-titulo` e `citar-apud` agora aceitam um `<chave>` de entrada `.bib` no lugar do autor/entidade/título em texto. Antes, essas funções só imprimiam texto formatado e nunca chamavam `#cite()` — então, mesmo citando uma obra que estava no `.bib`, a referência não entrava na lista de referências e o texto da citação não era um link clicável. Agora, passando a chave (ex.: `#citacao-longa(<silva2023>, pagina: "45")[...]`), a função delega para `#cite()` nativo: a entrada é adicionada automaticamente à bibliografia e o texto renderizado vira link clicável, com a formatação ABNT preservada. Uso com string (sem `.bib`) continua funcionando sem mudanças.
 
 == Versão 0.1.5 (Junho 2026)
 

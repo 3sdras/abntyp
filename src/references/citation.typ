@@ -49,51 +49,108 @@
   if traducao != none { [, tradução #traducao] }
 }
 
+// Mesmo conteúdo de _abnt-localizacao + _abnt-expressao, mas sem vírgula
+// inicial — para uso como `supplement` do #cite() nativo (o motor de
+// citação do Typst já insere ", " antes do supplement).
+#let _abnt-cite-supplement(volume: none, pagina: none, localizacao: none, grifo: none, traducao: none) = {
+  let parts = ()
+  if volume != none { parts.push([v. #volume]) }
+  if pagina != none { parts.push([p. #pagina]) }
+  if localizacao != none { parts.push([#localizacao]) }
+  if grifo != none { parts.push([grifo #grifo]) }
+  if traducao != none { parts.push([tradução #traducao]) }
+  if parts.len() == 0 { none } else { parts.join([, ]) }
+}
+
 /// Citação autor-data entre parênteses — (Silva, 2023, p. 45)
-/// - autor: sobrenome (string), com apenas a inicial maiúscula (ou sigla)
-/// - ano: ano da publicação (int ou string)
+/// - autor: sobrenome (string), com apenas a inicial maiúscula (ou sigla).
+///   Pode ser um `<chave>` de entrada `.bib` — nesse caso autor/ano vêm do
+///   `.bib` (via #cite() nativo), a citação entra automaticamente na
+///   bibliografia e o texto renderizado vira link clicável; `ano` é ignorado.
+/// - ano: ano da publicação (int ou string). Ignorado se `autor` for `<chave>`.
 /// - pagina: página (opcional). Use string para intervalos: "42-43"
 /// - volume: volume/tomo antes da página (opcional) — (Senac, 1979, v. 1, p. 16)
 /// - localizacao: fontes não paginadas (opcional) — [cap. V, art. 49, inc. I]
 /// - grifo: "nosso" ou "do autor" (opcional) — (..., grifo nosso)
 /// - traducao: "nossa" ou "própria" (opcional) — (..., tradução nossa)
+///
+///   #citar("Silva", 2023, pagina: "45")   -> (Silva, 2023, p. 45)
+///   #citar(<silva2023>, pagina: "45")     -> (Silva, 2023, p. 45), citado no .bib
 #let citar(
-  autor,
-  ano,
+  autor: none,
+  ano: none,
   pagina: none,
   volume: none,
   localizacao: none,
   grifo: none,
   traducao: none,
+  ..args,
 ) = {
-  [(#autor, #ano#_abnt-localizacao(volume: volume, pagina: pagina, localizacao: localizacao)#_abnt-expressao(grifo: grifo, traducao: traducao))]
+  let pos = args.pos()
+  if autor == none and pos.len() >= 1 { autor = pos.at(0) }
+  if ano == none and pos.len() >= 2 { ano = pos.at(1) }
+  if type(autor) == label {
+    cite(autor, form: "normal", supplement: _abnt-cite-supplement(volume: volume, pagina: pagina, localizacao: localizacao, grifo: grifo, traducao: traducao))
+  } else {
+    [(#autor, #ano#_abnt-localizacao(volume: volume, pagina: pagina, localizacao: localizacao)#_abnt-expressao(grifo: grifo, traducao: traducao))]
+  }
 }
 
 /// Citação com autor na sentença — "Segundo Silva (2023, p. 45)..."
 /// Página/volume são opcionais (NBR 10520:2023: "Autor (ano, p. X)")
-#let citar-autor(autor, ano, pagina: none, volume: none) = {
-  [#autor (#ano#_abnt-localizacao(volume: volume, pagina: pagina))]
+/// `autor` aceita `<chave>` de entrada `.bib` (ver `citar`); nesse caso
+/// equivale a `pag(<chave>)`.
+#let citar-autor(autor: none, ano: none, pagina: none, volume: none, ..args) = {
+  let pos = args.pos()
+  if autor == none and pos.len() >= 1 { autor = pos.at(0) }
+  if ano == none and pos.len() >= 2 { ano = pos.at(1) }
+  if type(autor) == label {
+    cite(autor, form: "prose", supplement: _abnt-cite-supplement(volume: volume, pagina: pagina))
+  } else {
+    [#autor (#ano#_abnt-localizacao(volume: volume, pagina: pagina))]
+  }
 }
 
 /// Citação indireta (paráfrase) — (Silva, 2023)
 /// Página/localização é opcional na citação indireta (NBR 10520:2023, 5.2)
-#let citar-indireto(autor, ano, pagina: none) = {
-  [(#autor, #ano#if pagina != none [, p. #pagina])]
+/// `autor` aceita `<chave>` de entrada `.bib` (ver `citar`).
+#let citar-indireto(autor: none, ano: none, pagina: none, ..args) = {
+  let pos = args.pos()
+  if autor == none and pos.len() >= 1 { autor = pos.at(0) }
+  if ano == none and pos.len() >= 2 { ano = pos.at(1) }
+  if type(autor) == label {
+    cite(autor, form: "normal", supplement: if pagina != none [p. #pagina])
+  } else {
+    [(#autor, #ano#if pagina != none [, p. #pagina])]
+  }
 }
 
 /// Citação de citação (apud) — fonte original apud fonte consultada
 /// Na lista de referências, inclui-se SOMENTE a fonte consultada.
 /// - pagina-original: página na fonte original (opcional)
 /// - pagina: página na fonte consultada (opcional)
+/// `autor-secundario` (a fonte CONSULTADA) aceita `<chave>` de entrada
+/// `.bib` — nesse caso `ano-secundario` é ignorado e a citação entra
+/// automaticamente na bibliografia, com link clicável (equivale a `apud`).
 #let citar-apud(
-  autor-original,
-  ano-original,
-  autor-secundario,
-  ano-secundario,
+  autor-original: none,
+  ano-original: none,
+  autor-secundario: none,
+  ano-secundario: none,
   pagina-original: none,
   pagina: none,
+  ..args,
 ) = {
-  [(#autor-original, #ano-original#if pagina-original != none [, p. #pagina-original] apud #autor-secundario, #ano-secundario#if pagina != none [, p. #pagina])]
+  let pos = args.pos()
+  if autor-original == none and pos.len() >= 1 { autor-original = pos.at(0) }
+  if ano-original == none and pos.len() >= 2 { ano-original = pos.at(1) }
+  if autor-secundario == none and pos.len() >= 3 { autor-secundario = pos.at(2) }
+  if ano-secundario == none and pos.len() >= 4 { ano-secundario = pos.at(3) }
+  if type(autor-secundario) == label {
+    [(#autor-original, #ano-original#if pagina-original != none [, p. #pagina-original] apud #cite(autor-secundario, form: "author"), #cite(autor-secundario, form: "year")#if pagina != none [, p. #pagina])]
+  } else {
+    [(#autor-original, #ano-original#if pagina-original != none [, p. #pagina-original] apud #autor-secundario, #ano-secundario#if pagina != none [, p. #pagina])]
+  }
 }
 
 /// Vários autores de uma MESMA obra (até 3) — (Silva; Santos; Costa, 2023)
@@ -121,15 +178,31 @@
 
 /// Citação de entidade coletiva — (Brasil, 2023) / (IBGE, 2011, p. 3)
 /// Informe o nome por extenso ou a sigla (siglas em CAIXA ALTA) na grafia certa.
-#let citar-entidade(entidade, ano, pagina: none) = {
-  [(#entidade, #ano#if pagina != none [, p. #pagina])]
+/// `entidade` aceita `<chave>` de entrada `.bib` (ver `citar`).
+#let citar-entidade(entidade: none, ano: none, pagina: none, ..args) = {
+  let pos = args.pos()
+  if entidade == none and pos.len() >= 1 { entidade = pos.at(0) }
+  if ano == none and pos.len() >= 2 { ano = pos.at(1) }
+  if type(entidade) == label {
+    cite(entidade, form: "normal", supplement: if pagina != none [p. #pagina])
+  } else {
+    [(#entidade, #ano#if pagina != none [, p. #pagina])]
+  }
 }
 
 /// Citação de obra sem autoria (entrada pelo título)
 /// Informe a 1ª palavra do título seguida de [...] quando houver mais palavras
 /// (NBR 10520:2023, 4.1) — ex.: citar-titulo([Anteprojeto [...]], 1987)
-#let citar-titulo(titulo, ano, pagina: none) = {
-  [(#titulo, #ano#if pagina != none [, p. #pagina])]
+/// `titulo` aceita `<chave>` de entrada `.bib` (ver `citar`).
+#let citar-titulo(titulo: none, ano: none, pagina: none, ..args) = {
+  let pos = args.pos()
+  if titulo == none and pos.len() >= 1 { titulo = pos.at(0) }
+  if ano == none and pos.len() >= 2 { ano = pos.at(1) }
+  if type(titulo) == label {
+    cite(titulo, form: "normal", supplement: if pagina != none [p. #pagina])
+  } else {
+    [(#titulo, #ano#if pagina != none [, p. #pagina])]
+  }
 }
 
 // ============================================================================

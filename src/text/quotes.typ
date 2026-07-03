@@ -1,5 +1,7 @@
 // Citações conforme NBR 10520:2023
 
+#import "../references/citation.typ": _abnt-cite-supplement
+
 /// Citação direta curta (até 3 linhas)
 /// Incorporada ao parágrafo, entre aspas duplas
 ///
@@ -7,6 +9,11 @@
 ///   #citacao-curta("Silva", "2023", "45")[Texto]
 ///   #citacao-curta(autor: "Silva", ano: "2023")[Texto]
 ///   #citacao-curta()[Texto]
+///
+/// Com `.bib`: passe a chave como `autor` (label) para citar de verdade —
+/// registra automaticamente na bibliografia e gera link clicável. Autor/ano
+/// vêm do `.bib`; use `pagina:` nomeado (não posicional) nesse modo:
+///   #citacao-curta(<silva2023>, pagina: "45")[Texto]
 #let citacao-curta(
   autor: none,
   ano: none,
@@ -24,26 +31,31 @@
   if ano == none and rest.len() >= 2 { ano = rest.at(1) }
   if pagina == none and rest.len() >= 3 { pagina = rest.at(2) }
   [\u{201C}#body\u{201D}]
-  let tem-fonte = (
-    autor != none or ano != none or pagina != none
-      or volume != none or localizacao != none
-      or grifo != none or traducao != none
-  )
-  if tem-fonte {
-    // Sobrenome com apenas a inicial maiúscula (NBR 10520:2023);
-    // a CAIXA ALTA da chamada era regra da NBR 10520:2002 (revogada).
-    [ (]
-    if autor != none { autor }
-    if ano != none {
-      if autor != none { [, ] }
-      [#ano]
+  if type(autor) == label {
+    [ ]
+    cite(autor, form: "normal", supplement: _abnt-cite-supplement(volume: volume, pagina: pagina, localizacao: localizacao, grifo: grifo, traducao: traducao))
+  } else {
+    let tem-fonte = (
+      autor != none or ano != none or pagina != none
+        or volume != none or localizacao != none
+        or grifo != none or traducao != none
+    )
+    if tem-fonte {
+      // Sobrenome com apenas a inicial maiúscula (NBR 10520:2023);
+      // a CAIXA ALTA da chamada era regra da NBR 10520:2002 (revogada).
+      [ (]
+      if autor != none { autor }
+      if ano != none {
+        if autor != none { [, ] }
+        [#ano]
+      }
+      if volume != none { [, v. #volume] }
+      if pagina != none { [, p. #pagina] }
+      if localizacao != none { [, #localizacao] }
+      if grifo != none { [, grifo #grifo] }
+      if traducao != none { [, tradução #traducao] }
+      [)]
     }
-    if volume != none { [, v. #volume] }
-    if pagina != none { [, p. #pagina] }
-    if localizacao != none { [, #localizacao] }
-    if grifo != none { [, grifo #grifo] }
-    if traducao != none { [, tradução #traducao] }
-    [)]
   }
 }
 
@@ -54,6 +66,11 @@
 ///   #citacao-longa("Silva", "2023", "45-46")[Texto longo...]
 ///   #citacao-longa(autor: "Silva", ano: "2023")[Texto longo...]
 ///   #citacao-longa()[Texto longo...]
+///
+/// Com `.bib`: passe a chave como `autor` (label) para citar de verdade —
+/// registra automaticamente na bibliografia e gera link clicável. Autor/ano
+/// vêm do `.bib`; use `pagina:` nomeado (não posicional) nesse modo:
+///   #citacao-longa(<silva2023>, pagina: "45-46")[Texto longo...]
 #let citacao-longa(
   autor: none,
   ano: none,
@@ -70,6 +87,7 @@
   if autor == none and rest.len() >= 1 { autor = rest.at(0) }
   if ano == none and rest.len() >= 2 { ano = rest.at(1) }
   if pagina == none and rest.len() >= 3 { pagina = rest.at(2) }
+  let de-bib = type(autor) == label
   let tem-fonte = (
     autor != none or ano != none or pagina != none
       or volume != none or localizacao != none
@@ -84,7 +102,10 @@
       justify: true,
     )
     #body
-    #if tem-fonte {
+    #if de-bib {
+      [ ]
+      cite(autor, form: "normal", supplement: _abnt-cite-supplement(volume: volume, pagina: pagina, localizacao: localizacao, grifo: grifo, traducao: traducao))
+    } else if tem-fonte {
       // Sobrenome com apenas a inicial maiúscula (NBR 10520:2023).
       [ (]
       if autor != none { autor }
