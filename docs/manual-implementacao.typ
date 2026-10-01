@@ -1033,21 +1033,23 @@ Formata figuras, quadros e ilustrações conforme NBR 14724 e IBGE.
 #let container(
   body,              // Conteúdo (imagem, quadro, tabela, etc.)
   legenda: none,     // Título (aparece acima)
-  origem: none,      // Fonte (aparece abaixo)
+  fonte: none,       // Fonte (aparece abaixo); `origem` também é aceito
+  origem: none,      // (alias antigo de `fonte`)
   nota: none,        // Nota explicativa (aparece abaixo da fonte)
   tipo: "imagem",    // Tipo: "imagem", "tabela", "quadro" (aceita também image, table)
   suplemento: auto,  // Inferido do tipo (ou definido manualmente)
+  posicao: "aqui",   // "aqui" (fixo), "topo", "fundo" ou "auto" (flutuante)
   ..args,            // Repassados ao figure()
 )
 
 // Wrapper para image() em português
 #let imagem(
-  caminho,           // Caminho do arquivo (str ou bytes)
+  caminho,           // Arquivo como bytes: read("x.png", encoding: none) (string é recusada)
   largura: auto,     // Largura (auto, relative, fraction)
   altura: auto,      // Altura (auto, relative, fraction)
   ajuste: "cobrir",   // Modo de ajuste: "cobrir", "conter", "esticar"
   alternativo: none,  // Texto alternativo (acessibilidade)
-  pagina: auto,      // Página do PDF a extrair (auto = primeira)
+  pagina: auto,      // Página do PDF a extrair (auto = não repassa; usa a primeira)
   formato: auto,     // Formato: auto, "png", "jpg", "gif", "svg", "pdf"
   escala: auto,      // Escala de renderização (SVG)
   icc: auto,         // Perfil de cor ICC
@@ -1067,7 +1069,7 @@ Formata figuras, quadros e ilustrações conforme NBR 14724 e IBGE.
 *Exemplo — Figura:*
 
 ```typst
-#container(legenda: [Comparação de desempenho], origem: [Elaborado pelo autor (2026).]) [
+#container(legenda: [Comparação de desempenho], fonte: [Elaborado pelo autor (2026).]) [
   #imagem(read("grafico.png", encoding: none), largura: 80%)
 ]
 ```
@@ -1075,7 +1077,7 @@ Formata figuras, quadros e ilustrações conforme NBR 14724 e IBGE.
 *Exemplo — Quadro:*
 
 ```typst
-#container(legenda: [Glossário de termos], tipo: "quadro", origem: [Elaborado pelo autor.]) [
+#container(legenda: [Glossário de termos], tipo: "quadro", fonte: [Elaborado pelo autor.]) [
   #quadro(columns: 2,
     [*Termo*], [*Definição*],
     [Algoritmo], [Sequência finita de instruções],
@@ -1101,7 +1103,7 @@ Formata tabelas conforme IBGE e NBR 14724.
 #container(
   legenda: [Complexidade dos algoritmos de ordenação],
   tipo: "tabela",
-  origem: [Adaptado de Cormen et al. (2012).],
+  fonte: [Adaptado de Cormen et al. (2012).],
 )[
   #tabela(
     columns: 3,
@@ -1767,7 +1769,7 @@ Template para pôsteres técnicos e científicos.
 #poster-figure(
   image("grafico.png"),
   legenda: "Resultados obtidos",
-  origem: "Elaborado pelo autor",
+  fonte: "Elaborado pelo autor",
 )
 
 // Referências compactas
@@ -2084,7 +2086,7 @@ Sim! O pacote inclui suporte a arquivos `.bib` com formatação automática ABNT
 ```typst
 #show: normas-abnt.with(
   // ... outros parâmetros ...
-  arquivo-bibliografia: "referencias.bib",
+  arquivo-bibliografia: read("referencias.bib"),
   titulo-bibliografia: "REFERÊNCIAS",  // opcional
 )
 ```
@@ -2113,6 +2115,14 @@ Para casos especiais, você pode usar as funções de formatação manual (`ref-
 - Paginação automática conforme a NBR 14724:2024 em `normas-abnt`: contagem a partir da folha de rosto, número visível só a partir da primeira seção primária numerada, canto superior direito. Parâmetro `paginacao: "auto" | "todas" | "nenhuma"`. Antes, `textual()`/`postextual()` usavam `set page` dentro de função e não tinham efeito nas páginas seguintes.
 - `normas-abnt` ganhou `frente-verso: true` (margens espelhadas, número à esquerda nas páginas pares, seções primárias em página ímpar).
 - `relatorio` (NBR 10719) ganhou `paginacao` e `frente-verso`; `livro` (NBR 6029) ganhou `paginacao` (contagem desde a primeira folha do miolo, número visível após o sumário, rodapé centralizado). Helpers em `core/page.typ`: `abnt-numero-pagina`, `abnt-margens`, `marcar-folha-rosto`.
+- `livro` ganhou `frente-verso`: margens espelhadas; falsa folha de rosto, folha de rosto, dedicatória, agradecimentos, epígrafe, prefácio/apresentação, partes e capítulos em página ímpar.
+- `container`: devolve um único `figure` (o `<label>` após a chamada e o `@rótulo` funcionam); legenda acima (`figure.caption(position: top)`; também aplicada a figuras e tabelas nativas); `fonte` como nome preferido de `origem`; novo `posicao`; "Nota" centralizada (também `nota-figura`).
+- `imagem()`: `pagina: auto` não quebra mais; caminho em string agora dá erro explicativo (use `read(..., encoding: none)`).
+- Novos: `alineas`/`subalineas`; `parte` (numerada, no sumário e em referências); `quebra-pagina(fraco:, para:)`; `novo-slide()`.
+- `with-abnt-setup`: enumeração padrão `a)`, `b)`, `c)`; links externos sublinhados (`cor-links`); formatação de `parte`.
+- `slides`: removido o import do tema `university` do Touying, que sobrescrevia `slide` do tema `simple`.
+- `normas-abnt(arquivo-bibliografia:)` exige `read(...)`; caminho em string dá erro explicativo.
+- Palavras-chave: uma única palavra (string) é aceita em `resumo`, `resumo-en`, `artigo`, `periodico` e `relatorio`.
 - Corrigido crash do template `artigo` quando chamado sem `autores`.
 - `citacao-curta`, `citacao-longa`, `citar`, `citar-autor`, `citar-indireto`, `citar-entidade`, `citar-titulo` e `citar-apud` agora aceitam um `<chave>` de entrada `.bib` no lugar do autor/entidade/título em texto. Antes, essas funções só imprimiam texto formatado e nunca chamavam `#cite()` — então, mesmo citando uma obra que estava no `.bib`, a referência não entrava na lista de referências e o texto da citação não era um link clicável. Agora, passando a chave (ex.: `#citacao-longa(<silva2023>, pagina: "45")[...]`), a função delega para `#cite()` nativo: a entrada é adicionada automaticamente à bibliografia e o texto renderizado vira link clicável, com a formatação ABNT preservada. Uso com string (sem `.bib`) continua funcionando sem mudanças.
 

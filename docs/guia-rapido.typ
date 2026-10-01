@@ -45,10 +45,6 @@ Coloque a pasta `abntyp` no seu projeto e importe:
 
 #sumario()
 
-#counter(page).update(1)
-#set page(numbering: "1",
-          number-align: top + right)
-
 = Introdução
 
 Texto...
@@ -58,6 +54,9 @@ A função `dados()` armazena os metadados
 e `normas-abnt()` aplica a formatação ABNT.
 Os elementos `capa()`, `folha-rosto()` e
 `resumo()` leem tudo automaticamente.
+A numeração de páginas também é automática
+(contagem a partir da folha de rosto, número
+visível a partir da Introdução).
 
 == Seções (NBR 6024)
 
@@ -112,58 +111,35 @@ A função `#figure()` é nativa do Typst e serve como contêiner genérico para
 === Figura
 
 ```typst
-#figure(
-  image("fig.png", width: 80%),
-  caption: [Título da figura],
-)
-#fonte[Elaborado pelo autor.]
+#container(
+  legenda: [Título da figura],
+  fonte: [Elaborado pelo autor.],
+  imagem(read("fig.png", encoding: none), largura: 80%),
+) <fig:exemplo>
+
+Veja a @fig:exemplo.
 ```
 
 === Tabela (padrão IBGE)
 
 ```typst
-#figure(
-  table(
+#container(
+  legenda: [Título da tabela],
+  tipo: "tabela",
+  fonte: [Fonte dos dados.],
+  tabela(
     columns: 3,
-    stroke: none,
     table.hline(stroke: 1.5pt),
     [*Col 1*], [*Col 2*], [*Col 3*],
     table.hline(stroke: 0.75pt),
     [Dado], [Dado], [Dado],
     table.hline(stroke: 1.5pt),
   ),
-  caption: [Título da tabela],
-  kind: table,
 )
-#fonte[Fonte dos dados.]
 ```
 
-== Elementos Pré-textuais
-
-```typst
-// Dedicatória
-#dedicatoria[
-  Dedico este trabalho...
-]
-
-// Agradecimentos
-#agradecimentos[
-  Agradeço a...
-]
-
-// Epígrafe
-#epigrafe(
-  "Citação inspiradora",
-  "Autor",
-)
-
-// Listas
-#lista-ilustracoes()
-#lista-tabelas()
-#lista-siglas((
-  "ABNT": "Associação...",
-))
-```
+A legenda sai acima; fonte e nota, abaixo. O parâmetro `posicao` (`"aqui"`, `"topo"`, `"fundo"`, `"auto"`) controla onde o elemento fica.
+Dica: para tabelas grandes, monte no seu programa preferido, tire um print e peça o código em Typst a uma IA.
 
 == Referências
 
@@ -182,6 +158,25 @@ São Paulo: Editora, 2023.
 ```
 
 == Configurações
+
+*Impressão frente-verso* (também em `relatorio` e `livro`):
+```typst
+#show: normas-abnt.with(frente-verso: true)
+```
+Margens espelhadas, número à esquerda nas páginas pares e capítulos em página ímpar.
+
+*Numeração de páginas:* `paginacao: "auto"` (padrão), `"todas"` ou `"nenhuma"`.
+
+*Bibliografia automática:*
+```typst
+#show: normas-abnt.with(
+  arquivo-bibliografia: read("referencias.bib"),
+)
+```
+
+*Partes (livros):* `#parte[Título]` gera "Parte 1: Título", no sumário e em `@rótulo`.
+
+*Quebra de página:* `#quebra-pagina()` ou `#quebra-pagina(para: "impar")`.
 
 *Fonte Arial:*
 ```typst
