@@ -559,6 +559,15 @@ Com `frente-verso: true`, o ABNTyp aplica as regras da norma para impressão nos
   *Atenção à paridade.* No modo frente-verso, anverso/verso é determinado pela posição da página no PDF (a que a impressora usa): a página 1 do PDF (capa) é anverso, a página 2 é verso, e assim por diante. Se quiser que a folha de rosto seja anverso, inclua uma página em branco (`#pagebreak()`) após a capa. A numeração impressa, porém, sempre começa na folha de rosto.
 ]
 
+=== Quebra de página (`quebra-pagina`)
+
+Para forçar uma quebra de página, use `#quebra-pagina()`, equivalente em português ao `#pagebreak()` do Typst (e ao `\newpage` do LaTeX). Dois parâmetros:
+
+- `fraco: true`: só quebra se a página atual não estiver vazia (evita página em branco duplicada);
+- `para: "impar"` ou `para: "par"`: avança até a próxima página ímpar ou par --- útil na impressão frente-verso, por exemplo antes de um elemento que deve abrir em anverso: `#quebra-pagina(para: "impar")`.
+
+Capítulos, partes e os elementos pré-textuais que a norma manda abrir em página ímpar já fazem isso sozinhos com `frente-verso: true`; use `#quebra-pagina` apenas para casos extras.
+
 === Relatório técnico e livro
 
 Os templates `relatorio` e `livro` também numeram as páginas automaticamente, cada um segundo a sua norma:
@@ -2331,7 +2340,7 @@ Este apêndice é destinado a usuários que já conhecem LaTeX e desejam migrar 
     [`\emph{...}`], [`_..._` ou `#emph[...]`],
     [`\url{...}`], [`#link("...")` ],
     [`\href{url}{texto}`], [`#link("url")[texto]`],
-    [`\newpage`], [`#pagebreak()`],
+    [`\newpage`], [`#pagebreak()` ou `#quebra-pagina()`],
     [#raw("\\\\")], [#raw("\\") (quebra de linha)],
     table.hline(stroke: 1pt),
   ),

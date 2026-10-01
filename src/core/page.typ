@@ -124,3 +124,19 @@
     counter(page).update(1)
   }
 ]
+
+/// Quebra de página (equivale a `pagebreak()`, com `para` em português).
+/// - fraco: se true, só quebra se a página atual não estiver vazia
+/// - para: "impar" ou "par" para avançar até a próxima página ímpar/par
+///   (útil na impressão frente-verso)
+#let quebra-pagina(fraco: false, para: none) = {
+  if para == none {
+    pagebreak(weak: fraco)
+  } else {
+    assert(
+      para in ("impar", "par"),
+      message: "quebra-pagina: 'para' deve ser \"impar\" ou \"par\"",
+    )
+    pagebreak(weak: fraco, to: if para == "impar" { "odd" } else { "even" })
+  }
+}
