@@ -22,6 +22,10 @@
 /// - isbn: numero ISBN
 /// - fonte: fonte a usar
 /// - cabecalho: titulo corrente (opcional)
+/// - paginacao: "auto" (padrao, NBR 6029: contagem a partir da primeira folha do
+///   miolo -- falsa folha de rosto ou folha de rosto --, numero visivel somente
+///   apos o sumario, rodape centralizado), "todas" (visivel desde o inicio do
+///   miolo) ou "nenhuma"
 #let livro(
   titulo: "",
   subtitulo: none,
@@ -34,6 +38,7 @@
   isbn: none,
   fonte: "Times New Roman",
   cabecalho: none,
+  paginacao: "auto",
   body,
 ) = {
   // Configuracao do documento
@@ -43,6 +48,9 @@
   )
 
   show: with-abnt-setup.with(fonte: fonte, suplemento-nivel1: "Capítulo")
+
+  // Numero de pagina automatico (rodape centralizado; local a criterio do projeto grafico)
+  set page(footer: abnt-numero-pagina(paginacao: paginacao, centro: true, apos-sumario: true))
 
   // Titulo corrente no alto da mancha (livro-especifico)
   set page(
@@ -210,6 +218,7 @@
 /// Apenas o titulo da obra
 #let half-title-page(titulo: "") = {
   set page(numbering: none)
+  marcar-folha-rosto(primeiro: true)
   set align(center)
 
   v(1fr)
@@ -252,6 +261,7 @@
   ano: none,
 ) = {
   set page(numbering: none)
+  marcar-folha-rosto(primeiro: true)
   set align(center)
 
   // Autor
@@ -538,6 +548,7 @@
     depth: profundidade,
     indent: auto,
   )
+  [#box(width: 0pt, height: 0pt) <abnt-fim-sumario>]
 
   pagebreak()
 }

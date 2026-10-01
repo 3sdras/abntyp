@@ -55,6 +55,11 @@
 /// - ano: ano de publicacao
 /// - volume: numero do volume (se mais de um)
 /// - fonte: fonte a usar
+/// - paginacao: "auto" (padrao, NBR 10719: contagem a partir da folha de rosto,
+///   numero visivel a partir da primeira secao primaria numerada, canto superior
+///   direito), "todas" ou "nenhuma"
+/// - frente-verso: impressao frente-verso (margens espelhadas, numero alternado,
+///   secoes primarias em pagina impar)
 /// - arquivo-bibliografia: arquivo .bib (opcional)
 /// - titulo-bibliografia: titulo da secao de referencias
 #let relatorio(
@@ -72,6 +77,8 @@
   ano: datetime.today().year(),
   volume: none,
   fonte: "Times New Roman",
+  paginacao: "auto",
+  frente-verso: false,
   arquivo-bibliografia: none,
   titulo-bibliografia: "REFERENCIAS",
   body,
@@ -82,7 +89,14 @@
     author: autores.map(a => if type(a) == dictionary { a.name } else { a }).join(", "),
   )
 
-  show: with-abnt-setup.with(fonte: fonte, suplemento-nivel1: "Capítulo")
+  show: with-abnt-setup.with(
+    fonte: fonte,
+    suplemento-nivel1: "Capítulo",
+    level-1-pagebreak-impar: frente-verso,
+  )
+
+  set page(margin: abnt-margens(frente-verso))
+  set page(header: abnt-numero-pagina(paginacao: paginacao, frente-verso: frente-verso))
 
   // Conteudo
   body
@@ -111,6 +125,7 @@
   ano: none,
 ) = {
   set page(numbering: none)
+  marcar-folha-rosto()
   set align(center)
 
   // Instituicao e endereco

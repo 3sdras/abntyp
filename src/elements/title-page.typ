@@ -3,6 +3,7 @@
 
 #import "../core/spacing.typ": nature-block
 #import "../core/metadata.typ"
+#import "../core/page.typ": marcar-folha-rosto
 
 /// Cria folha de rosto conforme ABNT
 #let folha-rosto(
@@ -19,6 +20,7 @@
   ano: none,
 ) = {
   set page(numbering: none)
+  marcar-folha-rosto()
 
   context {
     let autor = metadata._resolve(autor, "autor")

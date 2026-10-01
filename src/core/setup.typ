@@ -17,12 +17,15 @@
 /// - fonte: família da fonte ("Times New Roman" ou "Arial")
 /// - headings-numeracao: numeração dos headings (padrão: "1.1")
 /// - level-1-pagebreak: se true, headings de nível 1 causam pagebreak (padrão: true)
+/// - level-1-pagebreak-impar: se true, o pagebreak de nível 1 vai para página
+///   ímpar (impressão frente-verso, NBR 14724)
 /// - suplemento-nivel1: texto usado em referências cruzadas para headings de nível 1
 ///   (padrão: "Seção" — correto para artigos; use "Capítulo" para TCC, relatórios e livros)
 #let with-abnt-setup(
   fonte: "Times New Roman",
   headings-numeracao: "1.1",
   level-1-pagebreak: true,
+  level-1-pagebreak-impar: false,
   suplemento-nivel1: "Seção",
   body,
 ) = {
@@ -73,7 +76,9 @@
 
   // Seção primária (nível 1): MAIÚSCULAS, negrito
   show heading.where(level: 1): it => {
-    if level-1-pagebreak { pagebreak(weak: true) }
+    if level-1-pagebreak {
+      if level-1-pagebreak-impar { pagebreak(weak: true, to: "odd") } else { pagebreak(weak: true) }
+    }
     v(1.5em)
     text(weight: "bold", size: 12pt)[
       #if it.numbering != none {

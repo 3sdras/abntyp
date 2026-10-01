@@ -225,9 +225,9 @@
 // ELEMENTOS TEXTUAIS - CAPÍTULOS
 // ============================================================================
 
-// Inicia numeração das páginas
-#counter(page).update(1)
-#set page(numbering: "1", number-align: bottom + center)
+// A numeração é automática: contagem a partir da folha de rosto, número
+// visível (rodapé centralizado) a partir do primeiro capítulo.
+// Opções: livro.with(paginacao: "todas" | "nenhuma")
 
 = Introdução à Programação
 

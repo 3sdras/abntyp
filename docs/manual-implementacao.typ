@@ -2110,6 +2110,9 @@ Para casos especiais, você pode usar as funções de formatação manual (`ref-
 == Versão 0.1.6 (Julho 2026)
 
 - `normas-abnt` ganhou o parâmetro `quebra-capitulo: true` (passa para `level-1-pagebreak`; `false` desliga a quebra de página antes de capítulos).
+- Paginação automática conforme a NBR 14724:2024 em `normas-abnt`: contagem a partir da folha de rosto, número visível só a partir da primeira seção primária numerada, canto superior direito. Parâmetro `paginacao: "auto" | "todas" | "nenhuma"`. Antes, `textual()`/`postextual()` usavam `set page` dentro de função e não tinham efeito nas páginas seguintes.
+- `normas-abnt` ganhou `frente-verso: true` (margens espelhadas, número à esquerda nas páginas pares, seções primárias em página ímpar).
+- `relatorio` (NBR 10719) ganhou `paginacao` e `frente-verso`; `livro` (NBR 6029) ganhou `paginacao` (contagem desde a primeira folha do miolo, número visível após o sumário, rodapé centralizado). Helpers em `core/page.typ`: `abnt-numero-pagina`, `abnt-margens`, `marcar-folha-rosto`.
 - Corrigido crash do template `artigo` quando chamado sem `autores`.
 - `citacao-curta`, `citacao-longa`, `citar`, `citar-autor`, `citar-indireto`, `citar-entidade`, `citar-titulo` e `citar-apud` agora aceitam um `<chave>` de entrada `.bib` no lugar do autor/entidade/título em texto. Antes, essas funções só imprimiam texto formatado e nunca chamavam `#cite()` — então, mesmo citando uma obra que estava no `.bib`, a referência não entrava na lista de referências e o texto da citação não era um link clicável. Agora, passando a chave (ex.: `#citacao-longa(<silva2023>, pagina: "45")[...]`), a função delega para `#cite()` nativo: a entrada é adicionada automaticamente à bibliografia e o texto renderizado vira link clicável, com a formatação ABNT preservada. Uso com string (sem `.bib`) continua funcionando sem mudanças.
 

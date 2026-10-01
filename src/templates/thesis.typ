@@ -21,11 +21,24 @@
 /// - fonte: fonte a usar ("Times New Roman" ou "Arial")
 /// - quebra-capitulo: se true, cada seção de nível 1 (capítulo) começa em nova
 ///   página (padrão: true, conforme NBR 14724). Use false para fluxo contínuo.
+/// - paginacao: numeração de páginas (padrão: "auto")
+///   - "auto": NBR 14724 — a contagem começa na folha de rosto (a capa não
+///     conta) e o número, em arábico, canto superior direito a 2 cm da borda,
+///     só aparece a partir da primeira seção primária numerada (Introdução)
+///   - "todas": número visível em todas as páginas a partir da folha de rosto
+///   - "nenhuma": não insere numeração (use `#set page(numbering: ...)` você mesmo)
+/// - frente-verso: impressão frente-verso (padrão: false). Se true: margens
+///   espelhadas (anverso 3/2 cm esq./dir.; verso 2/3 cm), número no canto
+///   superior direito em páginas ímpares e superior esquerdo em páginas pares,
+///   e seções primárias iniciando em página ímpar. A paridade é a da página
+///   do PDF (a que a impressora usa): página 1 = capa = anverso.
 /// - arquivo-bibliografia: caminho para arquivo .bib (opcional)
 /// - titulo-bibliografia: título da seção de referências (padrão: "REFERÊNCIAS")
 #let normas-abnt(
   fonte: "Times New Roman",
   quebra-capitulo: true,
+  paginacao: "auto",
+  frente-verso: false,
   arquivo-bibliografia: none,
   titulo-bibliografia: "REFERÊNCIAS",
   body,
@@ -33,8 +46,15 @@
   show: with-abnt-setup.with(
     fonte: fonte,
     level-1-pagebreak: quebra-capitulo,
+    level-1-pagebreak-impar: frente-verso,
     suplemento-nivel1: "Capítulo",
   )
+
+  // Frente-verso: margens espelhadas (interna 3 cm, externa 2 cm)
+  set page(margin: abnt-margens(frente-verso))
+
+  // Paginação automática (NBR 14724:2024)
+  set page(header: abnt-numero-pagina(paginacao: paginacao, frente-verso: frente-verso))
 
   // Nota: metadados do PDF (title, author) são definidos por dados().
   // Se o usuário não usar dados(), o PDF ficará sem metadados.

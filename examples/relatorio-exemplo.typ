@@ -129,9 +129,8 @@
 // ELEMENTOS TEXTUAIS
 // ============================================================================
 
-// Inicia numeração arábica
-#counter(page).update(1)
-#set page(numbering: "1", number-align: top + right)
+// A numeração é automática (NBR 10719): contagem a partir da folha de rosto,
+// número visível a partir da Introdução. Opções: relatorio.with(paginacao: "todas" | "nenhuma", frente-verso: true)
 
 = Introdução
 

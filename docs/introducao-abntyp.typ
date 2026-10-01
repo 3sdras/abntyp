@@ -512,32 +512,40 @@ Os elementos pré-textuais são aqueles que antecedem o texto principal do traba
   O arquivo `tcc-exemplo.typ` serve de modelo completo na ordem correta; a tabela acima é o gabarito de referência.
 ]
 
-== Paginação e transição entre partes (`pretextual`, `textual`, `postextual`) <sec:paginacao>
+== Paginação automática (`paginacao` e `frente-verso`) <sec:paginacao>
 
-A NBR 14724:2024 define três regras para a paginação:
+Com `normas-abnt`, a numeração de páginas é *automática* e segue a NBR 14724:2024:
 
-- *Contagem*: inicia na folha de rosto (a capa não é contada)
-- *Numeração visível*: apenas a partir da primeira folha textual, em algarismos arábicos
-- *Posição*: canto superior direito, a 2 cm da borda
+- *Contagem*: inicia na folha de rosto, que é a página 1 (a capa não é contada)
+- *Numeração visível*: apenas a partir da primeira folha textual, isto é, a primeira seção primária numerada (a Introdução), em algarismos arábicos
+- *Posição*: canto superior direito, a 2 cm da borda, em fonte menor (10 pt)
+- A numeração continua sem interrupção nos elementos pós-textuais
 
-O ABNTyp fornece três funções para marcar essas transições:
+Não é preciso chamar nenhuma função de transição: o pacote detecta a folha de rosto (`#folha-rosto()`) e a primeira seção numerada. O sumário usa o mesmo contador, então os números do sumário coincidem com os impressos.
 
 #exemplo[
-  #raw(block: true, lang: "typst", "// Após a capa — inicia contagem (página 1 = folha de rosto)
-#pretextual()
-#folha-rosto()
-#resumo[...]
-#sumario()
+  #raw(block: true, lang: "typst", "#show: normas-abnt.with(
+  paginacao: \"auto\",     // padrão: ABNT (veja acima)
+  // paginacao: \"todas\",   // número visível desde a folha de rosto
+  // paginacao: \"nenhuma\", // sem numeração automática
+)")
+]
 
-// Início do texto — torna numeração visível, SEM reiniciar o contador
-#textual()
-= Introdução
-...
+*Como fazer diferente.* Se a sua instituição pede outra regra:
 
-// Início dos pós-textuais — mantém numeração contínua
-#postextual()
-= Referências
-...")
+- `paginacao: "todas"` mostra o número em todas as páginas a partir da folha de rosto (a capa continua sem número).
+- `paginacao: "nenhuma"` desliga a numeração automática. Você assume o controle com o `#set page` do Typst, por exemplo `#set page(numbering: "i", number-align: bottom + center)` antes do trecho desejado.
+
+=== Impressão frente-verso
+
+Com `frente-verso: true`, o ABNTyp aplica as regras da norma para impressão nos dois lados da folha:
+
+- *Margens espelhadas*: no anverso (páginas ímpares) 3 cm à esquerda e 2 cm à direita; no verso (páginas pares) 2 cm à esquerda e 3 cm à direita. Superior 3 cm e inferior 2 cm em ambos.
+- *Número da página*: canto superior *direito* no anverso e canto superior *esquerdo* no verso.
+- *Seções primárias* (capítulos) sempre iniciam em página ímpar; se necessário, o pacote insere uma página em branco antes.
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#show: normas-abnt.with(frente-verso: true)")
 ]
 
 #block(
@@ -548,8 +556,17 @@ O ABNTyp fornece três funções para marcar essas transições:
 )[
   #set text(size: 10pt)
   #set par(first-line-indent: 0pt)
-  *Por que `#textual()` não reinicia o contador?* A norma exige que a numeração reflita a posição real da página no documento — se o sumário termina na página 14, a introdução deve aparecer como página 15. Reiniciar para 1 estaria em desacordo com a NBR 14724:2024.
+  *Atenção à paridade.* No modo frente-verso, anverso/verso é determinado pela posição da página no PDF (a que a impressora usa): a página 1 do PDF (capa) é anverso, a página 2 é verso, e assim por diante. Se quiser que a folha de rosto seja anverso, inclua uma página em branco (`#pagebreak()`) após a capa. A numeração impressa, porém, sempre começa na folha de rosto.
 ]
+
+=== Relatório técnico e livro
+
+Os templates `relatorio` e `livro` também numeram as páginas automaticamente, cada um segundo a sua norma:
+
+- *`relatorio` (NBR 10719:2015)*: mesmas regras do trabalho acadêmico — contagem a partir da folha de rosto (`report-title-page()`), número no canto superior direito a partir da primeira seção numerada. Aceita `paginacao` e `frente-verso`.
+- *`livro` (NBR 6029:2023)*: as folhas iniciais até o sumário são contadas, mas não numeradas; a contagem começa na primeira folha do miolo (falsa folha de rosto, se houver, ou folha de rosto) e o número aparece a partir da página seguinte ao sumário (`book-toc()`), inclusive no prefácio. A norma deixa a posição do número a critério do projeto gráfico; o padrão é o rodapé centralizado. Aceita `paginacao`; `"todas"` mostra o número desde o início do miolo.
+
+Nos exemplos `relatorio-exemplo.typ` e `livro-exemplo.typ`, não é mais necessário reiniciar o contador nem usar `#set page(numbering: ...)` no início do texto. `book-start-numbering()`, `pretextual()`, `textual()` e `postextual()` continuam existindo por compatibilidade, mas não são mais necessárias.
 
 == Metadados e formatação (`dados()` + `normas-abnt`) <sec:dados>
 
@@ -875,7 +892,7 @@ O sumário é elemento obrigatório conforme a NBR 6027:2012, que estabelece as 
 
 = Elementos Textuais
 
-Os elementos textuais constituem o núcleo do trabalho, onde o autor desenvolve o conteúdo propriamente dito. Incluem introdução, desenvolvimento e conclusão. Lembre-se de chamar `#textual()` antes da primeira seção (ver @sec:paginacao).
+Os elementos textuais constituem o núcleo do trabalho, onde o autor desenvolve o conteúdo propriamente dito. Incluem introdução, desenvolvimento e conclusão. A numeração de páginas começa automaticamente aqui (ver @sec:paginacao).
 
 == Seções e numeração progressiva (NBR 6024)
 
@@ -1730,7 +1747,7 @@ As listas são geradas a partir dos títulos definidos no parâmetro `legenda` d
 
 = Elementos Pós-textuais
 
-Os elementos pós-textuais complementam o trabalho e incluem referências, apêndices, anexos, glossário e índice. Chame `#postextual()` antes do primeiro elemento pós-textual para sinalizar a transição (ver @sec:paginacao).
+Os elementos pós-textuais complementam o trabalho e incluem referências, apêndices, anexos, glossário e índice. A numeração de páginas continua sem interrupção (ver @sec:paginacao).
 
 == Referências bibliográficas (NBR 6023)
 

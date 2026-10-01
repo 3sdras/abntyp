@@ -279,7 +279,8 @@
 // INÍCIO DA PARTE TEXTUAL
 // ----------------------------------------------------------------------------
 // A contagem de páginas já vem da folha de rosto (NBR 14724:2024).
-// #textual() torna a numeração visível sem reiniciar o contador.
+// A numeração aparece automaticamente a partir da primeira seção numerada
+// (normas-abnt(paginacao: "auto")). Alternativas: "todas" ou "nenhuma".
 
 #textual()
 

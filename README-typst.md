@@ -145,6 +145,8 @@ O ABNTyp implementa as seguintes normas ABNT (versões atualizadas):
 #show: normas-abnt.with(
   fonte: "Times New Roman",
   // arquivo-bibliografia: "referencias.bib",
+  // paginacao: "auto",    // ABNT (padrão); "todas" ou "nenhuma" para mudar
+  // frente-verso: true,   // margens espelhadas, número alternado, capítulos em página ímpar
 )
 
 // Elementos pré-textuais — dados vêm automaticamente
@@ -163,6 +165,16 @@ Texto da introdução...
 
 Texto do desenvolvimento...
 ```
+
+### Numeração de páginas
+
+A numeração é automática (NBR 14724:2024): a contagem começa na folha de rosto, o número aparece no canto superior direito a partir da Introdução e segue até as Referências. Para alterar:
+
+- `normas-abnt.with(paginacao: "todas")` — número visível desde a folha de rosto
+- `normas-abnt.with(paginacao: "nenhuma")` — sem numeração automática (use `#set page(...)`)
+- `normas-abnt.with(frente-verso: true)` — impressão frente-verso: margens espelhadas, número à esquerda nas páginas pares e capítulos iniciando em página ímpar
+
+O template `relatorio` (NBR 10719) aceita as mesmas opções (`paginacao`, `frente-verso`). O `livro` (NBR 6029) conta desde a primeira folha do miolo e mostra o número, no rodapé centralizado, após o sumário; aceita `paginacao`.
 
 ### Artigo Científico
 
