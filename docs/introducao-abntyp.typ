@@ -1403,6 +1403,14 @@ Como visto na @parte:fund...
 
 A numeração dos capítulos continua corrida, sem reiniciar a cada parte. Com `frente-verso: true`, a página da parte também começa em página ímpar.
 
+== Hiperlinks
+
+Os links funcionam por padrão no PDF: endereços digitados no texto (`https://...`), `#link("https://...")[texto]` e as URLs das referências geradas do `.bib` são clicáveis, assim como as referências cruzadas (`@rótulo`), as citações `@chave` e as entradas do sumário. Para que o leitor perceba que um endereço externo é um link, o `normas-abnt` os sublinha, mantendo o texto preto, como pede a NBR 14724. Para colori-los:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#show: normas-abnt.with(cor-links: blue)")
+]
+
 == Referências cruzadas
 
 Referências cruzadas permitem citar figuras, tabelas, equações e seções do próprio documento:

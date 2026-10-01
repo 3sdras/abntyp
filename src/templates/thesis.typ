@@ -32,6 +32,7 @@
 ///   superior direito em páginas ímpares e superior esquerdo em páginas pares,
 ///   e seções primárias iniciando em página ímpar. A paridade é a da página
 ///   do PDF (a que a impressora usa): página 1 = capa = anverso.
+/// - cor-links: cor dos links externos (padrão: none = texto preto sublinhado)
 /// - arquivo-bibliografia: caminho para arquivo .bib (opcional)
 /// - titulo-bibliografia: título da seção de referências (padrão: "REFERÊNCIAS")
 #let normas-abnt(
@@ -39,6 +40,7 @@
   quebra-capitulo: true,
   paginacao: "auto",
   frente-verso: false,
+  cor-links: none,
   arquivo-bibliografia: none,
   titulo-bibliografia: "REFERÊNCIAS",
   body,
@@ -47,6 +49,7 @@
     fonte: fonte,
     level-1-pagebreak: quebra-capitulo,
     level-1-pagebreak-impar: frente-verso,
+    cor-links: cor-links,
     suplemento-nivel1: "Capítulo",
   )
 

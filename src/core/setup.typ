@@ -19,6 +19,8 @@
 /// - level-1-pagebreak: se true, headings de nível 1 causam pagebreak (padrão: true)
 /// - level-1-pagebreak-impar: se true, o pagebreak de nível 1 vai para página
 ///   ímpar (impressão frente-verso, NBR 14724)
+/// - cor-links: cor dos links externos (URLs). Padrão `none`: texto preto
+///   sublinhado (a NBR 14724 pede texto preto); use por exemplo `blue` para colorir
 /// - suplemento-nivel1: texto usado em referências cruzadas para headings de nível 1
 ///   (padrão: "Seção" — correto para artigos; use "Capítulo" para TCC, relatórios e livros)
 #let with-abnt-setup(
@@ -26,6 +28,7 @@
   headings-numeracao: "1.1",
   level-1-pagebreak: true,
   level-1-pagebreak-impar: false,
+  cor-links: none,
   suplemento-nivel1: "Seção",
   body,
 ) = {
@@ -141,6 +144,14 @@
       #it.body
     ]
     v(1.5em)
+  }
+
+  // Links externos (URLs) visíveis como links: sublinhados, e coloridos se pedido.
+  // Referências internas, citações e sumário continuam clicáveis sem estilo.
+  show link: it => {
+    if type(it.dest) == str {
+      if cor-links == none { underline(it) } else { underline(text(fill: cor-links, it)) }
+    } else { it }
   }
 
   // Parte (ver `parte()` em headings.typ): página própria, "Parte N: Título"
