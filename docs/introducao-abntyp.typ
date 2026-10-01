@@ -1392,7 +1392,7 @@ Como visto na @parte:fund...
 = Segundo capítulo")
 ]
 
-A numeração dos capítulos continua corrida, sem reiniciar a cada parte.
+A numeração dos capítulos continua corrida, sem reiniciar a cada parte. Com `frente-verso: true`, a página da parte também começa em página ímpar.
 
 == Referências cruzadas
 

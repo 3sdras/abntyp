@@ -145,7 +145,7 @@
 
   // Parte (ver `parte()` em headings.typ): página própria, "Parte N: Título"
   show figure.where(kind: "parte"): it => {
-    pagebreak(weak: true)
+    if level-1-pagebreak-impar { pagebreak(weak: true, to: "odd") } else { pagebreak(weak: true) }
     v(1fr)
     align(center, text(size: 16pt, weight: "bold", upper(it.supplement + [ ] + it.counter.display("1") + [: ] + it.caption.body)))
     v(1fr)
