@@ -32,12 +32,24 @@
 #let container(
   body,
   legenda: none,
+  fonte: none,
   origem: none,
   nota: none,
   tipo: "imagem",
   suplemento: auto,
+  posicao: "aqui",
   ..args,
 ) = {
+  // `fonte` é o nome preferido (como no LaTeX); `origem` continua aceito.
+  let origem = if fonte != none { fonte } else { origem }
+
+  // Posição: "aqui" (fixa, como [H] no LaTeX), "topo", "fundo" ou "auto" (flutuante)
+  let placement = if posicao == "aqui" { none }
+    else if posicao == "topo" { top }
+    else if posicao == "fundo" { bottom }
+    else if posicao == "auto" { auto }
+    else { posicao }
+
   // Traduz strings em português para os tipos nativos do Typst.
   // Backward-compat: aceita também os tipos nativos `image` e `table`
   // (usados antes da renomeação para "imagem"/"tabela"), de modo que
@@ -73,6 +85,7 @@
     caption: if legenda != none { figure.caption(position: top, legenda) },
     kind: resolved-kind,
     supplement: supp,
+    ..if "placement" not in args.named() { (placement: placement) },
     ..args,
   )
 }

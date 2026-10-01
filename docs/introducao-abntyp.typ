@@ -1350,7 +1350,7 @@ reforça o ponto#footnote[Ibid., p. 5.].")
 
 Alíneas e subalíneas são regulamentadas pela NBR 6024:2012 (seções 4 e 5). Alíneas são subdivisões de um assunto dentro de uma seção, sem título próprio, indicadas por letras minúsculas seguidas de parêntese --- o texto que as antecede deve terminar em dois-pontos. Subalíneas são subdivisões das alíneas, indicadas por travessão seguido de espaço. Ambas terminam em ponto e vírgula, exceto a última (ponto final):
 
-Com `normas-abnt`, as listas numeradas do Typst (`+`) já saem como alíneas, `a)`, `b)`, `c)`, sem configurar nada. Para subalíneas, use uma lista com marcador de travessão. Quem preferir outra numeração (`1.`, `i)`) troca com `#set enum(numbering: "1.")`.
+Com `normas-abnt`, as listas numeradas do Typst (`+`) já saem como alíneas, `a)`, `b)`, `c)`, sem configurar nada. As funções `#alineas[...]` e `#subalineas[...]` forçam o formato em um trecho (`#subalineas` usa o marcador de travessão); o exemplo abaixo mostra a forma com `#set list`. Quem preferir outra numeração (`1.`, `i)`) troca com `#set enum(numbering: "1.")`.
 
 #exemplo[
   #raw(block: true, lang: "typst", "Os elementos obrigatórios são:
@@ -1461,7 +1461,7 @@ A função `#container()` é a _única_ forma de criar um elemento com título e
 
 #raw(block: true, lang: "typst", "#container(
   legenda: [Título do elemento],  // aparece acima
-  origem: [Elaborado pelo autor.],  // aparece abaixo (\"Fonte: ...\")
+  fonte: [Elaborado pelo autor.],  // aparece abaixo (\"Fonte: ...\")
   nota: [Nota opcional.],  // aparece abaixo da fonte (\"Nota: ...\")
   tipo: \"imagem\",  // \"imagem\" (padrão), \"tabela\" ou \"quadro\"
 )[
@@ -1483,7 +1483,8 @@ O `container` cuida de tudo isso automaticamente, inclusive a centralização ho
     [*Parâmetro*], [*Aceita*], [*Padrão*], [*Descrição*],
     table.hline(stroke: 0.5pt),
     [`legenda`], [em branco ou conteúdo], [em branco], [Título do elemento. Aparece acima, com numeração automática (ex: "Figura 1 --- Título"). Se omitido, o elemento não recebe título nem numeração.],
-    [`origem`], [em branco ou conteúdo], [em branco], [Fonte do elemento. Aparece abaixo com o prefixo "Fonte:". Obrigatório pela ABNT, mesmo para produções do próprio autor (ex: `[Elaborado pelo autor (2026).]`).],
+    [`posicao`], ["aqui", "topo", "fundo" ou "auto"], ["aqui"], [Posição do elemento. `"aqui"` (padrão) fixa o elemento onde ele aparece no texto, como o `[H]` do LaTeX; `"topo"` e `"fundo"` o flutuam para o início ou o fim da página; `"auto"` deixa o Typst escolher.],
+    [`fonte`], [em branco ou conteúdo], [em branco], [(`origem` também é aceito.) Fonte do elemento. Aparece abaixo com o prefixo "Fonte:". Obrigatório pela ABNT, mesmo para produções do próprio autor (ex: `[Elaborado pelo autor (2026).]`).],
     [`nota`], [em branco ou conteúdo], [em branco], [Nota explicativa. Aparece abaixo da fonte com o prefixo "Nota:". Opcional.],
     [`tipo`], [texto], [`"imagem"`], [Tipo do elemento, usado para numeração e legenda automáticas. Valores: \ -- `"imagem"`: ilustrações, gráficos, fotos (legenda: "Figura") \ -- `"tabela"`: tabelas numéricas IBGE (legenda: "Tabela") \ -- `"quadro"`: tabelas textuais com bordas (legenda: "Quadro")],
     [`suplemento`], [automático ou conteúdo], [automático], [Texto que precede o número (ex: "Figura", "Tabela"). Se automático, é inferido do `tipo`. Use para customizar: `suplemento: [Gráfico]`.],
@@ -1501,7 +1502,7 @@ A NBR 14724:2024 classifica figuras como _ilustrações_ (assim como gráficos, 
 #exemplo[
   #raw(block: true, lang: "typst", "#container(
   legenda: [Comparação de desempenho dos algoritmos],
-  origem: [Elaborado pelo autor (2026).],
+  fonte: [Elaborado pelo autor (2026).],
 )[
   #imagem(read(\"imagens/grafico.png\", encoding: none), largura: 80%)
 ] <fig:comparacao>")
@@ -1584,7 +1585,7 @@ O `#container()` centraliza automaticamente seu conteúdo --- não é preciso fa
   #raw(block: true, lang: "typst", "// Imagem dentro de container: já centralizada
 #container(
   legenda: [Meu gráfico],
-  origem: [Elaborado pelo autor.],
+  fonte: [Elaborado pelo autor.],
 )[
   #imagem(read(\"grafico.svg\", encoding: none), largura: 80%)
 ]
@@ -1615,7 +1616,7 @@ Use `#quadro()` dentro de `#container()` com `tipo: "quadro"`:
   #raw(block: true, lang: "typst", "#container(
   legenda: [Glossário de termos],
   tipo: \"quadro\",
-  origem: [Elaborado pelo autor.],
+  fonte: [Elaborado pelo autor.],
 )[
   #quadro(
     columns: (1fr, 2fr),
@@ -1644,7 +1645,7 @@ Use `#tabela()` dentro de `#container()` com `tipo: "tabela"`:
   #raw(block: true, lang: "typst", "#container(
   legenda: [Complexidade dos algoritmos de ordenação],
   tipo: \"tabela\",
-  origem: [Adaptado de Cormen et al. (2012).],
+  fonte: [Adaptado de Cormen et al. (2012).],
 )[
   #tabela(
     columns: 4,
@@ -1675,7 +1676,7 @@ A função `#tabela()` é um wrapper sobre `table()` que aplica `stroke: none` a
 
 == Legendas e fontes
 
-O `container` já cuida da fonte e da nota por meio dos parâmetros `origem` e `nota`. Para casos em que você precise inserir fonte ou nota de forma avulsa (fora de um container), use as funções auxiliares:
+O `container` já cuida da fonte e da nota por meio dos parâmetros `fonte` (ou `origem`) e `nota`. Para casos em que você precise inserir fonte ou nota de forma avulsa (fora de um container), use as funções auxiliares:
 
 #raw(block: true, lang: "typst", "// Fonte elaborada pelo autor
 #fonte[Elaborado pelo autor (2026).]
@@ -1694,7 +1695,7 @@ Porém, o uso recomendado é sempre via `container`:
 #raw(block: true, lang: "typst", "#container(
   legenda: [Minha tabela],
   tipo: \"tabela\",
-  origem: [Elaborado pelo autor (2026).],
+  fonte: [Elaborado pelo autor (2026).],
   nota: [Os valores foram arredondados para duas casas decimais.],
 )[
   #tabela(columns: 2,
@@ -1717,7 +1718,7 @@ No LaTeX, mesclar células exige `\multicolumn{}` e o pacote `multirow`. No Typs
   #raw(block: true, lang: "typst", "#container(
   legenda: [Horário de aulas],
   tipo: \"quadro\",
-  origem: [Elaborado pelo autor.],
+  fonte: [Elaborado pelo autor.],
 )[
   #quadro(
     columns: (auto, 1fr, 1fr),

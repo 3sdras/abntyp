@@ -192,3 +192,17 @@
   ]
   v(1.5em)
 }
+
+/// Alíneas (NBR 6024): itens `+` numerados a), b), c).
+/// Já é o padrão de `normas-abnt`; use esta função para forçar o formato
+/// em um trecho (ex.: documento sem `normas-abnt`).
+#let alineas(body) = {
+  set enum(numbering: "a)")
+  body
+}
+
+/// Subalíneas (NBR 6024): itens `-` com travessão.
+#let subalineas(body) = {
+  set list(marker: [--])
+  body
+}
