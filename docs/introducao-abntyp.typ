@@ -1656,6 +1656,17 @@ A ABNT não define regras próprias para a apresentação de tabelas --- a NBR 1
 - O dado numérico é a informação central (dados textuais pertencem a quadros, não a tabelas)
 - Fonte obrigatória no rodapé, indicando a entidade responsável pelo levantamento
 
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: 0.5pt + gray,
+  radius: 3pt,
+)[
+  #set text(size: 10pt)
+  #set par(first-line-indent: 0pt)
+  *O jeito mais prático de fazer uma tabela.* Monte a tabela no programa que você preferir (planilha, editor de texto, o próprio navegador), tire um _print_ e peça a uma IA de qualidade que escreva o código da tabela em Typst. Algo como: "Converta esta imagem em uma tabela em Typst, usando `#tabela()` dentro de `#container()`, no padrão IBGE (traços horizontais apenas no topo, após o cabeçalho e no rodapé)". Depois, confira os valores e ajuste a legenda e a fonte. Para dados que já estão em planilha, o mesmo vale colando as células no lugar do _print_.
+]
+
 Use `#tabela()` dentro de `#container()` com `tipo: "tabela"`:
 
 #exemplo[
