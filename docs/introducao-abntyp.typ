@@ -72,7 +72,7 @@
   #v(3cm)
 
   #text(size: 12pt)[
-    versão 0.1.6 -- Outubro/2026
+    versão 0.6.0 -- Outubro/2026
   ]
 
   #v(1fr)
@@ -202,7 +202,7 @@ O webapp oferece:
 
 Para usar o ABNTyp no webapp, basta importar o pacote no início do documento:
 
-#raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.6\": *")
+#raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.6.0\": *")
 
 === Instalação local (CLI)
 
@@ -256,7 +256,7 @@ Este código acima produz um documento de uma página contendo apenas "Olá, mun
 Para um documento acadêmico usando ABNTyp, o exemplo mínimo seria:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.6\": *
+  #raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.6.0\": *
 
 #show: dados.with(
   titulo: \"Meu Trabalho Acadêmico\",
@@ -293,7 +293,7 @@ Um documento Typst pode ser dividido em três partes:
 
 #exemplo[
   #raw(block: true, lang: "typst", "// 1. Preâmbulo (importações)
-#import \"@preview/abntyp:0.1.6\": *
+#import \"@preview/abntyp:0.6.0\": *
 
 // 2. Configuração
 #set page(paper: \"a4\", margin: 2cm)
@@ -341,7 +341,7 @@ O Typst oferece várias formas de alterar o estilo do texto. A @tab:estilos resu
 )[
   #set text(size: 10pt)
   #set par(first-line-indent: 0pt)
-  *Atalhos do ABNTypst:* As funções `#sub`, `#risc` e `#caps` não existem no Typst puro — são exportadas pelo pacote ABNTypst como atalhos de escrita para `#underline`, `#strike` e versalete, respectivamente. Ao importar o pacote com `#import "@preview/abntyp:0.1.6": *`, essas funções ficam disponíveis automaticamente.
+  *Atalhos do ABNTypst:* As funções `#sub`, `#risc` e `#caps` não existem no Typst puro — são exportadas pelo pacote ABNTypst como atalhos de escrita para `#underline`, `#strike` e versalete, respectivamente. Ao importar o pacote com `#import "@preview/abntyp:0.6.0": *`, essas funções ficam disponíveis automaticamente.
 
   *Observação sobre versalete:* A função `#smallcaps` do Typst depende de a fonte possuir suporte nativo a small caps (feature OpenType "smcp"). Fontes como Times New Roman não possuem esse recurso. O ABNTypst fornece `#caps` que simula versalete em qualquer fonte — desde que receba uma *string* (aspas):
 
@@ -2243,7 +2243,7 @@ O template `poster` segue a NBR 15437 @abnt15437:
 O template `slides` usa o pacote Touying @touying para apresentações:
 
 #raw(block: true, lang: "typst", "#import \"@preview/touying:0.7.4\": *
-#import \"@preview/abntyp:0.1.6\": slides-defesa
+#import \"@preview/abntyp:0.6.0\": slides-defesa
 
 #show: slides-defesa.with(
   titulo: \"Título do Trabalho\",
