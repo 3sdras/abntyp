@@ -1453,6 +1453,7 @@ Resultado:
 - `#alineas[...]` aplica o esquema ABNT (alíneas e subalíneas) só ao trecho, útil em documentos sem `normas-abnt` ou com `enumeracao: "latex"`.
 - `#subalineas[...]` aplica o marcador de travessão a uma lista `-`.
 - `#set enum(full: true, numbering: numeracao-enum("latex"))` (ou `"abnt"`) troca o esquema a partir daquele ponto do documento, sem mudar o parâmetro de `normas-abnt`.
+- *Em `artigo`, `relatorio` e `livro`*, que não têm o parâmetro `enumeracao` (usam sempre `"abnt"`), coloque essa linha logo após o `#show:` do template para trocar o esquema no documento todo: `#show: livro.with(...)` seguido de `#set enum(full: true, numbering: numeracao-enum("latex"))`.
 - Para qualquer outra numeração a partir de certo ponto, desligue o esquema com `full: false`: `#set enum(numbering: "1.", full: false)` (ou `"i)"`, `"A."`...).
 
 #exemplo[

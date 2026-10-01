@@ -165,7 +165,7 @@ São Paulo: Editora, 2023.
 ```
 Margens espelhadas, número à esquerda nas páginas pares e capítulos em página ímpar.
 
-*Listas numeradas:* `+` sai como alínea `a)`, `b)` e, aninhado, subalínea com travessão (NBR 6024). Para o esquema `1.`, `a)`, `i)`, `A.` do LaTeX: `normas-abnt.with(enumeracao: "latex")`.
+*Listas numeradas:* `+` sai como alínea `a)`, `b)` e, aninhado, subalínea com travessão (NBR 6024). Para o esquema `1.`, `a)`, `i)`, `A.` do LaTeX: `normas-abnt.with(enumeracao: "latex")`. Em `artigo`, `relatorio` e `livro`, use `#set enum(full: true, numbering: numeracao-enum("latex"))` logo após o `#show:`.
 
 *Numeração de páginas:* `paginacao: "auto"` (padrão), `"todas"` ou `"nenhuma"`.
 
