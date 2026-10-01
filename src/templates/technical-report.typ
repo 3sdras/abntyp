@@ -80,7 +80,7 @@
   paginacao: "auto",
   frente-verso: false,
   arquivo-bibliografia: none,
-  titulo-bibliografia: "REFERENCIAS",
+  titulo-bibliografia: "REFERÊNCIAS",
   body,
 ) = {
   // Configuracao do documento
@@ -142,7 +142,7 @@
 
   // Numero do relatorio e ISSN
   if numero-relatorio != none {
-    text(size: 11pt, "Relatorio n. " + str(numero-relatorio))
+    text(size: 11pt, "Relatório n. " + str(numero-relatorio))
     linebreak()
   }
 
@@ -302,7 +302,7 @@
   // Equipe tecnica (opcional)
   if equipe-tecnica != none {
     align(center)[
-      #text(weight: "bold", size: 11pt, "EQUIPE TECNICA")
+      #text(weight: "bold", size: 11pt, "EQUIPE TÉCNICA")
     ]
     v(1em)
 
@@ -439,7 +439,7 @@
   preco: none,
   observacoes: none,
 ) = {
-  heading(level: 1, numbering: none, "FORMULARIO DE IDENTIFICACAO")
+  heading(level: 1, numbering: none, "FORMULÁRIO DE IDENTIFICAÇÃO")
 
   let field(label, value) = {
     if value != none {
@@ -450,10 +450,10 @@
 
   set par(first-line-indent: 0pt)
 
-  field("Titulo", titulo)
-  field("Classificacao de seguranca", classificacao)
-  field("Numero", numero-relatorio)
-  field("Tipo de relatorio", tipo-relatorio)
+  field("Título", titulo)
+  field("Classificação de segurança", classificacao)
+  field("Número", numero-relatorio)
+  field("Tipo de relatório", tipo-relatorio)
   field("Data", data)
 
   if autores.len() > 0 {
@@ -466,7 +466,7 @@
   }
 
   if instituicoes.len() > 0 {
-    [*Instituicoes:*]
+    [*Instituições:*]
     linebreak()
     for inst in instituicoes {
       [- #inst]
@@ -490,14 +490,14 @@
 
   v(0.5em)
 
-  field("Edicao", edicao)
-  field("Numero de paginas", paginas)
+  field("Edição", edicao)
+  field("Número de páginas", paginas)
   field("Volume", volume)
   field("ISSN", issn)
-  field("Distribuicao", distribuicao)
+  field("Distribuição", distribuicao)
   field("Distribuidor", distribuidor)
-  field("Preco", preco)
-  field("Observacoes", observacoes)
+  field("Preço", preco)
+  field("Observações", observacoes)
 
   pagebreak()
 }

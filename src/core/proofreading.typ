@@ -72,12 +72,12 @@
   body + text(fill: gray, size: 8pt, [ (rd)])
 }
 
-/// Marca texto para caixa alta (maiusculas)
+/// Marca texto para caixa alta (maiúsculas)
 #let mark-uppercase(body) = {
   body + text(fill: gray, size: 8pt, [ (CA)])
 }
 
-/// Marca texto para caixa baixa (minusculas)
+/// Marca texto para caixa baixa (minúsculas)
 #let mark-lowercase(body) = {
   body + text(fill: gray, size: 8pt, [ (Cb)])
 }
@@ -200,7 +200,7 @@
   set text(size: 10pt)
   set par(first-line-indent: 0pt)
 
-  text(weight: "bold", [Legenda de Simbolos de Revisao (NBR 6025:2002)])
+  text(weight: "bold", [Legenda de Símbolos de Revisão (NBR 6025:2002)])
 
   v(0.5em)
 
@@ -209,29 +209,29 @@
     stroke: 0.5pt,
     inset: 4pt,
 
-    [*Simbolo*], [*Significado*],
+    [*Símbolo*], [*Significado*],
 
     suprimir[texto], [Suprimir texto],
     inserir[novo], [Inserir texto],
-    join-space(), [Unir (remover espaco)],
-    separate(), [Separar (adicionar espaco)],
+    join-space(), [Unir (remover espaço)],
+    separate(), [Separar (adicionar espaço)],
     see-original(), [Ver original (texto omitido)],
-    duvida(), [Duvida - consultar autor],
-    keep-original[texto], [Manter original (correcao indevida)],
+    duvida(), [Dúvida - consultar autor],
+    keep-original[texto], [Manter original (correção indevida)],
 
-    mark-italic[texto], [Alterar para italico],
+    mark-italic[texto], [Alterar para itálico],
     mark-bold[texto], [Alterar para negrito],
     mark-normal[texto], [Alterar para normal],
-    mark-uppercase[texto], [Caixa alta (maiusculas)],
-    mark-lowercase[texto], [Caixa baixa (minusculas)],
+    mark-uppercase[texto], [Caixa alta (maiúsculas)],
+    mark-lowercase[texto], [Caixa baixa (minúsculas)],
     mark-smallcaps[texto], [Versal versalete],
 
-    new-paragraph(), [Abrir paragrafo],
+    new-paragraph(), [Abrir parágrafo],
     center-text(), [Centralizar],
-    align-left(), [Alinhar a esquerda],
-    align-right(), [Alinhar a direita],
+    align-left(), [Alinhar à esquerda],
+    align-right(), [Alinhar à direita],
 
-    attention[texto], [Atencao necessaria],
+    attention[texto], [Atenção necessária],
     approved[texto], [Aprovado],
     problem[texto], [Problema identificado],
 

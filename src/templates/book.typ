@@ -156,7 +156,7 @@
 
   // Edicao
   if edicao != none {
-    text(size: 12pt)[#edicao. edicao]
+    text(size: 12pt)[#edicao. edição]
     v(0.5em)
   }
 
@@ -310,7 +310,7 @@
 
   // Edicao
   if edicao != none {
-    text(size: 11pt)[#edicao. edicao]
+    text(size: 11pt)[#edicao. edição]
     v(0.5em)
   }
 
@@ -387,7 +387,7 @@
 
   // Titulo original
   if titulo-original != none {
-    [Titulo original: #emph[#titulo-original]]
+    [Título original: #emph[#titulo-original]]
     v(1em)
   }
 
@@ -487,7 +487,7 @@
 /// Formato: nome especifico + travessao + titulo + pagina
 #let book-list-illustrations() = {
   align(center)[
-    #text(weight: "bold", size: 12pt, "LISTA DE ILUSTRACOES")
+    #text(weight: "bold", size: 12pt, "LISTA DE ILUSTRAÇÕES")
   ]
 
   v(1.5em)
@@ -540,7 +540,7 @@
 /// Conforme NBR 6029:2023 - ordem de apresentacao
 #let book-list-symbols(items) = {
   align(center)[
-    #text(weight: "bold", size: 12pt, "LISTA DE SIMBOLOS")
+    #text(weight: "bold", size: 12pt, "LISTA DE SÍMBOLOS")
   ]
 
   v(1.5em)
@@ -557,7 +557,7 @@
 /// Sumario do livro
 /// Conforme NBR 6027
 #let book-toc(
-  titulo: "SUMARIO",
+  titulo: "SUMÁRIO",
   profundidade: 3,
 ) = {
   align(center)[
@@ -580,7 +580,7 @@
 /// Prefacio ou apresentacao
 /// Conforme NBR 6029:2023 - pagina impar, sem indicativo de secao
 /// Em novas edicoes: prefacio novo precede os anteriores
-#let book-preface(titulo: "PREFACIO", conteudo) = {
+#let book-preface(titulo: "PREFÁCIO", conteudo) = {
   heading(level: 1, numbering: none, upper(titulo))
   conteudo
   pagebreak()
@@ -588,13 +588,13 @@
 
 /// Apresentacao
 #let book-presentation(conteudo) = {
-  book-preface(titulo: "APRESENTACAO", conteudo)
+  book-preface(titulo: "APRESENTAÇÃO", conteudo)
 }
 
 /// Posfacio
 /// Conforme NBR 6029:2023 - elemento pos-textual opcional
 #let book-postface(conteudo) = {
-  heading(level: 1, numbering: none, "POSFACIO")
+  heading(level: 1, numbering: none, "POSFÁCIO")
   conteudo
   pagebreak()
 }
@@ -603,7 +603,7 @@
 /// Conforme NBR 6029:2023 - elemento pos-textual opcional
 /// - items: dicionario termo -> definicao
 #let book-glossary(items) = {
-  heading(level: 1, numbering: none, "GLOSSARIO")
+  heading(level: 1, numbering: none, "GLOSSÁRIO")
 
   set par(first-line-indent: 0pt)
 
@@ -620,7 +620,7 @@
 /// Conforme NBR 6029:2023 - identificacao: termo + travessao + titulo
 /// Multiplos: letras maiusculas consecutivas (A, B, C...)
 #let book-appendix(letra: "A", titulo: "", body) = {
-  heading(level: 1, numbering: none)[APENDICE #letra -- #titulo]
+  heading(level: 1, numbering: none)[APÊNDICE #letra -- #titulo]
   body
   pagebreak()
 }
@@ -636,7 +636,7 @@
 
 /// Indice remissivo
 /// Conforme NBR 6034 - no final da publicacao
-#let book-index(titulo: "INDICE", entries) = {
+#let book-index(titulo: "ÍNDICE", entries) = {
   heading(level: 1, numbering: none, upper(titulo))
 
   set par(first-line-indent: 0pt)

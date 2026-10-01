@@ -476,9 +476,9 @@
 /// Use no inicio do documento quando adotar o sistema numerico.
 #let aviso-sistema-numerico() = {
   text(size: 10pt, fill: gray, style: "italic")[
-    Este documento utiliza o sistema numerico de citacoes (NBR 10520:2023, secao 4.2).
-    Conforme a norma, o sistema numerico nao pode ser usado simultaneamente com
-    notas de rodape.
+    Este documento utiliza o sistema numérico de citações (NBR 10520:2023, seção 4.2).
+    Conforme a norma, o sistema numérico não pode ser usado simultaneamente com
+    notas de rodapé.
   ]
 }
 

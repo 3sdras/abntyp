@@ -152,6 +152,22 @@
   pagebreak()
 }
 
+/// Lista de quadros
+#let lista-quadros() = {
+  align(center)[
+    #text(weight: "bold", size: 12pt, "LISTA DE QUADROS")
+  ]
+
+  v(1.5em)
+
+  outline(
+    title: none,
+    target: figure.where(kind: "quadro"),
+  )
+
+  pagebreak()
+}
+
 /// Lista de abreviaturas e siglas
 /// - itens: dicionário de sigla -> significado
 #let lista-siglas(itens) = {

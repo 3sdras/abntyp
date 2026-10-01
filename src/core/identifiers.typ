@@ -391,7 +391,7 @@
   [ \ ]
 
   if title-key != none {
-    text(size: 10pt, style: "italic")[Titulo-chave: #title-key \ ]
+    text(size: 10pt, style: "italic")[Título-chave: #title-key \ ]
   }
 }
 
@@ -468,12 +468,12 @@
 
 /// Grupos de registro ISBN conhecidos
 #let isbn-groups = (
-  "0": "Paises de lingua inglesa",
-  "1": "Paises de lingua inglesa",
-  "2": "Paises de lingua francesa",
-  "3": "Paises de lingua alema",
-  "4": "Japao",
-  "5": "Russia (ex-URSS)",
+  "0": "Países de língua inglesa",
+  "1": "Países de língua inglesa",
+  "2": "Países de língua francesa",
+  "3": "Países de língua alemã",
+  "4": "Japão",
+  "5": "Rússia (ex-URSS)",
   "7": "China",
   "65": "Brasil (antigo)",
   "85": "Brasil",

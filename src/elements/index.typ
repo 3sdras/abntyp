@@ -76,7 +76,7 @@
 ///
 /// Parametros:
 /// - titulo: titulo do indice (padrao: "INDICE")
-/// - rotulo-tipo: tipo do indice para o titulo (ex: "DE ASSUNTOS", "ONOMASTICO")
+/// - rotulo-tipo: tipo do indice para o titulo (ex: "DE ASSUNTOS", "ONOMÁSTICO")
 /// - entradas-ver: lista de remissivas "ver"
 /// - entradas-ver-tambem: lista de remissivas "ver tambem"
 /// - colunas: numero de colunas (padrao: 2)
@@ -95,7 +95,7 @@
 /// )
 /// ```
 #let indice(
-  titulo: "INDICE",
+  titulo: "ÍNDICE",
   rotulo-tipo: none,
   entradas-ver: (),
   entradas-ver-tambem: (),
@@ -249,7 +249,7 @@
             // Remissiva "ver tambem"
             if term-key in see-also-map {
               h(1em)
-              [#emph[ver tambem] #see-also-map.at(term-key).join(", ")]
+              [#emph[ver também] #see-also-map.at(term-key).join(", ")]
               linebreak()
             }
           }
@@ -282,7 +282,7 @@
   colunas: 2,
 ) = {
   indice(
-    rotulo-tipo: "ONOMASTICO",
+    rotulo-tipo: "ONOMÁSTICO",
     entradas-ver: entradas-ver,
     entradas-ver-tambem: entradas-ver-tambem,
     colunas: colunas,

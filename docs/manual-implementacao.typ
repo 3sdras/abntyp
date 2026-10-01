@@ -59,10 +59,10 @@
   #text(size: 12pt)[Manual de Implementação]
 
   #v(1cm)
-  #text(size: 11pt)[Versão 0.5.0]
+  #text(size: 11pt)[Versão 0.1.6]
 
   #v(1fr)
-  #text(size: 11pt)[Fevereiro 2026]
+  #text(size: 11pt)[Outubro 2026]
 ]
 
 #pagebreak()
@@ -158,7 +158,7 @@ No seu documento:
 Quando publicado no repositório oficial do Typst:
 
 ```typst
-#import "@preview/abntyp:0.1.5": *
+#import "@preview/abntyp:0.1.6": *
 ```
 
 = Guia Rápido
@@ -1601,7 +1601,7 @@ Template para projetos de pesquisa.
   volume: none,        // Número do volume
   fonte: "Times New Roman",
   arquivo-bibliografia: none,  // read("referencias.bib"): gera REFERÊNCIAS no fim
-  titulo-bibliografia: "REFERENCIAS",
+  titulo-bibliografia: "REFERÊNCIAS",
 )
 ```
 
@@ -1683,8 +1683,8 @@ Template para relatórios técnicos e/ou científicos.
   fonte: "Times New Roman",
   paginacao: "auto",      // "auto" | "todas" | "nenhuma"
   frente-verso: false,    // true: margens espelhadas
-  arquivo-bibliografia: none,  // read("referencias.bib"): gera REFERENCIAS no fim
-  titulo-bibliografia: "REFERENCIAS",
+  arquivo-bibliografia: none,  // read("referencias.bib"): gera REFERÊNCIAS no fim
+  titulo-bibliografia: "REFERÊNCIAS",
 )
 ```
 
@@ -2158,7 +2158,7 @@ Para casos especiais, você pode usar as funções de formatação manual (`ref-
 
 = Changelog
 
-== Versão 0.1.6 (Julho 2026)
+== Versão 0.1.6 (Outubro 2026)
 
 - `normas-abnt` ganhou o parâmetro `quebra-capitulo: true` (passa para `level-1-pagebreak`; `false` desliga a quebra de página antes de capítulos).
 - Paginação automática conforme a NBR 14724:2024 em `normas-abnt`: contagem a partir da folha de rosto, número visível só a partir da primeira seção primária numerada, canto superior direito. Parâmetro `paginacao: "auto" | "todas" | "nenhuma"`. Antes, `textual()`/`postextual()` usavam `set page` dentro de função e não tinham efeito nas páginas seguintes.

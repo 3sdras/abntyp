@@ -220,6 +220,20 @@
   "lei", "ato", "art",
 )
 
+/// Minúsculas e sem acentos, para buscar no dicionário (cujas chaves não têm
+/// acento): "Administração" e "administracao" encontram a mesma entrada.
+#let _normalizar(palavra) = {
+  let mapa = (
+    "á": "a", "à": "a", "â": "a", "ã": "a", "ä": "a",
+    "é": "e", "è": "e", "ê": "e", "ë": "e",
+    "í": "i", "ì": "i", "î": "i", "ï": "i",
+    "ó": "o", "ò": "o", "ô": "o", "õ": "o", "ö": "o",
+    "ú": "u", "ù": "u", "û": "u", "ü": "u",
+    "ç": "c",
+  )
+  lower(palavra).clusters().map(c => mapa.at(c, default: c)).join()
+}
+
 /// Artigos, preposicoes e conjuncoes a suprimir (exceto quando necessarios)
 #let suppressible-words = (
   "de", "da", "do", "das", "dos",
@@ -233,7 +247,7 @@
 /// Verifica se uma palavra deve ser suprimida
 /// - word: palavra a verificar
 #let should-suppress(word) = {
-  let lower-word = lower(word)
+  let lower-word = _normalizar(word)
   // Suprimir se for a primeira palavra (artigo inicial)
   lower-word in suppressible-words
 }
@@ -241,7 +255,7 @@
 /// Verifica se uma palavra pode ser abreviada
 /// - word: palavra a verificar
 #let can-abbreviate(word) = {
-  let lower-word = lower(word)
+  let lower-word = _normalizar(word)
 
   // Nao abreviar palavras curtas (menos de 5 letras)
   if word.len() < 5 and lower-word not in abbreviation-dict {
@@ -260,7 +274,7 @@
 /// - word: palavra a abreviar
 /// - preserve-case: preservar maiusculas do original
 #let get-abbreviation(word, preserve-case: true) = {
-  let lower-word = lower(word)
+  let lower-word = _normalizar(word)
 
   if lower-word in abbreviation-dict {
     let abbrev = abbreviation-dict.at(lower-word)
@@ -317,7 +331,7 @@
   let is-first = true
 
   for word in words {
-    let lower-word = lower(word)
+    let lower-word = _normalizar(word)
 
     // Pular palavras vazias
     if word.len() == 0 {
@@ -387,8 +401,8 @@
   "Revista Brasileira de Biologia": "R. bras. Biol.",
   "Revista Brasileira de Geografia": "R. bras. Geogr.",
   "Revista Brasileira de Economia": "R. bras. Econ.",
-  "Memorias do Instituto Oswaldo Cruz": "Mem. Inst. Oswaldo Cruz",
+  "Memórias do Instituto Oswaldo Cruz": "Mem. Inst. Oswaldo Cruz",
   "Boletim do INT": "B. INT",
-  "Ciencia e Cultura": "Ci. e Cult.",
-  "Anais da Academia Brasileira de Ciencias": "An. Acad. bras. Ci.",
+  "Ciência e Cultura": "Ci. e Cult.",
+  "Anais da Academia Brasileira de Ciências": "An. Acad. bras. Ci.",
 )

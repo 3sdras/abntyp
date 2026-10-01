@@ -72,7 +72,7 @@
   #v(3cm)
 
   #text(size: 12pt)[
-    versão 1.0 -- Janeiro/2026
+    versão 0.1.6 -- Outubro/2026
   ]
 
   #v(1fr)
@@ -202,7 +202,7 @@ O webapp oferece:
 
 Para usar o ABNTyp no webapp, basta importar o pacote no início do documento:
 
-#raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.5\": *")
+#raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.6\": *")
 
 === Instalação local (CLI)
 
@@ -256,7 +256,7 @@ Este código acima produz um documento de uma página contendo apenas "Olá, mun
 Para um documento acadêmico usando ABNTyp, o exemplo mínimo seria:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.5\": *
+  #raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.1.6\": *
 
 #show: dados.with(
   titulo: \"Meu Trabalho Acadêmico\",
@@ -293,7 +293,7 @@ Um documento Typst pode ser dividido em três partes:
 
 #exemplo[
   #raw(block: true, lang: "typst", "// 1. Preâmbulo (importações)
-#import \"@preview/abntyp:0.1.5\": *
+#import \"@preview/abntyp:0.1.6\": *
 
 // 2. Configuração
 #set page(paper: \"a4\", margin: 2cm)
@@ -341,7 +341,7 @@ O Typst oferece várias formas de alterar o estilo do texto. A @tab:estilos resu
 )[
   #set text(size: 10pt)
   #set par(first-line-indent: 0pt)
-  *Atalhos do ABNTypst:* As funções `#sub`, `#risc` e `#caps` não existem no Typst puro — são exportadas pelo pacote ABNTypst como atalhos de escrita para `#underline`, `#strike` e versalete, respectivamente. Ao importar o pacote com `#import "@preview/abntyp:0.1.5": *`, essas funções ficam disponíveis automaticamente.
+  *Atalhos do ABNTypst:* As funções `#sub`, `#risc` e `#caps` não existem no Typst puro — são exportadas pelo pacote ABNTypst como atalhos de escrita para `#underline`, `#strike` e versalete, respectivamente. Ao importar o pacote com `#import "@preview/abntyp:0.1.6": *`, essas funções ficam disponíveis automaticamente.
 
   *Observação sobre versalete:* A função `#smallcaps` do Typst depende de a fonte possuir suporte nativo a small caps (feature OpenType "smcp"). Fontes como Times New Roman não possuem esse recurso. O ABNTypst fornece `#caps` que simula versalete em qualquer fonte — desde que receba uma *string* (aspas):
 
@@ -857,9 +857,8 @@ As listas são elementos opcionais que facilitam a localização de figuras, tab
 // Lista de tabelas (gerada automaticamente)
 #lista-tabelas()
 
-// Lista de quadros (não há função dedicada: use o outline nativo)
-#align(center, text(weight: \"bold\")[LISTA DE QUADROS])
-#outline(title: none, target: figure.where(kind: \"quadro\"))
+// Lista de quadros (gerada automaticamente)
+#lista-quadros()
 
 // Lista de siglas (manual)
 #lista-siglas((
@@ -1794,10 +1793,9 @@ O ABNTyp gera automaticamente listas de figuras, tabelas e quadros:
 
 #lista-tabelas()      // Lista de tabelas
 
-// Lista de quadros: ainda não há função própria, use o outline nativo
-#outline(title: none, target: figure.where(kind: \"quadro\"))")
+#lista-quadros()      // Lista de quadros")
 
-As listas são geradas a partir dos títulos definidos no parâmetro `legenda` de cada `#container()`. `#lista-ilustracoes()` lista as figuras (`tipo: "imagem"`) e `#lista-tabelas()` as tabelas (`tipo: "tabela"`).
+As listas são geradas a partir dos títulos definidos no parâmetro `legenda` de cada `#container()`. `#lista-ilustracoes()` lista as figuras (`tipo: "imagem"`) e `#lista-tabelas()` as tabelas (`tipo: "tabela"`) e `#lista-quadros()` os quadros (`tipo: "quadro"`).
 
 #pagebreak()
 
@@ -2245,7 +2243,7 @@ O template `poster` segue a NBR 15437 @abnt15437:
 O template `slides` usa o pacote Touying @touying para apresentações:
 
 #raw(block: true, lang: "typst", "#import \"@preview/touying:0.7.4\": *
-#import \"@preview/abntyp:0.1.5\": slides-defesa
+#import \"@preview/abntyp:0.1.6\": slides-defesa
 
 #show: slides-defesa.with(
   titulo: \"Título do Trabalho\",

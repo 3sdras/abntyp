@@ -267,7 +267,7 @@
 /// Referencias para poster
 /// Formato compacto, sem notas de rodape
 #let poster-references(itens) = {
-  text(weight: "bold", size: 1.2em)[REFERENCIAS]
+  text(weight: "bold", size: 1.2em)[REFERÊNCIAS]
   v(0.3em)
 
   set par(

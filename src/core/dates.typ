@@ -6,7 +6,8 @@
 #let month-abbreviations = (
   "janeiro": "jan.",
   "fevereiro": "fev.",
-  "marco": "mar.",
+  "março": "mar.",
+  "marco": "mar.", // alias sem cedilha (entrada)
   "abril": "abr.",
   "maio": "maio",
   "junho": "jun.",
@@ -23,7 +24,7 @@
 #let month-names = (
   "janeiro",    // 1
   "fevereiro",  // 2
-  "marco",      // 3
+  "março",      // 3
   "abril",      // 4
   "maio",       // 5
   "junho",      // 6
@@ -42,22 +43,22 @@
 #let weekday-names = (
   "domingo",        // 0
   "segunda-feira",  // 1
-  "terca-feira",    // 2
+  "terça-feira",    // 2
   "quarta-feira",   // 3
   "quinta-feira",   // 4
   "sexta-feira",    // 5
-  "sabado",         // 6
+  "sábado",         // 6
 )
 
 /// Dias da semana abreviados (formato 1)
 #let weekday-abbrev1 = (
   "dom.",      // 0
-  "2a feira",  // 1
-  "3a feira",  // 2
-  "4a feira",  // 3
-  "5a feira",  // 4
-  "6a feira",  // 5
-  "sab.",      // 6
+  "2ª feira",  // 1
+  "3ª feira",  // 2
+  "4ª feira",  // 3
+  "5ª feira",  // 4
+  "6ª feira",  // 5
+  "sáb.",      // 6
 )
 
 /// Dias da semana abreviados (formato 2)
@@ -68,7 +69,7 @@
   "qua.",  // 3
   "qui.",  // 4
   "sex.",  // 5
-  "sab.",  // 6
+  "sáb.",  // 6
 )
 
 /// Retorna o nome do mes por extenso
@@ -204,7 +205,7 @@
 }
 
 /// Formata seculo em algarismos romanos
-/// Exemplo: "seculo XX" ou "sec. XX"
+/// Exemplo: "século XX" ou "sec. XX"
 /// - century: numero do seculo
 /// - abbreviated: usar forma abreviada
 #let format-century(century, abbreviated: false) = {
@@ -213,12 +214,12 @@
   if abbreviated {
     [sec. #roman]
   } else {
-    [seculo #roman]
+    [século #roman]
   }
 }
 
 /// Formata milenio em algarismos romanos
-/// Exemplo: "II milenio a.C." ou "II mil. a.C."
+/// Exemplo: "II milênio a.C." ou "II mil. a.C."
 /// - millennium: numero do milenio
 /// - bc: antes da era crista (default: false)
 /// - abbreviated: usar forma abreviada
@@ -229,12 +230,12 @@
   if abbreviated {
     [#roman mil.#suffix]
   } else {
-    [#roman milenio#suffix]
+    [#roman milênio#suffix]
   }
 }
 
 /// Formata intervalo de meses para legendas bibliograficas
-/// Exemplo: "jan./mar." ou "janeiro/marco"
+/// Exemplo: "jan./mar." ou "janeiro/março"
 /// - start-month: mes inicial (1-12)
 /// - end-month: mes final (1-12)
 /// - abbreviated: usar forma abreviada (default: true)

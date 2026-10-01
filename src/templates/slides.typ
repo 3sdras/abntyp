@@ -197,7 +197,7 @@
     aspect-ratio: proporcao,
     primary: cor-primaria,
     secondary: cor-secundaria,
-    footer: [#instituicao #h(1fr) Defesa de #if programa != none { "Dissertacao/Tese" } else { "TCC" }],
+    footer: [#instituicao #h(1fr) Defesa de #if programa != none { "Dissertação/Tese" } else { "TCC" }],
   )
 
   // Slide de titulo para defesa
@@ -258,7 +258,7 @@
 
       #if grau != none {
         text(size: 11pt, fill: cor-secundaria)[
-          Trabalho apresentado para obtencao do grau de #grau
+          Trabalho apresentado para obtenção do grau de #grau
         ]
       }
 
@@ -306,7 +306,7 @@
 ///
 /// Uso comum em apresentacoes academicas para mostrar estrutura
 #let slide-sumario(
-  titulo: "Sumario",
+  titulo: "Sumário",
   itens: (),
   cor-primaria: rgb("#003366"),
 ) = {
@@ -390,7 +390,7 @@
 /// NOTA: As referencias em slides devem seguir NBR 6023:2018
 /// Este e um dos poucos aspectos onde uma norma ABNT se aplica
 #let slide-referencias(
-  titulo: "Referencias",
+  titulo: "Referências",
   itens: (),
 ) = {
   touying-slide-wrapper(self => {
@@ -406,7 +406,7 @@
 
       // Nota sobre a norma aplicavel
       #text(size: 10pt, fill: gray)[
-        _Formatacao conforme NBR 6023:2018_
+        _Formatação conforme NBR 6023:2018_
       ]
 
       #v(0.5em)
@@ -644,8 +644,8 @@
 /// Pode ser usada no primeiro slide ou em slide de metodologia
 #let nota-sem-norma-abnt() = {
   text(size: 10pt, fill: gray, style: "italic")[
-    Nota: A ABNT nao possui norma especifica para apresentacoes de slides. \
-    Este formato segue boas praticas academicas, nao exigencias normativas.
+    Nota: A ABNT não possui norma específica para apresentações de slides. \
+    Este formato segue boas práticas acadêmicas, não exigências normativas.
   ]
 }
 
@@ -653,7 +653,7 @@
 /// Para uso quando houver citacoes na apresentacao
 #let aviso-citacoes() = {
   text(size: 10pt, fill: gray, style: "italic")[
-    Citacoes formatadas conforme NBR 10520:2023. \
-    Referencias conforme NBR 6023:2018.
+    Citações formatadas conforme NBR 10520:2023. \
+    Referências conforme NBR 6023:2018.
   ]
 }

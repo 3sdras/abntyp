@@ -47,7 +47,7 @@
   volume: none,
   fonte: "Times New Roman",
   arquivo-bibliografia: none,
-  titulo-bibliografia: "REFERENCIAS",
+  titulo-bibliografia: "REFERÊNCIAS",
   body,
 ) = {
   // Configuracao do documento
@@ -326,7 +326,7 @@
         align: (left, right),
 
         table.hline(stroke: 1pt),
-        [*Descricao*], [*Valor (R\$)*],
+        [*Descrição*], [*Valor (R\$)*],
         table.hline(stroke: 0.5pt),
 
         ..{
@@ -370,7 +370,7 @@
 /// Glossario para projeto de pesquisa
 /// Conforme NBR 15287 - ordem alfabetica
 #let glossario-projeto(itens) = {
-  heading(level: 1, numbering: none, "GLOSSARIO")
+  heading(level: 1, numbering: none, "GLOSSÁRIO")
 
   set par(first-line-indent: 0pt)
 

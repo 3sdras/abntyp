@@ -286,7 +286,7 @@
 /// Sumario do fasciculo
 /// Conforme NBR 6027
 #let periodical-toc(
-  titulo: "SUMARIO",
+  titulo: "SUMÁRIO",
 ) = {
   align(center)[
     #text(weight: "bold", size: 12pt, titulo)
@@ -421,7 +421,7 @@
 /// Instrucoes editoriais para autores
 /// Conforme NBR 6021:2015 secao 4.5.2
 #let author-guidelines(conteudo) = {
-  heading(level: 1, numbering: none, "INSTRUCOES PARA AUTORES")
+  heading(level: 1, numbering: none, "INSTRUÇÕES PARA AUTORES")
   set par(first-line-indent: 0pt)
   conteudo
 }
