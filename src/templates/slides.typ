@@ -587,6 +587,15 @@
 // FUNCOES DE ANIMACAO (TOUYING)
 // =============================================================================
 
+/// Muda de slide de forma explicita.
+/// - `#novo-slide()` — comeca um novo slide, sem titulo
+/// - `#novo-slide(titulo: "Titulo")` — novo slide com titulo (equivale a `== Titulo`)
+/// - o conteudo pode vir em seguida, entre colchetes: `#novo-slide(titulo: "X")[...]`
+#let novo-slide(titulo: none, ..corpo) = {
+  if titulo != none { heading(depth: 2, titulo) } else { pagebreak() }
+  corpo.pos().join()
+}
+
 // Re-exportar funcoes de animacao do Touying para conveniencia
 // Estas permitem revelacao progressiva de conteudo
 

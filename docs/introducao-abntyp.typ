@@ -2222,6 +2222,18 @@ O template `slides` usa o pacote Touying @touying para apresentações:
 - Trabalhos futuros
 - Agradecimentos")
 
+*Mudando de slide.* Um novo slide começa automaticamente a cada título `==`. Para mudar de slide de forma explícita, use `#novo-slide()` (sem título) ou `#novo-slide(titulo: "Título")` (equivale a `== Título`); o conteúdo pode vir logo após, entre colchetes:
+
+#raw(block: true, lang: "typst", "== Resultados
+Primeiro slide.
+
+#novo-slide()
+Continuação, em outro slide, sem título novo.
+
+#novo-slide(titulo: \"Conclusões\")[
+  Corpo do slide.
+]")
+
 #pagebreak()
 
 // ============================================================================
