@@ -206,3 +206,25 @@
   set list(marker: [--])
   body
 }
+
+/// Parte de um documento (como em livros): "Parte 1: Título", numerada
+/// automaticamente, em página própria. Aparece no sumário e pode ser
+/// referenciada com `@rótulo`, que produz "Parte 1".
+///
+/// Uso:
+/// ```typst
+/// #parte[Fundamentos] <parte:fundamentos>
+/// = Primeiro capítulo
+/// ...
+/// Veja a @parte:fundamentos.
+/// ```
+/// A formatação (página própria, centralizada) vem de `with-abnt-setup`,
+/// que `normas-abnt`, `relatorio`, `livro` e `artigo` já aplicam.
+#let parte(titulo) = figure(
+  [],
+  kind: "parte",
+  supplement: [Parte],
+  numbering: "1",
+  caption: titulo,
+  gap: 0pt,
+)

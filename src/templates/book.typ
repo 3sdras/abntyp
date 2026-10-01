@@ -545,6 +545,7 @@
 
   outline(
     title: none,
+    target: selector(heading).or(figure.where(kind: "parte")),
     depth: profundidade,
     indent: auto,
   )

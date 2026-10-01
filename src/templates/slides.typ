@@ -22,7 +22,6 @@
 
 #import "@preview/touying:0.7.4": *
 #import themes.simple: *
-#import themes.university: *
 
 // Re-exportar funcoes de citacao do ABNTyp para uso em slides
 #import "../references/citation.typ": citar, citar-autor, citar-multiplos, citar-etal, citar-entidade, citar-titulo

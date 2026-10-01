@@ -9,7 +9,7 @@
     block[
       #link(it.element.location())[
         #text(weight: "bold")[
-          #if it.prefix() != none [#it.prefix()#h(0.5em)]
+          #if it.prefix() != none [#it.prefix()#if it.element.func() == figure [:]#h(0.5em)]
           #upper(it.body())
         ]
         #box(width: 1fr, it.fill)
@@ -92,6 +92,7 @@
 
   outline(
     title: none,
+    target: selector(heading).or(figure.where(kind: "parte")),
     indent: 0pt,
   )
 }
@@ -111,6 +112,7 @@
 
   outline(
     title: none,
+    target: selector(heading).or(figure.where(kind: "parte")),
     depth: profundidade,
     indent: 0pt,
   )

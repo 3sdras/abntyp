@@ -1377,6 +1377,23 @@ As referências podem incluir:
 #set enum(numbering: \"1.\")")
 ]
 
+== Partes (`parte`)
+
+Em documentos divididos em partes, como livros, use `#parte[Título]`. A parte é numerada automaticamente ("Parte 1: Título", "Parte 2: Título"…), ocupa uma página própria, entra no sumário e pode ser referenciada com `@rótulo`, que produz "Parte 1":
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#parte[Fundamentos] <parte:fund>
+
+= Primeiro capítulo
+Como visto na @parte:fund...
+
+#parte[Aplicações]
+
+= Segundo capítulo")
+]
+
+A numeração dos capítulos continua corrida, sem reiniciar a cada parte.
+
 == Referências cruzadas
 
 Referências cruzadas permitem citar figuras, tabelas, equações e seções do próprio documento:
