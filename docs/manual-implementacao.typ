@@ -1385,6 +1385,7 @@ Template para artigos conforme NBR 6022.
   colunas: 1,          // 1 ou 2 colunas
   arquivo-bibliografia: none,  // read("referencias.bib"): gera REFERÊNCIAS no fim
   titulo-bibliografia: "REFERÊNCIAS",
+  enumeracao: "abnt",        // "abnt" (a), –) | "latex" (1., a), i), A.)
 )
 ```
 
@@ -1485,6 +1486,7 @@ Template para livros e folhetos com todos os elementos pré-textuais e pós-text
   cabecalho: "Título do Livro",  // Título corrente
   paginacao: "auto",    // "auto" | "todas" | "nenhuma"
   frente-verso: false,  // true: margens espelhadas e capítulos em página ímpar
+  enumeracao: "abnt",        // "abnt" (a), –) | "latex" (1., a), i), A.)
 )
 ```
 
@@ -1603,6 +1605,7 @@ Template para projetos de pesquisa.
   fonte: "Times New Roman",
   arquivo-bibliografia: none,  // read("referencias.bib"): gera REFERÊNCIAS no fim
   titulo-bibliografia: "REFERÊNCIAS",
+  enumeracao: "abnt",        // "abnt" (a), –) | "latex" (1., a), i), A.)
 )
 ```
 
@@ -1686,6 +1689,7 @@ Template para relatórios técnicos e/ou científicos.
   frente-verso: false,    // true: margens espelhadas
   arquivo-bibliografia: none,  // read("referencias.bib"): gera REFERÊNCIAS no fim
   titulo-bibliografia: "REFERÊNCIAS",
+  enumeracao: "abnt",        // "abnt" (a), –) | "latex" (1., a), i), A.)
 )
 ```
 
@@ -2169,10 +2173,11 @@ Para casos especiais, você pode usar as funções de formatação manual (`ref-
 - `container`: devolve um único `figure` (o `<label>` após a chamada e o `@rótulo` funcionam); legenda acima (`figure.caption(position: top)`; também aplicada a figuras e tabelas nativas); `fonte` como nome preferido de `origem`; novo `posicao`; "Nota" centralizada (também `nota-figura`).
 - `imagem()`: `pagina: auto` não quebra mais; caminho em string agora dá erro explicativo (use `read(..., encoding: none)`).
 - Novos: `alineas`/`subalineas`; `parte` (numerada, no sumário e em referências); `quebra-pagina(fraco:, para:)`; `novo-slide()`.
-- `with-abnt-setup`/`normas-abnt`: parâmetro `enumeracao` — `"abnt"` (padrão: alíneas `a)`, `b)`, `c)` e subalíneas com travessão, NBR 6024) ou `"latex"` (`1.`, `a)`, `i)`, `A.`); nova função `numeracao-enum(esquema)` e módulo `core/lists.typ`; links externos sublinhados (`cor-links`); formatação de `parte`.
+- `with-abnt-setup` e todos os templates (`normas-abnt`, `artigo`, `relatorio`, `projeto-pesquisa`, `livro`, `periodical`): parâmetro `enumeracao` — `"abnt"` (padrão: alíneas `a)`, `b)`, `c)` e subalíneas com travessão, NBR 6024) ou `"latex"` (`1.`, `a)`, `i)`, `A.`); nova função `numeracao-enum(esquema)` e módulo `core/lists.typ`; links externos sublinhados (`cor-links`); formatação de `parte`.
 - `slides`: removido o import do tema `university` do Touying, que sobrescrevia `slide` do tema `simple`.
 - `normas-abnt(arquivo-bibliografia:)` exige `read(...)`; caminho em string dá erro explicativo.
 - Palavras-chave: uma única palavra (string) é aceita em `resumo`, `resumo-en`, `artigo`, `periodico` e `relatorio`.
+- Corrigido crash do template `relatorio` sem `autores`.
 - Corrigido crash do template `artigo` quando chamado sem `autores`.
 - `citacao-curta`, `citacao-longa`, `citar`, `citar-autor`, `citar-indireto`, `citar-entidade`, `citar-titulo` e `citar-apud` agora aceitam um `<chave>` de entrada `.bib` no lugar do autor/entidade/título em texto. Antes, essas funções só imprimiam texto formatado e nunca chamavam `#cite()` — então, mesmo citando uma obra que estava no `.bib`, a referência não entrava na lista de referências e o texto da citação não era um link clicável. Agora, passando a chave (ex.: `#citacao-longa(<silva2023>, pagina: "45")[...]`), a função delega para `#cite()` nativo: a entrada é adicionada automaticamente à bibliografia e o texto renderizado vira link clicável, com a formatação ABNT preservada. Uso com string (sem `.bib`) continua funcionando sem mudanças.
 

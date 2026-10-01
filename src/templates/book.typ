@@ -36,6 +36,8 @@
 ///   miolo -- falsa folha de rosto ou folha de rosto --, numero visivel somente
 ///   apos o sumario, rodape centralizado), "todas" (visivel desde o inicio do
 ///   miolo) ou "nenhuma"
+/// - enumeracao: "abnt" (padrão: alíneas a), b), c); subalíneas com travessão) ou
+///   "latex" (1., a), i), A.)
 #let livro(
   titulo: "",
   subtitulo: none,
@@ -50,6 +52,7 @@
   cabecalho: none,
   paginacao: "auto",
   frente-verso: false,
+  enumeracao: "abnt",
   body,
 ) = {
   // Configuracao do documento
@@ -62,6 +65,7 @@
     fonte: fonte,
     suplemento-nivel1: "Capítulo",
     level-1-pagebreak-impar: frente-verso,
+    enumeracao: enumeracao,
   )
 
   set page(margin: abnt-margens(frente-verso))

@@ -20,6 +20,8 @@
 /// - colunas: número de colunas (1 ou 2)
 /// - arquivo-bibliografia: caminho para arquivo .bib (opcional)
 /// - titulo-bibliografia: título da seção de referências (padrão: "REFERÊNCIAS")
+/// - enumeracao: "abnt" (padrão: alíneas a), b), c); subalíneas com travessão) ou
+///   "latex" (1., a), i), A.)
 #let artigo(
   titulo: "",
   subtitulo: none,
@@ -32,6 +34,7 @@
   colunas: 1,
   arquivo-bibliografia: none,
   titulo-bibliografia: "REFERÊNCIAS",
+  enumeracao: "abnt",
   body,
 ) = {
   // Configuração do documento
@@ -40,7 +43,7 @@
     author: if autores.len() > 0 { autores.map(a => a.name).join(", ") } else { () },
   )
 
-  show: with-abnt-setup.with(fonte: fonte, level-1-pagebreak: false)
+  show: with-abnt-setup.with(fonte: fonte, level-1-pagebreak: false, enumeracao: enumeracao)
 
   // Paginação visível desde o início para artigos
   set page(

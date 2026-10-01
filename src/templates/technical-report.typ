@@ -62,6 +62,8 @@
 ///   secoes primarias em pagina impar)
 /// - arquivo-bibliografia: arquivo .bib (opcional)
 /// - titulo-bibliografia: titulo da secao de referencias
+/// - enumeracao: "abnt" (padrão: alíneas a), b), c); subalíneas com travessão) ou
+///   "latex" (1., a), i), A.)
 #let relatorio(
   titulo: "",
   subtitulo: none,
@@ -81,18 +83,20 @@
   frente-verso: false,
   arquivo-bibliografia: none,
   titulo-bibliografia: "REFERÊNCIAS",
+  enumeracao: "abnt",
   body,
 ) = {
   // Configuracao do documento
   set document(
     title: titulo,
-    author: autores.map(a => if type(a) == dictionary { a.name } else { a }).join(", "),
+    author: if autores.len() > 0 { autores.map(a => if type(a) == dictionary { a.name } else { a }).join(", ") } else { () },
   )
 
   show: with-abnt-setup.with(
     fonte: fonte,
     suplemento-nivel1: "Capítulo",
     level-1-pagebreak-impar: frente-verso,
+    enumeracao: enumeracao,
   )
 
   set page(margin: abnt-margens(frente-verso))

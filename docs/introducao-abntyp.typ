@@ -1360,7 +1360,7 @@ Alíneas e subalíneas são regulamentadas pela NBR 6024:2012 (seções 4 e 5). 
 
 === Duas formas de enumerar: `enumeracao: "abnt"` e `"latex"`
 
-Em Typst, uma lista numerada se escreve com `+`. O Typst usa `1.` em *todos* os níveis, o que não segue a NBR 6024, e o LaTeX troca o estilo a cada nível. Por isso o `normas-abnt` aplica automaticamente um esquema próprio, que você escolhe com o parâmetro `enumeracao`:
+Em Typst, uma lista numerada se escreve com `+`. O Typst usa `1.` em *todos* os níveis, o que não segue a NBR 6024, e o LaTeX troca o estilo a cada nível. Por isso os templates (`normas-abnt`, `artigo`, `relatorio`, `projeto-pesquisa`, `livro`, `periodical`) aplicam automaticamente um esquema próprio, que você escolhe com o parâmetro `enumeracao`:
 
 #figure(
   table(
@@ -1414,7 +1414,7 @@ Resultado:
 *`"latex"`.* Para quem prefere o esquema do `enumerate` do LaTeX (e do Ferrmat), com `1.`, `a)`, `i)`, `A.`:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#show: normas-abnt.with(enumeracao: \"latex\")
+  #raw(block: true, lang: "typst", "#show: normas-abnt.with(enumeracao: \"latex\")   // vale também para artigo, relatorio, livro...
 
 + capa;
 + resumo, que contém:
@@ -1453,7 +1453,7 @@ Resultado:
 - `#alineas[...]` aplica o esquema ABNT (alíneas e subalíneas) só ao trecho, útil em documentos sem `normas-abnt` ou com `enumeracao: "latex"`.
 - `#subalineas[...]` aplica o marcador de travessão a uma lista `-`.
 - `#set enum(full: true, numbering: numeracao-enum("latex"))` (ou `"abnt"`) troca o esquema a partir daquele ponto do documento, sem mudar o parâmetro de `normas-abnt`.
-- *Em `artigo`, `relatorio` e `livro`*, que não têm o parâmetro `enumeracao` (usam sempre `"abnt"`), coloque essa linha logo após o `#show:` do template para trocar o esquema no documento todo: `#show: livro.with(...)` seguido de `#set enum(full: true, numbering: numeracao-enum("latex"))`.
+- *Todos os templates* (`normas-abnt`, `artigo`, `relatorio`, `projeto-pesquisa`, `livro` e `periodical`) aceitam o parâmetro `enumeracao`, por exemplo `#show: livro.with(enumeracao: "latex")`.
 - Para qualquer outra numeração a partir de certo ponto, desligue o esquema com `full: false`: `#set enum(numbering: "1.", full: false)` (ou `"i)"`, `"A."`...).
 
 #exemplo[

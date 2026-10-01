@@ -33,6 +33,8 @@
 /// - fonte: fonte a usar ("Times New Roman" ou "Arial")
 /// - arquivo-bibliografia: caminho para arquivo .bib (opcional)
 /// - titulo-bibliografia: titulo da secao de referencias
+/// - enumeracao: "abnt" (padrão: alíneas a), b), c); subalíneas com travessão) ou
+///   "latex" (1., a), i), A.)
 #let projeto-pesquisa(
   titulo: "",
   subtitulo: none,
@@ -48,6 +50,7 @@
   fonte: "Times New Roman",
   arquivo-bibliografia: none,
   titulo-bibliografia: "REFERÊNCIAS",
+  enumeracao: "abnt",
   body,
 ) = {
   // Configuracao do documento
@@ -56,7 +59,7 @@
     author: if type(autor) == array { autor.join(", ") } else { autor },
   )
 
-  show: with-abnt-setup.with(fonte: fonte)
+  show: with-abnt-setup.with(fonte: fonte, enumeracao: enumeracao)
 
   // Conteudo
   body

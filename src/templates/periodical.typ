@@ -24,6 +24,8 @@
 /// - instituicao: instituicao responsavel
 /// - doi: identificador DOI (opcional)
 /// - fonte: fonte a usar
+/// - enumeracao: "abnt" (padrão: alíneas a), b), c); subalíneas com travessão) ou
+///   "latex" (1., a), i), A.)
 #let periodical(
   titulo: "",
   subtitulo: none,
@@ -38,6 +40,7 @@
   instituicao: none,
   doi: none,
   fonte: "Times New Roman",
+  enumeracao: "abnt",
   body,
 ) = {
   // Configuracao do documento
@@ -45,7 +48,7 @@
     title: titulo,
   )
 
-  show: with-abnt-setup.with(fonte: fonte, level-1-pagebreak: false)
+  show: with-abnt-setup.with(fonte: fonte, level-1-pagebreak: false, enumeracao: enumeracao)
 
   // Paginação e legenda bibliografica no rodape (periodico-especifico)
   set page(
