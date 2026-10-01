@@ -163,7 +163,7 @@
 
 /// Nota da figura (para usar avulso abaixo de um elemento)
 #let nota-figura(conteudo) = {
-  align(left)[
+  align(center)[
     #text(size: 10pt)[Nota: #conteudo]
   ]
 }
