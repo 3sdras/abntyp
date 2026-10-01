@@ -34,7 +34,7 @@
   // Palavras-chave
   if palavras-chave.len() > 0 {
     set par(first-line-indent: 0pt)
-    [*#rotulo-palavras-chave:* #palavras-chave.join(". "). ]
+    [*#rotulo-palavras-chave:* #(palavras-chave,).flatten().join(". "). ]
   }
 
   pagebreak()

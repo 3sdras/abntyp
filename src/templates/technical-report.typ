@@ -412,7 +412,7 @@
   v(1.5em)
 
   if palavras-chave.len() > 0 {
-    [*Palavras-chave:* #palavras-chave.join(". ").]
+    [*Palavras-chave:* #(palavras-chave,).flatten().join(". ").]
   }
 
   pagebreak()
@@ -484,7 +484,7 @@
   }
 
   if palavras-chave.len() > 0 {
-    [*Palavras-chave:* #palavras-chave.join("; ")]
+    [*Palavras-chave:* #(palavras-chave,).flatten().join("; ")]
     linebreak()
   }
 

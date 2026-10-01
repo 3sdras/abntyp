@@ -80,7 +80,7 @@
     if palavras-chave.len() > 0 {
       linebreak()
       linebreak()
-      [*Palavras-chave:* #palavras-chave.join(". ").]
+      [*Palavras-chave:* #(palavras-chave,).flatten().join(". ").]
     }
     v(2em)
   }
@@ -94,7 +94,7 @@
     if palavras-chave-en.len() > 0 {
       linebreak()
       linebreak()
-      [*Keywords:* #palavras-chave-en.join(". ").]
+      [*Keywords:* #(palavras-chave-en,).flatten().join(". ").]
     }
     v(2em)
   }
