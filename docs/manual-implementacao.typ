@@ -1068,7 +1068,7 @@ Formata figuras, quadros e ilustrações conforme NBR 14724 e IBGE.
 
 ```typst
 #container(legenda: [Comparação de desempenho], origem: [Elaborado pelo autor (2026).]) [
-  #imagem("grafico.png", largura: 80%)
+  #imagem(read("grafico.png", encoding: none), largura: 80%)
 ]
 ```
 

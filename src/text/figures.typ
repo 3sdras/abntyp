@@ -26,7 +26,7 @@
 /// Uso:
 /// ```typst
 /// #container(legenda: "Meu título", origem: "O autor")[
-///   #imagem("foto.png")
+///   #imagem(read("foto.png", encoding: none))
 /// ]
 /// ```
 #let container(
@@ -90,10 +90,13 @@
 /// - icc: perfil de cor ICC (auto, string ou bytes)
 /// - ..outros: parâmetros adicionais repassados a `image()`
 ///
+/// O arquivo deve ser passado com `read(..., encoding: none)`: um caminho em
+/// string seria resolvido relativo ao pacote, não ao seu documento.
+///
 /// Uso (dentro de um `container`):
 /// ```typst
 /// #container(legenda: "Logo", origem: "O autor")[
-///   #imagem("logo.png", largura: 80%)
+///   #imagem(read("logo.png", encoding: none), largura: 80%)
 /// ]
 /// ```
 #let imagem(
@@ -108,6 +111,13 @@
   icc: auto,
   ..outros,
 ) = {
+  if type(caminho) == str {
+    panic(
+      "imagem(): use imagem(read(\"" + caminho + "\", encoding: none), ...). "
+        + "Um caminho em string seria resolvido relativo ao pacote, não ao seu documento.",
+    )
+  }
+
   // Traduz valores de ajuste para o Typst
   let resolved-fit = if ajuste == "cobrir" { "cover" }
     else if ajuste == "conter" { "contain" }
@@ -120,7 +130,7 @@
     height: altura,
     fit: resolved-fit,
     alt: alternativo,
-    page: pagina,
+    ..if pagina != auto { (page: pagina) },
     format: formato,
     scaling: escala,
     icc: icc,

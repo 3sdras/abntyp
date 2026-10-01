@@ -1503,13 +1503,24 @@ A NBR 14724:2024 classifica figuras como _ilustrações_ (assim como gráficos, 
   legenda: [Comparação de desempenho dos algoritmos],
   origem: [Elaborado pelo autor (2026).],
 )[
-  #imagem(\"imagens/grafico.png\", largura: 80%)
+  #imagem(read(\"imagens/grafico.png\", encoding: none), largura: 80%)
 ] <fig:comparacao>")
 ]
 
 Como o `tipo` padrão é `"imagem"`, não é necessário informá-lo para figuras. Gráficos exportados como imagem (PNG, SVG, PDF) seguem o mesmo padrão --- são inseridos com `#imagem()`.
 
 === Parâmetros de `imagem()`
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: 0.5pt + gray,
+  radius: 3pt,
+)[
+  #set text(size: 10pt)
+  #set par(first-line-indent: 0pt)
+  *Por que `read(..., encoding: none)`?* A função `#imagem()` pertence ao pacote, e o Typst resolve um caminho em string em relação ao pacote --- não ao seu documento. Passando o arquivo lido com `read(..., encoding: none)`, o caminho é avaliado no _seu_ arquivo. Quem usa o `#image()` nativo dentro do `#container()` pode passar o caminho normalmente, mas perde os parâmetros em português.
+]
 
 A função `#imagem()` é um wrapper sobre a função nativa `image()` do Typst, com todos os parâmetros traduzidos para o português. Formatos suportados: PNG, JPEG, GIF, SVG e PDF.
 
@@ -1539,7 +1550,7 @@ A função `#imagem()` é um wrapper sobre a função nativa `image()` do Typst,
     table.hline(stroke: 1pt),
     [*Parâmetro*], [*Aceita*], [*Padrão*], [*Descrição*],
     table.hline(stroke: 0.5pt),
-    [`pagina`], [automático ou inteiro], [automático], [Página a extrair de arquivos PDF: `#imagem("doc.pdf", pagina: 3)`. Para outros formatos, deixe em automático.],
+    [`pagina`], [automático ou inteiro], [automático], [Página a extrair de arquivos PDF: `#imagem(read("doc.pdf", encoding: none), pagina: 3)`. Para outros formatos, deixe em automático.],
     [`formato`], [automático ou texto], [automático], [Formato da imagem. Detectado automaticamente pela extensão. Valores: `"png"`, `"jpg"`, `"gif"`, `"svg"`, `"pdf"`.],
     [`escala`], [automático ou texto], [automático], [Escala de renderização para imagens vetoriais (SVG).],
     [`icc`], [automático, texto ou bytes], [automático], [Perfil de cor ICC. Normalmente não é necessário alterar.],
@@ -1554,16 +1565,16 @@ A função `#imagem()` é um wrapper sobre a função nativa `image()` do Typst,
 *Exemplos de uso:*
 
 #raw(block: true, lang: "typst", "// Largura relativa (mais comum)
-#imagem(\"grafico.png\", largura: 80%)
+#imagem(read(\"grafico.png\", encoding: none), largura: 80%)
 
 // Dimensões absolutas com ajuste
-#imagem(\"foto.jpg\", largura: 10cm, altura: 7cm, ajuste: \"conter\")
+#imagem(read(\"foto.jpg\", encoding: none), largura: 10cm, altura: 7cm, ajuste: \"conter\")
 
 // Página específica de um PDF
-#imagem(\"documento.pdf\", pagina: 2, largura: 100%)
+#imagem(read(\"documento.pdf\", encoding: none), pagina: 2, largura: 100%)
 
 // Com texto alternativo para acessibilidade
-#imagem(\"diagrama.svg\", largura: 90%, alternativo: \"Diagrama de fluxo do algoritmo\")")
+#imagem(read(\"diagrama.svg\", encoding: none), largura: 90%, alternativo: \"Diagrama de fluxo do algoritmo\")")
 
 == Centralização horizontal
 
@@ -1575,12 +1586,12 @@ O `#container()` centraliza automaticamente seu conteúdo --- não é preciso fa
   legenda: [Meu gráfico],
   origem: [Elaborado pelo autor.],
 )[
-  #imagem(\"grafico.svg\", largura: 80%)
+  #imagem(read(\"grafico.svg\", encoding: none), largura: 80%)
 ]
 
 // Imagem avulsa (sem container): centralizar manualmente
 #align(center)[
-  #imagem(\"diagrama.svg\", largura: 60%)
+  #imagem(read(\"diagrama.svg\", encoding: none), largura: 60%)
 ]
 
 // Diagrama ou gráfico avulso: mesmo padrão
