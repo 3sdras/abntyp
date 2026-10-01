@@ -52,25 +52,29 @@
     else if resolved-kind == "quadro" { "Quadro" }
     else { "Figura" }
 
+  // Fonte e nota ficam DENTRO do figure: o container devolve um único
+  // `figure`, e assim `<label>` logo após o `#container(...)` e `@label`
+  // funcionam (um label em uma sequência não é referenciável).
+  // A legenda fica no topo (NBR 14724), com fonte e nota abaixo do elemento.
   figure(
-    body,
-    caption: if legenda != none { legenda },
+    {
+      body
+      if origem != none {
+        align(center)[
+          #text(size: 10pt)[Fonte: #origem]
+        ]
+      }
+      if nota != none {
+        align(left)[
+          #text(size: 10pt)[Nota: #nota]
+        ]
+      }
+    },
+    caption: if legenda != none { figure.caption(position: top, legenda) },
     kind: resolved-kind,
     supplement: supp,
     ..args,
   )
-
-  if origem != none {
-    align(center)[
-      #text(size: 10pt)[Fonte: #origem]
-    ]
-  }
-
-  if nota != none {
-    align(left)[
-      #text(size: 10pt)[Nota: #nota]
-    ]
-  }
 }
 
 /// Wrapper para `image()` em português.

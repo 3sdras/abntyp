@@ -142,6 +142,9 @@
     v(1.5em)
   }
 
+  // Legenda (identificação) sempre acima de ilustrações e tabelas (NBR 14724)
+  set figure.caption(position: top)
+
   // Exclusão de indentação em containers que não devem ser indentados
   show heading: set par(first-line-indent: 0pt)
   show figure: set par(first-line-indent: 0pt)
