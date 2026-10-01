@@ -144,7 +144,7 @@ O ABNTyp implementa as seguintes normas ABNT (versões atualizadas):
 // Formatação ABNT (fonte, margens, headings, etc.)
 #show: normas-abnt.with(
   fonte: "Times New Roman",
-  // arquivo-bibliografia: "referencias.bib",
+  // arquivo-bibliografia: read("referencias.bib"),  // gera REFERÊNCIAS ao final, automaticamente
   // paginacao: "auto",    // ABNT (padrão); "todas" ou "nenhuma" para mudar
   // frente-verso: true,   // margens espelhadas, número alternado, capítulos em página ímpar
 )

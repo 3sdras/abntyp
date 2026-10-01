@@ -1238,6 +1238,8 @@ O autor afirma #citacao-num-curta(\"silva2023\", pagina: \"10\")[que o resultado
 ))")
 ]
 
+Os nomes longos têm aliases curtos (`cnum`, `cnlinha`, `cnmultiplos`, `cnapud`, `cncurta`, `cnlonga`, `bibnum`), por exemplo `#cncurta("silva2023", pagina: "10")[texto]`. Note que, no sistema numérico, `citar-num-linha` produz exatamente o mesmo resultado que `citar-num`: o número da obra não muda quando o autor aparece na frase. A distinção "autor na frase" só tem efeito no sistema autor-data (`citar-autor` × `citar`); a função existe apenas para deixar o código mais legível.
+
 === Quadro-resumo: todas as citações <sec:resumo-citacoes>
 
 Referência rápida de todos os comandos de citação, com um exemplo mínimo e o resultado. A coluna *Alias* indica a forma curta equivalente.
@@ -1853,6 +1855,16 @@ O resultado foi positivo @silva2023.
   #set par(first-line-indent: 0pt)
   *Por que `read("referencias.bib")` e não só `"referencias.bib"`?* O `#referencias` é uma função do _pacote_, e o Typst resolve um caminho em string em relação ao pacote --- não ao seu documento. Assim, `#referencias("referencias.bib")` procuraria o `.bib` dentro do ABNTyp, não ao lado do seu `.typ`, e falharia. O `read("referencias.bib")` é avaliado no _seu_ arquivo, então o caminho fica relativo a ele. Regra prática: *sempre envolva o caminho do `.bib` em `read(...)`*.
 ]
+
+*Lista de referências automática.* Se você informar o `.bib` ao `normas-abnt`, a lista de REFERÊNCIAS é gerada sozinha no final do documento, e as citações (`@chave`, `#pag`, `#apud`, e as funções `citar*` com `<chave>`) passam a funcionar sem nenhum `#referencias(...)`:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#show: normas-abnt.with(
+  arquivo-bibliografia: read(\"referencias.bib\"),
+)")
+]
+
+Neste caso, não chame `#referencias(...)` de novo, para não duplicar a lista. Passar apenas o nome do arquivo (sem `read`) gera um erro explicando o que fazer.
 
 #block(
   width: 100%,

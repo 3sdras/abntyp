@@ -44,6 +44,13 @@
   // - string com conteúdo (de read(path)) -> convertida em bytes
   // - string simples "arquivo.bib" -> caminho legado (relativo a ESTE módulo
   //   do pacote; prefira read(...) para que o caminho seja relativo ao seu .typ)
+  if type(arquivo) == str and arquivo.ends-with(".bib") and not arquivo.contains("\n") {
+    panic(
+      "abnt-bibliography(): use read(\"" + arquivo + "\") em vez do caminho em string. "
+        + "Um caminho em string seria resolvido relativo ao pacote, não ao seu documento.",
+    )
+  }
+
   let fonte = if type(arquivo) == bytes {
     arquivo
   } else if type(arquivo) == str and (arquivo.contains("\n") or arquivo.contains("@")) {
