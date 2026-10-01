@@ -1358,31 +1358,122 @@ reforça o ponto#footnote[Ibid., p. 5.].")
 
 Alíneas e subalíneas são regulamentadas pela NBR 6024:2012 (seções 4 e 5). Alíneas são subdivisões de um assunto dentro de uma seção, sem título próprio, indicadas por letras minúsculas seguidas de parêntese --- o texto que as antecede deve terminar em dois-pontos. Subalíneas são subdivisões das alíneas, indicadas por travessão seguido de espaço. Ambas terminam em ponto e vírgula, exceto a última (ponto final):
 
-Com `normas-abnt`, as listas numeradas do Typst (`+`) já saem como alíneas, `a)`, `b)`, `c)`, sem configurar nada. As funções `#alineas[...]` e `#subalineas[...]` forçam o formato em um trecho (`#subalineas` usa o marcador de travessão); o exemplo abaixo mostra a forma com `#set list`. Quem preferir outra numeração (`1.`, `i)`) troca com `#set enum(numbering: "1.")`.
+=== Duas formas de enumerar: `enumeracao: "abnt"` e `"latex"`
+
+Em Typst, uma lista numerada se escreve com `+`. O Typst usa `1.` em *todos* os níveis, o que não segue a NBR 6024, e o LaTeX troca o estilo a cada nível. Por isso o `normas-abnt` aplica automaticamente um esquema próprio, que você escolhe com o parâmetro `enumeracao`:
+
+#figure(
+  table(
+    columns: (auto, 1fr, 1fr),
+    stroke: none,
+    inset: 8pt,
+    table.hline(stroke: 1pt),
+    [*Nível*], [*`"abnt"` (padrão)*], [*`"latex"`*],
+    table.hline(stroke: 0.5pt),
+    [1], [`a)`, `b)`, `c)` --- alíneas], [`1.`, `2.`, `3.`],
+    [2], [`–` --- subalíneas (travessão)], [`a)`, `b)`, `c)`],
+    [3], [`–`], [`i)`, `ii)`, `iii)`],
+    [4], [`–`], [`A.`, `B.`, `C.`],
+    [5 em diante], [`–`], [`A.`, `B.`, `C.` (repete)],
+    table.hline(stroke: 1pt),
+  ),
+  caption: [Numeração de listas aninhadas conforme `enumeracao`],
+  kind: table,
+)
+
+*`"abnt"` (padrão).* Segue a NBR 6024:2012 (seções 4 e 5): as alíneas são indicadas por letra minúscula com parêntese e as subalíneas por travessão. Você só escreve `+` e o pacote cuida do resto:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "Os elementos obrigatórios são:
+  #raw(block: true, lang: "typst", "#show: normas-abnt.with()   // enumeracao: \"abnt\" é o padrão
+
+Os elementos obrigatórios são:
 
 + capa;
 + folha de rosto;
-+ resumo na língua vernácula;
-+ sumário;
-+ referências.
++ resumo, que contém:
+  + a língua vernácula;
+  + a língua estrangeira;
++ sumário.")
+]
 
-As referências podem incluir:
+Resultado:
 
-+ livros:
-  #[
-    #set list(marker: [--])
-    - com autor pessoal;
-    - com autor institucional;
-    - sem autoria.
-  ]
-+ artigos de periódico;
-+ documentos eletrônicos.
+#block(inset: (left: 1.5em))[
+  #set enum(full: true, numbering: numeracao-enum("abnt"))
+  #set par(first-line-indent: 0pt)
+  Os elementos obrigatórios são:
 
-// Outra numeração, a partir daqui:
-#set enum(numbering: \"1.\")")
+  + capa;
+  + folha de rosto;
+  + resumo, que contém:
+    + a língua vernácula;
+    + a língua estrangeira;
+  + sumário.
+]
+
+*`"latex"`.* Para quem prefere o esquema do `enumerate` do LaTeX (e do Ferrmat), com `1.`, `a)`, `i)`, `A.`:
+
+#exemplo[
+  #raw(block: true, lang: "typst", "#show: normas-abnt.with(enumeracao: \"latex\")
+
++ capa;
++ resumo, que contém:
+  + a língua vernácula;
+  + a língua estrangeira:
+    + com palavras-chave;
++ sumário.")
+]
+
+Resultado:
+
+#block(inset: (left: 1.5em))[
+  #set enum(full: true, numbering: numeracao-enum("latex"))
+  #set par(first-line-indent: 0pt)
+  + capa;
+  + resumo, que contém:
+    + a língua vernácula;
+    + a língua estrangeira:
+      + com palavras-chave;
+  + sumário.
+]
+
+#block(
+  width: 100%,
+  inset: 1em,
+  stroke: 0.5pt + gray,
+  radius: 3pt,
+)[
+  #set text(size: 10pt)
+  #set par(first-line-indent: 0pt)
+  *Por que o padrão é `"abnt"`?* A NBR 6024 só prevê alíneas (`a)`) e subalíneas (travessão); não há `1.`, `i)` ou `A.` em listas dentro de uma seção. A NBR 14724 não trata de listas. O esquema `"latex"` existe por conveniência e não é o da norma.
+]
+
+=== Usar o esquema em um trecho, ou outra numeração
+
+- `#alineas[...]` aplica o esquema ABNT (alíneas e subalíneas) só ao trecho, útil em documentos sem `normas-abnt` ou com `enumeracao: "latex"`.
+- `#subalineas[...]` aplica o marcador de travessão a uma lista `-`.
+- `#set enum(full: true, numbering: numeracao-enum("latex"))` (ou `"abnt"`) troca o esquema a partir daquele ponto do documento, sem mudar o parâmetro de `normas-abnt`.
+- Para qualquer outra numeração a partir de certo ponto, desligue o esquema com `full: false`: `#set enum(numbering: "1.", full: false)` (ou `"i)"`, `"A."`...).
+
+#exemplo[
+  #raw(block: true, lang: "typst", "// Forçar alíneas ABNT em um trecho
+#alineas[
+  + primeira alínea:
+    + primeira subalínea;
+    + segunda subalínea.
+  + segunda alínea.
+]
+
+// Subalíneas com uma lista comum
+#subalineas[
+  - item com travessão;
+  - outro item.
+]
+
+// Outra numeração, a partir daqui
+#set enum(numbering: \"1.\", full: false)
++ primeiro
++ segundo")
 ]
 
 == Partes (`parte`)

@@ -146,6 +146,7 @@ O ABNTyp implementa as seguintes normas ABNT (versões atualizadas):
   fonte: "Times New Roman",
   // arquivo-bibliografia: read("referencias.bib"),  // gera REFERÊNCIAS ao final, automaticamente
   // paginacao: "auto",    // ABNT (padrão); "todas" ou "nenhuma" para mudar
+  // enumeracao: "abnt",  // alíneas a), b) e subalíneas –; ou "latex": 1., a), i), A.
   // frente-verso: true,   // margens espelhadas, número alternado, capítulos em página ímpar
 )
 

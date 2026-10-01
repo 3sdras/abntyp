@@ -438,11 +438,11 @@ Os templates também configuram recuo para listas e enumerações:
 
 ```typst
 #set list(indent: 2em, body-indent: 0.5em)
-#set enum(indent: 2em, body-indent: 0.5em, numbering: "a)")
+#set enum(indent: 2em, body-indent: 0.5em, full: true, numbering: numeracao-enum("abnt"))
 #set terms(indent: 0em, hanging-indent: 2em, separator: [: ])
 ```
 
-A enumeração padrão usa alíneas (a), b), c)), conforme a NBR 6024; para outra numeração, use `#set enum(numbering: "1.")`. Também estão disponíveis `#alineas[...]` e `#subalineas[...]`.
+A enumeração padrão (`enumeracao: "abnt"`) usa alíneas (a), b), c)) no primeiro nível e travessão nos seguintes (subalíneas), conforme a NBR 6024:2012. `enumeracao: "latex"` usa 1., a), i), A., como o `enumerate` do LaTeX. Para outra numeração a partir de certo ponto, use `#set enum(numbering: "1.", full: false)`. Também estão disponíveis `#alineas[...]`, `#subalineas[...]` e `numeracao-enum(esquema)`.
 
 Todas essas configurações são aplicadas automaticamente ao usar qualquer template (`normas-abnt`, `artigo`, `relatorio`, etc.). Se estiver montando o documento manualmente sem template, inclua-as no preâmbulo.
 
@@ -1344,6 +1344,7 @@ Template completo para trabalhos acadêmicos. Os metadados são definidos separa
   paginacao: "auto",         // "auto" | "todas" | "nenhuma"
   frente-verso: false,       // true: margens espelhadas, seções primárias em página ímpar
   cor-links: none,           // none = links externos pretos e sublinhados
+  enumeracao: "abnt",        // "abnt" (a), –) ou "latex" (1., a), i), A.)
   arquivo-bibliografia: read("referencias.bib"),  // opcional: gera REFERÊNCIAS no fim
 )
 ```
@@ -2168,7 +2169,7 @@ Para casos especiais, você pode usar as funções de formatação manual (`ref-
 - `container`: devolve um único `figure` (o `<label>` após a chamada e o `@rótulo` funcionam); legenda acima (`figure.caption(position: top)`; também aplicada a figuras e tabelas nativas); `fonte` como nome preferido de `origem`; novo `posicao`; "Nota" centralizada (também `nota-figura`).
 - `imagem()`: `pagina: auto` não quebra mais; caminho em string agora dá erro explicativo (use `read(..., encoding: none)`).
 - Novos: `alineas`/`subalineas`; `parte` (numerada, no sumário e em referências); `quebra-pagina(fraco:, para:)`; `novo-slide()`.
-- `with-abnt-setup`: enumeração padrão `a)`, `b)`, `c)`; links externos sublinhados (`cor-links`); formatação de `parte`.
+- `with-abnt-setup`/`normas-abnt`: parâmetro `enumeracao` — `"abnt"` (padrão: alíneas `a)`, `b)`, `c)` e subalíneas com travessão, NBR 6024) ou `"latex"` (`1.`, `a)`, `i)`, `A.`); nova função `numeracao-enum(esquema)` e módulo `core/lists.typ`; links externos sublinhados (`cor-links`); formatação de `parte`.
 - `slides`: removido o import do tema `university` do Touying, que sobrescrevia `slide` do tema `simple`.
 - `normas-abnt(arquivo-bibliografia:)` exige `read(...)`; caminho em string dá erro explicativo.
 - Palavras-chave: uma única palavra (string) é aceita em `resumo`, `resumo-en`, `artigo`, `periodico` e `relatorio`.

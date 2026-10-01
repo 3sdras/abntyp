@@ -32,6 +32,8 @@
 ///   superior direito em páginas ímpares e superior esquerdo em páginas pares,
 ///   e seções primárias iniciando em página ímpar. A paridade é a da página
 ///   do PDF (a que a impressora usa): página 1 = capa = anverso.
+/// - enumeracao: "abnt" (padrão, NBR 6024: alíneas a), b), c); subalíneas com
+///   travessão) ou "latex" (1., a), i), A.)
 /// - cor-links: cor dos links externos (padrão: none = texto preto sublinhado)
 /// - arquivo-bibliografia: caminho para arquivo .bib (opcional)
 /// - titulo-bibliografia: título da seção de referências (padrão: "REFERÊNCIAS")
@@ -41,6 +43,7 @@
   paginacao: "auto",
   frente-verso: false,
   cor-links: none,
+  enumeracao: "abnt",
   arquivo-bibliografia: none,
   titulo-bibliografia: "REFERÊNCIAS",
   body,
@@ -50,6 +53,7 @@
     level-1-pagebreak: quebra-capitulo,
     level-1-pagebreak-impar: frente-verso,
     cor-links: cor-links,
+    enumeracao: enumeracao,
     suplemento-nivel1: "Capítulo",
   )
 

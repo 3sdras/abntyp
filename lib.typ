@@ -53,6 +53,7 @@
 // Core
 // setup.typ é usado internamente pelos templates — não exportado para o usuário
 #import "src/core/page.typ": *
+#import "src/core/lists.typ": numeracao-enum  // NBR 6024 - alineas e subalineas
 #import "src/core/fonts.typ": *
 #import "src/core/spacing.typ": *
 #import "src/core/sorting.typ": *

@@ -2,6 +2,8 @@
 // Combina página, fonte, espaçamento, listas, headings, indentação e rodapé
 // em uma única chamada, eliminando duplicação entre templates.
 
+#import "lists.typ": numeracao-enum
+
 /// Aplica toda a configuração padrão ABNT ao documento.
 ///
 /// Esta função reúne as regras comuns a todos os templates ABNT:
@@ -21,6 +23,8 @@
 ///   ímpar (impressão frente-verso, NBR 14724)
 /// - cor-links: cor dos links externos (URLs). Padrão `none`: texto preto
 ///   sublinhado (a NBR 14724 pede texto preto); use por exemplo `blue` para colorir
+/// - enumeracao: "abnt" (padrão: alíneas a), b), c); subalíneas com travessão) ou
+///   "latex" (1., a), i), A.)
 /// - suplemento-nivel1: texto usado em referências cruzadas para headings de nível 1
 ///   (padrão: "Seção" — correto para artigos; use "Capítulo" para TCC, relatórios e livros)
 #let with-abnt-setup(
@@ -29,6 +33,7 @@
   level-1-pagebreak: true,
   level-1-pagebreak-impar: false,
   cor-links: none,
+  enumeracao: "abnt",
   suplemento-nivel1: "Seção",
   body,
 ) = {
@@ -69,8 +74,10 @@
 
   // Listas e termos
   set list(indent: 2em, body-indent: 0.5em)
-  // Alíneas (NBR 6024): a), b), c). Para outra numeração: #set enum(numbering: "1.")
-  set enum(indent: 2em, body-indent: 0.5em, numbering: "a)")
+  // Listas numeradas (NBR 6024): alíneas a), b), c) e subalíneas com travessão
+  // ("abnt", padrão) ou 1., a), i), A. ("latex"). Outra numeração:
+  // #set enum(numbering: "1.", full: false)
+  set enum(indent: 2em, body-indent: 0.5em, full: true, numbering: numeracao-enum(enumeracao))
   set terms(indent: 0em, hanging-indent: 2em, separator: [: ])
 
   // Headings conforme NBR 6024:2012

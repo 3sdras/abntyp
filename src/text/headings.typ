@@ -1,5 +1,7 @@
 // Seções e subseções conforme NBR 6024:2012
 
+#import "../core/lists.typ": numeracao-enum
+
 /// Configuração de títulos de seção conforme ABNT
 /// - Seção primária: MAIÚSCULAS, negrito
 /// - Seção secundária: MAIÚSCULAS, sem negrito
@@ -193,11 +195,12 @@
   v(1.5em)
 }
 
-/// Alíneas (NBR 6024): itens `+` numerados a), b), c).
+/// Alíneas (NBR 6024): itens `+` numerados a), b), c); listas aninhadas
+/// saem com travessão (subalíneas).
 /// Já é o padrão de `normas-abnt`; use esta função para forçar o formato
-/// em um trecho (ex.: documento sem `normas-abnt`).
+/// em um trecho (ex.: documento sem `normas-abnt`, ou com `enumeracao: "latex"`).
 #let alineas(body) = {
-  set enum(numbering: "a)")
+  set enum(full: true, numbering: numeracao-enum("abnt"))
   body
 }
 
