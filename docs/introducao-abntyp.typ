@@ -128,7 +128,7 @@
 // ============================================================================
 
 #book-preface(titulo: "PREFÁCIO")[
-  Estas notas são uma adaptação da documentação do pacote ABNTex2 de LaTeX, para o caso do Typst, com o objetivo de servir de material didático para a disciplina "Software Livre para digitação de textos matemáticos" na UFJ. O Capítulo 1, sobre conceitos básicos do Typst, é baseado no trabalho "Uma breve introdução ao $"LaTeX" 2 epsilon$", de Lenimar Nunes de Andrade.
+  Estas notas são uma adaptação da documentação do pacote ABNTex2 de LaTeX, para o caso do Typst, com o objetivo de servir de material didático para a disciplina "Software Livre para digitação de textos matemáticos" na UFJ. O Capítulo 1, sobre conceitos básicos do Typst, é baseado no trabalho "Uma breve introdução ao $"LaTeX" 2 epsilon$", de Lenimar Nunes de Andrade @andrade2000.
 
   O ABNTyp é um pacote gratuito, de código aberto, desenvolvido para facilitar a produção de documentos técnicos e científicos brasileiros. Pode ser utilizado diretamente no navegador através do #link("https://typst.app")[typst.app], ou instalado localmente em qualquer sistema operacional.
 
@@ -160,7 +160,7 @@
 
 == Introdução ao Typst
 
-O Typst é um sistema de composição tipográfica moderno, criado em 2019 por Laurenz Mädje e Martin Haug na Universidade Técnica de Berlim. Diferente do LaTeX, que foi desenvolvido na década de 1980, o Typst foi projetado desde o início para ser mais acessível e intuitivo.
+O Typst é um sistema de composição tipográfica moderno, criado a partir de 2019 por Laurenz Mädje e Martin Haug @typst-sobre, em Berlim --- o compilador e a linguagem foram tema da dissertação de mestrado de Mädje na Universidade Técnica de Berlim @madje2022. Diferente do LaTeX, que foi desenvolvido na década de 1980 @lamport1994, o Typst foi projetado desde o início para ser mais acessível e intuitivo.
 
 Um documento em Typst é formado pelo texto propriamente dito, mais alguns comandos e funções. Os comandos em Typst iniciam com `#` ('jogo da velha' ou cerquilha), diferente do \ LaTeX que usa `\` (barra invertida).
 
@@ -178,15 +178,15 @@ As principais vantagens do Typst sobre o LaTeX são:
 
 O ABNTyp (ABNTyp — Base Normativa Typst) é um pacote que implementa as normas da Associação Brasileira de Normas Técnicas (ABNT) para formatação de documentos acadêmicos em Typst.
 
-O projeto é uma adaptação do abnTeX2, o excelente pacote LaTeX mantido por Lauro César Araujo e colaboradores, que há anos auxilia a comunidade acadêmica brasileira.
+O projeto é uma adaptação do abnTeX2, o excelente pacote LaTeX mantido por Lauro César Araujo e colaboradores @araujo2015, que há anos auxilia a comunidade acadêmica brasileira.
 
 Graças ao trabalho original da equipe do abnTeX2, o ABNTyp oferece templates prontos para teses, dissertações, TCCs, artigos, relatórios e outros tipos de documentos, além de:
 
 - Funções para criar capas, folhas de rosto, resumos e outros elementos pré-textuais
-- Formatação automática de seções conforme a NBR 6024
-- Sistema de citações autor-data e numérico conforme a NBR 10520
-- Tabelas no padrão IBGE
-- Formatação automática de referências conforme a NBR 6023
+- Formatação automática de seções conforme a NBR 6024 @abnt6024
+- Sistema de citações autor-data e numérico conforme a NBR 10520 @abnt10520
+- Tabelas no padrão IBGE @ibge1993
+- Formatação automática de referências conforme a NBR 6023 @abnt6023
 
 Para fórmulas matemáticas em português, caixas decorativas, ambientes de teoremas e estilização de código, consulte o pacote companheiro *FerrMat* e sua documentação (_Breve Introdução ao FerrMat_).
 
@@ -471,7 +471,7 @@ Ao usar o typst.app, a compilação e visualização são automáticas. Ao usar 
 
 = Elementos Pré-textuais
 
-Os elementos pré-textuais são aqueles que antecedem o texto principal do trabalho. A NBR 14724:2024 define a seguinte ordem obrigatória:
+Os elementos pré-textuais são aqueles que antecedem o texto principal do trabalho. A NBR 14724 @abnt14724 define a seguinte ordem obrigatória:
 
 #figure(
   table(
@@ -514,7 +514,7 @@ Os elementos pré-textuais são aqueles que antecedem o texto principal do traba
 
 == Paginação automática (`paginacao` e `frente-verso`) <sec:paginacao>
 
-Com `normas-abnt`, a numeração de páginas é *automática* e segue a NBR 14724:2024:
+Com `normas-abnt`, a numeração de páginas é *automática* e segue a NBR 14724 @abnt14724:
 
 - *Contagem*: inicia na folha de rosto, que é a página 1 (a capa não é contada)
 - *Numeração visível*: apenas a partir da primeira folha textual, isto é, a primeira seção primária numerada (a Introdução), em algarismos arábicos
@@ -563,8 +563,8 @@ Com `frente-verso: true`, o ABNTyp aplica as regras da norma para impressão nos
 
 Os templates `relatorio` e `livro` também numeram as páginas automaticamente, cada um segundo a sua norma:
 
-- *`relatorio` (NBR 10719:2015)*: mesmas regras do trabalho acadêmico — contagem a partir da folha de rosto (`report-title-page()`), número no canto superior direito a partir da primeira seção numerada. Aceita `paginacao` e `frente-verso`.
-- *`livro` (NBR 6029:2023)*: as folhas iniciais até o sumário são contadas, mas não numeradas; a contagem começa na primeira folha do miolo (falsa folha de rosto, se houver, ou folha de rosto) e o número aparece a partir da página seguinte ao sumário (`book-toc()`), inclusive no prefácio. A norma deixa a posição do número a critério do projeto gráfico; o padrão é o rodapé centralizado. Aceita `paginacao`; `"todas"` mostra o número desde o início do miolo.
+- *`relatorio` (NBR 10719:2015)* @abnt10719: mesmas regras do trabalho acadêmico — contagem a partir da folha de rosto (`report-title-page()`), número no canto superior direito a partir da primeira seção numerada. Aceita `paginacao` e `frente-verso`.
+- *`livro` (NBR 6029:2023)* @abnt6029: as folhas iniciais até o sumário são contadas, mas não numeradas; a contagem começa na primeira folha do miolo (falsa folha de rosto, se houver, ou folha de rosto) e o número aparece a partir da página seguinte ao sumário (`book-toc()`), inclusive no prefácio. A norma deixa a posição do número a critério do projeto gráfico; o padrão é o rodapé centralizado. Aceita `paginacao`; `"todas"` mostra o número desde o início do miolo.
 
 Nos exemplos `relatorio-exemplo.typ` e `livro-exemplo.typ`, não é mais necessário reiniciar o contador nem usar `#set page(numbering: ...)` no início do texto. `book-start-numbering()`, `pretextual()`, `textual()` e `postextual()` continuam existindo por compatibilidade, mas não são mais necessárias.
 
@@ -813,7 +813,7 @@ A epígrafe é uma citação relacionada ao conteúdo do trabalho:
 
 == Resumo e Abstract
 
-O resumo deve apresentar de forma concisa os pontos relevantes do trabalho. Conforme a NBR 6028:2021, deve ter entre 150 e 500 palavras para trabalhos acadêmicos.
+O resumo deve apresentar de forma concisa os pontos relevantes do trabalho. Conforme a NBR 6028 @abnt6028, deve ter entre 150 e 500 palavras para trabalhos acadêmicos.
 
 #exemplo[
   #raw(block: true, lang: "typst", "// título e palavras-chave são lidos de dados() automaticamente:
@@ -872,7 +872,7 @@ As listas são elementos opcionais que facilitam a localização de figuras, tab
 
 == Sumário
 
-O sumário é elemento obrigatório conforme a NBR 6027:2012, que estabelece as regras para sua apresentação. Ele lista as seções do trabalho com suas respectivas páginas. No ABNTyp, é gerado automaticamente:
+O sumário é elemento obrigatório conforme a NBR 6027 @abnt6027, que estabelece as regras para sua apresentação. Ele lista as seções do trabalho com suas respectivas páginas. No ABNTyp, é gerado automaticamente:
 
 #exemplo[
   #raw(block: true, lang: "typst", "#sumario()
@@ -896,7 +896,7 @@ Os elementos textuais constituem o núcleo do trabalho, onde o autor desenvolve 
 
 == Seções e numeração progressiva (NBR 6024)
 
-A NBR 6024:2012 estabelece as regras para numeração progressiva das seções de um documento. O ABNTyp implementa automaticamente a formatação correta:
+A NBR 6024 @abnt6024 estabelece as regras para numeração progressiva das seções de um documento. O ABNTyp implementa automaticamente a formatação correta:
 
 #figure(
   table(
@@ -944,7 +944,7 @@ Para títulos sem numeração (Referências, Apêndices, Anexos, Glossário etc.
 
 Toda citação é uma chamada no texto que aponta para uma entrada na lista de referências ao final do documento. Essa lista pode ser construída de três formas --- arquivo `.bib` (recomendado), referências manuais autor-data (`ref-livro` etc.) ou lista numerada manual ---, todas detalhadas na @sec:ref-auto. Aqui nos concentramos nas *chamadas de citação* dentro do texto.
 
-A NBR 10520:2023 organiza as citações em dois eixos independentes:
+A NBR 10520 @abnt10520 organiza as citações em dois eixos independentes:
 
 - *Tipo*: *direta* (transcrição literal do texto original) × *indireta* (paráfrase das ideias do autor)
 - *Sistema de chamada*: *autor-data* (Silva, 2023) × *numérico* \[1\]
@@ -1466,7 +1466,7 @@ A função `#container()` é a _única_ forma de criar um elemento com título e
   // conteúdo: #imagem(), #quadro(), #tabela(), ou qualquer outro
 ]")
 
-A NBR 14724:2024 estabelece que ilustrações e tabelas devem ter:
+A NBR 14724 @abnt14724 estabelece que ilustrações e tabelas devem ter:
 - Identificação na parte superior: tipo, número sequencial (algarismos arábicos), travessão e título
 - Fonte na parte inferior (obrigatória, mesmo quando produção do próprio autor)
 - Notas e legendas em fonte menor
@@ -1619,7 +1619,7 @@ A função `#quadro()` é um wrapper sobre `table()` --- aceita todos os mesmos 
 
 == Tabelas no padrão IBGE
 
-A ABNT não define regras próprias para a apresentação de tabelas --- a NBR 14724:2024 (seção sobre tabelas) determina explicitamente: "conforme IBGE - Normas de Apresentação Tabular (1993)". A NBR 6022:2018 (artigos científicos) reitera: "padronizadas conforme Normas de apresentação tabular do IBGE". O documento referenciado é: FUNDAÇÃO INSTITUTO BRASILEIRO DE GEOGRAFIA E ESTATÍSTICA -- IBGE. _Normas de apresentação tabular_. 3. ed. Rio de Janeiro: IBGE, 1993. As principais regras são:
+A ABNT não define regras próprias para a apresentação de tabelas --- a NBR 14724 (seção sobre tabelas) @abnt14724 determina explicitamente: "conforme IBGE - Normas de Apresentação Tabular (1993)" @ibge1993. A NBR 6022 (artigos científicos) @abnt6022 reitera: "padronizadas conforme Normas de apresentação tabular do IBGE". O documento referenciado é: FUNDAÇÃO INSTITUTO BRASILEIRO DE GEOGRAFIA E ESTATÍSTICA -- IBGE. _Normas de apresentação tabular_. 3. ed. Rio de Janeiro: IBGE, 1993. As principais regras são:
 - Sem bordas laterais (tabelas são "abertas")
 - Traços horizontais obrigatórios apenas no topo, após o cabeçalho e no rodapé
 - O dado numérico é a informação central (dados textuais pertencem a quadros, não a tabelas)
@@ -1751,7 +1751,7 @@ Os elementos pós-textuais complementam o trabalho e incluem referências, apên
 
 == Referências bibliográficas (NBR 6023)
 
-As referências são obrigatórias e devem seguir a NBR 6023:2018. O ABNTyp suporta referências manuais e automáticas via arquivo `.bib`.
+As referências são obrigatórias e devem seguir a NBR 6023 @abnt6023. O ABNTyp suporta referências manuais e automáticas via arquivo `.bib`.
 
 === Referências manuais <sec:ref-manual>
 
@@ -1884,7 +1884,7 @@ O ABNTyp usa o estilo CSL `abnt.csl` para formatar as referências, baseado no t
 
 ==== Limitações do CSL e soluções manuais
 
-O formato CSL (Citation Style Language) é um padrão internacional para formatação de referências. Ele funciona muito bem para a maioria dos casos, mas possui três limitações que afetam a conformidade com a NBR 6023. Essas limitações são da _especificação CSL em si_ --- não é possível corrigi-las no arquivo `.csl`, nem resolver o problema dentro do `.bib` (que não suporta formatação rica como negrito ou itálico).
+O formato CSL (Citation Style Language) @csl é um padrão internacional para formatação de referências. Ele funciona muito bem para a maioria dos casos, mas possui três limitações que afetam a conformidade com a NBR 6023. Essas limitações são da _especificação CSL em si_ --- não é possível corrigi-las no arquivo `.csl`, nem resolver o problema dentro do `.bib` (que não suporta formatação rica como negrito ou itálico).
 
 Também não é possível misturar referências automáticas (via `.bib`) com manuais na mesma lista --- o `bibliography()` do Typst gera sua própria lista, e entradas manuais não se mesclam alfabeticamente com ela.
 
@@ -2040,7 +2040,7 @@ O ABNTyp oferece templates para diversos tipos de documentos acadêmicos e técn
 
 == Trabalho acadêmico (tese, dissertação, TCC)
 
-O template `normas-abnt` é o mais completo, seguindo a NBR 14724:2024:
+O template `normas-abnt` é o mais completo, seguindo a NBR 14724 @abnt14724:
 
 #raw(block: true, lang: "typst", "// 1. Metadados
 #show: dados.with(
@@ -2074,7 +2074,7 @@ O template `normas-abnt` é o mais completo, seguindo a NBR 14724:2024:
 
 == Artigo científico
 
-O template `artigo` segue a NBR 6022:2018:
+O template `artigo` segue a NBR 6022 @abnt6022:
 
 #raw(block: true, lang: "typst", "#show: artigo.with(
   titulo: \"Título do Artigo\",
@@ -2095,7 +2095,7 @@ O template `artigo` segue a NBR 6022:2018:
 
 == Relatório técnico
 
-O template `relatorio` segue a NBR 10719:2015:
+O template `relatorio` segue a NBR 10719 @abnt10719:
 
 #raw(block: true, lang: "typst", "#show: relatorio.with(
   titulo: \"Título do Relatório\",
@@ -2111,7 +2111,7 @@ O template `relatorio` segue a NBR 10719:2015:
 
 == Projeto de pesquisa
 
-O template `projeto-pesquisa` segue a NBR 15287:2025:
+O template `projeto-pesquisa` segue a NBR 15287 @abnt15287:
 
 #raw(block: true, lang: "typst", "#show: projeto-pesquisa.with(
   titulo: \"Título do Projeto\",
@@ -2137,7 +2137,7 @@ A função `cronograma-simples()` gera uma tabela básica de atividades × perí
 
 == Livro
 
-O template `livro` segue a NBR 6029:2023:
+O template `livro` segue a NBR 6029 @abnt6029:
 
 #raw(block: true, lang: "typst", "#show: livro.with(
   titulo: \"Título do Livro\",
@@ -2151,7 +2151,7 @@ O template `livro` segue a NBR 6029:2023:
 
 == Pôster científico
 
-O template `poster` segue a NBR 15437:2006:
+O template `poster` segue a NBR 15437 @abnt15437:
 
 #raw(block: true, lang: "typst", "#show: poster.with(
   titulo: \"Título do Pôster\",
@@ -2172,7 +2172,7 @@ O template `poster` segue a NBR 15437:2006:
 
 == Slides para defesa
 
-O template `slides` usa o pacote Touying para apresentações:
+O template `slides` usa o pacote Touying @touying para apresentações:
 
 #raw(block: true, lang: "typst", "#import \"@preview/touying:0.7.4\": *
 #import \"@preview/abntyp:0.1.5\": slides-defesa
@@ -2362,9 +2362,9 @@ Este apêndice é destinado a usuários que já conhecem LaTeX e desejam migrar 
 == Typst
 
 - *Site oficial*: #link("https://typst.app")
-- *Documentação*: #link("https://typst.app/docs")
+- *Documentação*: #link("https://typst.app/docs") @typst-docs
 - *Repositório GitHub*: #link("https://github.com/typst/typst")
-- *Typst Universe* (pacotes): #link("https://typst.app/universe")
+- *Typst Universe* (pacotes): #link("https://typst.app/universe") @typst-universe
 - *Discord da comunidade*: #link("https://discord.gg/2uDybryKPe")
 - *Fórum de discussões*: #link("https://github.com/typst/typst/discussions")
 
@@ -2474,7 +2474,7 @@ Por exemplo, `#ccurta("Silva", 2023, 42)[texto]` é idêntico a `#citacao-curta(
     [*Norma*], [*Título*], [*Versão*],
     table.hline(stroke: 0.5pt),
     [NBR 6022], [Artigo em publicação periódica], [2018],
-    [NBR 6021], [Publicação periódica --- Apresentação], [2015],
+    [NBR 6021 @abnt6021], [Publicação periódica --- Apresentação], [2015],
     [NBR 6029], [Livros e folhetos --- Apresentação], [2023],
     [NBR 10719], [Relatório técnico --- Apresentação], [2015],
     [NBR 15287], [Projeto de pesquisa --- Apresentação], [2025],
@@ -2495,14 +2495,14 @@ Por exemplo, `#ccurta("Silva", 2023, 42)[texto]` é idêntico a `#citacao-curta(
     table.hline(stroke: 1pt),
     [*Norma*], [*Título*], [*Versão*],
     table.hline(stroke: 0.5pt),
-    [NBR 6034], [Índice --- Apresentação], [2004],
-    [NBR 12225], [Lombada --- Apresentação], [2004],
-    [NBR 5892], [Representação de datas e horas], [2019],
-    [NBR 6025], [Revisão de originais e provas], [2002],
-    [NBR 6032], [Abreviação de títulos de periódicos], [1989],
-    [NBR 6033], [Ordem alfabética], [1989],
-    [NBR ISO 2108], [ISBN], [2006],
-    [NBR 10525], [ISSN], [2005],
+    [NBR 6034 @abnt6034], [Índice --- Apresentação], [2004],
+    [NBR 12225 @abnt12225], [Lombada --- Apresentação], [2004],
+    [NBR 5892 @abnt5892], [Representação de datas e horas], [2019],
+    [NBR 6025 @abnt6025], [Revisão de originais e provas], [2002],
+    [NBR 6032 @abnt6032], [Abreviação de títulos de periódicos], [1989],
+    [NBR 6033 @abnt6033], [Ordem alfabética], [1989],
+    [NBR ISO 2108 @abntiso2108], [ISBN], [2006],
+    [NBR 10525 @abnt10525], [ISSN], [2005],
     [IBGE], [Normas de apresentação tabular], [1993],
     table.hline(stroke: 1pt),
   ),
@@ -2516,29 +2516,4 @@ Por exemplo, `#ccurta("Silva", 2023, 42)[texto]` é idêntico a `#citacao-curta(
 // REFERÊNCIAS
 // ============================================================================
 
-#titulo-sem-num[REFERÊNCIAS]
-
-#set par(
-  hanging-indent: 1.25cm,
-  first-line-indent: 0pt,
-)
-
-ANDRADE, Lenimar Nunes de. *Breve Introdução ao LaTeX 2ε*. Versão 2.1. João Pessoa: UFPB, 2000. Disponível em: ftp:\/\/mat.ufpb.br/pub/textos/tex/. Acesso em: 15 jan. 2026.
-
-ARAUJO, Lauro César. *O pacote abnTeX2*. Versão 1.9. 2015. Disponível em: https:\/\/github.com/abntex/abntex2. Acesso em: 10 jan. 2026.
-
-ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *NBR 6023*: informação e documentação: referências: elaboração. Rio de Janeiro, 2018.
-
-ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *NBR 6024*: informação e documentação: numeração progressiva das seções de um documento: apresentação. Rio de Janeiro, 2012.
-
-ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *NBR 6027*: informação e documentação: sumário: apresentação. Rio de Janeiro, 2012.
-
-ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *NBR 6028*: informação e documentação: resumo, resenha e recensão: apresentação. Rio de Janeiro, 2021.
-
-ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *NBR 10520*: informação e documentação: citações em documentos: apresentação. Rio de Janeiro, 2023.
-
-ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *NBR 14724*: informação e documentação: trabalhos acadêmicos: apresentação. Rio de Janeiro, 2024.
-
-HAUG, Martin; MÄDJE, Laurenz. *Typst Documentation*. 2024. Disponível em: https:\/\/typst.app/docs. Acesso em: 10 jan. 2026.
-
-IBGE. *Normas de apresentação tabular*. 3. ed. Rio de Janeiro, 1993.
+#referencias(read("referencias-docs.bib"))
