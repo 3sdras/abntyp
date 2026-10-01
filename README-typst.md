@@ -174,7 +174,7 @@ A numeração é automática (NBR 14724:2024): a contagem começa na folha de ro
 - `normas-abnt.with(paginacao: "nenhuma")` — sem numeração automática (use `#set page(...)`)
 - `normas-abnt.with(frente-verso: true)` — impressão frente-verso: margens espelhadas, número à esquerda nas páginas pares e capítulos iniciando em página ímpar
 
-O template `relatorio` (NBR 10719) aceita as mesmas opções (`paginacao`, `frente-verso`). O `livro` (NBR 6029) conta desde a primeira folha do miolo e mostra o número, no rodapé centralizado, após o sumário; aceita `paginacao`.
+O template `relatorio` (NBR 10719) aceita as mesmas opções (`paginacao`, `frente-verso`). O `livro` (NBR 6029) conta desde a primeira folha do miolo e mostra o número, no rodapé centralizado, após o sumário; aceita `paginacao` e `frente-verso` (margens espelhadas; folha de rosto, dedicatória, agradecimentos, epígrafe, prefácio, partes e capítulos em página ímpar).
 
 ### Artigo Científico
 

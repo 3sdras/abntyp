@@ -7,6 +7,13 @@
 #import "../core/spacing.typ": *
 #import "../core/dates.typ": *
 
+// Frente-verso: ligado por livro(frente-verso: true); os elementos que a NBR 6029
+// manda abrir em pagina impar consultam este estado.
+#let _frente-verso = state("abnt-livro-frente-verso", false)
+#let _abre-impar() = context {
+  if _frente-verso.get() { pagebreak(weak: true, to: "odd") }
+}
+
 /// Template principal para livro ou folheto
 /// Conforme NBR 6029:2023
 ///
@@ -22,6 +29,9 @@
 /// - isbn: numero ISBN
 /// - fonte: fonte a usar
 /// - cabecalho: titulo corrente (opcional)
+/// - frente-verso: impressao frente-verso (padrao: false). Se true: margens
+///   espelhadas, e folha de rosto, dedicatoria, agradecimento, epigrafe,
+///   prefacio/apresentacao, partes e capitulos abrem em pagina impar (NBR 6029)
 /// - paginacao: "auto" (padrao, NBR 6029: contagem a partir da primeira folha do
 ///   miolo -- falsa folha de rosto ou folha de rosto --, numero visivel somente
 ///   apos o sumario, rodape centralizado), "todas" (visivel desde o inicio do
@@ -39,6 +49,7 @@
   fonte: "Times New Roman",
   cabecalho: none,
   paginacao: "auto",
+  frente-verso: false,
   body,
 ) = {
   // Configuracao do documento
@@ -47,7 +58,14 @@
     author: autor,
   )
 
-  show: with-abnt-setup.with(fonte: fonte, suplemento-nivel1: "Capítulo")
+  show: with-abnt-setup.with(
+    fonte: fonte,
+    suplemento-nivel1: "Capítulo",
+    level-1-pagebreak-impar: frente-verso,
+  )
+
+  set page(margin: abnt-margens(frente-verso))
+  _frente-verso.update(frente-verso)
 
   // Numero de pagina automatico (rodape centralizado; local a criterio do projeto grafico)
   set page(footer: abnt-numero-pagina(paginacao: paginacao, centro: true, apos-sumario: true))
@@ -74,7 +92,7 @@
 
   // Livros usam 14pt para heading level 1 (diferente do padrão 12pt)
   show heading.where(level: 1): it => {
-    pagebreak(weak: true)
+    if frente-verso { pagebreak(weak: true, to: "odd") } else { pagebreak(weak: true) }
     v(1.5em)
     text(weight: "bold", size: 14pt)[
       #if it.numbering != none {
@@ -217,6 +235,7 @@
 /// Falsa folha de rosto (opcional)
 /// Apenas o titulo da obra
 #let half-title-page(titulo: "") = {
+  _abre-impar()
   set page(numbering: none)
   marcar-folha-rosto(primeiro: true)
   set align(center)
@@ -260,6 +279,7 @@
   local: "",
   ano: none,
 ) = {
+  _abre-impar()
   set page(numbering: none)
   marcar-folha-rosto(primeiro: true)
   set align(center)
@@ -418,6 +438,7 @@
 /// Dedicatoria
 /// Conforme NBR 6029:2023 - pagina impar
 #let book-dedication(conteudo) = {
+  _abre-impar()
   set page(numbering: none)
   v(1fr)
   align(right)[
@@ -433,6 +454,7 @@
 /// Agradecimentos
 /// Conforme NBR 6029:2023 - pagina impar
 #let book-acknowledgments(conteudo) = {
+  _abre-impar()
   align(center)[
     #text(weight: "bold", size: 12pt, "AGRADECIMENTOS")
   ]
@@ -444,6 +466,7 @@
 /// Epigrafe
 /// Conforme NBR 6029:2023 - pagina impar
 #let book-epigraph(citacao, autor) = {
+  _abre-impar()
   set page(numbering: none)
   v(1fr)
   align(right)[
