@@ -153,9 +153,6 @@
 // CAPÍTULO 1: CONCEITOS BÁSICOS
 // ============================================================================
 
-// Inicia numeração de páginas
-#book-start-numbering()
-
 = Conceitos Básicos
 
 == Introdução ao Typst
@@ -646,8 +643,8 @@ A tabela a seguir lista todos os parâmetros aceitos por `dados()`:
     [`area`], [Área de concentração], [não],
     [`orientador`], [Nome do orientador], [não],
     [`coorientador`], [Nome do coorientador], [não],
-    [`palavras-chave`], [Palavras-chave em português (array de strings)], [não],
-    [`palavras-chave-en`], [Keywords em inglês (array de strings)], [não],
+    [`palavras-chave`], [Palavras-chave em português (array de strings ou uma única string)], [não],
+    [`palavras-chave-en`], [Keywords em inglês (array de strings ou uma única string)], [não],
   ),
   caption: [Parâmetros de `dados()`],
   kind: table,
@@ -860,8 +857,9 @@ As listas são elementos opcionais que facilitam a localização de figuras, tab
 // Lista de tabelas (gerada automaticamente)
 #lista-tabelas()
 
-// Lista de quadros (gerada automaticamente)
-#lista-quadros()
+// Lista de quadros (não há função dedicada: use o outline nativo)
+#align(center, text(weight: \"bold\")[LISTA DE QUADROS])
+#outline(title: none, target: figure.where(kind: \"quadro\"))
 
 // Lista de siglas (manual)
 #lista-siglas((
@@ -946,7 +944,7 @@ Para títulos sem numeração (Referências, Apêndices, Anexos, Glossário etc.
 // Em nível 2 (subseção sem número):
 #titulo-sem-num(\"Obras consultadas\", nivel: 2)")
 
-  Resultado: os títulos aparecem em caixa alta e negrito, sem numeração, e entram no sumário. O alias `#secao` ainda funciona para retrocompatibilidade.
+  Resultado: os títulos aparecem em caixa alta (em negrito no nível 1), sem numeração, e entram no sumário. O alias `#secao` ainda funciona para retrocompatibilidade.
 ]
 
 == Citações (NBR 10520) <sec:citacoes>
@@ -978,7 +976,7 @@ Os dois eixos são ortogonais: uma citação direta pode usar o sistema autor-da
 
 === Forma recomendada: `@chave` com arquivo `.bib` <sec:chave-recomendado>
 
-Com a sintaxe nativa `@chave` do Typst, a chamada é *mais curta que o resultado* e o sobrenome, o ano e o "et al." vêm da entrada do `.bib` --- nada é redigitado. Basta existir um `#referencias(...)` no documento (ver @sec:ref-auto): as citações adotam o estilo ABNT automaticamente. Não é preciso nenhum comando de configuração.
+Com a sintaxe nativa `@chave` do Typst, a chamada é *mais curta que o resultado* e o sobrenome, o ano e o "et al." vêm da entrada do `.bib` --- nada é redigitado. Basta informar o `.bib` em `normas-abnt(arquivo-bibliografia: read("refs.bib"))` (ou chamar `#referencias(read("refs.bib"))`; ver @sec:ref-auto): as citações adotam o estilo ABNT automaticamente. Não é preciso nenhum comando de configuração.
 
 #block(
   width: 100%,
@@ -1568,7 +1566,7 @@ A função `#imagem()` é um wrapper sobre a função nativa `image()` do Typst,
     table.hline(stroke: 1pt),
     [*Parâmetro*], [*Aceita*], [*Padrão*], [*Descrição*],
     table.hline(stroke: 0.5pt),
-    [`caminho`], [texto ou bytes], [obrigatório], [Caminho do arquivo de imagem (ex: `"imagens/foto.png"`) ou bytes brutos.],
+    [`caminho`], [bytes], [obrigatório], [Conteúdo do arquivo de imagem, lido com `read("imagens/foto.png", encoding: none)`. Um caminho em texto gera erro (veja o quadro acima).],
     [`largura`], [automático ou medida], [automático], [Largura: absoluta (`5cm`), relativa (`80%`) ou automático (tamanho original).],
     [`altura`], [automático ou medida], [automático], [Altura da imagem. Se ambos forem definidos, `ajuste` controla a adaptação.],
     [`ajuste`], [texto], [`"cobrir"`], [`"cobrir"` (preenche, pode cortar), `"conter"` (cabe inteira) ou `"esticar"` (deforma).],
@@ -1796,9 +1794,10 @@ O ABNTyp gera automaticamente listas de figuras, tabelas e quadros:
 
 #lista-tabelas()      // Lista de tabelas
 
-#lista-quadros()      // Lista de quadros")
+// Lista de quadros: ainda não há função própria, use o outline nativo
+#outline(title: none, target: figure.where(kind: \"quadro\"))")
 
-As listas são geradas a partir dos títulos definidos no parâmetro `legenda` de cada `#container()`.
+As listas são geradas a partir dos títulos definidos no parâmetro `legenda` de cada `#container()`. `#lista-ilustracoes()` lista as figuras (`tipo: "imagem"`) e `#lista-tabelas()` as tabelas (`tipo: "tabela"`).
 
 #pagebreak()
 
@@ -2229,7 +2228,7 @@ O template `poster` segue a NBR 15437 @abnt15437:
   autores: ((name: \"Autor\", affiliation: \"Instituição\"),),
   texto-resumo: [Resumo em até 100 palavras...],
   palavras-chave: (\"palavra1\", \"palavra2\"),
-  colunas: 3,
+  num-colunas: 3,
   largura: 90cm,
   altura: 120cm,
 )
@@ -2454,7 +2453,7 @@ Este apêndice é destinado a usuários que já conhecem LaTeX e desejam migrar 
 == ABNTyp
 
 - *Repositório GitHub*: #link("https://github.com/3sdras/abntyp")
-- *Documentação*: #link("https://github.com/3sdras/abntyp/docs")
+- *Documentação*: #link("https://github.com/3sdras/abntyp/tree/main/docs")
 - *Issues (problemas)*: #link("https://github.com/3sdras/abntyp/issues")
 
 == Normas ABNT

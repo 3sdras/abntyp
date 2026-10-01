@@ -131,7 +131,7 @@ O pacote implementa as seguintes normas ABNT:
 
 == Requisitos
 
-- Typst versão 0.11 ou superior
+- Typst versão 0.13 ou superior (o recuo `first-line-indent: (amount: ..., all: true)` exige 0.13)
 - Fontes: Times New Roman ou Arial (opcionais, mas recomendadas)
 
 == Instalação Local
@@ -202,9 +202,8 @@ O fluxo recomendado separa metadados (`dados()`) e formatação (`normas-abnt()`
 
 #sumario()
 
-// Inicia numeração arábica
-#counter(page).update(1)
-#set page(numbering: "1", number-align: top + right)
+// A paginação é automática (NBR 14724): a contagem começa na folha de rosto
+// e o número aparece a partir da primeira seção primária numerada.
 
 = Introdução
 
@@ -214,9 +213,9 @@ Seu texto aqui...
 
 Conclusão do trabalho...
 
-#secao("REFERÊNCIAS")
-
-// Lista de referências...
+// REFERÊNCIAS são geradas ao final se normas-abnt receber
+// arquivo-bibliografia: read("referencias.bib"). Caso contrário:
+// #referencias(read("referencias.bib"))
 ```
 
 *Override parcial:* qualquer elemento aceita parâmetros explícitos que sobrescrevem o state:
@@ -259,7 +258,7 @@ A função `dados()` armazena os metadados do trabalho em um state compartilhado
   coorientador: none,
   palavras-chave: none,
   palavras-chave-en: none,
-  body,
+  ..args,               // em `show: dados.with(...)`, recebe o corpo do documento
 )
 ```
 
@@ -295,20 +294,20 @@ Configura o formato e margens da página conforme NBR 14724.
 
 ```typst
 #let abnt-page-setup(
-  paper: "a4",
-  margin-top: 3cm,
-  margin-bottom: 2cm,
-  margin-left: 3cm,
-  margin-right: 2cm,
+  papel: "a4",
+  margem-superior: 3cm,
+  margem-inferior: 2cm,
+  margem-esquerda: 3cm,
+  margem-direita: 2cm,
 )
 ```
 
 *Parâmetros:*
-- `paper`: Formato do papel (padrão: "a4")
-- `margin-top`: Margem superior (padrão: 3cm)
-- `margin-bottom`: Margem inferior (padrão: 2cm)
-- `margin-left`: Margem esquerda (padrão: 3cm)
-- `margin-right`: Margem direita (padrão: 2cm)
+- `papel`: Formato do papel (padrão: "a4")
+- `margem-superior`: Margem superior (padrão: 3cm)
+- `margem-inferior`: Margem inferior (padrão: 2cm)
+- `margem-esquerda`: Margem esquerda (padrão: 3cm)
+- `margem-direita`: Margem direita (padrão: 2cm)
 
 *Funções auxiliares:*
 
@@ -316,15 +315,23 @@ Configura o formato e margens da página conforme NBR 14724.
 // Aplica configuração de página ao corpo
 #let with-abnt-page(body)
 
-// Inicia numeração arábica (para seção textual)
+// Margens ABNT: frente-verso (interna 3cm, externa 2cm) ou somente anverso
+#let abnt-margens(frente-verso)
+
+// Número de página automático (usado por normas-abnt, relatorio e livro)
+#let abnt-numero-pagina(paginacao: "auto", frente-verso: false, centro: false, apos-sumario: false)
+
+// Quebra de página; para: "impar" ou "par" (útil em frente-verso)
+#let quebra-pagina(fraco: false, para: none)
+
+// Obsoletas (mantidas por compatibilidade; a paginação agora é automática):
 #let start-arabic-numbering()
-
-// Configura numeração no canto superior direito
 #let abnt-page-numbering()
-
-// Remove numeração (para capa, folha de rosto)
+#let pretextual-numbering()
 #let no-page-numbering()
 ```
+
+Nos templates (`normas-abnt`, `relatorio`, `livro`), a numeração é controlada pelos parâmetros `paginacao` (`"auto"`, `"todas"` ou `"nenhuma"`) e `frente-verso` (`true` espelha margens e alterna o número entre direita e esquerda). Não é mais necessário reiniciar o contador nem usar `#set page(numbering: ...)` no início do texto.
 
 === fonts.typ - Configuração de Fontes
 
@@ -342,8 +349,9 @@ Define fontes e tamanhos conforme ABNT.
   normal: 12pt,      // Texto principal
   small: 10pt,       // Citações, notas, legendas
   footnote: 10pt,    // Notas de rodapé
-  legenda: 10pt,     // Legendas
-  titulo-capa: 14pt, // Título na capa
+  caption: 10pt,     // Legendas
+  cover-title: 14pt, // Título na capa
+  cover-author: 12pt, // Autor na capa
 )
 ```
 
@@ -351,10 +359,10 @@ Define fontes e tamanhos conforme ABNT.
 
 ```typst
 // Aplica fonte padrão (Times New Roman, 12pt, pt-BR)
-#let abnt-font-setup(font-family: "Times New Roman")
+#let abnt-font-setup(fonte-familia: "Times New Roman")
 
 // Aplica fonte ao corpo do documento
-#let with-abnt-font(font-family: "Times New Roman", body)
+#let with-abnt-font(fonte-familia: "Times New Roman", body)
 
 // Texto em tamanho reduzido (10pt)
 #let small-text(body)
@@ -402,7 +410,7 @@ Define espaçamentos entre linhas e parágrafos.
 #let no-indent(body)
 
 // Bloco com recuo específico (citações longas: 4cm)
-#let indented-block(indent: 4cm, body)
+#let indented-block(recuo: 4cm, body)
 
 // Bloco para natureza do trabalho (recuo 8cm)
 #let nature-block(body)
@@ -430,9 +438,11 @@ Os templates também configuram recuo para listas e enumerações:
 
 ```typst
 #set list(indent: 2em, body-indent: 0.5em)
-#set enum(indent: 2em, body-indent: 0.5em)
+#set enum(indent: 2em, body-indent: 0.5em, numbering: "a)")
 #set terms(indent: 0em, hanging-indent: 2em, separator: [: ])
 ```
+
+A enumeração padrão usa alíneas (a), b), c)), conforme a NBR 6024; para outra numeração, use `#set enum(numbering: "1.")`. Também estão disponíveis `#alineas[...]` e `#subalineas[...]`.
 
 Todas essas configurações são aplicadas automaticamente ao usar qualquer template (`normas-abnt`, `artigo`, `relatorio`, etc.). Se estiver montando o documento manualmente sem template, inclua-as no preâmbulo.
 
@@ -469,15 +479,15 @@ Funções para ordenação alfabética em listas, índices, catálogos e bibliog
 
 ```typst
 // Ordenar ignorando artigos
-#let lista = ("O gato", "A casa", "Zebra", "Árvore")
+#let lista = ("O gato", "A casa", "Zebra", "Arvore")
 #sort-alphabetically(lista)
-// Resultado: ("Árvore", "A casa", "O gato", "Zebra")
+// Resultado: ("Arvore", "A casa", "O gato", "Zebra")
 
 // Criar índice alfabético
 #alphabetical-index((
   ("Algoritmo", 15),
   ("Banco de dados", 23),
-  ("Árvore", 18),
+  ("Arvore", 18),
 ))
 ```
 
@@ -808,11 +818,11 @@ Cria a folha de rosto conforme NBR 14724. Todos os parâmetros são opcionais --
 Cria páginas de resumo conforme NBR 6028. Se `palavras-chave` não for passado, lê automaticamente do state definido por `dados()`.
 
 ```typst
-// Resumo em português
-#let resumo(palavras-chave: none, body)
+// Resumo em português (palavras-chave: array ou string única)
+#let resumo(body, palavras-chave: none)
 
 // Abstract em inglês
-#let resumo-en(palavras-chave: none, body)
+#let resumo-en(body, palavras-chave: none)
 
 // Resumo em outra língua
 #let foreign-abstract(
@@ -929,11 +939,24 @@ A formatação segue a hierarquia:
 *Seção sem numeração:*
 
 ```typst
-// Para Introdução, Conclusão, Referências
-#let secao(titulo, nivel: 1)
+// Para Introdução, Conclusão, Referências (secao = alias de titulo-sem-num)
+#let titulo-sem-num(titulo, nivel: 1)
 
 // Título pré-textual (não aparece no sumário)
 #let pretextual-title(titulo)
+```
+
+*Alíneas, subalíneas e partes:*
+
+```typst
+// Alíneas a), b), c) (já é o padrão de normas-abnt; força o formato em um trecho)
+#let alineas(body)
+
+// Subalíneas com travessão
+#let subalineas(body)
+
+// Parte (Parte N: Título), em página própria, no sumário; @rótulo => "Parte 1"
+#let parte(titulo)
 ```
 
 === quotes.typ - Citações
@@ -999,11 +1022,11 @@ Mesma flexibilidade de parâmetros:
 // Citação com autor no texto: "Segundo Silva (2023)..."
 #let citar-autor(autor, ano)
 
-// Citação com autor fora do texto: "... (SILVA, 2023)"
-#let cite-parenthetical(autor, ano, pagina: none)
+// Citação com autor fora do texto: "... (Silva, 2023)"
+#let citar(autor, ano, pagina: none)
 
 // Citação de citação (apud)
-#let citar-apud(autor-original, ano-original, autor-secundario, ano-secundario, pagina: none)
+#let citar-apud(autor-original, ano-original, autor-secundario, ano-secundario, pagina-original: none, pagina: none)
 ```
 
 *Elementos especiais:*
@@ -1157,6 +1180,8 @@ Outros autores @santos2022[p. 45] concordam.
 // No final do documento:
 #abnt-bibliography(read("referencias.bib"))
 ```
+
+Com `normas-abnt(arquivo-bibliografia: read("referencias.bib"))`, a seção REFERÊNCIAS é gerada automaticamente no fim do documento --- nesse caso não chame `abnt-bibliography`/`referencias` novamente.
 
 *Tipos de documento suportados:*
 - `@book` - Livros
@@ -1312,11 +1337,22 @@ Template completo para trabalhos acadêmicos. Os metadados são definidos separa
   palavras-chave-en: ("Keyword1", "Keyword2"),
 )
 
-// 2. Formatação ABNT (só recebe fonte)
+// 2. Formatação ABNT
 #show: normas-abnt.with(
   fonte: "Times New Roman",  // ou "Arial"
+  quebra-capitulo: true,     // capítulos em nova página
+  paginacao: "auto",         // "auto" | "todas" | "nenhuma"
+  frente-verso: false,       // true: margens espelhadas, seções primárias em página ímpar
+  cor-links: none,           // none = links externos pretos e sublinhados
+  arquivo-bibliografia: read("referencias.bib"),  // opcional: gera REFERÊNCIAS no fim
 )
 ```
+
+A numeração de páginas é automática (NBR 14724): a contagem começa na folha de
+rosto e o número só aparece a partir da primeira seção primária numerada. Não
+é preciso `counter(page).update(1)` nem `set page(numbering: ...)`; as funções
+`pretextual()`, `textual()` e `postextual()` são mantidas apenas por
+compatibilidade.
 
 *Funções auxiliares do template:*
 
@@ -1346,6 +1382,8 @@ Template para artigos conforme NBR 6022.
   palavras-chave-en: (),
   fonte: "Times New Roman",
   colunas: 1,          // 1 ou 2 colunas
+  arquivo-bibliografia: none,  // read("referencias.bib"): gera REFERÊNCIAS no fim
+  titulo-bibliografia: "REFERÊNCIAS",
 )
 ```
 
@@ -1444,6 +1482,8 @@ Template para livros e folhetos com todos os elementos pré-textuais e pós-text
   isbn: "978-85-00000-00-0",
   fonte: "Times New Roman",
   cabecalho: "Título do Livro",  // Título corrente
+  paginacao: "auto",    // "auto" | "todas" | "nenhuma"
+  frente-verso: false,  // true: margens espelhadas e capítulos em página ímpar
 )
 ```
 
@@ -1560,6 +1600,8 @@ Template para projetos de pesquisa.
   coordenador: none,   // Coordenador
   volume: none,        // Número do volume
   fonte: "Times New Roman",
+  arquivo-bibliografia: none,  // read("referencias.bib"): gera REFERÊNCIAS no fim
+  titulo-bibliografia: "REFERENCIAS",
 )
 ```
 
@@ -1639,6 +1681,10 @@ Template para relatórios técnicos e/ou científicos.
   ano: 2026,
   volume: none,
   fonte: "Times New Roman",
+  paginacao: "auto",      // "auto" | "todas" | "nenhuma"
+  frente-verso: false,    // true: margens espelhadas
+  arquivo-bibliografia: none,  // read("referencias.bib"): gera REFERENCIAS no fim
+  titulo-bibliografia: "REFERENCIAS",
 )
 ```
 
@@ -1673,8 +1719,8 @@ Template para relatórios técnicos e/ou científicos.
 
 // Verso da folha de rosto
 #report-title-page-verso(
-  technical-team: ((role: "Coordenador", name: "Nome"),),
-  cataloging-data: [...],
+  equipe-tecnica: ((funcao: "Coordenador", nome: "Nome"),),
+  dados-catalogacao: [...],
 )
 
 // Errata
@@ -1701,11 +1747,11 @@ Template para relatórios técnicos e/ou científicos.
 
 // Código de identificação formatado
 #report-code(
-  institution-code: "INPE",
-  category: "RPE",
+  codigo-instituicao: "INPE",
+  categoria: "RPE",
   ano: 2026,
-  subject: "EST",
-  sequence: 1,
+  assunto: "EST",
+  sequencia: 1,
 )
 // Resultado: INPE-RPE-2026-EST-001
 ```
@@ -1723,7 +1769,7 @@ Template para pôsteres técnicos e científicos.
   contato: none,       // Contato
   texto-resumo: none,  // Resumo (até 100 palavras)
   palavras-chave: (),  // Palavras-chave
-  colunas: 3,           // Número de colunas
+  num-colunas: 3,      // Número de colunas
   largura: 90cm,       // Largura do pôster
   altura: 120cm,       // Altura do pôster
   fonte: "Arial",
@@ -1769,7 +1815,7 @@ Template para pôsteres técnicos e científicos.
 #poster-figure(
   image("grafico.png"),
   legenda: "Resultados obtidos",
-  fonte: "Elaborado pelo autor",
+  origem: "Elaborado pelo autor",
 )
 
 // Referências compactas
@@ -1955,7 +2001,7 @@ meu-tcc/
 │   ├── metodologia.typ
 │   ├── resultados.typ
 │   └── conclusao.typ
-└── referencias.bib     # Bibliografia (futuro)
+└── referencias.bib     # Bibliografia
 ```
 
 *main.typ:*
@@ -1963,7 +2009,10 @@ meu-tcc/
 ```typst
 #import "abntyp/lib.typ": *
 
-#show: normas-abnt.with(...)
+#show: normas-abnt.with(
+  arquivo-bibliografia: read("referencias.bib"),
+  // ...
+)
 
 // Pré-textuais
 #capa(...)
@@ -1972,19 +2021,15 @@ meu-tcc/
 #resumo-en(...)
 #sumario()
 
-// Textuais
-#counter(page).update(1)
-#set page(numbering: "1", number-align: top + right)
-
+// Textuais (a paginação é automática: número visível a partir da Introdução)
 #include "capitulos/introducao.typ"
 #include "capitulos/fundamentacao.typ"
 #include "capitulos/metodologia.typ"
 #include "capitulos/resultados.typ"
 #include "capitulos/conclusao.typ"
 
-// Pós-textuais
-#secao("REFERÊNCIAS")
-// ...
+// Pós-textuais: as REFERÊNCIAS são geradas automaticamente no fim
+// (arquivo-bibliografia); apêndices e anexos entram antes delas, se houver.
 ```
 
 = Aliases (nomes curtos)
@@ -2043,25 +2088,27 @@ Todas as funções públicas do ABNTyp possuem aliases curtos equivalentes. Use 
 
 == Como usar numeração romana nos pré-textuais?
 
-Por padrão, os elementos pré-textuais não são numerados. Se quiser usar romanos:
+Por padrão (`paginacao: "auto"`), os elementos pré-textuais são contados mas não numerados, conforme a NBR 14724:2024; o número aparece a partir da primeira seção primária numerada. O pacote não oferece numeração romana automática. Se a sua instituição a exige, desligue a paginação automática e controle a numeração manualmente:
 
 ```typst
+#show: normas-abnt.with(paginacao: "nenhuma", /* ... */)
+
 // Após a folha de rosto
 #set page(numbering: "i")
 #counter(page).update(1)
 
 // Antes da introdução
-#set page(numbering: "1")
+#set page(numbering: "1", number-align: top + right)
 #counter(page).update(1)
 ```
 
 == Como criar seção sem numeração?
 
 ```typst
-#secao("REFERÊNCIAS")
+#titulo-sem-num("REFERÊNCIAS")
 ```
 
-Ou use a função auxiliar:
+`secao` é mantido como alias de `titulo-sem-num` por compatibilidade:
 
 ```typst
 #secao("REFERÊNCIAS")
@@ -2069,11 +2116,11 @@ Ou use a função auxiliar:
 
 == Como ajustar o recuo da citação longa?
 
-O padrão é 4cm. Para alterar:
+A NBR 10520:2023 fixa o recuo da citação longa em 4 cm, e `citacao-longa` já o aplica; não há parâmetro para alterá-lo. Para um bloco recuado qualquer (que não seja citação ABNT), use `indented-block`:
 
 ```typst
-#indented-block(indent: 5cm)[
-  Texto da citação...
+#indented-block(recuo: 5cm)[
+  Texto do bloco...
 ]
 ```
 
@@ -2097,6 +2144,8 @@ Sim! O pacote inclui suporte a arquivos `.bib` com formatação automática ABNT
 // No final do documento:
 #abnt-bibliography(read("referencias.bib"))
 ```
+
+Na opção 1, as REFERÊNCIAS são geradas automaticamente no fim do documento; não chame `#abnt-bibliography` nem `#referencias` de novo. O parâmetro deve ser `read(...)`: um caminho em string resolve relativo ao pacote e dá erro explicativo.
 
 O pacote usa um arquivo CSL baseado nas normas NBR 6023:2018 e NBR 10520:2023.
 
