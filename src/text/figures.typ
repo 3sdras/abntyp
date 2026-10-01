@@ -65,7 +65,7 @@
         ]
       }
       if nota != none {
-        align(left)[
+        align(center)[
           #text(size: 10pt)[Nota: #nota]
         ]
       }
