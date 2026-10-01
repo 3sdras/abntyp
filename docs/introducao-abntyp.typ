@@ -1350,29 +1350,31 @@ reforça o ponto#footnote[Ibid., p. 5.].")
 
 Alíneas e subalíneas são regulamentadas pela NBR 6024:2012 (seções 4 e 5). Alíneas são subdivisões de um assunto dentro de uma seção, sem título próprio, indicadas por letras minúsculas seguidas de parêntese --- o texto que as antecede deve terminar em dois-pontos. Subalíneas são subdivisões das alíneas, indicadas por travessão seguido de espaço. Ambas terminam em ponto e vírgula, exceto a última (ponto final):
 
+Com `normas-abnt`, as listas numeradas do Typst (`+`) já saem como alíneas, `a)`, `b)`, `c)`, sem configurar nada. Para subalíneas, use uma lista com marcador de travessão. Quem preferir outra numeração (`1.`, `i)`) troca com `#set enum(numbering: "1.")`.
+
 #exemplo[
   #raw(block: true, lang: "typst", "Os elementos obrigatórios são:
 
-#alineas[
-  + capa;
-  + folha de rosto;
-  + resumo na língua vernácula;
-  + sumário;
-  + referências.
-]
++ capa;
++ folha de rosto;
++ resumo na língua vernácula;
++ sumário;
++ referências.
 
 As referências podem incluir:
 
-#alineas[
-  + livros:
-    #subalineas[
-      - com autor pessoal;
-      - com autor institucional;
-      - sem autoria.
-    ]
-  + artigos de periódico;
-  + documentos eletrônicos.
-]")
++ livros:
+  #[
+    #set list(marker: [--])
+    - com autor pessoal;
+    - com autor institucional;
+    - sem autoria.
+  ]
++ artigos de periódico;
++ documentos eletrônicos.
+
+// Outra numeração, a partir daqui:
+#set enum(numbering: \"1.\")")
 ]
 
 == Referências cruzadas

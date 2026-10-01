@@ -66,7 +66,8 @@
 
   // Listas e termos
   set list(indent: 2em, body-indent: 0.5em)
-  set enum(indent: 2em, body-indent: 0.5em)
+  // Alíneas (NBR 6024): a), b), c). Para outra numeração: #set enum(numbering: "1.")
+  set enum(indent: 2em, body-indent: 0.5em, numbering: "a)")
   set terms(indent: 0em, hanging-indent: 2em, separator: [: ])
 
   // Headings conforme NBR 6024:2012
