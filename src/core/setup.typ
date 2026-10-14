@@ -19,6 +19,12 @@
   } else { corpo }
 }
 
+// O `heading` nativo é `sticky` (não fica sozinho no pé da página), mas as regras abaixo o
+// substituem; este bloco devolve a propriedade. `above`/`below` = espaço entre parágrafos,
+// que é o que o título (um parágrafo, em 12 pt) tinha antes de virar bloco: sem isso valeria
+// 1,2em, e o `em` do espaço de parágrafo é o do corpo de 12 pt, não o do nível do título.
+#let _titulo-sticky(body) = text(size: 12pt, context block(sticky: true, above: par.spacing, below: par.spacing, body))
+
 /// Aplica toda a configuração padrão ABNT ao documento.
 ///
 /// Esta função reúne as regras comuns a todos os templates ABNT:
@@ -114,35 +120,35 @@
     context v(1.5em + par.spacing, weak: true)
     // Sem indicativo numérico (referências, apêndices, anexos…): centralizado (14724 5.2.3)
     let titulo = text(weight: "bold", size: 12pt, _abnt-titulo(it, caixa-alta: true))
-    if it.numbering == none { align(center, titulo) } else { titulo }
+    _titulo-sticky(if it.numbering == none { align(center, titulo) } else { titulo })
     v(1.5em)
   }
 
   // Seção secundária (nível 2): MAIÚSCULAS, regular
   show heading.where(level: 2): it => {
     v(1.5em)
-    text(weight: "regular", size: 12pt, _abnt-titulo(it, caixa-alta: true))
+    _titulo-sticky(text(weight: "regular", size: 12pt, _abnt-titulo(it, caixa-alta: true)))
     v(1.5em)
   }
 
   // Seção terciária (nível 3): Minúsculas, negrito
   show heading.where(level: 3): it => {
     v(1.5em)
-    text(weight: "bold", size: 12pt, _abnt-titulo(it, caixa-alta: false))
+    _titulo-sticky(text(weight: "bold", size: 12pt, _abnt-titulo(it, caixa-alta: false)))
     v(1.5em)
   }
 
   // Seção quaternária (nível 4): Minúsculas, regular
   show heading.where(level: 4): it => {
     v(1.5em)
-    text(weight: "regular", size: 12pt, _abnt-titulo(it, caixa-alta: false))
+    _titulo-sticky(text(weight: "regular", size: 12pt, _abnt-titulo(it, caixa-alta: false)))
     v(1.5em)
   }
 
   // Seção quinária (nível 5): Minúsculas, itálico
   show heading.where(level: 5): it => {
     v(1.5em)
-    text(weight: "regular", style: "italic", size: 12pt, _abnt-titulo(it, caixa-alta: false))
+    _titulo-sticky(text(weight: "regular", style: "italic", size: 12pt, _abnt-titulo(it, caixa-alta: false)))
     v(1.5em)
   }
 

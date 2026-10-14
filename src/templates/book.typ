@@ -940,7 +940,7 @@
   if entries == none {
     // Entradas em espaco simples (6034 nao pede 1,5)
     set par(leading: abnt-leading(1), spacing: abnt-leading(1))
-    indice(titulo: "")
+    indice(titulo: none)
   } else {
     set par(first-line-indent: 0pt)
     set text(size: 10pt)

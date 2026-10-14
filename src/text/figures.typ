@@ -24,6 +24,10 @@
 /// - `"tabela"` → "Tabela"
 /// - `"quadro"` → "Quadro"
 ///
+/// A fonte é obrigatória (NBR 14724 5.8; IBGE 4.2), inclusive em produção própria
+/// (`fonte: [Elaborado pelo autor (2026).]`): sem `fonte:` (ou `origem:`) o container
+/// aborta com uma mensagem. Para não imprimir fonte, passe `fonte: none` de propósito.
+///
 /// Uso:
 /// ```typst
 /// #container(legenda: "Meu título", origem: "O autor")[
@@ -33,7 +37,7 @@
 #let container(
   body,
   legenda: none,
-  fonte: none,
+  fonte: auto,
   origem: none,
   nota: none,
   tipo: "imagem",
@@ -42,7 +46,12 @@
   ..args,
 ) = {
   // `fonte` é o nome preferido (como no LaTeX); `origem` continua aceito.
-  let origem = if fonte != none { fonte } else { origem }
+  let origem = if fonte != auto and fonte != none { fonte } else { origem }
+  assert(
+    fonte != auto or origem != none,
+    message: "container(): informe a fonte (NBR 14724 5.8: obrigatória, mesmo em produção própria), "
+      + "por exemplo `fonte: [Elaborado pelo autor (2026).]`. Para não imprimir fonte, passe `fonte: none`.",
+  )
 
   // Posição: "aqui" (fixa, como [H] no LaTeX), "topo", "fundo" ou "auto" (flutuante)
   let placement = if posicao == "aqui" { none }

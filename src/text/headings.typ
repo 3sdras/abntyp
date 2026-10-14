@@ -116,8 +116,11 @@
 /// `#titulo-sem-num` antes — a função já cria o título.
 /// Para o template de projeto use `glossario-projeto`; para livro, `book-glossary`.
 /// - itens: dicionário termo -> definição
+/// - quebra: se true (padrão), a página seguinte começa depois do glossário (quebra fraca:
+///   não deixa página em branco no fim). Dentro de `columns`/`block` o Typst não aceita quebra
+///   de página: use `quebra: false`.
 /// Exemplo: #glossario(("Algoritmo": "Sequência finita de instruções."))
-#let glossario(itens) = {
+#let glossario(itens, quebra: true) = {
   titulo-sem-num[GLOSSÁRIO]
 
   set par(first-line-indent: 0pt)
@@ -128,7 +131,7 @@
     v(0.5em)
   }
 
-  pagebreak()
+  if quebra { pagebreak(weak: true) }
 }
 
 /// Título de elemento pré-textual (não aparece no sumário)

@@ -23,6 +23,7 @@
 /// Parametros:
 /// - termo: termo principal (cabecalho)
 /// - subtermo: subtermo/subcabecalho (opcional)
+/// - subsubtermo: terceiro nivel, abaixo do subtermo (opcional; so vale com `subtermo`)
 /// - exibicao: texto a exibir no documento (se diferente do termo)
 ///
 /// Exemplo:
@@ -30,13 +31,14 @@
 /// A #idx("algoritmo") e uma sequencia de instrucoes...
 /// #idx("algoritmo", subtermo: "de ordenacao")[Quicksort] e eficiente...
 /// ```
-#let idx(termo, subtermo: none, exibicao: none) = {
+#let idx(termo, subtermo: none, subsubtermo: none, exibicao: none) = {
   // Registrar entrada
   context {
     let current-page = counter(page).get().first()
     let entry = (
       term: termo,
       subterm: subtermo,
+      subsubterm: subsubtermo,
       page: current-page,
     )
     index-entries.update(entries => entries + (entry,))
@@ -50,12 +52,13 @@
 
 /// Cria uma entrada de indice sem exibir texto
 /// Use quando quiser indexar um termo que ja aparece no texto
-#let index-entry(termo, subtermo: none) = {
+#let index-entry(termo, subtermo: none, subsubtermo: none) = {
   context {
     let current-page = counter(page).get().first()
     let entry = (
       term: termo,
       subterm: subtermo,
+      subsubterm: subsubtermo,
       page: current-page,
     )
     index-entries.update(entries => entries + (entry,))
@@ -77,7 +80,9 @@
 /// Gera o indice alfabetico
 ///
 /// Parametros:
-/// - titulo: titulo do indice (padrao: "INDICE")
+/// - titulo: titulo do indice (padrao: "INDICE"); `none` omite o titulo (para quem ja
+///   escreveu um `heading`, como `book-index`)
+/// - nota: nota explicativa do padrao adotado, impressa antes das entradas (NBR 6034, 6.3)
 /// - rotulo-tipo: tipo do indice para o titulo (ex: "DE ASSUNTOS", "ONOMÁSTICO")
 /// - entradas-ver: lista de remissivas "ver"
 /// - entradas-ver-tambem: lista de remissivas "ver tambem"
@@ -98,42 +103,67 @@
 /// ```
 #let indice(
   titulo: "ÍNDICE",
+  nota: none,
   rotulo-tipo: none,
   entradas-ver: (),
   entradas-ver-tambem: (),
   colunas: 2,
   cabecalhos-letras: true,
 ) = {
-  // Titulo do indice
-  let full-title = if rotulo-tipo != none {
-    titulo + " " + rotulo-tipo
-  } else {
-    titulo
+  // Titulo do indice (`none` ou "" nao imprime titulo nem o vao dele)
+  if titulo not in (none, "") {
+    let full-title = if rotulo-tipo != none {
+      titulo + " " + rotulo-tipo
+    } else {
+      titulo
+    }
+
+    align(center)[
+      #text(weight: "bold", size: 12pt, full-title)
+    ]
+
+    v(1.5em)
   }
 
-  align(center)[
-    #text(weight: "bold", size: 12pt, full-title)
-  ]
-
-  v(1.5em)
+  // Nota explicativa do padrao adotado (6.3)
+  if nota != none {
+    set par(first-line-indent: 0pt)
+    text(size: 10pt, nota)
+    v(1em)
+  }
 
   context {
     let entries = index-entries.final()
 
-    // Agrupar entradas por termo (convertendo content para string)
+    // Chave de agrupamento e de ordem (NBR 6033): sem distincao de caixa e de acento
+    // (content vira string pelo repr). A entrada mostra a 1a grafia registrada.
+    let key-of = x => sort-key(if type(x) == str { x } else { repr(x) })
+    let label-of = x => if type(x) == str { x } else { repr(x) }
+
+    // Agrupar entradas por termo
     let grouped = (:)
     for entry in entries {
-      let term-key = if type(entry.term) == str { entry.term } else { repr(entry.term) }
+      let term-key = key-of(entry.term)
       if term-key not in grouped {
-        grouped.insert(term-key, (term: entry.term, pages: (), subterms: (:)))
+        grouped.insert(term-key, (term: entry.term, label: label-of(entry.term), pages: (), subterms: (:)))
       }
 
       if entry.subterm != none {
-        let subterm-key = if type(entry.subterm) == str { entry.subterm } else { repr(entry.subterm) }
+        let subterm-key = key-of(entry.subterm)
         if subterm-key not in grouped.at(term-key).subterms {
-          grouped.at(term-key).subterms.insert(subterm-key, (subterm: entry.subterm, pages: ()))
+          grouped.at(term-key).subterms.insert(subterm-key, (subterm: entry.subterm, pages: (), subsubterms: (:)))
         }
-        grouped.at(term-key).subterms.at(subterm-key).pages.push(entry.page)
+        let subsubterm = entry.at("subsubterm", default: none)
+        if subsubterm != none {
+          let subsub-key = key-of(subsubterm)
+          let subs = grouped.at(term-key).subterms.at(subterm-key).subsubterms
+          if subsub-key not in subs {
+            grouped.at(term-key).subterms.at(subterm-key).subsubterms.insert(subsub-key, (subsubterm: subsubterm, pages: ()))
+          }
+          grouped.at(term-key).subterms.at(subterm-key).subsubterms.at(subsub-key).pages.push(entry.page)
+        } else {
+          grouped.at(term-key).subterms.at(subterm-key).pages.push(entry.page)
+        }
       } else {
         grouped.at(term-key).pages.push(entry.page)
       }
@@ -141,18 +171,18 @@
 
     // Remissivas de termos sem entrada propria tambem sao listadas (NBR 6034, 6.10 e 6.11)
     for entry in entradas-ver + entradas-ver-tambem {
-      if type(entry) == dictionary and entry.from not in grouped {
-        grouped.insert(entry.from, (term: entry.from, pages: (), subterms: (:)))
+      if type(entry) == dictionary and key-of(entry.from) not in grouped {
+        grouped.insert(key-of(entry.from), (term: entry.from, label: label-of(entry.from), pages: (), subterms: (:)))
       }
     }
 
-    // Ordenar termos alfabeticamente
-    let sorted-terms = grouped.keys().sorted(key: sort-key)
+    // Ordenar termos alfabeticamente (as chaves ja sao chaves de ordenacao)
+    let sorted-terms = grouped.keys().sorted()
 
     // Agrupar por letra inicial
     let by-letter = (:)
     for term in sorted-terms {
-      let letter = sort-initial(term)
+      let letter = sort-initial(grouped.at(term).label)
       if letter not in by-letter {
         by-letter.insert(letter, ())
       }
@@ -163,7 +193,7 @@
     let see-map = (:)
     for entry in entradas-ver {
       if type(entry) == dictionary and entry.type == "see" {
-        see-map.insert(entry.from, entry.to)
+        see-map.insert(key-of(entry.from), entry.to)
       }
     }
 
@@ -171,10 +201,10 @@
     let see-also-map = (:)
     for entry in entradas-ver-tambem {
       if type(entry) == dictionary and entry.type == "see-also" {
-        if entry.from not in see-also-map {
-          see-also-map.insert(entry.from, ())
+        if key-of(entry.from) not in see-also-map {
+          see-also-map.insert(key-of(entry.from), ())
         }
-        see-also-map.at(entry.from).push(entry.to)
+        see-also-map.at(key-of(entry.from)).push(entry.to)
       }
     }
 
@@ -247,12 +277,20 @@
             linebreak()
 
             // Subtermos (com recuo)
-            let sorted-subterms = data.subterms.keys().sorted(key: sort-key)
+            let sorted-subterms = data.subterms.keys().sorted()
             for subterm-key in sorted-subterms {
               let sub-data = data.subterms.at(subterm-key)
               h(1em)
-              [#sub-data.subterm, #format-pages(sub-data.pages)]
+              [#sub-data.subterm#if sub-data.pages.len() > 0 [, #format-pages(sub-data.pages)]]
               linebreak()
+
+              // Sub-subtermos (com recuo maior)
+              for subsub-key in sub-data.subsubterms.keys().sorted() {
+                let subsub-data = sub-data.subsubterms.at(subsub-key)
+                h(2em)
+                [#subsub-data.subsubterm, #format-pages(subsub-data.pages)]
+                linebreak()
+              }
             }
 
             // Remissiva "ver tambem"
@@ -267,7 +305,7 @@
     ]
   }
 
-  pagebreak()
+  pagebreak(weak: true)
 }
 
 /// Indice de assuntos (wrapper para indice)

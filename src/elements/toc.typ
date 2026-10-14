@@ -117,73 +117,92 @@
 ///   `#lista-ilustracoes(tipo: "grafico", titulo: "LISTA DE GRÁFICOS")`
 /// - titulo: título da lista
 #let lista-ilustracoes(tipo: image, titulo: "LISTA DE ILUSTRAÇÕES") = {
-  abre-anverso()
-
-  align(center)[
-    #text(weight: "bold", size: 12pt, titulo)
-  ]
-
-  v(1.5em)
-
   let tipos = if type(tipo) == array { tipo } else { (tipo,) }
   let alvo = tipos
     .map(k => selector(figure.where(kind: if k == "imagem" { image } else if k == "tabela" { table } else { k })))
     .reduce((a, b) => a.or(b))
 
-  show: _abnt-lista-rules
-  outline(
-    title: none,
-    target: alvo,
-  )
+  // Lista sem itens não sai (4.2.1.9: a lista é opcional)
+  context if query(alvo).len() > 0 {
+    abre-anverso()
 
-  pagebreak()
+    align(center)[
+      #text(weight: "bold", size: 12pt, titulo)
+    ]
+
+    v(1.5em)
+
+    show: _abnt-lista-rules
+    outline(
+      title: none,
+      target: alvo,
+    )
+
+    pagebreak()
+  }
 }
 
 /// Lista de tabelas
 #let lista-tabelas() = {
-  abre-anverso()
+  let alvo = figure.where(kind: table)
 
-  align(center)[
-    #text(weight: "bold", size: 12pt, "LISTA DE TABELAS")
-  ]
+  // Lista sem itens não sai
+  context if query(alvo).len() > 0 {
+    abre-anverso()
 
-  v(1.5em)
+    align(center)[
+      #text(weight: "bold", size: 12pt, "LISTA DE TABELAS")
+    ]
 
-  show: _abnt-lista-rules
-  outline(
-    title: none,
-    target: figure.where(kind: table),
-      )
+    v(1.5em)
 
-  pagebreak()
+    show: _abnt-lista-rules
+    outline(
+      title: none,
+      target: alvo,
+    )
+
+    pagebreak()
+  }
 }
 
 /// Lista de quadros
 #let lista-quadros() = {
-  abre-anverso()
+  let alvo = figure.where(kind: "quadro")
 
-  align(center)[
-    #text(weight: "bold", size: 12pt, "LISTA DE QUADROS")
-  ]
+  // Lista sem itens não sai
+  context if query(alvo).len() > 0 {
+    abre-anverso()
 
-  v(1.5em)
+    align(center)[
+      #text(weight: "bold", size: 12pt, "LISTA DE QUADROS")
+    ]
 
-  show: _abnt-lista-rules
-  outline(
-    title: none,
-    target: figure.where(kind: "quadro"),
-  )
+    v(1.5em)
 
-  pagebreak()
+    show: _abnt-lista-rules
+    outline(
+      title: none,
+      target: alvo,
+    )
+
+    pagebreak()
+  }
 }
 
 /// Lista de abreviaturas e siglas
-/// - itens: dicionário de sigla -> significado (impresso em ordem alfabética, NBR 14724 4.2.1.11)
-#let lista-siglas(itens) = {
+/// - itens: dicionário de sigla -> significado (impresso em ordem alfabética, NBR 14724 4.2.1.11);
+///   sem itens, a lista não sai
+/// - titulo: título da lista. A norma recomenda uma lista própria para cada tipo
+///   (NBR 14724 4.2.1.7): `#lista-siglas(titulo: "LISTA DE SIGLAS", (...))` e
+///   `#lista-siglas(titulo: "LISTA DE ABREVIATURAS", (...))`
+#let lista-siglas(itens, titulo: "LISTA DE ABREVIATURAS E SIGLAS") = {
+  if itens.len() == 0 { return }
+
   abre-anverso()
 
   align(center)[
-    #text(weight: "bold", size: 12pt, "LISTA DE ABREVIATURAS E SIGLAS")
+    #text(weight: "bold", size: 12pt, titulo)
   ]
 
   v(1.5em)
@@ -200,6 +219,8 @@
 /// Lista de símbolos
 /// - itens: dicionário de símbolo -> significado
 #let lista-simbolos(itens) = {
+  if itens.len() == 0 { return }
+
   abre-anverso()
 
   align(center)[
