@@ -838,3 +838,48 @@ Arquivos alterados: `src/elements/toc.typ`, `src/elements/index.typ`, `src/eleme
 21. **`tabela()`** desenha a moldura IBGE e repete o cabeçalho quando o usuário não escreve `table.hline`; marcas "continua/continuação/conclusão" em tabela de várias páginas.
 22. **Títulos de seção não ficam sozinhos no pé da página** (muda a paginação: `tcc-exemplo` 19 → 20).
 23. **`indice(titulo: none)`**, `nota:`, `idx(subsubtermo:)`; entradas que diferem só por caixa ou acento viram uma; `glossario(quebra: false)` para colunas.
+
+## Etapa 5c — livro e índice (14/10/2026)
+
+Arquivos alterados: `src/templates/book.typ`, `src/elements/index.typ`, `src/text/tables.typ`. 0 agentes. Testes em `docs/revisao/testes-5c/` (compilar com `typst compile --root <pacote> docs/revisao/testes-5c/<arquivo>.typ`; `ix-canto.typ` aceita `--input canto=letras|entradas --input fv=0|1 --input numero=0|1`). Antes de cada correção reproduzi o defeito. Nada comitado; `typst.toml`, `CLAUDE.md`, `README*` e `docs/introducao-abntyp.typ` já vinham modificados (não são meus).
+
+### R7b-11 · validação do ISBN no livro
+- **Onde:** `book.typ:10` (importa `validate-isbn` e `validate-isbn10`), `:125-135` (`_livro-isbn`), `:208` (`livro()` valida na entrada).
+- **Antes:** `isbn: "123"` e `"978-65-00000-00-8"` (dígito errado) saíam impressos sem erro (`isbn-curto`, `isbn-ruim`). **Depois:** texto que não é ISBN-13 (978/979, dígito certo) nem ISBN-10 válido aborta com `livro(): ISBN "…" inválido (NBR ISO 2108 …)`; conteúdo (`[em obtenção]`), lista, `none` e vazio continuam como eram. `livro(isbn:)` também valida, mesmo que nenhuma página o imprima (`isbn-livro`).
+- **ISBN no verso da folha de rosto:** já estava feito na Etapa 4 (`book-title-page-verso(isbn: auto)`, `book.typ:642`); só ganhou a validação. **Verificado:** `isbn-ok` (ISBN-13, ISBN-10 com o 13 ao lado, lista, conteúdo, `none`), `isbn-ruim`, `isbn-curto`, `isbn-livro`, nas 3 versões.
+- **Não feito:** forma do produto (ISO 2108, 6.4) e ISBN por volume. `isbn: [ISBN 978…]` (conteúdo) sai com o prefixo duplicado ("ISBN ISBN …"): comportamento antigo do ramo de conteúdo, não mexi.
+
+### Sobrecapa e orelhas (6029, 4.1.1 e 4.1.5; opcionais)
+- **Onde:** `book.typ:413` (`book-orelha`). **Feito:** `book-orelha(biografia:, comentario:, publico:, outros:, largura: 9cm)`, uma página estreita sem cabeçalho nem número, com o que a 4.1.5 recomenda. A sobrecapa é "primeira e quarta capas e orelhas" (4.1.1): não criei função própria, ela se compõe com `book-cover()`, `book-orelha()` e `book-back-cover()` (dito na docstring).
+- **Verificado:** `orelha` (páginas de 255 × 842 e 198 × 842 pt, as demais A4; imagem). **Limite:** em frente-verso as orelhas contam como páginas físicas do PDF e deslocam a paridade (a falsa folha de rosto abriu na p. 5 com a p. 4 em branco); quem imprime as orelhas à parte não é afetado.
+
+### Tabela · traço final escrito pelo usuário (IBGE 8.3)
+- **Onde:** `tables.typ:29-33` (docstring), `:55-60` (`traco-final`), `:109`, e `:110` (a palavra só ocupa linha se existir).
+- **Antes:** o último `table.hline` do usuário saía no pé de **todas** as páginas (`tab-fecho`, 5 páginas: traço grosso embaixo das páginas 1 a 4). **Depois:** o último item, se for `table.hline` e a tabela tiver o rodapé de "continua/conclusão", sai do corpo e é desenhado no rodapé só na última página (com a espessura que o usuário deu). A moldura automática (`fecho`) usa o mesmo caminho.
+- **Efeito colateral evitado:** o rodapé acrescentava uma linha vazia de 10 pt abaixo do traço nas tabelas de uma página; agora a linha da palavra só existe quando há "(continua)/(continuação)/(conclusão)". **Verificado:** `tab-fecho` (5 páginas, imagem antes × depois), `tab-fecho-curta` (uma página, com e sem rodapé), `t01`, `t02` e `t03` da 5b iguais.
+- **Não corrigido (observado):** com `table.hline` escrito pelo usuário e sem `table.header`, o `hline` inicial reaparece no alto das páginas seguintes, sem o cabeçalho (o cabeçalho só se repete com `table.header` ou com a moldura automática).
+
+### R4b-18 · índice (NBR 6034)
+- **6.12 c, volume:** `idx(…, volume:)` e `index-entry(…, volume:)` (`index.typ:36`, `:58`); `format-pages` (`:258`) agrupa por volume: `Idade Média, v. 2, 1-2; v. 3, 3`, `Clorofila, pt. 1, 2`; número vira "v. N", texto vai como foi dado. **Verificado:** `ix-volume`.
+- **6.5, canto:** `indice(canto: "letras" | "entradas")` e `book-index(canto:)` (`index.typ:86` `_indice-canto`, `:125`, `:153`; `book.typ:970`). Desenhado com `set page(foreground:)`, que não substitui o cabeçalho nem o número da página; lado externo lido de `page.margin` (direita nas ímpares e à esquerda nas pares com `inside/outside`; sempre à direita sem frente-verso), a 2,4 cm do alto. Abre página nova (é um `set page`) e vale só para as páginas do índice. **Verificado:** `ix-canto` (letras sem frente-verso: "A", "B–E", "F–I"; entradas em frente-verso: p. 12 par à esquerda, p. 13 ímpar à direita, número no cabeçalho preservado), `ix-livro` (livro em frente-verso: layout igual ao índice sem `canto`, só com o canto a mais).
+- **6.8, continuação:** o termo com as subentradas fica inteiro na coluna (`block(breakable: false)`); o que é mais alto que uma coluna começa coluna nova e é fatiado em partes do tamanho da coluna, cada uma (menos a 1ª) com o cabeçalho e, se for sub-subentrada, o subcabeçalho repetidos com "*(continuação)*" (`index.typ:301` `linhas-de`, `:340-390`). **Primeira tentativa descartada:** repetir o cabeçalho onde o Typst quebra a coluna (sondas de posição + `query`): cada cabeçalho empurra as quebras seguintes e o layout não converge em 5 passagens (`warning: layout did not converge`), mesmo com um só termo grande. A solução final não consulta posições. **Verificado:** `ix-base` (12 termos médios e 2 gigantes de 68 linhas, 21 páginas, 0 avisos nas 3 versões; imagem: letras junto do 1º termo, "(continuação)" no alto de todas as colunas dos gigantes).
+- **Mudanças de aparência do índice:** (1) a letra da seção vai dentro do bloco do 1º termo (antes ficava sozinha no pé da coluna) e a letra da 2ª coluna alinha com a da 1ª (antes o balanceamento as deixava em alturas diferentes; `i01` comparado com o HEAD); (2) termos que cabem numa coluna não se partem mais entre colunas: o pé da coluna pode ficar mais vazio.
+- **Limites:** o 1º termo do índice, se for gigante, começa na 1ª coluna da 1ª página, que tem o título acima: a 1ª parte pode passar da coluna e a sobra cai sem cabeçalho. O tamanho da coluna vem da altura da página menos as margens `top` e `bottom` (com margem `auto` usa o espaço que sobra). Termos dados como conteúdo (`idx([*x*])`) são ordenados e agrupados pelo `repr` (antigo; a letra sai "S" para `strong`): não mexi. Subentradas de um termo com `ver também` herdam o mesmo mecanismo.
+- **Armadilha:** um `metadata` solto no começo de uma linha, depois de `linebreak()`, é posicionado no fim da linha anterior; só uma `box(width: 0pt)` ancora a sonda no início da linha. (Útil para qualquer outro código que meça posições em texto linha a linha.)
+
+### Verificação da etapa
+- 12 exemplos + `testeCit.typ` × 0.14.1, 0.13.0 e 0.15.1: **39 de 39 com rc=0 e 0 avisos**, páginas idênticas às da linha de base (`livro` 28, `tcc` 20, `periodico` 18, `projeto` 18, `relatorio` 18, `artigo` 5, `slides` 25 e 16, autor-data 2, numérica 3, inline 1, pôster 1, `testeCit` 4) e **o texto extraído (`pdftotext -layout`) de cada exemplo igual ao da base**: nenhum exemplo muda de saída.
+- Os 13 testes de `testes-5c/` e os `i01`, `i02`, `t01`, `t02`, `t03`, `l01b` da 5b compilam nas 3 versões sem aviso e com a mesma contagem de páginas; os três ISBN inválidos e o `canto: "cima"` dão o erro esperado nas 3.
+- Aceitação da etapa (um teste por item em `testes-5c/` e a matriz sem aviso): **passou**.
+- Scripts de apoio (scratchpad, fora do pacote): `matrix.sh`, `tests3.sh`, `c.sh`, `mont.sh` (junta PNGs pelo próprio typst; a máquina não tem `montage` nem PIL).
+
+### Quebras de API e mudanças de saída da Etapa 5c (para a nota da 0.7.0)
+24. **ISBN inválido dá erro** em `livro()`, `book-title-page-verso()` e `book-back-cover()` quando é texto (ISBN-13 com 978/979 e dígito certo, ou ISBN-10 válido); conteúdo, lista e `none` passam. Quem usava um ISBN de exemplo (`"123"`, dígito errado) precisa trocar.
+25. **`tabela()`**: o último `table.hline` escrito pelo usuário sai só na última página.
+26. **Índice:** novos `idx(volume:)`, `index-entry(volume:)`, `indice(canto:)` e `book-index(canto:)`; o termo com as subentradas não se parte entre colunas (só os maiores que uma coluna, com "(continuação)"); a letra acompanha o 1º termo.
+27. **`book-orelha()`** nova (orelhas, 4.1.5); a sobrecapa é a composição de `book-cover`, `book-orelha` e `book-back-cover`.
+
+### Pendências (não feitas, com o motivo)
+- Forma do produto e ISBN por volume (ISO 2108, 6.4); sobrecapa como função única (a norma só a define como a soma das três peças).
+- Documentação das funções novas (`book-orelha`, `canto:`, `volume:`): Etapa 6.
+- `hline` inicial repetido sem cabeçalho em tabela longa com traços do usuário (ver acima).
