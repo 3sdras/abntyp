@@ -756,3 +756,85 @@ Arquivos alterados: `src/templates/slides.typ`, `examples/slides-simples-exemplo
 - **Cosméticos:** "Obrigado!" fixo no masculino; o slide final de `slides-defesa` não pode ser desligado; dois estilos de divisor de seção; item "1." do sumário/roteiro sem o mesmo destaque dos demais; "$15.7 tri" quebra em duas linhas no exemplo `slides-simples`.
 - **Código morto, só mencionado:** os `import` de `citar-autor`, `citar-multiplos`, `citar-etal`, `citar-entidade` e `citar-titulo` em `slides.typ`, que servem só de reexportação; reexportação do touying em `lib.typ` (fora da etapa).
 - **Não corrigido:** PDF/UA-1 (touying), reserva da fonte Arial (R7a-13) e estouro dos slides auxiliares (documentar na Etapa 6).
+
+---
+
+## Etapa 5b — o que sobrou do núcleo (14/10/2026)
+
+Arquivos alterados: `src/elements/toc.typ`, `src/elements/index.typ`, `src/elements/spine.typ`, `src/core/setup.typ`, `src/text/headings.typ`, `src/text/figures.typ`, `src/text/tables.typ` e uma linha em `src/templates/book.typ` (`:943`, `indice(titulo: none)`). 0 agentes. Testes novos em `docs/revisao/testes-5b/` (15 arquivos; compilar com `typst compile --root <pacote> docs/revisao/testes-5b/<arquivo>.typ`; `h01` e `h02` aceitam `--input`, ver o cabeçalho de cada um). Antes de cada correção reproduzi o defeito. Nada comitado; `typst.toml` não foi tocado (o `git status` já o mostrava modificado antes da etapa, e a `CLAUDE.md`, os `README*` e `docs/introducao-abntyp.typ` também).
+
+### R4b-06 · R7c-12 · listas vazias não saem
+- **Onde:** `toc.typ:119` (`lista-ilustracoes`), `:146` (`lista-tabelas`), `:170` (`lista-quadros`), `:199` (`lista-siglas`), `:221` (`lista-simbolos`).
+- **Antes:** cada função imprimia o título e uma página vazia (`l01a`: 7 páginas, 5 delas de lista sem item). **Depois:** `context if query(alvo).len() > 0 { … }`; as de dicionário saem com `if itens.len() == 0 { return }`. O `abre-anverso()` e o `pagebreak()` ficam dentro do `if` (nenhuma página em branco no frente-verso). `l01a`: 2 páginas.
+- **Verificado:** `l01a` (vazias) e `l01b` (com itens, em imagem: o layout das listas com itens não mudou).
+- **Nota:** a consulta é do documento inteiro; uma lista de figuras sai se houver figura **em qualquer lugar**, antes ou depois dela.
+
+### R7c-16 · lista de abreviaturas × lista de siglas
+- **Onde:** `toc.typ:194-204`. **Antes:** título fixo "LISTA DE ABREVIATURAS E SIGLAS". **Depois:** `lista-siglas(itens, titulo: …)`, mesmo padrão. Para duas listas (14724 4.2.1.7): `lista-siglas(titulo: "LISTA DE SIGLAS", …)` e `lista-siglas(titulo: "LISTA DE ABREVIATURAS", …)`. **Verificado:** `l01b`, em imagem.
+- **Não feito:** 5.6 (sigla por extenso na primeira menção) continua sem apoio; ligar as listas ao glossário de abreviaturas (Etapa 3) é outra tarefa.
+
+### R7b-18 (parte) · `indice()`: título vazio e quebra de página
+- **Onde:** `index.typ:106-125` e `:290`; `book.typ:943`.
+- **Antes:** `indice(titulo: "")` imprimia um título vazio e o vão (~38 pt a mais); o `pagebreak()` do fim não era fraco: o livro terminava com uma página em branco (`i02`: 3 páginas).
+- **Depois:** `titulo: none` (e `""`) não imprime título nem vão; `pagebreak(weak: true)`; `book-index()` chama `indice(titulo: none)`. `i02`: 2 páginas; a primeira entrada ("A") passou de y = 172,4 para 140,6 pt. **Verificado:** `i02` em imagem, `pdftotext -bbox`.
+
+### R4b-17 · R4b-18 (parte) · índice: agrupamento, sub-subtermo e nota
+- **Onde:** `index.typ:26-61` (`idx`, `index-entry`: `subsubtermo:`), `:138-205` (agrupamento e ordem), `:204-222` (impressão).
+- **Antes:** entradas agrupadas pela grafia exata: `Algoritmo` e `algoritmo`, `Álgebra` e `Algebra` saíam como entradas separadas (a ordem e a letra já vinham do `sort-key`/`sort-initial` da Etapa 3). Sem terceiro nível e sem nota explicativa.
+- **Depois:** o agrupamento usa a chave de `sort-key` (sem caixa nem acento; sigla × palavra continuam distintas, como na ordenação); a entrada mostra a primeira grafia registrada. `idx(…, subsubtermo: …)` (recuo de 2em) e `indice(nota: …)` (nota explicativa antes das entradas, 6.3). As remissivas passam a casar pela mesma chave.
+- **Verificado:** `i01` (`Álgebra, 1-2`, `algoritmo, 1`, terceiro nível, nota, remissiva), em imagem.
+- **Não feito (R4b-18):** letras do canto da página (6.5), "continuação" em página ou coluna nova (6.8), indicativo de volume/parte (6.12 c).
+
+### `glossario()` com `pagebreak()` interno
+- **Onde:** `headings.typ:119-134`. **Antes:** `pagebreak()` fixo: dentro de `columns(2)` dava `error: pagebreaks are not allowed inside of containers` (`g01`). **Depois:** `glossario(itens, quebra: true)`; a quebra agora é fraca (não deixa página em branco no fim do documento) e `quebra: false` serve para colunas. O Typst recusa até a quebra fraca dentro de container, então o parâmetro é inevitável. **Verificado:** `g01` (3 páginas, a quebra só onde pedida).
+
+### R8c-08 · título de seção sozinho no pé da página
+- **Onde:** `setup.typ:22-26` (auxiliar `_titulo-sticky`) e `:123`, `:130`, `:137`, `:144`, `:151` (os cinco níveis).
+- **Causa:** o `heading` nativo é `block(sticky: true)`, mas a regra do pacote o substitui por `v()` + texto, e perde a propriedade.
+- **Antes:** `h01` (5 níveis × 26 alturas de enchimento): 107 páginas com título órfão em 402; nos exemplos, 5 (tcc p. 9, 15 e 17; projeto p. 9; artigo p. 2).
+- **Depois:** o texto de cada título vai num `block(sticky: true)` com `above`/`below` = `par.spacing` avaliado a 12 pt (o `em` do espaço de parágrafo é o do corpo, não o do nível do título; com o padrão do `block`, 1,2em, os vãos mudavam). `h01`: **0 em 419**; nos exemplos: 0 nas 3 versões.
+- **Vãos:** `h02-vaos` (cinco níveis, títulos seguidos, sem número) em espaço 1,5 e simples, antes × depois: **todas as linhas +0,0 pt**; `topo.typ`, `sub.typ` e `passo.typ` da Etapa 0 idênticos. Os `v()` ficam fora do bloco, então o espaço antes do título continua sumindo no topo da página (nível 1, fraco) e fica na página anterior quando o título desce.
+- **Efeito na saída:** `tcc-exemplo` **19 → 20 páginas** (igual nas 3 versões): "5.4 TRABALHOS FUTUROS" desce para a p. 19 e "REFERÊNCIAS" abre a p. 20. Conferido em imagem (p. 9-10, antes × depois: "1.3 OBJETIVOS" sai do pé da p. 8 e abre a p. 9 junto de "1.3.1").
+
+### R4b-14 · R4b-15 · lombada
+- **Onde:** `spine.typ:29` (`_autores`), `:55` (`lombada`), `:182` (`lombada-preview`), `:268` (`spine-text-descending`), `:315` (`margem-capa`).
+- **Antes:** `rotate(-90deg)` (lê de baixo para cima); `margem-capa(volume: 2)` com `- v. 2` virando item de lista (`•`); `spine-text-descending` devolvia texto horizontal; `lombada()` descendente era uma faixa horizontal de 29,7 × 2 cm (o usuário tinha de girar) e terminava com `pagebreak()` (2ª página em branco); sem `fasciculo`; só um autor; o logo caía dentro da caixa de 30 mm.
+- **Depois:** `rotate(90deg)` em tudo (do alto para o pé, 4.1.2.2); `margem-capa` com `\- v.`; `spine-text-descending` devolve o texto girado (como a docstring dizia); `lombada()` é uma página **em retrato** (`largura-lombada` × `altura-lombada`; a descendente monta o layout na horizontal e gira 90°, com o autor no alto, o logo acima e os **30 mm em branco no pé**); sem o `pagebreak()` final; `fasciculo:` (sai "fasc. 3") nas quatro funções; `autor:` aceita lista (separada por "; " na descendente, um abaixo do outro na horizontal, 4.1.1).
+- **Verificado:** `s01` a `s04` em imagem (`s04`: antes/lombada/depois = 3 páginas, nenhuma em branco).
+- **MUDANÇA DE SAÍDA (nota da 0.7.0):** o PDF de `lombada()` passa de faixa horizontal (`altura × largura`) a retrato (`largura × altura`); `lombada(orientacao: "horizontal")` também troca as dimensões da página (antes `set page(width: altura, height: largura)`). Quem imprime a lombada não precisa mais girá-la.
+- **Não feito:** `instituicao` continua entre os elementos (a norma lista só volume, fascículo e data; mantive por ser opcional e do usuário); a lombada não está ligada aos templates (C18); o "fasc." segue a abreviatura da NBR 6032 (se a 12225 usar "n.", trocar em `spine.typ`, três ocorrências).
+
+### R4b-20 · `tabela()` com a moldura da IBGE; R4b-19 (resto) · continua/continuação/conclusão
+- **Onde:** `tables.typ:15-17` (contador dos marcadores), `:44-113` (`tabela`).
+- **Antes:** `tabela()` = `table(stroke: none, …)`: sem traço algum se o usuário não escrevesse `table.hline` (`t01`); sem repetição do cabeçalho; sem "continua".
+- **Depois:** `tabela(moldura: true, continuacao: true, …)`. Sem `table.hline` do usuário: traço de topo (1,5 pt), traço abaixo do cabeçalho (0,75 pt) e de fecho (1,5 pt), e a primeira linha (ou o `table.header` que vier) vira cabeçalho repetido. Com `table.hline` do usuário, nada muda (os exemplos e o guia rápido continuam iguais). Tabela de mais de uma página recebe, abaixo do corpo e à direita, "(continua)", "(continuação)" e "(conclusão)"; **o traço de fecho só na última página** (ele é desenhado pelo rodapé repetido, só quando a página é a última). Tabela de uma página fecha normalmente e não recebe palavra.
+- **Por que dá certo:** o `context` dentro de um rodapé repetido (`table.footer(repeat: true)`) vale **por página** nas três versões (testado em 0.13.0, 0.14.1 e 0.15.1); o início e o fim da tabela vêm de dois marcadores com um número por chamada.
+- **Verificado:** `t01` (curta, com e sem traços escritos) e `t02` (40 linhas em 6 páginas e uma segunda tabela com `table.header` explícito), em imagem.
+- **Limites:** o traço final **escrito pelo usuário** sai em todas as páginas (a função não sabe qual `hline` é o último); se o fim da tabela cair exatamente no pé da página, o marcador final pode ir para a página seguinte e a última página mostrar "(continuação)"; os parênteses em "(continua)" são convenção, a IBGE não os exige.
+
+### R4b-21 · sinais convencionais
+- **Onde:** `tables.typ:119` (`sinal-convencional`), `:138` (`nota-sinais`). **Antes:** `error: unknown variable` (Parte 9). **Depois:** `sinal-convencional("zero" | "nao-se-aplica" | "nao-disponivel" | "omitido" | "arredondado-positivo" | "arredondado-negativo", casas: 0..2)` devolve `-`, `..`, `...`, `X`, `0`/`0,0`/`0,00`, `-0`/`-0,0`/`-0,00` (IBGE 4.8.1, conferido na imagem da Parte 9); `nota-sinais(…)` monta a nota geral de 4.8.2 para os tipos usados. **Verificado:** `t03`.
+- **Não feito:** chamadas numeradas em destaque (4.9), notas específicas na ordem das chamadas (4.12.2), e `quadro` (kind `"quadro"`) com as mesmas regras. As chamadas e as notas específicas ficam com o autor.
+
+### R4a-05 · R1-15 · fonte obrigatória em `container()`
+- **Onde:** `figures.typ:27-31` (docstring), `:40` (`fonte: auto`), `:49-54` (`assert`). **Antes:** `container(fonte: none)`, o padrão, era aceito sem aviso. **Depois:** `fonte` tem padrão `auto`; sem `fonte:` nem `origem:` o `container` aborta com `container(): informe a fonte (NBR 14724 5.8: obrigatória, mesmo em produção própria)…`; `fonte: none` dispensa de propósito; `origem:` continua valendo. O alinhamento à esquerda de "Fonte:" e "Nota:" já era da Etapa 2.
+- **Verificado:** `f01` (com `fonte`, com `origem`, com `fonte: none` compilam; sem nenhum, o erro). Os 12 exemplos e o `guia-rapido.typ` já passam `fonte:` em todo `container` (só o `livro-exemplo` usa `container`).
+- **MUDANÇA DE USO (nota da 0.7.0):** documentos que chamavam `container()` sem fonte passam a dar erro. Dizer na nota da versão.
+
+### Não feito (opcionais do prompt)
+- **R7b-11 (validação do ISBN) e sobrecapa/orelhas (6029):** ficaram de fora; mexem em `templates/book.typ`, que não é desta etapa. `validate-isbn` já existe em `core/identifiers.typ`.
+
+### Verificação da etapa
+- 12 exemplos + `testeCit.typ` × 0.14.1, 0.13.0 e 0.15.1: **39 de 39 com rc=0 e 0 avisos**; uma só contagem de páginas por arquivo nas três versões. Contra a linha de base desta sessão (matriz de antes da etapa): **só o `tcc-exemplo` mudou, 19 → 20** (R8c-08, ver acima); os outros 12 arquivos iguais (artigo 5, citação autor-data 2, numérica 3, inline 1, livro 28, periódico 18, pôster 1, projeto 18, relatório 18, slides 25 e 16, testeCit 4).
+- Os 15 testes de `testes-5b/` compilam sem erro e sem aviso nas três versões, com a mesma contagem de páginas.
+- Órfãos (`pdftotext` por página) nos seis exemplos de texto: 0 nas três versões.
+- Aceitação da etapa (cada achado com teste em `testes-5b/` e a matriz sem aviso): **passou**.
+- Scripts de apoio (scratchpad, fora do pacote): `matrix.sh`, `orfaos.sh`, `orfaos-h01.sh`.
+
+### Quebras de API e mudanças de saída da Etapa 5b (para a nota da 0.7.0)
+18. **`container()` exige a fonte** (`fonte:` ou `origem:`; `fonte: none` dispensa).
+19. **`lombada()` em retrato** (largura × altura), descendente girada; `fasciculo:` novo; `autor:` aceita lista; `spine-text-descending()` devolve texto girado.
+20. **Listas vazias não saem** (`lista-ilustracoes/tabelas/quadros/siglas/simbolos`); `lista-siglas(titulo:)`.
+21. **`tabela()`** desenha a moldura IBGE e repete o cabeçalho quando o usuário não escreve `table.hline`; marcas "continua/continuação/conclusão" em tabela de várias páginas.
+22. **Títulos de seção não ficam sozinhos no pé da página** (muda a paginação: `tcc-exemplo` 19 → 20).
+23. **`indice(titulo: none)`**, `nota:`, `idx(subsubtermo:)`; entradas que diferem só por caixa ou acento viram uma; `glossario(quebra: false)` para colunas.
