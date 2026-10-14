@@ -74,7 +74,7 @@
 /// - pagina: página (opcional). Use string para intervalos: "42-43"
 /// - volume: volume/tomo antes da página (opcional) — (Senac, 1979, v. 1, p. 16)
 /// - localizacao: fontes não paginadas (opcional) — [cap. V, art. 49, inc. I]
-/// - grifo: "nosso" ou "do autor" (opcional) — (..., grifo nosso)
+/// - grifo: "nosso" ou "próprio" (opcional; NBR 10520:2023, 7.1.5) — (..., grifo nosso)
 /// - traducao: "nossa" ou "própria" (opcional) — (..., tradução nossa)
 ///
 ///   #citar("Silva", 2023, pagina: "45")   -> (Silva, 2023, p. 45)

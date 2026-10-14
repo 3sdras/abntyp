@@ -347,6 +347,13 @@
   // Criar colunas: primeira para atividades, demais para periodos
   let cols = (auto,) + (1fr,) * num-periods
 
+  // Com muitos periodos de rotulo longo (ex.: 12 meses por extenso) cada coluna fica
+  // estreita e o rotulo se parte em silabas; nesse caso o cabecalho vai na vertical.
+  let longo = num-periods > 6 and periodos.any(p => str(p).len() > 4)
+  let cab-periodo(p) = if longo {
+    align(center + bottom, rotate(-90deg, reflow: true, [*#p*]))
+  } else { [*#p*] }
+
   table(
     columns: cols,
     stroke: 0.5pt,
@@ -355,7 +362,7 @@
 
     // Cabecalho
     [*Atividades*],
-    ..periodos.map(p => [*#p*]),
+    ..periodos.map(cab-periodo),
 
     // Linhas de atividades
     ..{

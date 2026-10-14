@@ -1,8 +1,9 @@
 // Configuração de fontes conforme NBR 14724:2024
-// Fonte: Arial ou Times New Roman
+// Fonte: a NBR 14724 5.1 recomenda tamanho 12 para todo o texto e não fixa o tipo de letra;
+// o pacote usa Times New Roman por padrão (Arial é opcional)
 // Tamanho: 12pt para texto, menor para citações longas, notas, legendas
 
-/// Fontes recomendadas pela ABNT
+/// Fontes usadas pelo pacote (a ABNT não fixa o tipo de letra)
 #let abnt-fonts = (
   serif: "Times New Roman",
   sans: "Arial",

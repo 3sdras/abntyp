@@ -304,7 +304,16 @@
   colchetes: auto,
   body,
 ) = {
-  ["#body" #citar-num(chave, pagina: pagina, estilo: estilo, colchetes: colchetes).]
+  // O conteudo escrito em varias linhas ([\n texto\n]) traz espaco no comeco e no
+  // fim; com aspas retas isso inverte a aspa de fechamento (“ texto “). Tira os
+  // espacos das pontas e usa aspas tipograficas explicitas.
+  let miolo = if body.has("children") {
+    let filhos = body.children
+    while filhos.len() > 0 and filhos.first() == [ ] { filhos = filhos.slice(1) }
+    while filhos.len() > 0 and filhos.last() == [ ] { filhos = filhos.slice(0, -1) }
+    filhos.join()
+  } else { body }
+  [“#miolo” #citar-num(chave, pagina: pagina, estilo: estilo, colchetes: colchetes).]
 }
 
 /// Citacao direta longa (mais de 3 linhas) com numero
@@ -437,7 +446,7 @@
 ///
 /// Use no inicio do documento quando adotar o sistema numerico.
 #let aviso-sistema-numerico() = {
-  text(size: 10pt, fill: gray, style: "italic")[
+  text(size: 10pt, fill: luma(60), style: "italic")[
     Este documento utiliza o sistema numérico de citações (NBR 10520:2023, seção 6.2.2).
     Conforme a norma, o sistema numérico não pode ser usado simultaneamente com
     notas de rodapé.

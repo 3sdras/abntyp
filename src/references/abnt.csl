@@ -401,7 +401,7 @@
   <macro name="citation-locator">
     <group>
       <label variable="locator" form="short"/>
-      <text variable="locator" prefix=" "/>
+      <text variable="locator"/>
     </group>
   </macro>
   <macro name="genre">

@@ -136,8 +136,8 @@
 
 /// Destaque/ênfase em trecho de citação (aplica itálico ao trecho).
 ///
-/// IMPORTANTE (NBR 10520:2023, 7.1.5): a INDICAÇÃO "grifo nosso" / "grifo do
-/// autor" deve aparecer ao FINAL da citação, dentro dos parênteses, após a
+/// IMPORTANTE (NBR 10520:2023, 7.1.5): a INDICAÇÃO "grifo nosso" / "grifo
+/// próprio" deve aparecer ao FINAL da citação, dentro dos parênteses, após a
 /// página — ex.: (Souto, 1916, p. 46, grifo nosso). Por isso o indicador é
 /// passado via o parâmetro `grifo:` da função de citação, e estas funções
 /// apenas aplicam o itálico ao trecho destacado:
@@ -145,7 +145,9 @@
 #let grifo-nosso(texto) = emph(texto)
 
 /// Destaque já existente no original (itálico). Ver `grifo-nosso`;
-/// use `grifo: "do autor"` na função de citação para a indicação final.
+/// a indicação final já é a da norma: `grifo: "nosso"` ou `grifo: "próprio"` na
+/// função de citação (a edição de 2023 não tem "grifo do autor"; quando o texto
+/// transcrito já vinha destacado, não é preciso indicar o grifo).
 #let grifo-do-autor(texto) = emph(texto)
 
 // Aliases curtos

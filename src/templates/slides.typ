@@ -103,7 +103,7 @@
   // As escolhas de formatacao neste template sao baseadas em:
   // 1. Boas praticas de design de apresentacoes
   // 2. Convencoes comuns em instituicoes academicas brasileiras
-  // 3. Recomendacoes de legibilidade (fonte 18-24pt para corpo)
+  // 3. Recomendacoes de legibilidade (corpo em 25 pt e texto auxiliar a partir de 16 pt)
 
   // Configuracao do documento
   set document(
