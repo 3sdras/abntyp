@@ -14,7 +14,7 @@ O ponto que SEMPRE dá problema é o **README**. Não esquecer:
    - Conferir que os caminhos existem de verdade (ex.: o manual é `docs/manual-implementacao.typ`, NÃO `docs/manual.typ`).
 3. **Bumpar as referências de versão** em README (raiz e -typst) e nos snippets: `@preview/abntyp:<versão>` e dependências (`@preview/touying:<última>`). O bot do typst.app acusa "older version of the package" para imports desatualizados E para dependências que não estejam na última versão.
 4. **`typst.toml` NUNCA pode ter `[dependencies]`** (não é suportado pelo manifest do Universe; resolve pelos `#import "@preview/..."`).
-5. **Arquivos do pacote**: `lib.typ`, `typst.toml`, `README.md`, `LICENSE`, `src/`. NÃO incluir `docs/`, `examples/`, `*.pdf`, `CREDITS.md`, `README-typst.md` (fonte), `testeCit.typ`, `_bncc.bib`, `.claude/`, `CLAUDE.md`.
+5. **Arquivos do pacote**: `lib.typ`, `typst.toml`, `README.md`, `LICENSE`, `src/`. NÃO incluir `docs/`, `examples/`, `*.pdf`, `CREDITS.md`, `README-typst.md` (fonte), `testeCit.typ`, `_bncc.bib`, `.claude/`, `.Codex/`, `CLAUDE.md`, `AGENTS.md`.
 6. **Validar a compilação a partir da pasta publicada** (instalar num namespace local e compilar um exemplo real, incl. um de slides) ANTES de abrir/atualizar o PR.
 7. Mensagem do commit do PR: `abntyp:<versão>`. Base: `typst/packages` main atual. Fork: `3sdras/typst-packages`.
 
