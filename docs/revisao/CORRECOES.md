@@ -707,3 +707,52 @@ Refatoração: `poster()` e `academic-poster()` passaram a usar auxiliares comun
 - Etapa 6 (documentação): README/USER_GUIDE: `referencias-relatorio()`, `espacamento`, `titulo-volume`/`pagina-inicial`, novos campos do formulário, `logo-direita`, `equilibrar-colunas`, `cor-texto`, `poster-a1` 60 × 90, `lista-*` vazias (toc.typ), comentário de `relatorio-exemplo` sobre a folha/linha da errata (Times New Roman).
 - Etapa 7: conferir leitura real a 1 m do pôster (piso de 20 pt é critério de trabalho); testar `relatorio` com Arial (a errata do exemplo cita página/linha de Times).
 - `src/elements/toc.typ`: `lista-tabelas()`/`lista-ilustracoes()` vazias (R7c-12) e lista de abreviaturas × siglas (R7c-16).
+
+## Etapa 5 — slides (14/10/2026)
+
+Arquivos alterados: `src/templates/slides.typ`, `examples/slides-simples-exemplo.typ`, `examples/slides-defesa-exemplo.typ`. 0 agentes. `touying` fica em 0.7.4 (DECISOES #1); `typst.toml` não tocado. Testes em `docs/revisao/testes-5/` (`t01` data e rodapé, `t02` capas, `t03` todos os auxiliares, `t04` bordas e notas do apresentador). Antes de cada correção reproduzi o defeito (erro com `data:` em texto, "05 de March de 2025", "Ana Souza2 / 3", capa em 2 e 3 páginas, auxiliares sem rodapé).
+
+### Itens corrigidos
+| ID | Onde | Antes → depois | Verificação |
+|---|---|---|---|
+| R7a-01 | `slides.typ` `_data-slide` | `data: "texto"` dava `type string has no method display` → aceita `datetime`, texto ou conteúdo (outro tipo: `assert` em português). O trecho da introdução (`data: "15 de março de 2026"`) passa a compilar. | `t01b-texto.typ` compila |
+| R7a-02 | idem | "15 de March de 2025", "05 de …" → "5 de março de 2025", reaproveitando `format-date` de `core/dates.typ` | `pdftotext` de `t01a` e das capas dos dois exemplos |
+| R7a-03 | `footer`/`footer-right` de `slides()` e `slides-defesa()` | `Ana Souza2 / 3` → `Ana Souza   2 / 3` (instituição à esquerda; autor e contador à direita, com `h(1em)`) | imagem do slide 2 de `t01a`; texto dos dois exemplos |
+| R7a-04 | capas | capa em 2 páginas (3 com subtítulo e orientador; 4 com logo de 3 cm) → 1 página: tamanhos em pt, `par(spacing: 0.4em)` e o novo `_cabe` (bloco `1fr` + `layout`/`measure`/`scale`, só reduz se não couber) | `t02a/b/c`: 2, 3 e 3 páginas (capa + 1 slide [+ final]); imagens conferidas, inclusive logo + título de 2 linhas |
+| R7a-07 | `slide-*` | passam pela função `slide` do tema (`_slide-aux`): ganham cabeçalho, rodapé e número; `titulo:` vira `==` de verdade (entra no índice do PDF); com `titulo: ""` vale o `==` anterior (o exemplo "Tipos de Aprendizado" tem título de novo); numeração sem saltos | `t03` antes/depois em imagem; 11 páginas nos dois, sem slide vazio |
+| R7a-08 | `slide-*`, `slides()` | cada `slide-*` tinha `cor-primaria: rgb("#003366")` próprio → `cor-primaria: auto` lê `self.colors.primary` do tema; `cor-secundaria` agora chega ao tema (`config-colors(secondary:)`, antes `secondary:` era ignorado em silêncio) | `t03` com `cores-clean`: todos os slides na mesma cor |
+| R7a-06 | `slide-citacao`, `slide-figura` | citação de 120 palavras saía cortada fora da página e a atribuição noutra; figura alta em 3 páginas → ambas se reduzem para caber (`_cabe`) | `t04`: 1 página cada, com título e rodapé (figura de 20 cm) |
+| R7a-09 | rodapé, notas, `Fonte:`, `cores-*` | `gray` (2,32:1) → `luma(90)` (6,90:1), também no `neutral-light` do tema; 7 secundárias das `cores-*` escurecidas até ≥ 4,5:1 (usp `#996E11`, unesp `#996F09`, ufrj `#C95100`, ufmg e ufpe `#8A7400`, moderno `#D24537`, clean `#2A7BB1`); subtítulo de `slide-secao` na primária (sem `lighten(30%)`) | razões calculadas com a fórmula WCAG em Python (valores na tabela); as outras 6 já passavam |
+| R7a-11 | tamanhos | docstring dizia 18–24 pt e o corpo é 25 pt → docstring corrigido; mínimos subidos a 16 pt (capa, banca, rótulos dos números 14→18, referências 14→16, `Fonte:` 12→16, notas 10→16); `slide-metodologia` em 20 pt para caber | imagens; rodapé do tema continua em 15 pt (decorativo) |
+| R7a-12 | validação | `autor` aceita lista ("Ana, Bruno e Carla"); `orientador: none` não imprime mais "Orientador(a):" vazio (cada rótulo só se houver nome); `procedimentos/instrumentos: none` aceitos; `itens` do resultado numérico com par inválido → `assert` em português, valor `int` ou conteúdo aceito; `slide-citacao()` vazio → `assert`; docstring de `proporcao` ("L-A", `16-10` também) | `t04` e `t02` |
+| R7a-14 | `slides`/`slides-defesa` | sem `..args` → `..config` repassado ao tema; docstring explica `config-common(show-notes-on-second-screen: right)` e que `#speaker-note` sozinha não aparece no PDF | `t04`: notas à direita |
+| R7a-16, R5-04 | `slide-citacao`, `slide-figura`, `nota…`, `aviso-citacoes`, `slide-referencias` | `upper(autor)` e rótulos "Formatação conforme NBR 6023/10520" (falsos: o template não formata nada) → usa `citar` do pacote ("(Silva, 2020, p. 12)", inicial maiúscula); rótulo de `slide-referencias` removido; `aviso-citacoes` diz que a aplicação é do autor; docstring de `slide-citacao` diz que o destaque é adaptação para projeção e não o formato de citação longa (10520 7.1.1) | imagens de `t03` |
+| R7a-17 | `slide-referencias` | `hanging-indent: 1em` removido (DECISOES #4); negrito das referências preto em vez de cor do tema | imagem |
+| R7a-18 | docstrings | `coorientador` e o efeito de `programa` (rodapé "Dissertação/Tese" × "TCC") e do slide final documentados | leitura |
+| R7a-20 | exemplos | português acentuado nos dois; `Precisao\@10` em string → `Precisão@10`; `#pause` antes de `==` removidos (subslides idênticos); `==` redundante antes de `slide-comparativo/resultado-numerico` com `titulo:` removidos; lista centralizada em caixa → `set align(left)`; cor do exemplo vinda de `cores-*` em vez de hex repetido; `Precisão` e rótulos "conforme NBR" fora | imagens dos dois |
+| R7a-05 | exemplos | 4 páginas em branco e 3 de sobra sem título → nenhuma (simples 24→16 páginas; defesa 30→25; as páginas a mais que os 12/23 slides são os subslides de `#pause`). Docstring de `slides()` avisa que cada slide deve caber na página, inclusive o conteúdo oculto por `#pause` | montagens de todas as páginas; `pdftotext` sem página vazia |
+| R7a-21 | `slide-sumario` | `set enum(…)` sem efeito removido (a função foi reescrita); as dez cópias de `touying-slide-wrapper` viraram um auxiliar | leitura |
+| R7a-22 | docstring | "N / total" conta slides, não páginas; a capa é o slide 1 | documentado, comportamento não mudou |
+
+### Verificação da etapa
+- 12 exemplos + `testeCit.typ` × 0.14.1, 0.13.0 e 0.15.1: **39 de 39 com rc=0 e 0 avisos**; páginas iguais às da linha de base em 10 arquivos; só mudaram `slides-defesa-exemplo` 30→25 e `slides-simples-exemplo` 24→16, iguais nas três versões. O texto extraído difere entre versões só em espaçamento da fórmula e quebra de linha ("IA/ML"), não em conteúdo.
+- Amostragem em imagem por mim: capas (3 variantes), os 11 slides auxiliares, bordas (citação longa, figura alta, notas do apresentador), todas as páginas dos dois exemplos regerados.
+
+### O que NÃO foi corrigido (e por quê)
+- **PDF/UA-1** (R7a-10, aceitação "se viável"): `--pdf-standard ua-1` continua reprovando os dois exemplos com "the first heading must be of level 1" (o touying usa `==` para slides). Testei emitir o título como `heading(depth: 1)` com `<touying:hidden>`: passa no UA-1, mas o tema mostra o último título de nível 1 no cabeçalho, e o título da apresentação aparece no topo de todos os slides (saída visível muda), e `titulo: ""` dá "heading title is empty". Revertido. Os títulos dos `slide-*` agora são `heading` (entram no índice); `slide-secao` e `slide-citacao` não têm título. `alt` em imagem/logo: só documentado (docstrings de `slides` e `slide-figura`).
+- **R7a-13** (fonte Arial sem reserva): acrescentar "Liberation Sans" à pilha geraria 1 aviso novo em todo Mac nos dois exemplos, contra a regra desta etapa; fica documentado no docstring (`fonte: "Liberation Sans"` em Linux sem Arial).
+- **R7a-06 (parte)**: `slide-sumario` (> ~6 itens), `slide-referencias` (> ~5), `slide-comparativo` e `slide-metodologia` com texto longo ainda estouram para outra página; não os envolvi em `_cabe` porque `layout` esconde `#pause` e `#only` do touying. Documentado nos docstrings.
+- **R7a-15/22 (reexportação)**: `lib.typ` ainda expõe os ~55 nomes do touying; não mexi (arquivo fora da etapa). `slide-pause/only/uncover` continuam como aliases redundantes.
+- **R7a-18 (parte)**: "Obrigado!" fixo no masculino e slide final sempre anexado em `slides-defesa`; rótulo "Defesa de TCC/Dissertação/Tese" ainda ligado a `programa`.
+- **R7a-19**: documentação em README, introdução, guia rápido e manual (nenhuma função `slide-*` documentada; trecho com `import touying` desnecessário) → Etapa 6.
+- **R7a-21 (parte)**: `=` (seção do tema) e `slide-secao` continuam dois estilos de divisor.
+- Código morto notado, não apagado: os `import` de `citar-autor`, `citar-multiplos`, `citar-etal`, `citar-entidade`, `citar-titulo` em `slides.typ` só servem de reexportação.
+
+### Mudanças de saída visível para a nota da 0.7.0
+- Slides: data da capa em português ("20 de agosto de 2025"); rodapé com o contador separado do autor; capa sempre em 1 página; slides auxiliares com cabeçalho, rodapé, número e título de tamanho único; cor do tema em todos os slides; texto auxiliar mais escuro (contraste ≥ 4,5:1) e ≥ 16 pt; secundárias das `cores-*` mais escuras (7 delas); referências sem recuo francês; `slide-citacao` sem `upper` e sem a frase "segue NBR 10520"; `slide-metodologia` em 20 pt.
+- Uso: `data:` aceita texto; `autor:` aceita lista; `slides(..config)` repassa configuração ao touying; `slide-*(cor-primaria:)` passa a ser `auto`; `titulo:` dos `slide-*` vira `==` (um `==` escrito antes com `titulo:` também preenchido mostra os dois).
+
+## Backlog dos slides (anotado em 14/10/2026, depois da Etapa 5)
+- **Cosméticos:** "Obrigado!" fixo no masculino; o slide final de `slides-defesa` não pode ser desligado; dois estilos de divisor de seção; item "1." do sumário/roteiro sem o mesmo destaque dos demais; "$15.7 tri" quebra em duas linhas no exemplo `slides-simples`.
+- **Código morto, só mencionado:** os `import` de `citar-autor`, `citar-multiplos`, `citar-etal`, `citar-entidade` e `citar-titulo` em `slides.typ`, que servem só de reexportação; reexportação do touying em `lib.typ` (fora da etapa).
+- **Não corrigido:** PDF/UA-1 (touying), reserva da fonte Arial (R7a-13) e estouro dos slides auxiliares (documentar na Etapa 6).
