@@ -67,3 +67,100 @@ Arquivos alterados: `src/core/setup.typ`, `src/core/spacing.typ`, `src/core/font
 - **Etapa 2 (4):** `elements/title-page.typ:58` e `:113`, `elements/abstract.typ:25`, `text/quotes.typ:100`.
 - **Etapa 4 (6):** `templates/book.typ:378`, `technical-report.typ:336` e `:409`, `periodical.typ:245`, `research-project.typ:210`, `core/spacing.typ:91` (`nature-block`, código morto: migrar ou remover).
 - Enquanto não migram, esses trechos ficam cerca de 3% mais folgados que antes da Etapa 0.
+
+---
+
+## Etapa 1 — o que quebra a compilação ou perde conteúdo (14/10/2026)
+
+Arquivos alterados: `src/templates/thesis.typ`, `book.typ`, `poster.typ`, `research-project.typ`; `src/elements/spine.typ`, `index.typ`; `src/core/sorting.typ`, `setup.typ`; `src/text/headings.typ`. Testes novos em `docs/revisao/testes-1/` (cópias dos testes das Partes 4a, 4b, 7b, 7c e 8a com o caminho `/lib.typ`, mais testes próprios; compilar com `typst compile --root <pacote> docs/revisao/testes-1/<arquivo>.typ`). Sem agentes. Nada comitado; `typst.toml` e os PDFs de `examples/` não foram tocados. `src/references/numeric.typ` já aparecia modificado no `git status` antes da etapa (96 linhas, não é desta sessão) e não foi tocado.
+
+### R1-01 · R4b-01 · epígrafe com colchetes
+- **Onde:** `thesis.typ:133` e `book.typ:481`.
+- **Antes:** `[(#autor)]` em bloco de conteúdo → texto `[(Autor Z)]`. **Depois:** `(#autor)` → `(Autor Z)`.
+- **Verificado:** `testes-1/epigrafe.typ`, texto do PDF e imagem (as duas funções).
+- **Não feito:** a 6029 4.2.1.6 pede a referência em nota de rodapé; os parênteses foram mantidos (decisão pendente do relatório: "decidir se mantém os parênteses").
+
+### R4b-13 · lombada horizontal e `lombada-preview` imprimiam o código
+- **Onde:** `spine.typ:126-161` (horizontal) e `:203-248` (preview): 19 linhas sem `#` (`if`, `v()`, `rotate`, `line`, `text`, bloco `{ … }`).
+- **Antes:** o PDF trazia `if autor != none { text(…) v(0.5em) }` como texto. **Depois:** autor, título, volume/ano/instituição saem renderizados; o preview sai com o texto rotacionado e a régua "30mm".
+- **Verificado:** `sp.typ`, `sp2.typ` (os testes originais) e `sp3.typ` (horizontal numa página de 5 cm de altura, onde os 30 mm reservados cabem), por imagem. No `sp2` (página de 3 cm) as linhas se sobrepõem porque os 30 mm reservados não cabem em 3 cm: é a geometria do teste, não o defeito.
+- **Não corrigido (fora da etapa):** R4b-14 (sentido de rotação, `margem-capa` com `•`, segunda página em branco do `pagebreak()` final: `sp2` e `sp3` ainda têm 2 páginas).
+
+### R4a-14 · `recursos()` com valores
+- **Onde:** `research-project.typ:347`: `if total != none {…} else {…}` → `..if total != none {…} else {…}` (espalha o par de células).
+- **Verificado:** `rec.typ` (3 chamadas): tabela com e sem `total:` (Total 2800.5) e lista simples; imagem conferida.
+- **Observação (não mexi):** os valores saem com ponto decimal (`2500.5`), sem vírgula nem "R$" formatado.
+
+### R8a-06 · pôster com `autores: ()`
+- **Onde:** `poster.typ:57` e `:311` (`poster()` e `academic-poster()`; `poster-a0` e `poster-a1` delegam).
+- **Antes:** `error: expected string or array, found none`. **Depois:** `if autores.len() > 0 { … } else { () }` (mesma forma do `artigo`).
+- **Verificado:** `pos-autores.typ` compila as 4 funções (A0 e A1 com o tamanho certo no PDF).
+
+### R7c-18 · seção maior que uma coluna perdia texto
+- **Onde:** `poster.typ:~207` (`poster-section`) e `:~235` (`poster-highlight`): `box(` → `block(`.
+- **Antes (`p05.typ`):** 745 palavras no PDF (de ~2.565) e última linha em y = 3404 pt numa página de 3401,6 pt. **Depois:** 2.565 palavras, última linha em y = 3317 pt; a seção corre pelas 3 colunas e passa à 2ª página; imagem conferida.
+- **EFEITO NA SAÍDA:** como as seções agora podem partir entre colunas, o `poster-exemplo` muda de aparência (continua em 1 página e com as 491 palavras): "Resultados" parte entre as colunas 1 e 2, "Referências" idem, e a 3ª coluna fica quase vazia (preenchimento em sequência, que é o R7c-19, não corrigido). Comparei antes e depois por imagem. Alternativa se preferir manter o exemplo como estava: quebrável só quando a seção for maior que a coluna (exige `layout` + `measure`; não fiz).
+- **Não alterado:** a caixa do resumo (`poster.typ:178`, `:426`), que é um `box` fora das colunas.
+
+### R8a-07 · `sort-key` com item que é só um artigo
+- **Onde:** `sorting.typ:~103`: `if words.len() == 1 { return text }` antes de remover o artigo.
+- **Antes:** `error: type none has no method 'trim'` para `"A"`, `"O"`, `"Os"`, `"The"`, `"Un"` (e `sort-mixed`, `sort-alphabetically`, `alphabetical-list/index`). **Depois:** ordena sem erro.
+- **Verificado:** `sort-artigo.typ` (antes: erro, confirmado com o arquivo original restaurado; depois: `"a" "o" "os" "the" "un" ""`, listas e índice renderizados).
+
+### R4b-16 · remissivas de termos sem entrada
+- **Onde:** `index.typ:141-147` (novo laço antes de "Ordenar termos"): cada `from` de `entradas-ver`/`entradas-ver-tambem` que não está em `grouped` entra como termo sem páginas.
+- **Antes:** `index-see("Aviação", "Aeronáutica")` e `index-see-also("Férias", "Licença")` não saíam. **Depois:** saem (`Aviação ver Aeronáutica`; `Férias` / `ver também Licença`).
+- **Verificado:** `ix.typ` (o original), texto do PDF.
+- **Não corrigido:** R4b-17 (ordem e agrupamento por ponto de código: `Á` e `Ô` em seções próprias; Etapa 3).
+
+### R4b-19 · tabela maior que a página
+- **Onde:** `setup.typ:~185` (em `with-abnt-setup`): `show figure.where(kind: table): set block(breakable: true)`.
+- **Por que no setup e não em `container`:** testado; um `show`/`set` dentro da função faz o retorno virar "styled" e **`@rótulo` e `<rótulo>` quebram** (`error: cannot reference styled`).
+- **Antes (`tb2.typ`):** 1 página, ~11 linhas legíveis e o resto amontoado. **Depois (`tb2-setup.typ`, com o setup):** 21 páginas, cabeçalho `A B` repetido em cada uma, todas as linhas (0 a 399), "Fonte: Autor." só na última, `@longa` resolvido; imagem conferida.
+- **NÃO CORRIGIDO:** (1) o `tb2.typ` original, **sem** `with-abnt-setup`, continua em 1 página com as linhas amontoadas: o teste de aceitação só passa com o setup (que todos os templates aplicam); (2) "continua / continuação / conclusão" por página (IBGE 8.3) e o traço do rodapé só na última página não foram feitos; (3) `quadro` (kind `"quadro"`) não foi incluído.
+
+### R8a-05 · `@rótulo` para `apendice`, `anexo`, `titulo-sem-num` (concluído na Etapa 1b, 14/10)
+- **Onde:** `setup.typ` (nova regra `show ref` antes de "Parte", ~linhas 168-178), `headings.typ:143-166` (`show heading: set heading(supplement: …)` + `heading(…)` → `heading(…, supplement: …)`; `titulo-sem-num` usa `supplement: [Seção #titulo]`) e as três docstrings.
+- **Antes:** `error: cannot reference styled` (o rótulo prendia no elemento estilizado). **Primeira tentativa (Etapa 1):** só trocar para `supplement:` direto levava a `cannot reference heading without numbering`, e concluí, errado, que não havia solução cirúrgica (nem `ref(supplement:)` nem heading numerado com numeração vazia servem). **Correção do usuário:** o erro vem da realização padrão da referência, e uma regra `show ref` a substitui: para heading com `numbering: none`, vira `link(el.location(), texto)`, com `texto` = o suplemento da referência (`@ap[…]`), senão o suplemento do heading, senão o título.
+- **Depois (`rotulo-ref.typ`):** "Veja o Apêndice A, o Anexo B e a Seção Referências, além do Capítulo 1"; os 4 links são clicáveis (4 anotações `/Link`); o capítulo seguinte continua "2" (o contador não é tocado); iguais em 0.13.0, 0.14.1 e 0.15.1.
+- **Limite:** vale com `with-abnt-setup` (todos os templates e `normas-abnt`); sem ele `@` continua dando erro. `titulo-sem-num` produz "Seção Título" (não "Seção X": não há número).
+
+### R7b-02 · seções dentro de apêndice e anexo
+- **Onde:** `book.typ:~627` (`book-appendix`) e `:~637` (`book-annex`): `set heading(numbering: none)` antes de `body`.
+- **Antes:** `== Sec ap` saía `1.1 SEC AP` (e `3.3 WINDOWS` no exemplo). **Depois:** sai sem número (`SEC AP`); o capítulo seguinte não é afetado.
+- **Verificado:** `eq.typ` (imagem das páginas do apêndice). **Escolha minha:** sem numeração; a alternativa `A.1` (numeração própria) não foi implementada.
+- **Efeito na saída:** o `livro-exemplo` (apêndice A com `== Windows/macOS/Linux`) agora sai sem os números "3.3/3.4/3.5". Mesmo número de páginas (25).
+
+### R7b-03 · `book-start-numbering()`
+- **Onde:** `book.typ:~688`: o corpo (`counter(page).update(1)` e um `set page` sem efeito) foi removido; a função ficou vazia, por compatibilidade (a introdução, linha 575, diz que ela "continua existindo").
+- **Antes (`num1.typ`):** primeiro capítulo impresso 1 (sumário: `Cap um … 1`). **Depois:** 5 e 6, igual a omitir a chamada (`paginacao: "auto"`).
+
+### Verificação da etapa
+- Os 12 `.typ` de `examples/` (o prompt fala em 11) e o `testeCit.typ` compilam em **0.14.1, 0.13.0 e 0.15.1** sem erro e **sem nenhum aviso**; mesmas páginas da linha de base de antes da etapa em todos (39 de 39 combinações idênticas: `tcc` 20, `livro` 25, `periodico` 20, `projeto` 21, `relatorio` 19, `artigo` 6, `poster` 1…).
+- Os 14 testes de `testes-1/` compilam sem erro e sem aviso nos 3 binários, com as mesmas páginas.
+- Aceitação: `rec`, `sp`/`sp2`, `ix`, `t11e`/`pos-autores` (R8a-06), `sort-artigo` (R8a-07), `p05` passam. `tb2` só passa com o setup (ver R4b-19).
+- Scripts de apoio no scratchpad (fora do pacote): `matrix.sh` e `t.sh`.
+
+## Etapa 1b — funções avulsas (R1-02), 14/10/2026 (autorizada pelo usuário depois da Etapa 1)
+
+### R1-02 · funções `abnt-*-setup` e de numeração sem efeito
+- **Onde:** `core/page.typ` (`abnt-page-setup`, `start-arabic-numbering`, `abnt-page-numbering`, `pretextual-numbering`, `no-page-numbering`), `core/fonts.typ` (`abnt-font-setup`, `abnt-footnote-setup`), `core/spacing.typ` (`abnt-spacing-setup`), `text/figures.typ` (`abnt-figure-setup`), `text/tables.typ` (`abnt-table-setup`), `text/headings.typ` (`abnt-heading-setup`).
+- **Antes:** só continham `set`/`show` no próprio corpo, sem devolver nada: `#abnt-page-setup(margem-esquerda: 8cm)` não mudava nada. **Depois:** recebem `body` (último argumento posicional) e o devolvem depois dos `set`/`show`; uso: `#show: abnt-page-setup.with(margem-esquerda: 8cm)`. Chamada antiga `#f()` agora dá `missing argument: body` (erro alto, em vez de não fazer nada).
+- **`abnt-heading-setup`:** a versão antiga só imprimia `it.body` (sem o indicativo numérico) e foi **substituída** (65 linhas removidas) por `#let abnt-heading-setup(body) = with-abnt-headings(body)`.
+- **Medido (`avulsas-page.typ`, `avulsas-fmt.typ`):** margem esquerda 226,77 pt (8 cm), fonte ArialMT no PDF, número de página no topo à direita, entrelinha 20,70 pt, títulos com `1` e `1.1`, tabela e figura centralizadas, nota de rodapé com filete; imagem conferida; 0 avisos nos 3 binários.
+- **Não alterado:** `pretextual()`, `textual()`, `postextual()` (`thesis.typ:84-101`): os exemplos chamam `#textual()` e `#postextual()` sem `body`, e tornar o `set page(numbering…)` efetivo poderia duplicar o número do rodapé automático. Continuam como estão (obsoletas; só o `counter.update` de `pretextual()` vale); decidir na Etapa 2 se saem.
+- **Etapa 6:** `docs/manual-implementacao.typ:296-395` mostra as assinaturas sem `body`.
+- **QUEBRA DE API — item destacado da nota da 0.7.0:** quem copiou `#abnt-page-setup()` (e `abnt-font-setup`, `abnt-spacing-setup`, `abnt-heading-setup`, `abnt-footnote-setup`, `abnt-figure-setup`, `abnt-table-setup`, `abnt-page-numbering`, `pretextual-numbering`, `start-arabic-numbering`, `no-page-numbering`) da documentação antiga tinha uma chamada que não fazia nada; na 0.7.0 ela vira **erro de compilação** (`missing argument: body`). É mais seguro do que ignorar em silêncio, mas é mudança de comportamento. A chamada correta é `#show: abnt-page-setup.with(...)` (sem parâmetros: `#show: abnt-page-numbering`).
+
+### Fora da lista das Etapas 1 e 1b (não mexi)
+- **R2b-01** (`citacao-num-config`, `numeric.typ:81`): fica na Etapa 3 (decisão do usuário, 14/10; `PROMPTS-ETAPAS.md` atualizado).
+- **R2-07** (`ref-livro`…) e **R3-01** (`remove-accents`): Etapa 3.
+- Backlog (depois da Etapa 5): legendas "continua / continuação / conclusão" da tabela longa; subdivisões de apêndice/anexo como "A.1".
+- Código morto notado, não removido: `spine-text-descending` devolve texto horizontal (R4b-14).
+
+### Verificação da Etapa 1b
+- Matriz repetida depois da 1b: os 12 exemplos e o `testeCit.typ` em 0.14.1, 0.13.0 e 0.15.1, 39 de 39 sem erro, sem aviso e com as mesmas páginas da linha de base. `rotulo-ref`, `avulsas-page`, `avulsas-fmt`, `tb2-setup`, `eq` e `num1` também iguais nas três versões.
+
+## Quebras de API para a nota da 0.7.0 (resumo; detalhes nos itens indicados)
+1. **`#sub[…]` → `#sublinhado[…]`** (R8b-06, Etapa 0): sem a troca o texto sai subscrito, sem erro.
+2. **Funções `abnt-*-setup` e de numeração** (R1-02, Etapa 1b): `#abnt-page-setup(...)` e similares deixam de ser chamadas sem efeito e passam a dar erro de compilação; usar `#show: abnt-page-setup.with(...)`.

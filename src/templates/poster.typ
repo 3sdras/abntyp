@@ -54,7 +54,7 @@
   // Configuracao do documento
   set document(
     title: titulo,
-    author: autores.map(a => if type(a) == dictionary { a.name } else { a }).join(", "),
+    author: if autores.len() > 0 { autores.map(a => if type(a) == dictionary { a.name } else { a }).join(", ") } else { () },
   )
 
   // Configuracao de pagina para poster
@@ -204,7 +204,7 @@
   cor-destaque: rgb("#003366"),
   body,
 ) = {
-  box(
+  block(
     width: 100%,
     inset: 1em,
     stroke: 2pt + cor-destaque,
@@ -232,7 +232,7 @@
   cor-destaque: rgb("#003366"),
   body,
 ) = {
-  box(
+  block(
     width: 100%,
     inset: 1em,
     fill: cor-destaque.lighten(90%),
@@ -308,7 +308,7 @@
   // Configuracao do documento
   set document(
     title: titulo,
-    author: autores.map(a => if type(a) == dictionary { a.name } else { a }).join(", "),
+    author: if autores.len() > 0 { autores.map(a => if type(a) == dictionary { a.name } else { a }).join(", ") } else { () },
   )
 
   // Configuracao de pagina

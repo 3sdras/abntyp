@@ -101,6 +101,8 @@
         }
       }
     }
+    // Artigo sozinho (verbete de uma palavra) nao e removido
+    if words.len() == 1 { return text }
     // Remove o artigo
     words.slice(1).join(" ")
   } else {

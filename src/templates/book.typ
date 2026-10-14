@@ -480,7 +480,7 @@
       \u{201C}#citacao\u{201D}
       #linebreak()
       #set text(style: "normal")
-      [(#autor)]
+      (#autor)
     ]
   ]
   pagebreak()
@@ -625,6 +625,8 @@
 /// Multiplos: letras maiusculas consecutivas (A, B, C...)
 #let book-appendix(letra: "A", titulo: "", body) = {
   heading(level: 1, numbering: none)[APÊNDICE #letra -- #titulo]
+  // Subdivisoes sem numero: nao continuam a numeracao do ultimo capitulo
+  set heading(numbering: none)
   body
   pagebreak()
 }
@@ -634,6 +636,8 @@
 /// Multiplos: letras maiusculas consecutivas (A, B, C...)
 #let book-annex(letra: "A", titulo: "", body) = {
   heading(level: 1, numbering: none)[ANEXO #letra -- #titulo]
+  // Subdivisoes sem numero: nao continuam a numeracao do ultimo capitulo
+  set heading(numbering: none)
   body
   pagebreak()
 }
@@ -680,18 +684,10 @@
   ]
 }
 
-/// Inicia numeracao das paginas (apos elementos pre-textuais)
-/// Conforme NBR 6029:2023:
-/// - Folhas iniciais ate o Sumario: contadas mas nao numeradas
-/// - Algarismos arabicos
-/// - Localizacao: fora da mancha, a criterio do projeto grafico
-#let book-start-numbering() = {
-  counter(page).update(1)
-  set page(
-    numbering: "1",
-    number-align: bottom + center,
-  )
-}
+/// Mantida por compatibilidade: nao faz nada.
+/// A numeracao (NBR 6029:2023: folhas iniciais contadas e nao numeradas, numero
+/// visivel apos o Sumario) ja e automatica; ver o parametro `paginacao` de `livro()`.
+#let book-start-numbering() = {}
 
 /// Equacoes e formulas
 /// Conforme NBR 6029:2023 - numeradas com algarismos arabicos entre parenteses

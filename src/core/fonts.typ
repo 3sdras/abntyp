@@ -19,13 +19,14 @@
 )
 
 /// Aplica fonte padrão ABNT (Times New Roman, 12pt)
-#let abnt-font-setup(fonte-familia: "Times New Roman") = {
+#let abnt-font-setup(fonte-familia: "Times New Roman", body) = {
   set text(
     font: fonte-familia,
     size: 12pt,
     lang: "pt",
     region: "BR",
   )
+  body
 }
 
 /// Aplica configuração completa de fonte ABNT
@@ -54,11 +55,12 @@
 /// - Separadas do texto por espaço simples e filete de 5 cm
 /// - Fonte tamanho 10
 /// - Alinhadas à margem esquerda
-#let abnt-footnote-setup() = {
+#let abnt-footnote-setup(body) = {
   set footnote.entry(
     separator: line(length: 5cm, stroke: 0.5pt),
     gap: 0.5em,
   )
+  body
 }
 
 // === Atalhos de formatação inline ===

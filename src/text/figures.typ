@@ -4,7 +4,7 @@
 /// - Legenda na parte superior: tipo, número, traço, título
 /// - Fonte na parte inferior
 /// - Centralizadas
-#let abnt-figure-setup() = {
+#let abnt-figure-setup(body) = {
   show figure: it => {
     set align(center)
     it
@@ -14,6 +14,7 @@
     set text(size: 10pt)
     it
   }
+  body
 }
 
 /// Container genérico para elementos com título, numeração e fonte (ABNT).

@@ -123,22 +123,22 @@
         #set text(size: 9pt)
 
         // Autor
-        if autor != none {
+        #if autor != none {
           text(weight: "bold", size: 10pt, upper(autor))
           v(0.5em)
         }
 
-        v(1fr)
+        #v(1fr)
 
         // Titulo
-        if titulo != none {
+        #if titulo != none {
           text(weight: "bold", upper(titulo))
         }
 
-        v(1fr)
+        #v(1fr)
 
         // Elementos alfanumericos
-        {
+        #{
           if vol-str != none { vol-str }
           if ano-str != none {
             if vol-str != none { linebreak() }
@@ -150,15 +150,15 @@
           }
         }
 
-        v(0.5em)
+        #v(0.5em)
 
         // Logo
-        if logo != none {
+        #if logo != none {
           logo
         }
 
         // Espaco reservado
-        v(espaco-reservado)
+        #v(espaco-reservado)
       ]
     }
   }
@@ -200,26 +200,26 @@
       #set align(center)
 
       // Autor (topo)
-      if autor != none {
+      #if autor != none {
         rotate(-90deg, reflow: true)[
           #text(weight: "bold", size: 7pt, upper(autor))
         ]
         v(0.3em)
       }
 
-      v(1fr)
+      #v(1fr)
 
       // Titulo (rotacionado)
-      if titulo != none {
+      #if titulo != none {
         rotate(-90deg, reflow: true)[
           #text(weight: "bold", size: 8pt, upper(titulo))
         ]
       }
 
-      v(1fr)
+      #v(1fr)
 
       // Elementos alfanumericos
-      rotate(-90deg, reflow: true)[
+      #rotate(-90deg, reflow: true)[
         #{
           let elements = ()
           if vol-str != none { elements.push(vol-str) }
@@ -228,24 +228,24 @@
         }
       ]
 
-      if instituicao != none {
+      #if instituicao != none {
         v(0.3em)
         rotate(-90deg, reflow: true)[
           #text(size: 7pt, instituicao)
         ]
       }
 
-      v(0.5em)
+      #v(0.5em)
 
       // Logo
-      if logo != none {
+      #if logo != none {
         logo
       }
 
       // Indicador de espaco reservado
-      v(0.3em)
-      line(length: 100%, stroke: 0.3pt + gray)
-      text(size: 5pt, fill: gray)[30mm]
+      #v(0.3em)
+      #line(length: 100%, stroke: 0.3pt + gray)
+      #text(size: 5pt, fill: gray)[30mm]
     ]
   }
 }

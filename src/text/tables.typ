@@ -4,11 +4,12 @@
 /// - Bordas apenas superior, inferior e separando cabeçalho
 /// - Legenda na parte superior
 /// - Fonte na parte inferior
-#let abnt-table-setup() = {
+#let abnt-table-setup(body) = {
   show figure.where(kind: table): it => {
     set align(center)
     it
   }
+  body
 }
 
 /// Tabela no padrão IBGE (sem bordas laterais).

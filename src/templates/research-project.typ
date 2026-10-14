@@ -344,7 +344,7 @@
         table.hline(stroke: 0.5pt),
 
         // Total
-        if total != none {
+        ..if total != none {
           ([*Total*], [*#str(total)*])
         } else {
           // Calcular total se possivel

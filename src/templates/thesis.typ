@@ -130,7 +130,7 @@
     #box(width: 50%)[
       #set par(first-line-indent: 0pt)
       \u{201C}#citacao\u{201D} \
-      [(#autor)]
+      (#autor)
     ]
   ]
   pagebreak()

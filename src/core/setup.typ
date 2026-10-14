@@ -167,6 +167,18 @@
     } else { it }
   }
 
+  // @rótulo para título sem numeração (apendice, anexo, titulo-sem-num): o Typst recusa
+  // a referência padrão; vira link com o suplemento ("Apêndice A") ou, sem ele, o título.
+  show ref: it => {
+    let el = it.element
+    if el != none and el.func() == heading and el.numbering == none {
+      let texto = if it.supplement != auto { it.supplement }
+        else if el.supplement not in (auto, none) { el.supplement }
+        else { el.body }
+      link(el.location(), texto)
+    } else { it }
+  }
+
   // Parte (ver `parte()` em headings.typ): página própria, "Parte N: Título"
   show figure.where(kind: "parte"): it => {
     if level-1-pagebreak-impar { pagebreak(weak: true, to: "odd") } else { pagebreak(weak: true) }
@@ -178,6 +190,9 @@
 
   // Legenda (identificação) sempre acima de ilustrações e tabelas (NBR 14724)
   set figure.caption(position: top)
+
+  // Tabela maior que a página continua na seguinte (IBGE 8.3); o figure não quebra por padrão
+  show figure.where(kind: table): set block(breakable: true)
 
   // Exclusão de indentação em containers que não devem ser indentados
   show heading: set par(first-line-indent: 0pt)

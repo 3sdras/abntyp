@@ -137,6 +137,13 @@
       }
     }
 
+    // Remissivas de termos sem entrada propria tambem sao listadas (NBR 6034, 6.10 e 6.11)
+    for entry in entradas-ver + entradas-ver-tambem {
+      if type(entry) == dictionary and entry.from not in grouped {
+        grouped.insert(entry.from, (term: entry.from, pages: (), subterms: (:)))
+      }
+    }
+
     // Ordenar termos alfabeticamente
     let sorted-terms = grouped.keys().sorted()
 

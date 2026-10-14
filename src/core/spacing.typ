@@ -18,7 +18,7 @@
 #let abnt-leading(k) = k * 1.15em - (abnt-top-edge - abnt-bottom-edge)
 
 /// Aplica espaçamento padrão ABNT (1,5 entre linhas)
-#let abnt-spacing-setup() = {
+#let abnt-spacing-setup(body) = {
   set text(top-edge: abnt-top-edge, bottom-edge: abnt-bottom-edge)
   set par(
     leading: abnt-leading(1.5),
@@ -26,6 +26,7 @@
     justify: true,
     first-line-indent: (amount: 1.25cm, all: true),  // Parágrafo com recuo de 1,25 cm
   )
+  body
 }
 
 /// Aplica configuração completa de espaçamento ABNT

@@ -8,12 +8,15 @@
 /// - margem-inferior: margem inferior (default: 2cm)
 /// - margem-esquerda: margem esquerda (default: 3cm)
 /// - margem-direita: margem direita (default: 2cm)
+/// Uso: `#show: abnt-page-setup.with(margem-esquerda: 3cm)` (como todas as
+/// funções `abnt-*-setup`, vale só se usada com `show:`)
 #let abnt-page-setup(
   papel: "a4",
   margem-superior: 3cm,
   margem-inferior: 2cm,
   margem-esquerda: 3cm,
   margem-direita: 2cm,
+  body,
 ) = {
   set page(
     paper: papel,
@@ -24,6 +27,7 @@
       right: margem-direita,
     ),
   )
+  body
 }
 
 /// Aplica configuração de página ABNT ao documento
@@ -46,27 +50,31 @@
 
 /// Inicia paginação em algarismos arábicos
 /// Usar no início da seção textual (Introdução)
-#let start-arabic-numbering() = {
+#let start-arabic-numbering(body) = {
   counter(page).update(1)
   set page(numbering: "1")
+  body
 }
 
 /// Configura paginação no canto superior direito (padrão ABNT)
-#let abnt-page-numbering() = {
+#let abnt-page-numbering(body) = {
   set page(
     numbering: "1",
     number-align: top + right,
   )
+  body
 }
 
 /// Paginação pré-textual (romanos minúsculos, opcional)
-#let pretextual-numbering() = {
+#let pretextual-numbering(body) = {
   set page(numbering: "i")
+  body
 }
 
 /// Remove numeração de página (para capa, folha de rosto)
-#let no-page-numbering() = {
+#let no-page-numbering(body) = {
   set page(numbering: none)
+  body
 }
 
 /// Margens ABNT para impressão frente-verso (interna 3 cm, externa 2 cm) ou
