@@ -7,10 +7,22 @@
   double: 2em,         // Espaçamento duplo
 )
 
+// Entrelinha calibrada pelo Word: passo entre linhas = k × 1,15 × corpo, com k = 1
+// (simples), 1,5 e 2; em 12 pt: 13,8 / 20,7 / 27,6 pt, igual em Times New Roman e
+// Arial. As bordas da linha são fixas (topo 0,7em, base 0) para o passo não
+// depender da fonte: use `set text(top-edge: abnt-top-edge, bottom-edge: abnt-bottom-edge)`
+// junto com `set par(leading: abnt-leading(k), spacing: abnt-leading(k))` (o espaço
+// entre parágrafos é igual à entrelinha, como nos modelos ABNT do Word, que usam zero).
+#let abnt-top-edge = 0.7em
+#let abnt-bottom-edge = 0pt
+#let abnt-leading(k) = k * 1.15em - (abnt-top-edge - abnt-bottom-edge)
+
 /// Aplica espaçamento padrão ABNT (1,5 entre linhas)
 #let abnt-spacing-setup() = {
+  set text(top-edge: abnt-top-edge, bottom-edge: abnt-bottom-edge)
   set par(
-    leading: 1.5em * 0.65,  // Typst usa leading, não line-height
+    leading: abnt-leading(1.5),
+    spacing: abnt-leading(1.5),
     justify: true,
     first-line-indent: (amount: 1.25cm, all: true),  // Parágrafo com recuo de 1,25 cm
   )
@@ -18,8 +30,10 @@
 
 /// Aplica configuração completa de espaçamento ABNT
 #let with-abnt-spacing(body) = {
+  set text(top-edge: abnt-top-edge, bottom-edge: abnt-bottom-edge)
   set par(
-    leading: 1.5em * 0.65,
+    leading: abnt-leading(1.5),
+    spacing: abnt-leading(1.5),
     justify: true,
     first-line-indent: (amount: 1.25cm, all: true),
   )
@@ -28,19 +42,22 @@
 
 /// Espaçamento simples (para citações longas, notas, referências)
 #let single-spacing(body) = {
-  set par(leading: 1em * 0.65)
+  set text(top-edge: abnt-top-edge, bottom-edge: abnt-bottom-edge)
+  set par(leading: abnt-leading(1), spacing: abnt-leading(1))
   body
 }
 
 /// Espaçamento 1,5 (padrão para texto)
 #let one-half-spacing(body) = {
-  set par(leading: 1.5em * 0.65)
+  set text(top-edge: abnt-top-edge, bottom-edge: abnt-bottom-edge)
+  set par(leading: abnt-leading(1.5), spacing: abnt-leading(1.5))
   body
 }
 
 /// Espaçamento duplo
 #let double-spacing(body) = {
-  set par(leading: 2em * 0.65)
+  set text(top-edge: abnt-top-edge, bottom-edge: abnt-bottom-edge)
+  set par(leading: abnt-leading(2), spacing: abnt-leading(2))
   body
 }
 

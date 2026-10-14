@@ -64,8 +64,9 @@
 // === Atalhos de formatação inline ===
 
 /// Sublinhado — wrapper de #underline
-/// Exemplo: #sub[texto sublinhado]
-#let sub(body) = underline(body)
+/// Exemplo: #sublinhado[texto sublinhado]
+/// (não se chama `sub`: esse nome é o subscrito nativo do Typst)
+#let sublinhado(body) = underline(body)
 
 /// Riscado — wrapper de #strike
 /// Exemplo: #risc[texto riscado]

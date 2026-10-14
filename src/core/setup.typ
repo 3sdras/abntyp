@@ -3,6 +3,7 @@
 // em uma única chamada, eliminando duplicação entre templates.
 
 #import "lists.typ": numeracao-enum
+#import "spacing.typ": abnt-leading, abnt-top-edge, abnt-bottom-edge
 
 /// Aplica toda a configuração padrão ABNT ao documento.
 ///
@@ -51,9 +52,9 @@
   // Fonte padrão ABNT — com fallbacks para Mac, Windows, Linux e Typst.app.
   // "New Computer Modern" é embutida no compilador Typst e funciona em qualquer ambiente.
   let font-stack = if fonte == "Times New Roman" {
-    ("Times New Roman", "Times", "Linux Libertine", "New Computer Modern")
+    ("Times New Roman", "Times", "Libertinus Serif", "New Computer Modern")
   } else if fonte == "Arial" {
-    ("Arial", "Helvetica", "Liberation Sans", "Linux Biolinum", "Noto Sans")
+    ("Arial", "Helvetica", "Liberation Sans", "New Computer Modern")
   } else {
     (fonte,)
   }
@@ -63,11 +64,14 @@
     size: 12pt,
     lang: "pt",
     region: "BR",
+    top-edge: abnt-top-edge,
+    bottom-edge: abnt-bottom-edge,
   )
 
   // Parágrafo com espaçamento 1,5 e recuo de 1,25cm
   set par(
-    leading: 1.5em * 0.65,
+    leading: abnt-leading(1.5),
+    spacing: abnt-leading(1.5),
     justify: true,
     first-line-indent: (amount: 1.25cm, all: true),
   )
@@ -90,7 +94,9 @@
     if level-1-pagebreak {
       if level-1-pagebreak-impar { pagebreak(weak: true, to: "odd") } else { pagebreak(weak: true) }
     }
-    v(1.5em)
+    // Fraco: some no topo da página (14724 5.2.2). O espaço fraco absorve o espaço
+    // entre parágrafos; somá-lo mantém o vão maior que o das seções secundárias.
+    context v(1.5em + par.spacing, weak: true)
     text(weight: "bold", size: 12pt)[
       #if it.numbering != none {
         counter(heading).display()
