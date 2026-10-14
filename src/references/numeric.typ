@@ -41,8 +41,18 @@
 
 // Estado global para o sistema numerico
 // Armazena o mapeamento de chaves de citacao para numeros
+// O numero de cada chave e o seu tamanho + 1 no momento do primeiro registro
 #let _numeric-citations = state("abnt-numeric-citations", (:))
-#let _numeric-counter = state("abnt-numeric-counter", 0)
+
+// Registra chaves ainda nao citadas, em ordem. O update e uma funcao do
+// proprio estado (nao depende de leitura em context); do contrario cada
+// citacao nova dependeria da anterior e o layout nao convergiria com 5+.
+#let _numeric-register(..chaves) = _numeric-citations.update(c => {
+  for chave in chaves.pos() {
+    if chave not in c { c.insert(chave, c.len() + 1) }
+  }
+  c
+})
 
 // ============================================================================
 // CONFIGURACAO DO SISTEMA NUMERICO
@@ -84,7 +94,6 @@
 
   // Resetar contadores no inicio do documento
   _numeric-citations.update((:))
-  _numeric-counter.update(0)
 
   body
 }
@@ -119,19 +128,9 @@
   estilo: "parentheses",
   colchetes: "()",
 ) = {
+  _numeric-register(chave)
   context {
-    let citations = _numeric-citations.get()
-    let is-new = chave not in citations
-    let num = if is-new { _numeric-counter.get() + 1 } else { citations.at(chave) }
-
-    // Registrar nova citacao no estado (separado do calculo do numero)
-    if is-new {
-      _numeric-counter.update(num)
-      _numeric-citations.update(c => {
-        c.insert(chave, num)
-        c
-      })
-    }
+    let num = _numeric-citations.get().at(chave)
 
     // Formatar localizacao (pagina, volume)
     let loc = if pagina != none or volume != none {
@@ -196,35 +195,10 @@
   estilo: "parentheses",
   colchetes: "()",
 ) = {
+  _numeric-register(..chaves)
   context {
     let citations = _numeric-citations.get()
-    let counter-val = _numeric-counter.get()
-    let nums = ()
-    let new-entries = (:)
-    let next-num = counter-val
-
-    for chave in chaves {
-      if chave in citations {
-        nums.push(citations.at(chave))
-      } else if chave in new-entries {
-        nums.push(new-entries.at(chave))
-      } else {
-        next-num += 1
-        new-entries.insert(chave, next-num)
-        nums.push(next-num)
-      }
-    }
-
-    // Registrar novas citacoes no estado
-    if new-entries.len() > 0 {
-      _numeric-counter.update(next-num)
-      _numeric-citations.update(c => {
-        for (k, n) in new-entries {
-          c.insert(k, n)
-        }
-        c
-      })
-    }
+    let nums = chaves.map(chave => citations.at(chave))
 
     if estilo == "superscript" {
       super[#nums.map(str).join(", ")]
@@ -266,42 +240,11 @@
   estilo: "parentheses",
   colchetes: "()",
 ) = {
+  _numeric-register(chave-original, chave-consultada)
   context {
     let citations = _numeric-citations.get()
-    let counter-val = _numeric-counter.get()
-    let next-num = counter-val
-    let new-entries = (:)
-
-    // Numero para a referencia original
-    let orig-num = if chave-original in citations {
-      citations.at(chave-original)
-    } else {
-      next-num += 1
-      new-entries.insert(chave-original, next-num)
-      next-num
-    }
-
-    // Numero para a referencia consultada
-    let cons-num = if chave-consultada in citations {
-      citations.at(chave-consultada)
-    } else if chave-consultada in new-entries {
-      new-entries.at(chave-consultada)
-    } else {
-      next-num += 1
-      new-entries.insert(chave-consultada, next-num)
-      next-num
-    }
-
-    // Registrar novas citacoes no estado
-    if new-entries.len() > 0 {
-      _numeric-counter.update(next-num)
-      _numeric-citations.update(c => {
-        for (k, n) in new-entries {
-          c.insert(k, n)
-        }
-        c
-      })
-    }
+    let orig-num = citations.at(chave-original)
+    let cons-num = citations.at(chave-consultada)
 
     let orig-loc = if pagina-original != none { [, p. #pagina-original] } else { [] }
     let cons-loc = if pagina-consultada != none { [, p. #pagina-consultada] } else { [] }
@@ -507,13 +450,12 @@
 /// mas pode ser reiniciada por capitulo em alguns casos.
 #let reset-numeric-citations() = {
   _numeric-citations.update((:))
-  _numeric-counter.update(0)
 }
 
 /// Obtem o total de citacoes ate o momento
 #let get-citation-count() = {
   context {
-    _numeric-counter.get()
+    _numeric-citations.get().len()
   }
 }
 
