@@ -10,7 +10,8 @@
 //
 // Tipos de lombada:
 // - Horizontal: titulo impresso horizontalmente quando o documento esta em posicao vertical
-// - Descendente: titulo impresso longitudinalmente, legivel do alto para o pe
+// - Descendente: titulo impresso longitudinalmente, legivel do alto para o pe (texto girado
+//   90 graus no sentido horario)
 
 #import "../core/metadata.typ"
 
@@ -24,26 +25,38 @@
   else { str(val) }
 }
 
+// Nome(s) do(s) autor(es) em maiusculas, sempre como lista (aceita texto ou lista de textos)
+#let _autores(autor) = {
+  if autor == none { () }
+  else if type(autor) == array { autor.map(a => upper(a)) }
+  else { (upper(autor),) }
+}
+
 /// Gera uma pagina de lombada para impressao separada
 ///
 /// Parametros:
-/// - autor: nome do autor (pode ser abreviado)
+/// - autor: nome do autor (pode ser abreviado) ou lista de nomes (separados por "; " na
+///   descendente; um abaixo do outro na horizontal, NBR 12225 4.1.1)
 /// - titulo: titulo do trabalho (pode ser abreviado)
 /// - volume: numero do volume (opcional)
+/// - fasciculo: numero do fasciculo (opcional; sai como "fasc. 3")
 /// - ano: ano (opcional)
 /// - instituicao: sigla da instituicao (opcional)
 /// - logo: imagem da logomarca (opcional)
 /// - orientacao: "descendente" ou "horizontal" (padrao: "descendente")
 /// - largura-lombada: largura da lombada (padrao: 2cm)
 /// - altura-lombada: altura da lombada (padrao: 29.7cm - A4)
-/// - espaco-reservado: espaco reservado na base (padrao: 30mm)
+/// - espaco-reservado: espaco reservado na base, deixado em branco para a etiqueta
+///   de localizacao (padrao: 30mm); a logomarca fica acima dele
 ///
-/// Nota: Esta funcao gera uma pagina separada com a lombada.
+/// Nota: Esta funcao gera uma pagina separada com a lombada, em retrato (largura x altura
+/// da lombada). Na descendente o texto ja sai girado, legivel do alto para o pe.
 /// Para impressao, a lombada deve ser cortada e aplicada ao dorso do trabalho.
 #let lombada(
   autor: none,
   titulo: none,
   volume: none,
+  fasciculo: none,
   ano: none,
   instituicao: none,
   logo: none,
@@ -53,8 +66,8 @@
   espaco-reservado: 30mm,
 ) = {
   set page(
-    width: altura-lombada,
-    height: largura-lombada,
+    width: largura-lombada,
+    height: altura-lombada,
     margin: 3mm,
   )
 
@@ -65,27 +78,27 @@
     let instituicao = metadata._resolve(instituicao, "instituicao")
     let ano-str = if ano != none { _to-str(ano) }
     let vol-str = if volume != none { "v. " + _to-str(volume) }
+    let fasc-str = if fasciculo != none { "fasc. " + _to-str(fasciculo) }
+    let autores = _autores(autor)
 
     if orientacao == "descendente" {
-      // Lombada descendente - legivel do alto para o pe
-      // O texto e rotacionado 90 graus
-      set align(left + horizon)
-
-      box(
-        width: 100%,
-        height: 100%,
+      // Lombada descendente - legivel do alto para o pe: o layout e montado na horizontal
+      // (autor, titulo, elementos, logo, espaco reservado) e girado 90 graus no sentido
+      // horario, de modo que o autor fica no alto e o espaco reservado no pe
+      rotate(90deg, reflow: true, box(
+        width: altura-lombada - 6mm,
+        height: largura-lombada - 6mm,
       )[
         #set text(size: 10pt)
 
-        // Layout horizontal (sera rotacionado na impressao)
         #grid(
-          columns: (auto, 1fr, auto, auto),
+          columns: (auto, 1fr, auto, auto, espaco-reservado),
           gutter: 1em,
           align: horizon,
 
           // Autor
-          if autor != none {
-            text(weight: "bold", upper(autor))
+          if autores.len() > 0 {
+            text(weight: "bold", autores.join("; "))
           },
 
           // Titulo (centralizado, ocupa espaco restante)
@@ -99,19 +112,19 @@
           {
             let elements = ()
             if vol-str != none { elements.push(vol-str) }
+            if fasc-str != none { elements.push(fasc-str) }
             if ano-str != none { elements.push(ano-str) }
             if instituicao != none { elements.push(instituicao) }
             elements.join(" ")
           },
 
-          // Espaco reservado (30mm) + logo
-          box(width: espaco-reservado)[
-            #if logo != none {
-              align(center + horizon, logo)
-            }
-          ],
+          // Logomarca (acima do espaco reservado)
+          if logo != none { logo },
+
+          // Espaco reservado (30mm), em branco para a etiqueta de localizacao
+          [],
         )
-      ]
+      ])
     } else {
       // Lombada horizontal - para lombadas largas
       set align(center + top)
@@ -122,9 +135,9 @@
       )[
         #set text(size: 9pt)
 
-        // Autor
-        #if autor != none {
-          text(weight: "bold", size: 10pt, upper(autor))
+        // Autor(es), um abaixo do outro
+        #if autores.len() > 0 {
+          text(weight: "bold", size: 10pt, autores.join(linebreak()))
           v(0.5em)
         }
 
@@ -139,15 +152,12 @@
 
         // Elementos alfanumericos
         #{
-          if vol-str != none { vol-str }
-          if ano-str != none {
-            if vol-str != none { linebreak() }
-            ano-str
-          }
-          if instituicao != none {
-            linebreak()
-            instituicao
-          }
+          let linhas = ()
+          if vol-str != none { linhas.push(vol-str) }
+          if fasc-str != none { linhas.push(fasc-str) }
+          if ano-str != none { linhas.push(ano-str) }
+          if instituicao != none { linhas.push(instituicao) }
+          linhas.join(linebreak())
         }
 
         #v(0.5em)
@@ -162,19 +172,18 @@
       ]
     }
   }
-
-  pagebreak()
 }
 
 /// Gera preview da lombada em uma caixa
 /// Util para visualizacao no documento
 ///
 /// Parametros: mesmos da funcao lombada()
-/// Retorna: uma caixa com a lombada renderizada verticalmente
+/// Retorna: uma caixa com a lombada renderizada verticalmente (texto do alto para o pe)
 #let lombada-preview(
   autor: none,
   titulo: none,
   volume: none,
+  fasciculo: none,
   ano: none,
   instituicao: none,
   logo: none,
@@ -189,6 +198,8 @@
     let instituicao = metadata._resolve(instituicao, "instituicao")
     let ano-str = if ano != none { _to-str(ano) }
     let vol-str = if volume != none { "v. " + _to-str(volume) }
+    let fasc-str = if fasciculo != none { "fasc. " + _to-str(fasciculo) }
+    let autores = _autores(autor)
 
     box(
       width: largura-lombada,
@@ -200,9 +211,9 @@
       #set align(center)
 
       // Autor (topo)
-      #if autor != none {
-        rotate(-90deg, reflow: true)[
-          #text(weight: "bold", size: 7pt, upper(autor))
+      #if autores.len() > 0 {
+        rotate(90deg, reflow: true)[
+          #text(weight: "bold", size: 7pt, autores.join("; "))
         ]
         v(0.3em)
       }
@@ -211,7 +222,7 @@
 
       // Titulo (rotacionado)
       #if titulo != none {
-        rotate(-90deg, reflow: true)[
+        rotate(90deg, reflow: true)[
           #text(weight: "bold", size: 8pt, upper(titulo))
         ]
       }
@@ -219,10 +230,11 @@
       #v(1fr)
 
       // Elementos alfanumericos
-      #rotate(-90deg, reflow: true)[
+      #rotate(90deg, reflow: true)[
         #{
           let elements = ()
           if vol-str != none { elements.push(vol-str) }
+          if fasc-str != none { elements.push(fasc-str) }
           if ano-str != none { elements.push(ano-str) }
           elements.join(" ")
         }
@@ -230,7 +242,7 @@
 
       #if instituicao != none {
         v(0.3em)
-        rotate(-90deg, reflow: true)[
+        rotate(90deg, reflow: true)[
           #text(size: 7pt, instituicao)
         ]
       }
@@ -251,11 +263,13 @@
 }
 
 /// Gera texto formatado para lombada descendente
-/// Retorna o texto rotacionado para ser usado em outros contextos
+/// Retorna o texto rotacionado 90 graus (legivel do alto para o pe) para ser usado em
+/// outros contextos
 #let spine-text-descending(
   autor: none,
   titulo: none,
   volume: none,
+  fasciculo: none,
   ano: none,
 ) = {
   context {
@@ -264,11 +278,13 @@
     let ano = metadata._resolve(ano, "ano")
     let ano-str = if ano != none { _to-str(ano) }
     let vol-str = if volume != none { "v. " + _to-str(volume) }
+    let fasc-str = if fasciculo != none { "fasc. " + _to-str(fasciculo) }
+    let autores = _autores(autor)
 
     let parts = ()
 
-    if autor != none {
-      parts.push(text(weight: "bold", upper(autor)))
+    if autores.len() > 0 {
+      parts.push(text(weight: "bold", autores.join("; ")))
     }
 
     if titulo != none {
@@ -277,13 +293,14 @@
 
     let elements = ()
     if vol-str != none { elements.push(vol-str) }
+    if fasc-str != none { elements.push(fasc-str) }
     if ano-str != none { elements.push(ano-str) }
 
     if elements.len() > 0 {
       parts.push(elements.join(" "))
     }
 
-    parts.join(h(2em))
+    rotate(90deg, reflow: true, parts.join(h(2em)))
   }
 }
 
@@ -308,10 +325,10 @@
       height: 100%,
     )[
       #set align(center + horizon)
-      #rotate(-90deg, reflow: true)[
+      #rotate(90deg, reflow: true)[
         #set text(size: 10pt)
         #if titulo != none { upper(titulo) }
-        #if volume != none { [ - v. #volume] }
+        #if volume != none { [ \- v. #volume] }
       ]
     ]
   }
