@@ -13,7 +13,7 @@
 O **ABNTyp** é um pacote Typst para formatação de documentos acadêmicos e técnicos em conformidade com as normas da ABNT (Associação Brasileira de Normas Técnicas).
 
 Este projeto está sendo escrito via Claude Code a partir das minhas orientações, fruto da experiência que tive com LaTeX, que começou na USP de São Carlos em 2000, por influência
-principalmente do Prof. Dr. Sadao Massago. Também neste período e local pude conhecer o Prof. Dr. Miguel Vinicius Santini Frasson, um dos criadores do abnTeX original, bem como o famoso texto "Uma introdução ao LaTeX 2e" do Prof. Dr. Lenimar Nunes Andrade. Anos mais tarde, tive contato com o excelente abnTeX2, do Prof. Dr. Lauro César Araujo. Todo o mérito deste projeto, portanto, deve ir para as pessoas e projetos citados acima, bem como criadores e comunidades do LaTeX e do Typst.
+principalmente do Prof. Dr. Sadao Massago. Também neste período e local pude conhecer o Prof. Dr. Miguel Vinicius Santini Frasson, um dos criadores do abnTeX original, bem como o famoso texto "Uma introdução ao LaTeX 2e" do Prof. Dr. Lenimar Nunes de Andrade. Anos mais tarde, tive contato com o excelente abnTeX2, do Prof. Dr. Lauro César Araujo. Todo o mérito deste projeto, portanto, deve ir para as pessoas e projetos citados acima, bem como criadores e comunidades do LaTeX e do Typst.
 
 O objetivo aqui é adaptar o projeto abnTeX2 para o caso do Typst, para servir como base na disciplina "Software Livre para Edição de Textos Matemáticos" em 2026 (Núcleo Livre). A parte de matemática, caixas decorativas e ambientes de teoremas — adaptada do trabalho do Prof. Lenimar — está no pacote companheiro **[FerrMat](https://github.com/3sdras/ferrmat)**.
 
@@ -48,6 +48,7 @@ A documentação do ABNTyp consiste nos seguintes arquivos:
 | Arquivo                | Descrição                           |
 | ---------------------- | ----------------------------------- |
 | [`docs/manual-implementacao.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/docs/manual-implementacao.typ) | Manual completo da classe e funções |
+| [`docs/introducao-abntyp.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/docs/introducao-abntyp.typ) | Introdução ao Typst e ao ABNTyp, em formato de livro (tutorial) |
 | [`docs/guia-rapido.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/docs/guia-rapido.typ) | Guia rápido para começar |
 
 ### Modelos Canônicos (Exemplos)
@@ -77,7 +78,7 @@ _\* A ABNT não possui norma específica para slides. O template segue boas prá
 
 ## Normas Implementadas
 
-O ABNTyp implementa as seguintes normas ABNT (versões atualizadas):
+O ABNTyp implementa as seguintes normas ABNT (edições de 1989 a 2025, conforme a tabela):
 
 ### Normas Principais
 
@@ -175,7 +176,9 @@ A numeração é automática (NBR 14724:2024): a contagem começa na folha de ro
 - `normas-abnt.with(paginacao: "nenhuma")` — sem numeração automática (use `#set page(...)`)
 - `normas-abnt.with(frente-verso: true)` — impressão frente-verso: margens espelhadas, número à esquerda nas páginas pares e capítulos iniciando em página ímpar
 
-O template `relatorio` (NBR 10719) aceita as mesmas opções (`paginacao`, `frente-verso`). O `livro` (NBR 6029) conta desde a primeira folha do miolo e mostra o número, no rodapé centralizado, após o sumário; aceita `paginacao` e `frente-verso` (margens espelhadas; folha de rosto, dedicatória, agradecimentos, epígrafe, prefácio, partes e capítulos em página ímpar).
+O template `relatorio` (NBR 10719) aceita as mesmas opções (`paginacao`, `frente-verso`). O `livro` (NBR 6029) conta desde a primeira folha do miolo e mostra o número, no rodapé centralizado, após o sumário; aceita `paginacao` e `frente-verso` (margens espelhadas; folha de rosto, errata, dedicatória, agradecimentos, epígrafe, prefácio, sumário, glossário, posfácio, partes e capítulos em página ímpar).
+
+Em frente-verso, a ficha catalográfica (no verso da folha de rosto) não é contada (NBR 14724, 5.3): a Introdução abre em página ímpar do PDF e pode receber número par. A posição do número segue a página física.
 
 ### Artigo Científico
 
@@ -199,6 +202,8 @@ O template `relatorio` (NBR 10719) aceita as mesmas opções (`paginacao`, `fren
 Texto do artigo...
 ```
 
+`artigo` e `relatorio` usam espaçamento simples por padrão (NBR 6022, 6.1; NBR 10719, 5.1). Para 1,5: `espacamento: "1,5"`. O trabalho acadêmico (NBR 14724) fica sempre em 1,5.
+
 ---
 
 ## Sistemas de Citação
@@ -209,7 +214,7 @@ O ABNTyp suporta os dois sistemas de chamada permitidos pela NBR 10520:2023:
 
 ```typst
 // Citação entre parênteses
-#citar("Silva", 2023, pagina: 45)  // (SILVA, 2023, p. 45)
+#citar("Silva", 2023, pagina: 45)  // (Silva, 2023, p. 45)
 
 // Autor no texto
 #citar-autor("Silva", 2023)  // Silva (2023)
@@ -244,7 +249,30 @@ Outros autores #citar-num-multiplos(("santos2022", "costa2021")) confirmam.
 ))
 ```
 
-**Nota:** Conforme NBR 10520:2023, o sistema numérico NÃO pode ser usado quando houver notas de rodapé.
+**Nota:** Conforme NBR 10520:2023, o sistema numérico NÃO pode ser usado quando houver notas de rodapé. A chamada sai com vírgula entre números, como na norma: `(1, 2)`. Em `citar-num-apud`, o primeiro argumento é o texto da chamada original (`"Freire, 1994"`), não uma chave.
+
+---
+
+## Referências bibliográficas (NBR 6023)
+
+As referências saem de um arquivo `.bib` com o estilo CSL ABNT incluído no pacote (`#referencias(read("referencias.bib"))`) ou são escritas à mão. O caminho precisa vir dentro de `read(...)`; texto puro dá erro. A lista sai alinhada à margem esquerda, sem recuo, em espaço simples e com uma linha em branco entre as entradas (NBR 6023, 6.3).
+
+**Como cadastrar no `.bib`.** Capítulo de livro: `@inbook`, não `@incollection` (que perde o "In:" e o título da obra). Dissertação e tese: `@thesis` com `publisher` (a instituição) e `type` completo, por exemplo `{Tese (Doutorado em Psicologia)}`; `institution` e `school` são ignorados. Trabalho em evento: `@inproceedings` com `booktitle` (por exemplo `{Anais}`) e `eventtitle`. Subtítulo: `title = {Título: subtítulo}`; o campo `subtitle` é descartado. Detalhes e limites por versão do Typst estão na [introdução](https://github.com/3sdras/abntyp/blob/v0.6.0/docs/introducao-abntyp.typ) e no [manual](https://github.com/3sdras/abntyp/blob/v0.6.0/docs/manual-implementacao.typ).
+
+**Tipos de documento sem entrada no Typst.** Partitura (NBR 6023, 7.14), jurisprudência (7.11.3 e 7.11.4), atos administrativos normativos (7.11.5 e 7.11.6) e documentos civis e de cartórios (7.12) não têm tipo de entrada no Typst: não há como cadastrá-los no `.bib`, e o estilo do ABNTyp não os formata. Escreva essas referências à mão, conforme a norma. Veja a seção "Limitações do CSL e soluções manuais" do [documento de introdução](https://github.com/3sdras/abntyp/blob/v0.6.0/docs/introducao-abntyp.typ).
+
+---
+
+## Notas de uso
+
+- **Fonte Arial.** `normas-abnt.with(fonte: "Arial")` gera 1 aviso `unknown font family: liberation sans` fora do Linux. É de propósito: sem "Liberation Sans" na pilha, o texto cairia em fonte serifada onde só há essa família, sem nenhum aviso. Com `fonte: "Times New Roman"` (padrão) não há aviso.
+- **Entrelinha.** O passo de linha é calibrado pelo Word: 1,5 = 20,7 pt em corpo 12 pt (igual em Times e Arial), simples = 13,8 pt, e o espaço entre parágrafos é igual à entrelinha.
+- **Títulos primários.** O título de nível 1 abre a página no topo da mancha; o vão antes dele (51,01 pt) é maior que o do nível 2 (42,30 pt).
+- **Atalho `#sublinhado`.** `#sub[...]` é o subscrito nativo do Typst (`H#sub[2]O`); o sublinhado do pacote é `#sublinhado[...]` (até a 0.6.0 se chamava `#sub`).
+- **Funções `abnt-*-setup`.** Recebem o corpo do documento: use `#show: abnt-page-setup.with(margem-esquerda: 3cm)`. Chamadas antigas `#abnt-page-setup()` dão `missing argument: body`.
+- **`container()`** exige `fonte:` (NBR 14724, 5.8); `fonte: none` dispensa de propósito. ISBN em texto precisa ser válido; para livro sem número, passe conteúdo (`isbn: [em obtenção]`).
+- **Slides.** A ABNT não tem norma de slides. A fonte padrão é Arial sem reserva (para não gerar aviso em todo Mac). `--pdf-standard ua-1` reprova os exemplos de slides porque o Touying exige um título de nível 1 primeiro. Sumário com mais de 6 itens e referências com mais de 5 passam da lâmina.
+- **Exemplos.** Compile da raiz do pacote com `typst compile --root . examples/tcc-exemplo.typ` (os exemplos importam `../lib.typ`). Ao copiar um exemplo para outro projeto, leve também `referencias.bib` e `docs/figuras/placeholder.svg` e troque o `import` por `@preview/abntyp:<versão>`. Os exemplos não vão no pacote do Universe: estão no repositório.
 
 ---
 

@@ -17,7 +17,13 @@
 
 == Instalação
 
-Coloque a pasta `abntyp` no seu projeto e importe:
+Pelo Typst Universe (recomendado; funciona também no typst.app):
+
+```typst
+#import "@preview/abntyp:0.6.0": *
+```
+
+Ou, com a pasta `abntyp` copiada para o seu projeto:
 
 ```typst
 #import "abntyp/lib.typ": *
@@ -58,14 +64,23 @@ A numeração de páginas também é automática
 (contagem a partir da folha de rosto, número
 visível a partir da Introdução).
 
+Outros pré-textuais: `ficha-catalografica[...]`,
+`errata(...)`, `folha-aprovacao(data:, banca:)`,
+`dedicatoria[...]`, `agradecimentos[...]`,
+`epigrafe(...)`, `resumo-en[...]`,
+`lista-ilustracoes()`, `lista-tabelas()` e
+`lista-siglas(...)`. Lista sem itens não imprime
+nada. Obra em vários volumes: `volume: 2` em
+`dados()`.
+
 == Seções (NBR 6024)
 
 ```typst
-= Seção Primária      // NEGRITO
+= Seção Primária      // MAIÚSCULAS, negrito
 == Seção Secundária   // MAIÚSCULAS
-=== Seção Terciária   // negrito
-==== Seção Quaternária // normal
-===== Seção Quinária  // itálico
+=== Seção Terciária   // minúsculas, negrito
+==== Seção Quaternária // minúsculas, normal
+===== Seção Quinária  // minúsculas, itálico
 ```
 
 == Citações (NBR 10520)
@@ -76,7 +91,7 @@ no documento.
 ```typst
 @silva2023              // (Silva, 2023)
 @silva2023[p. 45]       // (Silva, 2023, p. 45)
-@silva2023 @santos2022  // (Santos, 2022; Silva, 2023) — várias obras
+@silva2023 @santos2022  // (Santos; Costa, 2022; Silva, 2023) — várias obras
 @cormen2012             // (Cormen et al., 2012) — et al. automático
 #pag(<silva2023>, 45)   // Silva (2023, p. 45) — autor na frase
 #pag(<lima2024>, autor: "Lima e Serrano")  // Lima e Serrano (2024) — 2–3 autores na frase
@@ -106,7 +121,7 @@ ano como texto. Referência completa no Manual de Implementação.
 
 == Figuras, tabelas e quadros
 
-A função `#figure()` é nativa do Typst e serve como contêiner genérico para qualquer elemento com título e numeração --- figuras, tabelas, quadros, etc. O parâmetro `kind` diferencia o tipo.
+A função `#container()` insere qualquer elemento com título e numeração --- figuras, tabelas e quadros --- e cuida da legenda ("Figura 1 – Título"), da fonte e da nota. O parâmetro `tipo` (`"imagem"`, `"tabela"` ou `"quadro"`) escolhe o tipo. A `fonte:` é obrigatória (NBR 14724, 5.8); `fonte: none` a dispensa.
 
 === Figura
 
@@ -129,28 +144,28 @@ Veja a @fig:exemplo.
   fonte: [Fonte dos dados.],
   tabela(
     columns: 3,
-    table.hline(stroke: 1.5pt),
     [*Col 1*], [*Col 2*], [*Col 3*],
-    table.hline(stroke: 0.75pt),
     [Dado], [Dado], [Dado],
-    table.hline(stroke: 1.5pt),
   ),
 )
 ```
 
-A legenda sai acima; fonte e nota, abaixo. O parâmetro `posicao` (`"aqui"`, `"topo"`, `"fundo"`, `"auto"`) controla onde o elemento fica.
+Sem `table.hline`, a `tabela()` desenha os três traços da IBGE e repete o cabeçalho; tabela de várias páginas ganha "(continua)", "(continuação)" e "(conclusão)". A legenda sai acima; fonte e nota, abaixo. O parâmetro `posicao` (`"aqui"`, `"topo"`, `"fundo"`, `"auto"`) controla onde o elemento fica.
 Dica: para tabelas grandes, monte no seu programa preferido, tire um print e peça o código em Typst a uma IA.
 
 == Referências
 
+NBR 6023, 6.3: margem esquerda, sem recuo,
+espaço simples, linha em branco entre elas.
+
 ```typst
-#heading(level: 1,
-  numbering: none,
-  "REFERÊNCIAS")
+#titulo-sem-num[REFERÊNCIAS]
 
 #set par(
-  hanging-indent: 1.25cm,
   first-line-indent: 0pt,
+  justify: false,
+  leading: abnt-leading(1),
+  spacing: abnt-leading(2),
 )
 
 SILVA, João. *Título*.
@@ -163,7 +178,7 @@ São Paulo: Editora, 2023.
 ```typst
 #show: normas-abnt.with(frente-verso: true)
 ```
-Margens espelhadas, número à esquerda nas páginas pares e capítulos em página ímpar.
+Margens espelhadas, número no canto superior esquerdo nas páginas pares (no `livro`, o número fica centralizado no rodapé), pré-textuais e capítulos em página ímpar. A ficha catalográfica, no verso da folha de rosto, não é contada; por isso a Introdução, em página ímpar, pode receber número par.
 
 *Listas numeradas:* `+` sai como alínea `a)`, `b)` e, aninhado, subalínea com travessão (NBR 6024). Para o esquema `1.`, `a)`, `i)`, `A.` do LaTeX: `normas-abnt.with(enumeracao: "latex")`. O parâmetro vale para todos os templates (`artigo`, `relatorio`, `livro`...).
 
@@ -184,6 +199,8 @@ Margens espelhadas, número à esquerda nas páginas pares e capítulos em pági
 ```typst
 #show: normas-abnt.with(fonte: "Arial")
 ```
+Fora do Linux, isso gera 1 aviso inofensivo
+(`unknown font family: liberation sans`).
 
 *Margens padrão:*
 - Superior: 3 cm
@@ -192,10 +209,43 @@ Margens espelhadas, número à esquerda nas páginas pares e capítulos em pági
 - Direita: 2 cm
 
 *Espaçamento:*
-- Texto: 1,5 entre linhas
-- Citação longa: simples
-- Recuo parágrafo: 1,25 cm
-- Citação longa: 4 cm
+- Texto: 1,5 entre linhas (20,7 pt em 12 pt)
+- Artigo e relatório: simples (13,8 pt);
+  `espacamento: "1,5"` volta ao 1,5
+- Citação longa, notas, referências: simples
+- Espaço entre parágrafos = entrelinha
+- Recuo do parágrafo: 1,25 cm (convenção do
+  pacote; as normas não o fixam)
+- Citação longa: recuo de 4 cm da margem
+
+== Slides
+
+Sem norma ABNT; usa o Touying (já incluído):
+
+```typst
+#show: slides-defesa.with(
+  titulo: "Título",
+  autor: "Nome",
+  instituicao: "Universidade",
+  data: datetime(year: 2026, month: 3, day: 15),
+)
+
+== Introdução
+
+- Contexto
+#pause
+- Problema
+```
+
+`data:` aceita `datetime`, texto ou conteúdo;
+`autor:`, um nome ou uma lista. Slides prontos:
+`slide-sumario`, `slide-secao`, `slide-citacao`,
+`slide-figura`, `slide-comparativo`,
+`slide-metodologia`, `slide-resultado-numerico`,
+`slide-referencias`. Cada slide deve caber na
+página. O `--pdf-standard ua-1` não passa nos
+slides (o Touying exige um título de nível 1
+antes).
 
 == Aliases (nomes curtos)
 
@@ -223,13 +273,26 @@ bibliografia-numerica → bibnum
 
 == Normas Implementadas
 
-- NBR 14724:2024 - Trabalhos
+- NBR 14724:2024 - Trabalhos acadêmicos
 - NBR 6023:2018 - Referências
 - NBR 10520:2023 - Citações
 - NBR 6024:2012 - Seções
 - NBR 6027:2012 - Sumário
 - NBR 6028:2021 - Resumo
 - NBR 6022:2018 - Artigo
-- IBGE - Tabelas
+- NBR 6021:2015 - Publicação periódica
+- NBR 6029:2023 - Livros e folhetos
+- NBR 10719:2015 - Relatório técnico
+- NBR 15287:2025 - Projeto de pesquisa
+- NBR 15437:2006 - Pôsteres
+- NBR 6034:2004 - Índice
+- NBR 12225:2004 - Lombada
+- NBR 5892:2019 - Datas e horas
+- NBR 6025:2002 - Revisão de originais
+- NBR 6032:1989 - Abreviação de títulos
+- NBR 6033:1989 - Ordem alfabética
+- NBR ISO 2108:2006 - ISBN
+- NBR 10525:2005 - ISSN
+- IBGE (1993) - Tabelas
 
 ]

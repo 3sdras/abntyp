@@ -19,15 +19,15 @@
 // - Comunidade abnTeX
 //
 // ============================================================================
-// Baseado nas normas ABNT atualizadas (2018-2025)
+// Baseado em normas ABNT de 1989 a 2025 (edicoes na lista abaixo)
 //
 // Normas implementadas:
 // - NBR 14724:2024 - Trabalhos academicos
-// - NBR 6023:2018 - Referencias
+// - NBR 6023:2018 (versao corrigida 2:2020) - Referencias
 // - NBR 10520:2023 - Citacoes (sistemas autor-data E numerico - ambos permitidos)
 // - NBR 6024:2012 - Numeracao progressiva
 // - NBR 6027:2012 - Sumario
-// - NBR 6028:2021 - Resumo
+// - NBR 6028:2021 - Resumo, resenha e recensao
 // - NBR 6022:2018 - Artigo em publicacao periodica
 // - NBR 6021:2015 - Publicacao periodica
 // - NBR 6029:2023 - Livros e folhetos

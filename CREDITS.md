@@ -144,4 +144,4 @@ SOFTWARE.
 
 ---
 
-_Última atualização: Janeiro de 2026_
+_Última atualização: Outubro de 2026_
