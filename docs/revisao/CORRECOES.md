@@ -316,3 +316,394 @@ Conferência por amostragem do que os agentes entregaram: recompilei `testeCit`,
 - **Exportados por `lib.typ` (via `*`) sem necessidade:** helpers com `_` novos (`_check-year`, `_entry`, `_abbrev-part`, `_is-sigla`, `_traco`, `_poli`, `_sinal`, `_circulo`), como o `_normalizar` que já existia. Sem conflito de nomes (grep).
 - `citacao-num-longa`/`bibliografia-numerica` não fixam `top-edge`/`bottom-edge`: fora de `normas-abnt` o "simples" sai um pouco menor que 1,15 × corpo.
 - Scripts de apoio no scratchpad (fora do pacote): `matrix.sh`.
+
+---
+
+## Etapa 4 — templates (14/10/2026)
+
+Arquivos alterados: `src/templates/{article,periodical,research-project,book,technical-report,poster}.typ`, `src/core/spacing.typ` (só o `0.65` do `nature-block`, código morto, agora `abnt-leading(1)`), `examples/{artigo,periodico,projeto,livro,relatorio,poster}-exemplo.typ`. Três agentes (A: artigo/periódico/projeto; B: livro; C: relatório/pôster) trabalhando em cópias do pacote no scratchpad (porque `lib.typ` importa todos os templates); eu copiei de volta só esses arquivos, depois de conferir com `diff -rq` que mais nada diferia. Testes novos: `docs/revisao/testes-4/` (nature-block), `testes-4a/` (`art-completo`, `per-completo`, `proj-completo`), `testes-4B-livro/` (29), `testes-4C/` (`c01`–`c08` e cópias da 7c). Nada comitado; `typst.toml` e os PDFs de `examples/` não foram tocados (a matriz compilou para o scratchpad).
+
+### Verificação da etapa (feita por mim no pacote real)
+- 12 exemplos + `testeCit.typ` × 0.14.1, 0.13.0 e 0.15.1: **39 de 39 com rc=0 e 0 avisos**, uma única contagem de páginas por arquivo nas três versões. Contra a linha de base: `artigo` 6→5, `livro` 25→28, `periodico` 20→18, `projeto` 20→18, `relatorio` 19→18 (a 19ª era branca); os demais iguais (`tcc` 19, `poster` 1, `slides` 30/24, `autordata` 2, `numerica` 3, `inline` 1, `testeCit` 4).
+- Amostragem em imagem por mim: artigo p. 1 (subtítulo com `:` colado, RESUMO centralizado, palavras-chave com `;`, datas), pôster (colunas equilibradas, afiliação), Introdução do relatório numerada 7 (texto do sumário). O resto foi conferido em imagem pelos agentes, conforme os relatórios abaixo; **não reconferi os demais pontos**.
+- **`grep -rn "0.65" src/`:** resta só `core/proofreading.typ:95` e `:256`, que são coordenadas de desenho e não entrelinha (falso positivo do teste de aceitação; não alterado). Todos os `0.65` de entrelinha saíram.
+- **Não foi feito pela etapa (fora dos arquivos dos agentes):** `elements/index.typ` (R7b-18: `indice(titulo: "")` deixa vão de ~38 pt e termina com `pagebreak()` não fraco; correção: `titulo: none` e `pagebreak(weak: true)`), `elements/toc.typ` (listas vazias R4b-06/R7c-12 no TCC e lista de abreviaturas × siglas R7c-16), `text/figures.typ` (fonte obrigatória, R4a-05), `text/headings.typ:131` (`glossario()` com `pagebreak()` interno e erro em `colunas: 2`), `setup.typ` (título de seção sozinho no pé da página; vira "1 INTRODUÇÃO" no fim da p. 1 do artigo), R4b-14/15 (lombada), R4b-17/18 (índice), R4b-20/21 (moldura e sinais convencionais de `tabela()`).
+
+### Quebras de API e uso da Etapa 4 (para a nota da 0.7.0)
+13. **Espaçamento:** `artigo()` e `relatorio()` passam a espaço **simples** por padrão (DECISOES #3); `espacamento: "1,5"` volta ao antigo.
+14. **Projeto de pesquisa:** a numeração de página vem do template e conta desde a folha de rosto (Introdução do exemplo: p. 1 → p. 3); quem faz `counter(page).update(1)` à mão deve remover. `periodical-toc()` não usa mais `outline`; em `periodical-cover`/`periodical-title-page` `titulo` passou de `""` a `none`; `periodical()` ganhou `pagina-inicial`.
+15. **Livro:** as funções do livro **não terminam mais em `pagebreak()`**; cada uma abre a sua página (`pagebreak(weak: true, to: …)`). Uma `#pagebreak()` solta antes de elemento ímpar em frente-verso deixa branca com cabeçalho e número. Cabeçalho e número só nos elementos textuais; `cabecalho` aceita `(par:, impar:)` e `auto`; epígrafe com a referência em nota de rodapé (`em-nota: false` volta ao antigo); listas vazias não saem.
+16. **Relatório:** `report-cover()` não marca mais a folha de rosto (a contagem começa no rosto: Introdução 7, não 8); `report-code()` devolve texto; `relatorio(arquivo-bibliografia:)` com caminho em string aborta cedo; `poster()` e `academic-poster()` abortam com título vazio; nova `referencias-relatorio()` marca a posição das referências.
+17. **Pôster:** `poster-a1` passa a 60 × 90 cm (dentro da 15437 5.2); `academic-poster(logo:)` não duplica mais o logo (há `logo-direita`).
+
+### Relatório do agente A (na íntegra)
+
+#### Etapa 4, agente A: artigo, periódico e projeto de pesquisa
+
+Cópia de trabalho: `$SP/A/pkg`. Tudo conferido em Typst 0.14.1, 0.13.0 e 0.15.1 (matriz em `$SP/A/matriz/resumo.txt`).
+
+##### Artigo (`src/templates/article.typ`)
+
+###### R4a-01 · datas, título em inglês, DOI, agradecimentos
+- **Onde:** `article.typ` (novos `_data-artigo`, `_cabecalho-artigo`, `agradecimentos-artigo`; `artigo()` com `titulo-en`, `submissao`, `aprovacao`, `doi`, `agradecimentos`).
+- **Antes:** nenhum desses elementos existia. **Depois:** `submissao`/`aprovacao` aceitam texto, conteúdo ou `datetime` (vira "12 de março de 2026"); saem depois do abstract como "Data de submissão: …" / "Data de aprovação: …", mais "DOI: …". `titulo-en` sai em itálico sob o título. `agradecimentos-artigo(conteudo)` (nome que não colide com `agradecimentos`, `agradecimentos-relatorio`): título centralizado, sem `pagebreak`. Como a bibliografia automática sai depois do corpo, `artigo(agradecimentos: [...])` imprime o texto DEPOIS das referências (último elemento pós-textual).
+- **Verificado:** `testes-4a/art-completo.typ` (imagem das 3 páginas: datas, DOI, título em inglês, REFERÊNCIAS e AGRADECIMENTOS no fim).
+- **Parcial:** as datas são opcionais (padrão `none`), não obrigatórias de fato: obrigar quebraria chamadas existentes e o Typst não avisa sem abortar. A docstring diz que a 6022 5.1.4 as exige.
+
+###### R4a-02 · subtítulo
+- `TÍTULO:` com os dois-pontos colados, subtítulo na linha seguinte (como o TCC), `hyphenate: false` e `justify: false` no bloco do título (a imagem mostrava "SUPE-RIOR" e linhas esticadas). Conferido em imagem (artigo-exemplo e art-completo com título longo). Em `project-cover`/`project-title-page` o mesmo defeito existia (título justificado e hifenizado: "cognitivo--comportamental"): corrigido, ver R4a-15/16.
+
+###### R4a-03 · RESUMO/ABSTRACT
+- RESUMO e ABSTRACT centralizados em negrito, texto sem recuo; palavras-chave em parágrafo próprio: `Palavras-chave: a; b; c.` e `Keywords: a; b; c.` (unificado com o TCC). Vale para `artigo()` e `periodical-article()` (mesmo `_bloco-resumo`). Conferido em imagem.
+
+###### R4a-04 · espaçamento
+- `artigo(espacamento: "simples")` (padrão) ou `"1,5"`: `set par(leading/spacing: abnt-leading(k))` depois do `with-abnt-setup`. Medido (`pdftotext -bbox`): 13,8 pt (simples) e 20,7 pt (1,5). Valor inválido dá `assert`. `periodical-article` mantém 1,5: a NBR 6021 não trata de espaçamento (conferido no texto). `artigo-exemplo`: 6 → 5 páginas.
+
+###### R4a-05
+- Título 14 pt → 12 pt (feito). Apêndice/anexo/glossário centralizados (vêm do setup): conferido em imagem (`art-completo`).
+- **NÃO CORRIGIDO: fonte obrigatória** em ilustração/tabela (6022 6.6/6.7): `container(fonte: none)` está em `src/text/figures.typ`, arquivo de outra etapa.
+
+###### R4a-06
+- Cabeçalho do exemplo agora diz que as seções do exemplo são numeradas (`=`, NBR 6024) e que `article-section`/`article-subsection` servem para seções sem número (não alterei essas funções).
+- `arquivo-bibliografia: read("referencias.bib")` no exemplo (comentado, como antes): testei descomentando, compila e imprime as referências do `.bib`. A docstring de `artigo()` e o comentário dizem para usar `read(...)`.
+- Na lista manual de referências dos 3 exemplos troquei `hanging-indent` (DECISOES #4) por: sem recuo, espaço simples, linha em branco entre elas (mesmo ajuste que `abnt-bibliography`).
+
+##### Periódico (`src/templates/periodical.typ`)
+
+###### R4a-07 · legenda
+- **Depois:** o rodapé calcula o intervalo do artigo/seção corrente por marcas (`_per-marca`, metadata `<abnt-per-secao>` emitida por `periodical-article`, `editorial`, `author-guidelines` e `periodical-toc`): do início da seção até a página anterior à da seguinte (a última vai até o fim). Antes: `p. N` da página corrente. Capa, folha de rosto e verso passam a ter `footer: none`; a folha de rosto traz uma só legenda (a do corpo). Página sem seção: `p. N`.
+- **Verificado:** `periodico-exemplo` (extraído por página: p. 185-187, 188-191, … e a capa/rosto sem rodapé) e `per-completo`; imagens das páginas 1-6.
+
+###### R4a-08 · sumário por artigos
+- `periodical-toc()` lista, a partir das marcas, EDITORIAL, cada artigo (título, autores com "; ", pontilhado, página inicial) e INSTRUÇÕES PARA AUTORES; seções internas não entram. A contagem de seções reinicia a cada artigo e nas instruções (`counter(heading).update(0)` em `_per-marca`). Conferido em imagem. As seções ainda são `heading` (aparecem como marcadores do PDF), só o sumário é próprio.
+- Mudança de uso: `periodical-toc()` ignora `outline`; quem usava `#outline()` à mão não muda.
+
+###### R4a-09 · capa
+- `periodical-cover(instituicao:, dia:)` (instituição ao pé da capa; com `dia` e um só mês a data sai "16 de setembro de 2014"); `dia` também na folha de rosto e na legenda ("16 set. 2014"). Página inicial: `periodical(pagina-inicial: 1)`, a capa não é numerada e a folha de rosto leva esse número; o exemplo usa 181. Escolha minha: a capa não entra na contagem (6021 5.6.2 diz só que não recebe número).
+- Extra: `periodical-title-page(paginas:)` agora é opcional (calculado: da folha de rosto até a última página); a legenda da folha de rosto não tem mais recuo de 1ª linha.
+
+###### R4a-10 · `(c)` → `©` (verso). Conferido em imagem.
+
+###### R4a-11 · parâmetros de `periodical()`
+- Usados por estado (como `dados()`): `titulo`, `subtitulo`, `issn`, `volume`, `numero`, `ano`, `mes-*`, `dia`, `local`, `instituicao` valem como padrão de `periodical-cover()` e `periodical-title-page()` (o que for dado a elas prevalece). O exemplo agora chama `#periodical-cover()` e `#periodical-title-page()` sem repetir.
+- **NÃO USADOS (documentado na docstring): `editora` e `doi`**: nenhum elemento da 6021 os pede nesses lugares.
+
+###### R4a-12 · conferido, nada alterado
+- A legenda usa `abbreviate-title` (Etapa 3, de outro agente). Forma `5(6): 100-122` continua sem função própria.
+
+###### R4a-13 · `periodical-article`
+- Mesmos itens do artigo (via `_cabecalho-artigo`): `subtitulo`, `titulo-en`, `submissao`, `aprovacao`, `doi`, resumos centralizados, palavras-chave com "; ", título 12 pt. `agradecimentos-artigo` serve dentro do artigo.
+- `0.65` em `periodical.typ:245` → `abnt-leading(1)` (com `top-edge`/`bottom-edge`).
+
+###### Exemplo do periódico
+- Removi o `#pagebreak()` extra antes do artigo 1 (o `editorial()` já quebra: havia uma página em branco), "Referências" dos artigos passou a `#heading(numbering: none)` (saía "5 Referências"), datas e DOI nos artigos. 20 → 18 páginas.
+
+##### Projeto (`src/templates/research-project.typ`)
+
+###### R4a-15
+- `projeto-pesquisa()` grava `titulo`, `subtitulo`, `autor`, `instituicao`, `local`, `ano`, `tipo-projeto`, `orientador`, `coorientador`, `coordenador`, `volume` num estado; `project-cover()`/`project-title-page()` os usam quando o argumento é `none` (chamada antiga que repete valores continua valendo; `pp.typ` e o `projeto-exemplo` antigo compilam).
+- Numeração: `header: abnt-numero-pagina(paginacao: "auto")`, contagem desde a folha de rosto (`marcar-folha-rosto()` em `project-title-page`), número a partir da 1ª seção primária numerada. O `counter(page).update(1)` e o `set page(numbering…)` à mão saíram do exemplo; **efeito visível:** a Introdução passa a ser a p. 3 (antes 1).
+- `frente-verso: false` novo: `abnt-margens`, `level-1-pagebreak-impar`, `abnt-frente-verso` (folha de rosto, sumário e listas em página ímpar). Testado com `--input fv=1` (17 páginas; margens espelhadas, número à esquerda nas pares, seções primárias em ímpar; imagem).
+
+###### R4a-16
+- Glossário: ordenado (Etapa 3 já faz: `Álgebra, beta, Ícaro, Zeta`), centralizado (setup), `pagebreak(weak: true)`.
+- Título/subtítulo 14 → 12 pt, sem justificar nem hifenizar (`_proj-titulo`); natureza 10 → 12 pt e espaço simples (`abnt-leading(1)`); `0.65` removido (`grep` vazio nos 6 arquivos).
+- Cronograma: conferido com 3, 12 e 13 períodos (imagem), sem problema.
+- Exemplo: removi `= Cronograma` e `= Recursos` duplicados (as funções já criam o título; saía uma página só com "6 CRONOGRAMA" e outra com "7 CRONOGRAMA"). 20 → 18 páginas.
+- **R4a-14** (`recursos()`): confere, `rec.typ` compila.
+
+##### Verificação
+- Matriz: 39 de 39 com rc=0 e 0 avisos; páginas iguais nas 3 versões. Contra a linha de base só mudam os meus: artigo 6→5, periódico 20→18, projeto 20→18 (os outros 10 arquivos + `testeCit` iguais). Os 3 testes novos compilam sem aviso nos 3 binários (`art-completo` também com `--input esp=1,5` e `col=2`).
+- Imagens conferidas: artigo p. 1, 3, 5; `art-completo` p. 1-3 e duas colunas; periódico p. 1-6 e `per-completo`; projeto p. 2, 4, 12, 14 e frente-verso.
+
+##### Arquivos
+Alterados (relativos ao pacote): `src/templates/article.typ`, `src/templates/periodical.typ`, `src/templates/research-project.typ`, `examples/artigo-exemplo.typ`, `examples/periodico-exemplo.typ`, `examples/projeto-exemplo.typ`.
+Novos: `docs/revisao/testes-4a/art-completo.typ`, `per-completo.typ`, `proj-completo.typ`.
+(`src/core/spacing.typ` difere entre minha cópia e o original por mudança de outro agente depois do meu rsync; não toquei nele.)
+
+##### Mudanças de saída visível (nota 0.7.0)
+Artigo em espaço simples por padrão; título 12 pt, `TÍTULO:` + subtítulo; RESUMO/ABSTRACT centralizados; palavras-chave com "; "; datas/DOI/título em inglês. Periódico: legenda com intervalo do artigo, sem rodapé na capa/folha de rosto, sumário por artigos, `©`, páginas contadas a partir da folha de rosto, seções reiniciam por artigo. Projeto: título 12 pt, natureza 12 pt, número de página automático contado desde a folha de rosto, glossário sem quebra forçada.
+
+##### Quebras de API / uso
+- `periodical-toc()` deixa de usar `outline`. `periodical-cover`/`-title-page`: `titulo` passa de `""` a `none` (vale o do `periodical()`); numeração do periódico agora começa na folha de rosto.
+- `project-title-page` agora marca a folha de rosto (contagem); quem fazia `counter(page).update(1)` à mão na Introdução terá número duplicado/diferente: remover.
+- `artigo(arquivo-bibliografia:)` continua exigindo `read(...)` (já era).
+
+##### Código morto / defeitos notados (não corrigidos)
+- `glossario()` (`src/text/headings.typ:131`) tem `pagebreak()` interno: erro dentro de `colunas: 2` do artigo.
+- `1 INTRODUÇÃO` fica sozinha no pé da página (título sem "keep with next"; `setup.typ`).
+- Verso do periódico: os créditos do exemplo juntam linhas (texto sem linha em branco/`\`); conteúdo do exemplo.
+- Com `arquivo-bibliografia`, apêndices dentro do corpo saem antes das referências (a bibliografia automática vem depois do corpo).
+- `article-section`/`article-subsection` seguem sem uso nos exemplos.
+
+##### Pendências
+- Etapa 6: manual e introdução (assinaturas de `artigo`, `periodical*`, `projeto-pesquisa`, `agradecimentos-artigo`, `espacamento`, `pagina-inicial`); `docs/` ainda mostram `(c)` e `hanging-indent`.
+- Etapa 3/outra: `container(fonte: none)` (R4a-05).
+
+### Relatório do agente B (na íntegra)
+
+#### Etapa 4, agente B — livro (`src/templates/book.typ`, `examples/livro-exemplo.typ`)
+
+Trabalho feito na cópia `$SP/B/pkg`. Matriz final (`$SP/B/matriz/resumo.txt`): 39 de 39 com rc=0, 0 avisos, mesmas páginas nas 3 versões (0.13.0, 0.14.1, 0.15.1); só o `livro-exemplo` mudou em relação à linha de base (25 → 28 páginas, explicado no fim). Testes novos (29 arquivos) também compilam sem aviso e com as mesmas páginas nos 3 binários.
+
+**Nota de nome:** os testes ficam em `docs/revisao/testes-4B-livro/` e não em `testes-4B/`, porque no macOS (sistema de arquivos sem distinção de caixa) `testes-4B` é a MESMA pasta de `testes-4b` (testes originais da Parte 4b). Eu a sobrescrevi por engano no começo e restaurei do pacote original (conferido com `diff -rq`: igual).
+
+##### Mecanismo central (vale para vários achados)
+
+Quebras de página e páginas em branco (R4b-02, R7b-01, R7b-07, R7b-08, R7b-19) passam por `_abre-impar()` e `_livro-abre()` (início de `book.typ`):
+- A quebra é nativa: `pagebreak(weak: true, to: "odd" | "even")`. Ela usa a página FÍSICA (testado em `par.typ`: depois de `counter(page).update(1)` na pág. 2, `to: "odd"` ainda trata a pág. 3 como ímpar). Foi a minha primeira tentativa, deixar `here().page()` decidir se insere a branca, que não convergia ("layout did not converge within 5 attempts" com 4 ou mais elementos em sequência, e a dedicatória caía em página par): cada decisão depende das anteriores e o Typst só repete 5 vezes. Por isso a decisão é do `pagebreak(to:)`.
+- A branca é reconhecida pelo cabeçalho e pelo rodapé sem depender de paridade: cada `_livro-abre` põe um `metadata` `<abnt-livro-fim>` no fim do conteúdo anterior e `<abnt-livro-ini>` no começo do elemento; a página `p` é branca se `p+1` tem `ini` e `p` não tem `fim` nem `ini` (`_livro-sem-moldura()`). Guardas e quarta capa usam `<abnt-livro-sem-moldura>`.
+- Para isso, as funções do livro **não terminam mais com `pagebreak()`**: cada elemento abre a própria página (`_abre-impar()` faz `pagebreak(weak: true)` também sem frente-verso). Isso também resolve R7b-08 (sem branca no fim; colofão e quarta capa abrem página própria).
+- **Limitação:** uma `#pagebreak()` solta do usuário antes de um elemento que abre em ímpar, em frente-verso, deixa uma branca COM cabeçalho e número (a marca `fim` cai na página vazia). Use as funções do livro, ou `pagebreak(weak: true)` antes de um título primário (o exemplo faz isso antes das REFERÊNCIAS).
+
+##### P1
+
+###### R4b-01 (parte que faltava) · referência da epígrafe em nota de rodapé
+- **Onde:** `book.typ`, `book-epigraph(citacao, autor, em-nota: true)`.
+- **Antes:** `(Autor)` ao lado, entre parênteses. **Depois:** `“citação”` com `footnote(autor)`; `autor` recebe a referência (NBR 6023) ou só o nome. `em-nota: false` volta ao `(autor)` ao lado.
+- **Verificado:** `ex-fv0/ex-fv1` (imagem da página da epígrafe: texto com nota 1 e a referência abaixo do filete, 2ª linha sob a 1ª letra). O exemplo passa a referência completa (ABELSON; SUSSMAN…).
+
+###### R4b-02 + R7b-14 + R7b-19 (parte do cabeçalho e do número) · cabeçalho só nos textuais
+- **Onde:** `livro()` (`header:` e `footer:`), helpers `_livro-primeira-pagina`, `_livro-sem-moldura`.
+- **Antes:** cabeçalho em todas as páginas (capa, rosto, brancas, quarta capa); par/ímpar pela contagem lógica e alternando mesmo sem frente-verso; número nas brancas posteriores ao sumário.
+- **Depois:** cabeçalho só da página seguinte ao sumário (sem sumário: da 1ª seção numerada) em diante, e nunca em página marcada como sem moldura (brancas, guardas, quarta capa). Paridade pela página física. Frente-verso: par à esquerda, ímpar à direita; sem frente-verso só o texto "ímpar", à direita. `cabecalho` aceita conteúdo único (igual ao antigo) ou `(par: …, impar: …)`; o valor `auto` é o título do capítulo corrente (não se repete na página em que o capítulo abre). O número de página também some nas brancas (`<abnt-livro-fim/ini>`), antes e depois do sumário.
+- **Verificado:** `ex-fv1` (36 páginas): todas as 8 brancas (2, 8, 10, 12, 18, 20, 26, 35) com texto extraído vazio (nem cabeçalho nem número); capa e quarta capa sem cabeçalho; imagem. `fim4` (quarta capa no fim, sem frente-verso): pág. 2 só com o ISBN. `fv-sum`: idem. Cabeçalho alterna esquerda/direita (imagem do `ex-fv1`) e sem frente-verso fica sempre à direita (`ex-fv0`).
+
+###### R4b-03 · `©`
+- **Onde:** `book-title-page-verso`. **Antes:** `(c) 2026 Autor`. **Depois:** `© 2026 Autor`; com só um dos dois campos sai `© 2026` ou `© Autor` (antes sumia sem aviso; ver R7b-24).
+- **Verificado:** `e3` e exemplo (imagem).
+
+###### R7b-01 · sumário abre no anverso
+- **Onde:** `book-toc` começa com `_abre-impar()`. **Verificado:** `fv-sum` (só uma lista de siglas antes do sumário): SUMÁRIO na pág. 9 (ímpar), branca na 8, prefácio na 11. `ex-fv1`: sumário na pág. 17. **Aceitação cumprida.**
+
+###### R7b-05 (parte do código) · `book-index` com termo em conteúdo ou vazio
+- **Onde:** `book-index`, helper `_livro-texto`. Termos como `$alpha$`, `[*Banco*]` e `""` não dão mais erro (`man2`): letra do cabeçalho e ordem vêm do texto extraído; vazios caem em "#". `book-index(entries: …)` (a forma errada do manual) também passa a valer. Dentro de cada letra agora ordena por `sort-key` (NBR 6033). Aceita dicionário ou lista de pares.
+- **Documentação:** Etapa 6.
+
+##### P2
+
+###### R4b-04 · elementos que faltam — **só em parte**
+- **Feito:** (1) verso da falsa folha de rosto com a série: `half-title-page(titulo: auto, serie: none)`; (2) errata: `book-errata(referencia:, itens: ((pagina:, linha:, errado:, correto:), …))`, nome sem colisão com `errata` do relatório; tabela "Folha / Linha / Onde se lê / Leia-se", abre em ímpar (a norma não diz isso; escolha minha, igual à dedicatória); (3) folha de guarda: `book-guarda(conteudo: none)`, uma página sem cabeçalho nem número; (4) licença/Creative Commons: parâmetro `licenca:` do verso da folha de rosto, que imprime o conteúdo do usuário (símbolo e texto), sem imagem pronta.
+- **NÃO CORRIGIDO:** sobrecapa e orelhas (não couberam sem inventar um modelo gráfico; `book-guarda` aceita conteúdo para quem quiser compor a sobrecapa à mão).
+- **Verificado:** exemplo (série na pág. 3 e errata na pág. 6 em imagem), `ex-fv1`.
+
+###### R4b-05 · `:` colado ao título
+- **Onde:** `_livro-titulo-sub`, usado na capa e na folha de rosto. Título em negrito com `:` colado (não acrescenta se o título já termina em `: ? ! .`) e o subtítulo na linha de baixo, sem `:`. **Verificado:** imagem (`FUNDAMENTOS DE PROGRAMAÇÃO:` / `Uma Abordagem Prática`).
+
+###### R4b-06 + R7b-16 · listas vazias; quadros
+- **Onde:** `_livro-lista`, `book-list-illustrations(tipo: image, titulo: …)`, `book-list-tables()`, novo `book-list-quadros()`. Lista sem itens não sai (inclui `book-list-abbreviations(())` e `book-list-symbols(())`). As listas usam `_abnt-lista-rules` de `toc.typ` (travessão: `Tabela 1 – Título … 14`).
+- **Numeração por tipo:** o Typst numera por `kind`; para `Mapa 1`, `Gráfico 1`, `Mapa 2` use `container(tipo: "mapa", suplemento: "Mapa")` e `book-list-illustrations(tipo: "mapa", titulo: "LISTA DE MAPAS")` (`ilus.typ`, imagem: `Mapa 1`, `Mapa 2`, `Gráfico 1`, `Figura 1`, `Quadro 1`, `Tabela 1`, cada um numerado à parte e cada lista só com os seus). Sem tipos próprios a numeração continua única entre suplementos diferentes do mesmo `kind` (limite do Typst, a documentar).
+
+###### R7b-07 · quarta capa
+- `book-back-cover` abre página par (`pagebreak(to: "even")` em frente-verso), sem cabeçalho nem número; ISBN impresso só se existir (R7b-11). O exemplo a põe no fim. **Verificado:** `ex-fv1` pág. 36 (par; a 35 branca sem nada), `fim4`.
+
+###### R7b-08 · quebras no fim e no início
+- Nenhuma função termina com quebra (ver "Mecanismo central"); colofão e quarta capa abrem página própria. **Verificado:** `fim1`, `fim2`, `fim4`, `fim5` passam de 3 para 2 páginas (sem branca no fim); `fim3` (colofão depois do capítulo) 2 páginas: o colofão vai à última folha.
+
+###### R7b-09 · parâmetros de `livro()` usados
+- **Onde:** estado `_livro-dados`, gravado por `livro()`; `book-cover`, `book-back-cover`, `half-title-page`, `book-title-page` e `book-title-page-verso` usam `auto` como padrão (leem o estado) e o valor repetido continua prevalecendo. O exemplo agora não repete nada. O título do PDF leva o subtítulo (`Título: subtítulo`).
+- **Efeito:** `ano` (padrão `datetime.today().year()`) passa a sair na capa e na folha de rosto mesmo sem ser repetido nelas.
+
+###### R7b-10 · edição
+- `_livro-edicao`: número ≤ 1 ou `none` ou texto vazio não imprime; número > 1 sai `2ª edição`; texto vai como foi dado (`"2ª edição, revista e ampliada"`). **Verificado:** `e1` (`edicao: 1` não imprime), `e3`.
+
+###### R7b-11 · ISBN
+- Quarta capa: `ISBN …` só se houver ISBN (`display-isbn` de `core/identifiers.typ`: acrescenta o prefixo, não valida nem dá erro); lista de ISBN: um por linha. Verso da folha de rosto: novo parâmetro `isbn` (padrão: o de `livro()`), impresso depois dos créditos. **Verificado:** `e3`, exemplo. **Não feito:** forma do produto (ISO 2108, 6.4) e ISBN por volume.
+
+###### R7b-12 · autor múltiplo e "(org.)"
+- `_livro-nome`: `autor` aceita texto, conteúdo ou lista de nomes (um por linha); no texto, a indicação final entre parênteses não vai para caixa alta (`"Ana Lima (org.)"` → `ANA LIMA (org.)`). **Verificado:** `e2` (lista de dois nomes: não dá mais erro), capa e rosto.
+
+###### R7b-13 · sumário e títulos de elementos
+- `_livro-titulo`: SUMÁRIO, LISTA DE …, AGRADECIMENTOS e ERRATA em 14 pt negrito centralizado, com os mesmos vãos dos títulos primários. As entradas do sumário usam `_abnt-outline-rules` de `elements/toc.typ` (importada com esse nome; confirmado por grep que existe): nível 1 em MAIÚSCULAS e negrito, 2 em MAIÚSCULAS, 3 negrito, 4 normal, indicativos alinhados à esquerda, `indent: 0pt`. **Verificado:** imagem do sumário.
+- **Também corrigido (não estava na lista):** os títulos de nível 1 do livro sem número (PREFÁCIO, REFERÊNCIAS, GLOSSÁRIO, APÊNDICE, ANEXO, ÍNDICE) saíam à esquerda porque a regra de título do `livro()` sobrepõe a do setup; agora saem centralizados (R1-04) e o título numerado usa `_abnt-titulo` (2ª linha sob a 1ª letra, R1-13). Importa `_abnt-titulo` de `setup.typ`.
+
+###### R7b-15 · equações
+- `livro()`: `set math.equation(numbering: "(1)")` (`$ … $` sai numerado sem `book-equation`) e `show ref` que troca `@e1` de equação por `(1)`. **Verificado:** `ref2` ("a equação (1) e a (2)"), imagem do exemplo (números à direita). Equação longa que passa da margem continua sem quebra (limite do Typst).
+
+###### R7b-17 · Fonte nas tabelas do exemplo
+- As três tabelas do exemplo passaram a `container(tipo: "tabela", legenda:, fonte:)` (Fonte à esquerda, imagem); a Tabela 3 (ASCII) agora segue o estilo IBGE (filetes, sem grade).
+
+###### R7b-18 · índice remissivo ligado ao `idx()` — **feito, com uma sobra visual**
+- `book-index()` sem entradas monta o índice pelos `idx()` do texto (usa `indice()` de `elements/index.typ`, com entrelinha simples); com entradas continua manual. O exemplo usa `#idx(…)` em 5 pontos (não inventa mais páginas).
+- **Sobra:** `indice(titulo: "")` imprime um título vazio e o vão antes das entradas fica ~38 pt maior que nos outros elementos; e `indice()` termina com `pagebreak()` (não fraco), então um livro que termine no índice ganha uma página em branco no fim. Correção certa: `indice(titulo: none)` pular o título e usar `pagebreak(weak: true)` (arquivo `elements/index.typ`, não é meu). **NÃO CORRIGIDO** nesses dois pontos.
+
+##### P3
+
+- **R7b-19 (ímpar só onde a norma exige):** ímpar em frente-verso: falsa folha, folha de rosto, errata, dedicatória, agradecimentos, epígrafe, sumário, prefácio/apresentação, posfácio, glossário, capítulos e partes (`parte()`: regra do setup repetida no livro com a branca marcada). Referências, apêndice, anexo e índice só quebram a página (`heading` sem número não chama `_abre-impar`; as funções de prefácio, posfácio e glossário chamam por conta própria). Verificado no `ex-fv1`: referências na pág. 28 (par), glossário na 29. **Não feito:** prefácios seguidos sem branca no meio (4.2.2.1, "sequenciais").
+- **R7b-20:** docstrings de `book-appendix`/`book-annex` dizem que `letra: none` dá "APÊNDICE – TÍTULO". Apêndice e anexo passaram a ter `supplement` (`Apêndice A`, `Anexo`) e o parâmetro `rotulo: "ap"` (o `<rótulo>` depois da chamada continua dando `cannot reference sequence`); `@ap` sai "Apêndice A" e é link (`ref2`).
+- **R7b-21:** capa e folha de rosto com `justify: false` e `hyphenate: false` (`e1`, imagem: título de 3 linhas centralizado, sem esticar nem hifenizar).
+- **R7b-22:** `volume: "Tomo 3"` sai `Tomo 3`; número ou algarismos/romanos sem palavra saem `Volume N` (`e3`).
+- **R7b-23:** lista de siglas e de símbolos em duas colunas alinhadas, definição com recuo deslocado (`par(hanging-indent:)` com a largura da maior sigla + 1 em); `book-list-abbreviations(())` aceita vazio (e lista de pares). **Verificado:** `lst` (imagem).
+- **R7b-24:** CRB fora da moldura da ficha (abaixo dela, centralizado); aviso de copyright: ver R4b-03 (agora imprime com um campo só) e a docstring. `titulo-original` continua imprimindo sempre "Título original:" (**não mudei**).
+- **R7b-25:** o exemplo não usa mais `#set par(hanging-indent: …)` (Decisão #4); as referências ficam alinhadas à esquerda, em espaço simples, isoladas em `#[ … ]`, separadas por linha em branco. O exemplo agora demonstra errata, série, anexo, posfácio, lista de quadros, equações com `@`, `idx()`, rótulo de apêndice; frente-verso fica documentado no cabeçalho do exemplo (basta acrescentar `frente-verso: true`; `testes-4B-livro/ex-fv1.typ` é a versão em frente-verso). **Não demonstra:** `book-presentation`, `book-list-symbols` (testada em `lst`/`man1`), `parte()`.
+- **R7b-26 / R7b-27:** só anotados para a Etapa 6 (abaixo).
+- **`0.65`:** `grep -n 0.65 src/templates/book.typ examples/livro-exemplo.typ` vazio (o verso usa `set par(leading: abnt-leading(1), spacing: abnt-leading(1))`).
+
+##### Arquivos alterados (relativos ao pacote)
+- `src/templates/book.typ` (reescrito em boa parte)
+- `examples/livro-exemplo.typ`
+- Novos: `docs/revisao/testes-4B-livro/` — `b1→conv-fv.typ`, `conv-fv2.typ`, `e1.typ`, `e2.typ`, `e3.typ`, `eq.typ`, `ex-fv0.typ`, `ex-fv1.typ` (exemplo sem e com frente-verso), `fim1..5.typ`, `fv-sum.typ`, `ilus.typ`, `logo.typ`, `lst.typ`, `man1.typ`, `man2.typ`, `num1.typ`, `par1.typ`, `pg-nenhuma.typ`, `pg-todas.typ`, `ref2.typ`, `verso-long.typ` (os do 7b com caminho `/lib.typ`, mais `conv-fv*`, `ilus` e `ref2` refeitos).
+- `src/core/spacing.typ` **não é meu**: no original ele mudou (linha 92, `nature-block`) depois que copiei o pacote; meu `pkg` ainda tem a versão antiga.
+
+##### Mudanças de SAÍDA VISÍVEL (nota da 0.7.0)
+- Livro: cabeçalho só nos elementos textuais, alternando par/ímpar pela folha física em frente-verso (sem frente-verso, sempre à direita); sem cabeçalho e número em brancas, guardas e quarta capa.
+- Epígrafe: referência em nota de rodapé (antes `(Autor)` ao lado).
+- `©` no lugar de `(c)`; subtítulo com `:` colado ao título; título longo da capa/folha de rosto sem justificar nem hifenizar; edição 1 não impressa; `ano` agora sai na capa e na folha de rosto por padrão.
+- SUMÁRIO, listas e agradecimentos em 14 pt; entradas do sumário em MAIÚSCULAS/negrito por nível; títulos sem número centralizados; sumário em página ímpar (frente-verso).
+- Listas vazias não são impressas; lista de quadros; listas com travessão (`Tabela 1 – …`); siglas e símbolos em colunas.
+- Quarta capa vai ao fim (par, em frente-verso); sem branca no fim do documento; colofão em folha própria.
+- Seções dentro de apêndice/anexo sem número (já da Etapa 1); `@ap` sai "Apêndice A".
+- Equações em bloco numeradas por padrão; `@e1` sai `(1)`.
+- Exemplo: 25 → 28 páginas. Contas de elementos: +1 verso da falsa folha (série), +1 errata, +1 lista de quadros, +1 posfácio, +1 anexo, −1 lista de ilustrações vazia (não sai mais), −1 índice e colofão (o índice agora ocupa 1 página e o colofão a seguinte, mas não há mais a página em branco do `pagebreak()` final); o resto (equações, quadro, notas "Fonte" nas tabelas, referências em espaço simples) mexe na quebra dos capítulos e foi conferido só por imagem, sem uma conta página a página. Em frente-verso: 36 páginas (8 brancas, sem cabeçalho nem número).
+
+##### Quebras de API / uso
+- Funções do livro não terminam mais em `pagebreak()` (quem contava com isso para separar conteúdo avulso precisa de `pagebreak(weak: true)`).
+- `book-epigraph(citacao, autor)`: `autor` vai para nota de rodapé por padrão (`em-nota: false` volta ao antigo).
+- `book-index`: `entries` pode ir posicional (como antes) ou nomeado; sem argumento usa `idx()`.
+- `book-cover`/`book-title-page`/`half-title-page`/…: parâmetros agora `auto` (herdam de `livro()`); `half-title-page(titulo: "")` antigo continua valendo.
+- `book-back-cover`: `isbn` herda de `livro()`; vazio não imprime "ISBN".
+- `book-list-illustrations` ganhou `tipo` e `titulo`; `book-list-quadros`, `book-errata`, `book-guarda` são novas (nomes não colidem com `lib.typ`; só os do livro foram verificados em `lib.typ`).
+- `cabecalho` aceita dicionário.
+
+##### Código morto notado
+- `book-presentation` só repassa a `book-preface`; `book-equation` ficou redundante (mantida); `book-start-numbering` é função vazia (já era). `_frente-verso` e `abre-anverso` (page.typ) são dois estados de frente-verso paralelos (o do livro e o de `normas-abnt`).
+
+##### Pendências
+- **Etapa 6 (documentação):** manual 1576 (`entries:`); manual 1475-1485 (`subtitulo`, `editora`, `local`, `ano`, `edicao`, `volume`, `isbn` agora valem em `livro()`); README 178 e manual 2172 (lista de elementos em ímpar: acrescentar sumário, errata, posfácio, glossário e partes; tirar nada); guia rápido 162-165 (no livro o número é centralizado); ISBN e `book-index()`; `book-errata`, `book-guarda`, `book-list-quadros`, `serie`, `licenca`, `rotulo`, `cabecalho` em dicionário, `em-nota`; numeração por tipo de ilustração (R7b-16); limitação da quebra de equação longa (R7b-15); R7b-26 e R7b-27 (livro eletrônico: ISBN da versão digital, localizador, telas distintas) só anotados.
+- **Etapa 7:** `indice(titulo: none)` e `pagebreak(weak: true)` em `elements/index.typ` (R7b-18); `book-title-page-verso` ainda imprime "Título original:" sempre (R7b-24); o mecanismo `fim/ini` poderia servir ao TCC/relatório se eles passarem a ter cabeçalho nas brancas.
+- **Não corrigido:** sobrecapa e orelhas (R4b-04); prefácios seguidos sem branca (R7b-19); validação do ISBN e forma do produto (R7b-11); quebra de equação longa (limite do Typst).
+
+### Relatório do agente C (na íntegra)
+
+#### Etapa 4 — agente C: relatório técnico (NBR 10719) e pôster (NBR 15437)
+
+Cópia de trabalho: `$SP/C/pkg`. Compilado em Typst 0.14.1, 0.13.0 e 0.15.1. Imagens conferidas com `pdftoppm` + montagem (`$SP/C/out/*.png`). PDFs finais dos dois exemplos: `$SP/C/out/relatorio-exemplo-final.pdf` e `poster-exemplo-final.pdf`.
+
+##### Relatório técnico (`src/templates/technical-report.typ`, `examples/relatorio-exemplo.typ`)
+
+###### R7c-06 = R4b-07 · contagem de páginas a partir da folha de rosto
+- **Onde:** `technical-report.typ`, `report-cover` (tirei `marcar-folha-rosto()`) e `report-title-page` (agora chama `marcar-folha-rosto()`).
+- **Antes:** capa = folha 1; Introdução do exemplo numerada 8. **Depois:** Introdução numerada **7** (capa p. 1, rosto p. 2 = folha 1, sumário p. 7 do PDF, Introdução p. 8 do PDF).
+- **Verificado:** exemplo (imagem do sumário e da p. 8); `c02-semcapa` (sem capa: rosto = 1, Introdução = 3 na 3ª página); `c01-fv` (frente-verso com capa); `c06-erros` (capa + rosto + errata: Introdução = 3).
+
+###### R7c-05 · frente-verso: pré-textuais no anverso, CIP no verso da folha de rosto
+- **Onde:** `relatorio()` grava `abnt-frente-verso.update(frente-verso)` (como `normas-abnt` do TCC); `report-title-page`, `errata`, `agradecimentos-relatorio`, `resumo-relatorio` começam com `abre-anverso()`. `report-title-page-verso` não chama (é o verso).
+- **Verificado (`c01-fv.typ`, 17 págs., imagem):** capa p. 1, verso em branco p. 2, folha de rosto p. 3, verso (equipe + ficha) p. 4, errata p. 5, agradecimentos p. 7, resumo p. 9, sumário p. 11, Introdução p. 13 (numerada 11, à direita), seções seguintes em página ímpar. Funciona também sem capa (paridade lógica = física, pois o deslocamento é sempre par). `sumario()` já usava `abre-anverso` (Etapa 2).
+- **Limite:** a Introdução em página ímpar do PDF sai com número ímpar aqui (11); o efeito de inversão visto no TCC (R1-10) não aparece porque no relatório o verso da folha de rosto continua contado (a 10719 5.2 só manda contar a partir da folha de rosto).
+
+###### R7c-03 · referências na posição certa
+- **Onde:** nova `referencias-relatorio()` (marca a posição) + `_relatorio-bib` / `_relatorio-bib-marcada` (estados). `relatorio(arquivo-bibliografia:)` guarda o `.bib`; no fim do corpo, `context if not _relatorio-bib-marcada.final()` imprime as referências só se ninguém usou o marcador.
+- **Antes:** referências sempre depois de anexo/índice. **Depois:** com `#referencias-relatorio()` antes do glossário/apêndice a ordem é a da 4.2.3; sem marcador, no fim (como antes).
+- **Verificado:** exemplo (sumário e páginas: REFERÊNCIAS p. 15, APÊNDICE p. 16, FORMULÁRIO p. 17; a seção aparece no sumário); `c04-refs-fim` (sem marcador, fim); `c08-semmarcador` (erro claro: "informe arquivo-bibliografia…"). Igual nas 3 versões, sem aviso. Armadilha: `abnt-bibliography` dentro de `context` funciona nas 3 versões (citações `@chave` resolvem e a seção entra no sumário).
+- **Caminho em string** (a "dica" antiga do exemplo): `relatorio()` agora aborta cedo com "use arquivo-bibliografia: read("…")" (`r13.typ`).
+
+###### R7c-01 · parâmetros de `relatorio()` agora valem
+- **Onde:** `relatorio()` grava no estado `_relatorio-dados` (titulo, subtitulo, numero-relatorio, codigo-relatorio, instituicao, endereco-instituicao, titulo-projeto, autores, classificacao, issn, local, ano, volume, titulo-volume, pagina-inicial); `report-cover` e `report-title-page` os usam como padrão (`_ou(valor, dados, chave)`). O valor da chamada prevalece, então documentos antigos que repetem os dados continuam iguais.
+- **Verificado:** o exemplo passa os dados uma vez e chama `#report-cover()` e `#report-title-page()` sem argumentos (imagens das p. 1 e 2).
+- **Obs.:** `ano` continua com padrão `datetime.today().year()` (agora a capa/rosto o imprimem se a chamada não der `ano`); `instituicao: ""` e `local: ""` valem "ausente".
+
+###### R7c-02 · "Onde se lê" (acento) — código e docstring.
+###### R7c-04 · exemplo com Referências
+- `relatorio.with(arquivo-bibliografia: read("referencias.bib"))`, citações `#cite(<silva2023>, form: "prose")` e `<cormen2012>`, `#referencias-relatorio()` antes do apêndice. Verificado (p. 15 do exemplo).
+
+###### DECISOES #3 · `espacamento: "simples"` padrão
+- **Onde:** `relatorio()`, depois de `with-abnt-setup`: `set par(leading: abnt-leading(k), spacing: abnt-leading(k))`, `k` = 1 ou 1,5; valor inválido aborta com mensagem.
+- **Verificado:** `c03-espaco.typ` com `--input e=simples|1,5`: passo de linha 13,80 pt e 20,70 pt (`pdftotext -bbox-layout`). O resumo herda o espaçamento do documento (tirei o `leading` próprio de `resumo-relatorio`).
+
+###### `0.65` migrados
+- `report-title-page-verso` (caixa do CIP: `abnt-leading(1)`) e `resumo-relatorio` (herda). `grep -n 0.65` nos 4 arquivos: vazio.
+
+###### R4b-09 · formulário de identificação (Anexo A) e R7c-15
+- **Onde:** `formulario-identificacao`: agora um **quadro** (tabela de 12 colunas, rótulo pequeno sobre valor) na ordem do Anexo A, com os campos que faltavam: `titulo-projeto`, `numero-projeto`, `numero-classificacao`, `tiragem`, `instituicao-executora`, `instituicao-patrocinadora` (cada uma com o endereço no mesmo campo), `subtitulo`. `instituicoes` (lista antiga) vale como executora; `distribuicao` virou campo extra ao lado do distribuidor. Palavras-chave com "; " e ponto final. Verificado em imagem (p. 18 do exemplo).
+- Sem nenhum campo, a função não imprime nada (R7c-12).
+
+###### R7c-07 · subtítulo da capa com ":" colado — `report-cover` e `report-title-page` imprimem `TÍTULO: subtítulo` na mesma linha. Verificado (p. 1 e 2).
+###### R7c-08 · ISSN — formatado com `format-issn` (`core/identifiers.typ`): `12345679` → `ISSN 1234-5679` (`c06`). **Não validei** (`validate-issn` não é chamada: não há como avisar sem abortar a compilação).
+###### R7c-09 · docstrings: verso e formulário dizem que um dos dois (CIP ou formulário) é obrigatório (10719 4.2.1.1.2 b e 4.2.3.6). Sem verificação em código (não dá aviso sem abortar).
+###### R7c-10 · volumes: `titulo-volume` (impresso sob "Volume N") e `pagina-inicial` (continua a numeração; `c05-vol2`: rosto 121, sumário 122, Introdução 123). Também aceitos em `relatorio()`.
+###### R7c-11 · equações: `set math.equation(numbering: "(1)")` dentro de `relatorio()` (`c05`: "(1)"); para desligar, `#set math.equation(numbering: none)` no documento (documentado na docstring).
+###### R7c-12 · páginas em branco e elementos vazios
+- Todos os `pagebreak()` finais viraram `pagebreak(weak: true)`; o exemplo perdeu a 19ª página em branco (19 → 18). `errata()` sem itens, `report-title-page-verso()` sem dados e `formulario-identificacao()` vazio não imprimem nada (`c06-erros`: 4 páginas = capa, rosto, errata, Introdução).
+- **NÃO CORRIGIDO:** `lista-tabelas()`/`lista-ilustracoes()` sem itens ainda imprimem o título (`src/elements/toc.typ`, funções `lista-*`; mesmo defeito de R4b-06).
+###### R7c-13 · chaves e tipos
+- `autores` aceita string/dicionário único; `name`/`nome`, `qualification`/`qualificacao`; `volume`, `numero-relatorio`, `ano` em conteúdo; `errata` aceita `pagina` ou `folha` e dá mensagem com o item (`r15.typ`: "errata: falta a chave "pagina" em …"); equipe técnica sem `funcao` imprime só o nome; `resumo-relatorio(palavras-chave:)` aceita string. `c06-erros` compila com `(nome:, qualificacao:)`, `volume: [II]`, `numero-relatorio: [7/2026]`.
+###### R7c-14 · `report-code`: devolve texto (não conteúdo), sem separadores soltos quando os campos estão vazios, `sequencia` string ou inteiro (`"7"` → `007`), `sequencia: none` omite. `c07-code`: `report-code()` → `001`; `INPE-RPE-2024-EST-001`; `assunto: ""` → `INPE-RPE-2024-007`. O exemplo usa a função.
+###### R7c-15 · verso sem recuo na 1ª linha (`first-line-indent: 0pt`), ficha em caixa com texto à esquerda (antes saía centralizado), sem recuo duplo. Formulário: ver R4b-09.
+###### R7c-17 · exemplo
+- `apendice("A", …)` (en dash, no sumário "APÊNDICE A – …"); "45 p." trocado por `context counter(page).final().first()` (17) na ficha, na errata e no formulário; errata corrige trechos que **existem** no texto (folha 10 linha 29; folha 11 linha 25; conferidos com Times New Roman — com outra fonte a paginação muda); `nota-tabela` após a tabela; uma figura (`placeholder.svg`) com `fonte`; `report-code` e `referencias-relatorio` demonstrados; lista "Elementos demonstrados" atualizada.
+###### Palavras-chave do resumo/formulário: "a; b; c." (`resumo-relatorio`, formulário).
+
+###### NÃO CORRIGIDO no relatório
+- **R7c-16** lista de abreviaturas × siglas separadas: `lista-siglas` está em `src/elements/toc.typ` (não é meu).
+- **R7c-12 (parte)** `lista-tabelas()` vazia: idem, `toc.typ`.
+- **R7c-08 (parte)** não valida o dígito do ISSN (só formata).
+- 5.6 (siglas na 1ª menção): sem apoio (P3, fora da lista).
+
+##### Pôster (`src/templates/poster.typ`, `examples/poster-exemplo.typ`)
+
+Refatoração: `poster()` e `academic-poster()` passaram a usar auxiliares comuns (`_poster-base`, `_poster-cabecalho`, `_poster-autores`, `_poster-resumo`, `_poster-colunas`, `_poster-logo`), para os achados valerem nos dois sem duplicar.
+
+###### R7c-19 · colunas equilibradas
+- **Onde:** `_poster-colunas`. O Typst (nas 3 versões) não equilibra colunas: enche a 1ª até o fim da página. Agora: `layout` + `measure` do conteúdo à largura de uma coluna; `block(height: H1/n + 4 linhas, breakable: false)` com `columns` dentro; as seções (blocos quebráveis) partem entre colunas. Se o conteúdo não cabe na página, volta ao enchimento normal (2ª página, nada some). Parâmetro novo `equilibrar-colunas: true`; com `false` valem as colunas antigas e `colbreak()` manual.
+- **Verificado:** `p01`, `p03`, `p03b` (4 seções curtas: antes todas na 1ª coluna; agora 3 colunas parecidas), `p04b` (4 colunas), `p05` (seção de 2.500 palavras: 2.565 palavras no PDF, 2 páginas), exemplo (1 página, 3 colunas; a 3ª fica um pouco mais curta, pela folga).
+- **Limite honesto:** a altura é heurística (folga de 4 linhas). Com itens que não partem (imagem alta) a coluna pode estourar e o excesso sai por baixo do bloco, sobrepondo o que vem depois (testei só com texto: a folga foi suficiente; forcei folga negativa e o excesso aparece sobreposto, sem perda de texto). Nesses casos use `equilibrar-colunas: false` + `colbreak()`.
+
+###### R7c-20 e R7c-29 · afiliação e numeração por instituição
+- `_poster-autores` (os dois templates): cada instituição distinta recebe um número na ordem em que aparece; o autor leva o número da sua; a lista das afiliações vem abaixo. Autor sem afiliação fica sem número. Aceita `affiliation` ou `afiliacao`. Verificado em `p01`, `p02`, `p07` (10 autores) e no exemplo ("¹Universidade Federal de Exemplo").
+
+###### R7c-22 · cabeçalho e subtítulo (resolve R4b-12)
+- Título e autores centralizados, `justify: false` e `hyphenate: false`; sem a linha em branco/`linebreak()` que abria parágrafo novo. Título leva ":" e o subtítulo vem na linha seguinte, menor (`TÍTULO:` / subtítulo). Vão título–subtítulo normal. Verificado (`p06`, `p07`, exemplo).
+
+###### R4b-10 · `poster-a1`: troquei por **60 × 90 cm** (título 56 pt, corpo 22 pt), dentro da 5.2; docstring explica que o A1 ISO (59,4 × 84,1) fica abaixo. `pdfinfo` de `p11`: 1700,79 × 2551,18 pt = 60 × 90 cm, 1 página. A função mantém o nome (quebra de uso: o tamanho muda).
+###### R4b-11 · palavras-chave com ponto final (`Palavras-chave: a; b; c.`). A contagem de 100 palavras só está na docstring (`p14` com 160 palavras compila).
+###### R7c-21 · docstring de `poster()`: conteúdo além da altura vira 2ª página, sem aviso.
+###### R7c-23 · fundo escuro
+- `cor-texto` (padrão preto) em `poster()`/`academic-poster()`; a caixa do resumo e `poster-highlight` (fundo claro) forçam texto preto; o título da seção usa branco ou preto conforme a luminância da cor (`_poster-contraste`: `#ffd400` → preto). Verificado em `p09` (fundo `#1b1b1b`, `cor-texto: white`, destaque amarelo).
+###### R7c-24 · pisos de fonte
+- Afiliação, departamento, contato, referências e fonte da figura nunca abaixo de **20 pt** (`_poster-piso`). Medido com `pdftotext -bbox` (altura da linha, antes → depois): contato 15,8 → 18,8; referências 18,0 → 18,8; departamento 18,0 → 20,3.
+###### R7c-25 · `poster-figure` e tabelas
+- `poster-figure` usa `figure(caption:)` com `set figure.caption(position: top, separator: [ – ])`: "Tabela 1 – …" / "Figura 1 – …" em cima (o tipo vem do conteúdo), `origem` ("Fonte: …") embaixo, no piso de 20 pt. O exemplo tem as duas tabelas sem verticais (3 traços horizontais), com título e fonte. `origem` continua opcional (docstring: a norma a exige).
+###### R7c-26 · logotipo
+- `logo` (esquerda) e novo `logo-direita`; um só logo sai uma vez, com um espaço invisível (`hide`) do outro lado para o título ficar centralizado; tamanho máximo `largura-logo`/`altura-logo` (10 × 6 cm; reduz com `scale`, mantém a proporção); sem logotipo, o cabeçalho é o de `poster()` (sem as 3 linhas de grade e o centímetro extra). Verificado em `p15a` (PNG 600 × 300), `p15b` (3000 × 2000: antes esmagava o título), `p02`, `p03`/`p03b` (sem logo, mesma altura de cabeçalho).
+###### R7c-27 · `titulo` vazio aborta com "informe o titulo (NBR 15437 4.1…)" (`p08.typ` é o teste do erro esperado); `autores` e `palavras-chave` aceitam string única (`p12`, `p13`). **Autores continuam opcionais** (R8a-06, `autores: ()` compila): a docstring diz que a norma os exige, mas não aborto.
+###### R7c-28 · `cor-destaque` herdada: estado `_poster-cor`; `poster-section`/`poster-highlight` com `cor-destaque: auto` (o exemplo não repete mais a cor). `poster-references` sem justificar, sem hifenizar e **sem recuo francês** (DECISOES #4). Docstring de `academic-poster` escrita; `poster-a0`/`poster-a1` documentam que repassam só os parâmetros listados. **Não feito:** `largura`/`altura`/`fundo` etc. em `poster-a0`/`poster-a1` e versões acadêmicas; campos de cidade/estado/data (seguem em `contato`); aviso de `footnote` no pôster.
+###### R7c-30 · o exemplo é um só documento (`academic-poster`): documentei os outros formatos em comentário; só `poster-a1` (60 × 90) foi compilado e medido (`p11`); `poster-a0` não foi testado nesta rodada (a função só passou a herdar as mudanças de `poster()`). Figura de imagem: o exemplo usa tabelas (sem imagem); `p10` testa `poster-figure` com imagem.
+###### R7c-18 (já feito, confirmado) e R8a-06 (idem): seção longa continua correndo pelas colunas (`p05`).
+
+##### Aceitação
+- `relatorio-exemplo`: 19 → **18 páginas**, Introdução numerada 7, espaço simples; imagens conferidas (capa, folha de rosto, verso, errata, sumário, p. 8, apêndice, formulário). `poster-exemplo`: 1 página, colunas equilibradas, imagem conferida.
+- Matriz (`$SP/matrix.sh $PKG $SP/C/matriz`): 39 de 39 com rc=0 e avisos=0; páginas iguais nas 3 versões em todos os arquivos; contra a linha de base só mudou `relatorio-exemplo` (19 → 18, página em branco final removida). Os testes novos (`c01`–`c07`, `p*` exceto `p08` que erra de propósito, `r*` salvo `r13`/`r15` que testam erro) compilam sem aviso nos 3 binários; `c08-semmarcador` e `p08`, `r13`, `r15` erram de propósito (mensagens claras).
+- Observação: o `src/core/spacing.typ` do pacote original mudou depois da minha cópia (não é meu; não toquei).
+
+##### Arquivos alterados (relativos ao pacote)
+- `src/templates/technical-report.typ`
+- `src/templates/poster.typ`
+- `examples/relatorio-exemplo.typ`
+- `examples/poster-exemplo.typ`
+
+##### Arquivos de teste novos (`docs/revisao/testes-4C/`)
+`c01-fv.typ`, `c02-semcapa.typ`, `c03-espaco.typ` (`--input e=simples|1,5`), `c04-refs-fim.typ`, `c05-vol2.typ`, `c06-erros.typ`, `c07-code.typ`, `c08-semmarcador.typ` (erra de propósito), `referencias.bib` (cópia); e as cópias de `testes-7c` com o import `/lib.typ` (`r01`–`r23`, `rc1`–`rc8`, `p01`–`p15b`, `fig.png`, `logo.png`; `r12` ajustado para `read("/examples/referencias.bib")`).
+
+##### Mudanças de SAÍDA VISÍVEL (nota da 0.7.0)
+- Relatório: espaçamento **simples** por padrão; numeração conta a partir da folha de rosto (Introdução do exemplo: 8 → 7); sem página em branco final; frente-verso com pré-textuais no anverso e CIP no verso da folha de rosto (mais páginas em branco); errata "Onde se lê"; subtítulo da capa na mesma linha; equações em bloco numeradas `(1)`; formulário em quadro com os campos do Anexo A; ficha (CIP) alinhada à esquerda; ISSN formatado; palavras-chave "a; b." ; referências no ponto de `referencias-relatorio()`.
+- Pôster: colunas equilibradas; título/autores centralizados sem justificar; título com ":" e subtítulo na linha de baixo; afiliações numeradas por instituição (e agora aparecem no `academic-poster`); palavras-chave com ponto; textos secundários ≥ 20 pt; legenda de figura/tabela em cima com "Figura/Tabela N –"; referências sem recuo e sem justificar; `poster-a1` passa a 60 × 90 cm; logotipo uma vez e com tamanho máximo.
+
+##### Quebras de API / uso
+- `poster-a1`: 59,4 × 84,1 → 60 × 90 cm (e fonte 18 → 22 pt, título 48 → 56 pt).
+- `academic-poster(logo:)` não duplica mais o logotipo à direita (usar `logo-direita:`).
+- `poster-figure` agora é um `figure` numerado (legenda em cima, em texto normal e não em negrito); a legenda sem `origem` não imprime "Fonte".
+- `poster()`/`academic-poster()` abortam com `titulo` vazio.
+- `relatorio(arquivo-bibliografia: "caminho.bib")` (string) agora aborta cedo (antes, panic no fim). Resumo e formulário dão `;` + ponto final.
+- `report-code()` devolve texto (não conteúdo).
+- `errata()`, verso e formulário vazios não imprimem página.
+- `report-cover()` não marca mais a folha de rosto; quem montava capa sem `report-title-page()` perde a contagem a partir dela.
+
+##### Código morto / observações
+- `formulario-identificacao(distribuicao:)` e `instituicoes:` ficaram só por compatibilidade.
+- Nomes `_poster-*`, `_relatorio-*`, `_ou`, `_lista`, `_txt` saem pelo `import *` do `lib.typ` (sem privacidade em Typst); não colidem entre si (poster usa `_poster-lista`/`_poster-nome`).
+- `with-abnt-headings`/`abnt-heading-setup` (headings.typ) continuam com a cópia antiga das regras (não meu).
+
+##### Pendências para as Etapas 6 e 7
+- Etapa 6 (documentação): README/USER_GUIDE: `referencias-relatorio()`, `espacamento`, `titulo-volume`/`pagina-inicial`, novos campos do formulário, `logo-direita`, `equilibrar-colunas`, `cor-texto`, `poster-a1` 60 × 90, `lista-*` vazias (toc.typ), comentário de `relatorio-exemplo` sobre a folha/linha da errata (Times New Roman).
+- Etapa 7: conferir leitura real a 1 m do pôster (piso de 20 pt é critério de trabalho); testar `relatorio` com Arial (a errata do exemplo cita página/linha de Times).
+- `src/elements/toc.typ`: `lista-tabelas()`/`lista-ilustracoes()` vazias (R7c-12) e lista de abreviaturas × siglas (R7c-16).

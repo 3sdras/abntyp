@@ -89,7 +89,7 @@
 #let nature-block(body) = {
   pad(left: 8cm)[
     #set par(
-      leading: 1em * 0.65,
+      leading: abnt-leading(1),
       first-line-indent: 0pt,
       justify: true,
     )
