@@ -24,18 +24,18 @@
 
 // Usar o template de defesa
 #show: slides-defesa.with(
-  titulo: "Sistema de Recomendacao de Filmes Baseado em Aprendizado de Maquina",
+  titulo: "Sistema de Recomendação de Filmes Baseado em Aprendizado de Máquina",
   subtitulo: "Uma abordagem usando filtragem colaborativa",
   autor: "Maria Silva Santos",
-  orientador: "Prof. Dr. Joao Carlos Oliveira",
+  orientador: "Prof. Dr. João Carlos Oliveira",
   coorientador: "Profa. Dra. Ana Paula Costa",
   instituicao: "Universidade Federal de Exemplo",
-  departamento: "Departamento de Ciencia da Computacao",
+  departamento: "Departamento de Ciência da Computação",
   programa: none, // Deixar none para TCC de graduacao
-  grau: "Bacharel em Ciencia da Computacao",
+  grau: "Bacharel em Ciência da Computação",
   banca: (
-    "Prof. Dr. Joao Carlos Oliveira (Orientador)",
-    "Profa. Dra. Maria Lucia Ferreira",
+    "Prof. Dr. João Carlos Oliveira (Orientador)",
+    "Profa. Dra. Maria Lúcia Ferreira",
     "Prof. Dr. Pedro Henrique Lima",
   ),
   data: datetime(year: 2025, month: 3, day: 15),
@@ -49,12 +49,12 @@
 
 #slide-sumario(
   itens: (
-    "Introducao e Motivacao",
+    "Introdução e Motivação",
     "Objetivos",
-    "Fundamentacao Teorica",
+    "Fundamentação Teórica",
     "Metodologia",
     "Resultados",
-    "Conclusao",
+    "Conclusão",
   ),
 )
 
@@ -63,20 +63,20 @@
 // ============================================================================
 
 #slide-secao(
-  titulo: "Introducao",
-  subtitulo: "Contexto e Motivacao",
+  titulo: "Introdução",
+  subtitulo: "Contexto e Motivação",
 )
 
 == Contexto
 
-- Crescimento exponencial de conteudo digital
-- Dificuldade dos usuarios em encontrar conteudo relevante
-- Sistemas de recomendacao como solucao
+- Crescimento exponencial de conteúdo digital
+- Dificuldade dos usuários em encontrar conteúdo relevante
+- Sistemas de recomendação como solução
 
 #pause
 
-- Netflix: 80% do conteudo assistido vem de recomendacoes
-- Amazon: 35% das vendas originam de recomendacoes
+- Netflix: 80% do conteúdo assistido vem de recomendações
+- Amazon: 35% das vendas originam de recomendações
 
 == Problema de Pesquisa
 
@@ -84,11 +84,11 @@
   #box(
     width: 80%,
     inset: 1em,
-    stroke: 2pt + rgb("#003366"),
+    stroke: 2pt + cores-academico.primary,
     radius: 5pt,
   )[
     #text(size: 20pt)[
-      *Como desenvolver um sistema de recomendacao de filmes que seja eficiente e preciso, utilizando tecnicas de filtragem colaborativa?*
+      *Como desenvolver um sistema de recomendação de filmes que seja eficiente e preciso, utilizando técnicas de filtragem colaborativa?*
     ]
   ]
 ]
@@ -101,15 +101,13 @@
 
 == Objetivo Geral
 
-Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborativa utilizando o dataset MovieLens.
+Desenvolver um sistema de recomendação de filmes baseado em filtragem colaborativa utilizando o dataset MovieLens.
 
-#pause
+== Objetivos Específicos
 
-== Objetivos Especificos
-
-+ Analisar as principais tecnicas de sistemas de recomendacao
++ Analisar as principais técnicas de sistemas de recomendação
 + Implementar algoritmo de filtragem colaborativa
-+ Avaliar a precisao do sistema usando metricas padrao
++ Avaliar a precisão do sistema usando métricas padrão
 + Comparar resultados com abordagens existentes
 
 // ============================================================================
@@ -117,31 +115,30 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
 // ============================================================================
 
 #slide-secao(
-  titulo: "Fundamentacao Teorica",
+  titulo: "Fundamentação Teórica",
   subtitulo: "Conceitos e Trabalhos Relacionados",
 )
 
-== Sistemas de Recomendacao
-
+// O titulo do slide vem de `titulo:`; sem `==` antes
 #slide-comparativo(
-  titulo: "Tipos de Sistemas de Recomendacao",
+  titulo: "Tipos de Sistemas de Recomendação",
   titulo-esquerda: "Filtragem Colaborativa",
   conteudo-esquerda: [
-    - Baseada em similaridade entre usuarios
-    - Nao requer conhecimento do conteudo
+    - Baseada em similaridade entre usuários
+    - Não requer conhecimento do conteúdo
     - Problema do "cold start"
   ],
-  titulo-direita: "Filtragem por Conteudo",
+  titulo-direita: "Filtragem por Conteúdo",
   conteudo-direita: [
-    - Baseada em caracteristicas dos itens
+    - Baseada em características dos itens
     - Requer metadados detalhados
     - Limitada a itens similares
   ],
 )
 
-// Exemplo de citacao em slide (segue NBR 10520:2023)
+// Citação em slide: escreva o sobrenome só com a inicial maiúscula (NBR 10520:2023)
 #slide-citacao(
-  quote: "A filtragem colaborativa e uma das tecnicas mais bem-sucedidas para construir sistemas de recomendacao, baseando-se na premissa de que usuarios com comportamentos similares no passado terao preferencias similares no futuro.",
+  quote: "A filtragem colaborativa é uma das técnicas mais bem-sucedidas para construir sistemas de recomendação, baseando-se na premissa de que usuários com comportamentos similares no passado terão preferências similares no futuro.",
   autor: "Ricci",
   ano: "2015",
   pagina: "35",
@@ -153,16 +150,11 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
   columns: (auto, 1fr, auto),
   inset: 8pt,
   align: horizon,
-  [*Autor*], [*Contribuicao*], [*Ano*],
-  [Koren], [Fatoracao de matrizes para Netflix Prize], [2009],
+  [*Autor*], [*Contribuição*], [*Ano*],
+  [Koren], [Fatoração de matrizes para Netflix Prize], [2009],
   [He et al.], [Neural Collaborative Filtering], [2017],
-  [Zhang et al.], [Deep Learning para recomendacao], [2019],
+  [Zhang et al.], [Deep Learning para recomendação], [2019],
 )
-
-#v(0.5em)
-#text(size: 12pt, fill: gray)[
-  _Citacoes formatadas conforme NBR 10520:2023_
-]
 
 // ============================================================================
 // SECAO 4: METODOLOGIA
@@ -172,25 +164,23 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
   tipo-pesquisa: "Pesquisa aplicada, de natureza quantitativa",
   abordagem: "Experimental",
   procedimentos: (
-    "Revisao bibliografica",
-    "Implementacao do algoritmo",
+    "Revisão bibliográfica",
+    "Implementação do algoritmo",
     "Experimentos computacionais",
-    "Analise estatistica dos resultados",
+    "Análise estatística dos resultados",
   ),
   instrumentos: (
     "Python + bibliotecas (NumPy, Pandas, Scikit-learn)",
     "Dataset MovieLens 100K",
-    "Metricas: RMSE, MAE, Precisao\@K",
+    "Métricas: RMSE, MAE, Precisão@K",
   ),
 )
-
-== Dataset MovieLens
 
 #slide-resultado-numerico(
   titulo: "Dataset MovieLens 100K",
   itens: (
-    ("100K", "Avaliacoes"),
-    ("943", "Usuarios"),
+    ("100K", "Avaliações"),
+    ("943", "Usuários"),
     ("1.682", "Filmes"),
     ("1-5", "Escala de notas"),
   ),
@@ -202,29 +192,27 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
 
 #slide-secao(
   titulo: "Resultados",
-  subtitulo: "Experimentos e Analise",
+  subtitulo: "Experimentos e Análise",
 )
-
-== Metricas de Avaliacao
 
 #slide-resultado-numerico(
   titulo: "Resultados Obtidos",
   itens: (
     ("0.89", "RMSE"),
     ("0.71", "MAE"),
-    ("78%", "Precisao\@10"),
+    ("78%", "Precisão@10"),
   ),
 )
 
-== Comparacao com Literatura
+== Comparação com a Literatura
 
 #table(
   columns: (1fr, auto, auto, auto),
   inset: 10pt,
   align: (left, center, center, center),
-  [*Metodo*], [*RMSE*], [*MAE*], [*Precisao\@10*],
-  [Baseline (media)], [1.12], [0.94], [52%],
-  [SVD classico], [0.93], [0.74], [71%],
+  [*Método*], [*RMSE*], [*MAE*], [*Precisão\@10*],
+  [Baseline (média)], [1.12], [0.94], [52%],
+  [SVD clássico], [0.93], [0.74], [71%],
   [*Nossa abordagem*], [*0.89*], [*0.71*], [*78%*],
   [Estado da arte], [0.85], [0.68], [82%],
 )
@@ -233,7 +221,7 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
 
 #align(center)[
   #text(fill: rgb("#006600"), weight: "bold", size: 18pt)[
-    Melhoria de 4.3% em relacao ao SVD classico!
+    Melhoria de 4,3% em relação ao SVD clássico!
   ]
 ]
 
@@ -241,23 +229,19 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
 // SECAO 6: CONCLUSAO
 // ============================================================================
 
-#slide-secao(titulo: "Conclusao")
+#slide-secao(titulo: "Conclusão")
 
-== Contribuicoes
+== Contribuições
 
-- Implementacao funcional de sistema de recomendacao
+- Implementação funcional de sistema de recomendação
 - Resultados competitivos com estado da arte
-- Codigo disponibilizado como software livre
+- Código disponibilizado como software livre
 
-#pause
+== Limitações
 
-== Limitacoes
-
-- Avaliado apenas em dataset padrao (MovieLens)
-- Nao considera aspectos temporais
-- Problema do cold start nao tratado
-
-#pause
+- Avaliado apenas em dataset padrão (MovieLens)
+- Não considera aspectos temporais
+- Problema do cold start não tratado
 
 == Trabalhos Futuros
 
@@ -266,7 +250,7 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
 - Implementar sistema hibrido
 
 // ============================================================================
-// REFERENCIAS (NBR 6023:2018)
+// REFERENCIAS (digitadas por voce; formate pela NBR 6023:2018)
 // ============================================================================
 
 #slide-referencias(
@@ -278,5 +262,5 @@ Desenvolver um sistema de recomendacao de filmes baseado em filtragem colaborati
   ),
 )
 
-// O slide final de "Obrigado! Perguntas?" e gerado automaticamente
+// O slide final de "Obrigado! Perguntas?" é gerado automaticamente
 // pelo template slides-defesa

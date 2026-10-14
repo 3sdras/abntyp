@@ -16,11 +16,11 @@
 
 // Template simples para apresentacao academica
 #show: slides.with(
-  titulo: "Introducao ao Machine Learning",
+  titulo: "Introdução ao Machine Learning",
   subtitulo: "Conceitos Fundamentais",
   autor: "Prof. Dr. Carlos Eduardo Silva",
   instituicao: "Universidade Federal de Exemplo",
-  departamento: "Departamento de Ciencia da Computacao",
+  departamento: "Departamento de Ciência da Computação",
   data: datetime(year: 2025, month: 8, day: 20),
   proporcao: "16-9",
   cor-primaria: cores-clean.primary,
@@ -34,10 +34,10 @@
 #slide-sumario(
   titulo: "Roteiro",
   itens: (
-    "O que e Machine Learning?",
+    "O que é Machine Learning?",
     "Tipos de Aprendizado",
-    "Aplicacoes Praticas",
-    "Desafios e Limitacoes",
+    "Aplicações Práticas",
+    "Desafios e Limitações",
   ),
 )
 
@@ -45,22 +45,16 @@
 // CONTEUDO
 // ============================================================================
 
-== O que e Machine Learning?
+== O que é Machine Learning?
 
-#nota-sem-norma-abnt()
-
-#v(1em)
-
-*Definicao:* Campo da Inteligencia Artificial que permite que sistemas aprendam e melhorem a partir de experiencia sem serem explicitamente programados.
+*Definição:* Campo da Inteligência Artificial que permite que sistemas aprendam e melhorem a partir de experiência sem serem explicitamente programados.
 
 #pause
 
-=== Componentes Fundamentais
-
-- *Dados:* Materia-prima do aprendizado
-- *Algoritmo:* Metodo de aprendizado
+- *Dados:* Matéria-prima do aprendizado
+- *Algoritmo:* Método de aprendizado
 - *Modelo:* Resultado do treinamento
-- *Predicao:* Aplicacao do modelo
+- *Predição:* Aplicação do modelo
 
 == Tipos de Aprendizado
 
@@ -70,23 +64,23 @@
   conteudo-esquerda: [
     Dados rotulados
 
-    - Classificacao
-    - Regressao
+    - Classificação
+    - Regressão
 
-    _Exemplo: Spam vs. Nao-spam_
+    _Exemplo: Spam vs. Não-spam_
   ],
-  titulo-direita: "Nao Supervisionado",
+  titulo-direita: "Não Supervisionado",
   conteudo-direita: [
     Dados sem rotulos
 
     - Clustering
-    - Reducao de dimensionalidade
+    - Redução de dimensionalidade
 
-    _Exemplo: Segmentacao de clientes_
+    _Exemplo: Segmentação de clientes_
   ],
 )
 
-== Exemplo: Regressao Linear
+== Exemplo: Regressão Linear
 
 #align(center)[
   #box(
@@ -95,11 +89,13 @@
     fill: rgb("#f0f0f0"),
     radius: 5pt,
   )[
+    #set text(size: 20pt)
+    #set align(left)
     $ y = beta_0 + beta_1 x + epsilon $
 
     Onde:
-    - $y$ = variavel dependente
-    - $x$ = variavel independente
+    - $y$ = variável dependente
+    - $x$ = variável independente
     - $beta_0, beta_1$ = coeficientes
     - $epsilon$ = erro
   ]
@@ -107,74 +103,73 @@
 
 #pause
 
-O algoritmo ajusta os coeficientes para minimizar o erro quadratico medio (MSE).
+O algoritmo ajusta os coeficientes para minimizar o erro quadrático médio (MSE).
 
-// Citacao formatada conforme NBR 10520:2023
+// Citação em slide: sobrenome só com a inicial maiúscula (NBR 10520:2023)
 #slide-citacao(
   quote: "Machine learning is the field of study that gives computers the ability to learn without being explicitly programmed.",
   autor: "Samuel",
   ano: "1959",
 )
 
-== Aplicacoes Praticas
+== Aplicações Práticas
 
 #grid(
   columns: (1fr, 1fr),
   gutter: 2em,
   [
-    *Industria*
-    - Manutencao preditiva
+    *Indústria*
+    - Manutenção preditiva
     - Controle de qualidade
-    - Otimizacao de processos
+    - Otimização de processos
   ],
   [
-    *Saude*
-    - Diagnostico por imagem
-    - Descoberta de farmacos
+    *Saúde*
+    - Diagnóstico por imagem
+    - Descoberta de fármacos
     - Medicina personalizada
   ],
   [
-    *Financas*
-    - Deteccao de fraudes
-    - Analise de credito
-    - Trading algoritmico
+    *Finanças*
+    - Detecção de fraudes
+    - Análise de crédito
+    - Trading algorítmico
   ],
   [
     *Tecnologia*
     - Reconhecimento de voz
-    - Traducao automatica
-    - Recomendacao de conteudo
+    - Tradução automática
+    - Recomendação de conteúdo
   ],
 )
 
 #slide-resultado-numerico(
-  titulo: "ML em Numeros",
+  titulo: "ML em Números",
   itens: (
     ("$15.7 tri", "Mercado global de IA em 2030"),
     ("77%", "Empresas usando ou explorando IA"),
-    ("2.3M", "Empregos em IA/ML ate 2025"),
+    ("2.3M", "Empregos em IA/ML até 2025"),
   ),
 )
 
 == Desafios
 
+// Cada slide precisa caber numa página, inclusive o que ainda está oculto por #pause
+
 + *Qualidade dos dados*
-  - Dados incompletos ou ruidosos
   - Vieses nos dados de treinamento
 
 #pause
 
 + *Interpretabilidade*
   - Modelos "caixa-preta"
-  - Necessidade de explicabilidade
 
 #pause
 
-+ *Questoes eticas*
-  - Privacidade
-  - Discriminacao algoritmica
++ *Questões éticas*
+  - Privacidade e discriminação algorítmica
 
-== Conclusao
+== Conclusão
 
 #align(center)[
   #box(
@@ -183,7 +178,7 @@ O algoritmo ajusta os coeficientes para minimizar o erro quadratico medio (MSE).
     stroke: 2pt + cores-clean.primary,
     radius: 10pt,
   )[
-    Machine Learning esta transformando todas as areas do conhecimento.
+    Machine Learning está transformando todas as áreas do conhecimento.
 
     #v(0.5em)
 
@@ -192,7 +187,7 @@ O algoritmo ajusta os coeficientes para minimizar o erro quadratico medio (MSE).
 ]
 
 // ============================================================================
-// REFERENCIAS (seguindo NBR 6023:2018)
+// REFERENCIAS (digitadas por voce; formate pela NBR 6023:2018)
 // ============================================================================
 
 #slide-referencias(
@@ -215,12 +210,16 @@ O algoritmo ajusta os coeficientes para minimizar o erro quadratico medio (MSE).
 
     #v(1em)
 
-    #text(size: 18pt)[Duvidas e discussao]
+    #text(size: 18pt)[Dúvidas e discussão]
 
     #v(2em)
 
-    #text(size: 14pt, fill: gray)[
+    #text(size: 16pt, fill: luma(90))[
       carlos.silva\@exemplo.edu.br
     ]
+
+    #v(1em)
+
+    #nota-sem-norma-abnt()
   ]
 })
