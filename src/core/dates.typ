@@ -89,12 +89,21 @@
   }
 }
 
+/// Exige o ano com quatro digitos (NBR 5892, 3.1.3): 2018, nao 18
+#let _check-year(year) = {
+  assert(
+    str(year).match(regex("^\\d{4}$")) != none,
+    message: "NBR 5892 3.1.3: o ano deve ter quatro digitos (recebido: " + repr(year) + ")",
+  )
+}
+
 /// Formata data no formato misto (padrao para texto corrido)
 /// Exemplo: "4 de abril de 2018"
 /// - day: dia
 /// - month: mes (numero 1-12)
-/// - year: ano
+/// - year: ano (quatro digitos)
 #let format-date-mixed(day, month, year) = {
+  _check-year(year)
   let month-name = month-names.at(month - 1)
   [#day de #month-name de #year]
 }
@@ -103,8 +112,9 @@
 /// Exemplo: "4 abr. 2018"
 /// - day: dia
 /// - month: mes (numero 1-12)
-/// - year: ano
+/// - year: ano (quatro digitos)
 #let format-date-short(day, month, year) = {
+  _check-year(year)
   let month-name = month-names.at(month - 1)
   let abbrev = month-abbreviations.at(month-name)
   [#day #abbrev #year]
@@ -114,8 +124,9 @@
 /// Exemplo: "04.04.2018"
 /// - day: dia
 /// - month: mes (numero 1-12)
-/// - year: ano
+/// - year: ano (quatro digitos)
 #let format-date-numeric(day, month, year) = {
+  _check-year(year)
   let d = if day < 10 { "0" + str(day) } else { str(day) }
   let m = if month < 10 { "0" + str(month) } else { str(month) }
   [#d.#m.#year]
@@ -144,9 +155,10 @@
 /// Exemplo: "8 h 21 min 32 s"
 /// - hour: hora
 /// - minute: minuto
-/// - second: segundo (opcional)
+/// - second: segundo (opcional; decimais com virgula: 32,3 s)
 #let format-time-abbrev(hour, minute, second: none) = {
   if second != none {
+    let second = str(second).replace(".", ",")
     [#hour h #minute min #second s]
   } else {
     [#hour h #minute min]
@@ -164,6 +176,7 @@
 
   if second != none {
     let s = if second < 10 { "0" + str(second) } else { str(second) }
+    let s = s.replace(".", ",")
     [#h:#m:#s]
   } else {
     [#h:#m]
@@ -188,31 +201,118 @@
   }
 }
 
-/// Converte numero para romano (1-21)
+/// Detalha data e hora na ordem dia, mes, ano, hora, minuto e segundo
+/// (NBR 5892, 3.3.1)
+/// Exemplo: "30 de junho de 1954, às 12 h 21 min 32,3 s"
+/// - day, month, year: data (ano com quatro digitos)
+/// - hour, minute: hora e minuto
+/// - second: segundo (opcional; decimais aceitos)
+/// - date-format: "mixed" (padrao), "short" ou "numeric"
+/// - time-format: "abbrev" (padrao) ou "digital"
+/// - separator: ligacao entre data e hora (padrao: ", às " com a data "mixed"
+///   e a hora "abbrev"; senao, um espaco)
+#let format-date-time(
+  day, month, year, hour, minute,
+  second: none,
+  date-format: "mixed",
+  time-format: "abbrev",
+  separator: auto,
+) = {
+  let date = if date-format == "short" {
+    format-date-short(day, month, year)
+  } else if date-format == "numeric" {
+    format-date-numeric(day, month, year)
+  } else {
+    format-date-mixed(day, month, year)
+  }
+  let time = if time-format == "digital" {
+    format-time-digital(hour, minute, second: second)
+  } else {
+    format-time-abbrev(hour, minute, second: second)
+  }
+  let sep = if separator != auto {
+    separator
+  } else if date-format == "mixed" and time-format == "abbrev" {
+    ", às "
+  } else {
+    " "
+  }
+  [#date#sep#time]
+}
+
+/// Dia da semana de uma data: 0 = domingo ... 6 = sabado (indice dos vetores
+/// `weekday-names`, `weekday-abbrev1` e `weekday-abbrev2`).
+/// Segue o calendario da NBR 5892 (2.1): juliano ate 4 de outubro de 1582 e
+/// gregoriano a partir de 15 de outubro de 1582 (5 a 14 de outubro de 1582 nao existem).
+/// - day, month, year: data (ano a partir de 1)
+#let get-weekday(day, month, year) = {
+  let year = int(year)
+  assert(year >= 1 and month >= 1 and month <= 12, message: "get-weekday: data invalida")
+  let gregorian = (year, month, day) >= (1582, 10, 15)
+  assert(gregorian or (year, month, day) <= (1582, 10, 4), message: "get-weekday: 5 a 14 de outubro de 1582 nao existem")
+  let leap = if gregorian {
+    calc.rem(year, 4) == 0 and (calc.rem(year, 100) != 0 or calc.rem(year, 400) == 0)
+  } else {
+    calc.rem(year, 4) == 0
+  }
+  let days-in-month = (31, if leap { 29 } else { 28 }, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+  assert(day >= 1 and day <= days-in-month.at(month - 1), message: "get-weekday: dia inexistente nesse mes")
+  // Numero do dia juliano
+  let a = calc.div-euclid(14 - month, 12)
+  let y = year + 4800 - a
+  let m = month + 12 * a - 3
+  let jdn = day + calc.div-euclid(153 * m + 2, 5) + 365 * y + calc.div-euclid(y, 4)
+  let jdn = if gregorian {
+    jdn - calc.div-euclid(y, 100) + calc.div-euclid(y, 400) - 32045
+  } else {
+    jdn - 32083
+  }
+  calc.rem-euclid(jdn + 1, 7)
+}
+
+/// Nome do dia da semana de uma data (NBR 5892, 3.3.2)
+/// Exemplo: "quarta-feira" (full), "4ª feira" (abbrev1), "qua." (abbrev2)
+/// - day, month, year: data (ano a partir de 1)
+/// - format: "full" (padrao), "abbrev1" ou "abbrev2"
+#let format-weekday(day, month, year, format: "full") = {
+  let index = get-weekday(day, month, year)
+  if format == "abbrev1" {
+    weekday-abbrev1.at(index)
+  } else if format == "abbrev2" {
+    weekday-abbrev2.at(index)
+  } else {
+    weekday-names.at(index)
+  }
+}
+
+/// Converte numero inteiro (1-3999) para romano
 #let to-roman(num) = {
-  let roman-numerals = (
-    "I", "II", "III", "IV", "V",
-    "VI", "VII", "VIII", "IX", "X",
-    "XI", "XII", "XIII", "XIV", "XV",
-    "XVI", "XVII", "XVIII", "XIX", "XX",
-    "XXI",
-  )
-  if num >= 1 and num <= 21 {
-    roman-numerals.at(num - 1)
+  if num >= 1 and num <= 3999 {
+    let values = (1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    let symbols = ("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    let rest = num
+    let result = ""
+    for (value, symbol) in values.zip(symbols) {
+      while rest >= value {
+        result += symbol
+        rest -= value
+      }
+    }
+    result
   } else {
     str(num)
   }
 }
 
 /// Formata seculo em algarismos romanos
-/// Exemplo: "século XX" ou "sec. XX"
+/// Exemplo: "século XX" ou "séc. XX"
 /// - century: numero do seculo
 /// - abbreviated: usar forma abreviada
 #let format-century(century, abbreviated: false) = {
   let roman = to-roman(century)
 
   if abbreviated {
-    [sec. #roman]
+    [séc. #roman]
   } else {
     [século #roman]
   }

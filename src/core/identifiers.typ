@@ -49,7 +49,9 @@
   str(check)
 }
 
-/// Valida ISBN-13 (verifica digito verificador)
+/// Valida ISBN-13 (prefixo 978 ou 979 e digito verificador)
+/// A NBR ISO 2108 (4.2) exige como primeiro elemento um prefixo especificado pela
+/// Agencia Internacional do ISBN: 978 ou 979. Outros codigos EAN-13 sao recusados.
 ///
 /// Parametros:
 /// - isbn: ISBN completo (pode incluir hifens)
@@ -66,6 +68,10 @@
   let clean = isbn.replace(regex("[^0-9]"), "")
 
   if clean.len() != 13 {
+    return false
+  }
+
+  if clean.slice(0, 3) not in ("978", "979") {
     return false
   }
 
@@ -109,11 +115,11 @@
 /// Parametros:
 /// - isbn10: ISBN de 10 digitos
 ///
-/// Retorna: ISBN-13 formatado
+/// Retorna: ISBN-13 como string de 13 digitos, sem hifens (none se nao tiver 10 digitos)
 ///
 /// Exemplo:
 /// ```typst
-/// #isbn10-to-isbn13("0-393-04002-X") // "978-0-393-04002-9"
+/// #isbn10-to-isbn13("0-393-04002-X") // "9780393040029"
 /// ```
 #let isbn10-to-isbn13(isbn10) = {
   // Remove formatacao
@@ -129,7 +135,7 @@
   // Calcula novo digito verificador
   let check = isbn-check-digit(base)
 
-  // Formata ISBN-13
+  // ISBN-13 sem hifens
   base + check
 }
 
@@ -139,32 +145,42 @@
 /// - isbn: ISBN sem formatacao (13 digitos)
 /// - group: codigo do grupo de registro (ex: "85" para Brasil)
 /// - registrant-len: tamanho do elemento registrante
-/// - publication-len: tamanho do elemento publicacao
+/// - publication-len: tamanho do elemento publicacao (padrao: o que sobra dos 9
+///   digitos entre o prefixo e o digito verificador; grupo + registrante + publicacao
+///   devem somar 9, senao ha erro)
 ///
 /// Retorna: ISBN formatado com hifens
 ///
-/// Nota: A estrutura do ISBN varia por editora. Esta funcao oferece
-/// formatacao basica. Para formatacao precisa, consulte a agencia ISBN.
+/// Nota: a extensao do registrante vem da tabela de intervalos da Agencia do ISBN
+/// (NBR ISO 2108, anexo D), que esta funcao nao tem: ela so separa os elementos
+/// com os comprimentos informados. Sem `group`, usa 2-4-3 (padrao de muitas
+/// editoras brasileiras, grupo 85), o que pode estar errado para outras editoras.
 ///
 /// Exemplo:
 /// ```typst
-/// #format-isbn("9788577777770", group: "85", registrant-len: 4, publication-len: 4)
-/// // "978-85-7777-7777-0"
+/// #format-isbn("9788577777778", group: "85", registrant-len: 4, publication-len: 3)
+/// // "978-85-7777-777-8"
 /// ```
-#let format-isbn(isbn, group: none, registrant-len: 4, publication-len: 4) = {
+#let format-isbn(isbn, group: none, registrant-len: 4, publication-len: auto) = {
   let clean = isbn.replace(regex("[^0-9]"), "")
 
   if clean.len() != 13 {
     return isbn
   }
 
-  // Estrutura padrao: 978-XX-XXXX-XXXX-X
+  // Estrutura padrao: 978-XX-XXXX-XXX-X
   // Prefixo (3) - Grupo (variavel) - Registrante (variavel) - Publicacao (variavel) - Check (1)
 
   let prefix = clean.slice(0, 3) // 978 ou 979
 
   if group != none {
     let group-len = group.len()
+    let pub-len = if publication-len == auto { 9 - group-len - registrant-len } else { publication-len }
+    assert(
+      group-len + registrant-len + pub-len == 9 and pub-len >= 1,
+      message: "format-isbn: grupo + registrante + publicacao devem somar 9 digitos (recebido: "
+        + str(group-len) + " + " + str(registrant-len) + " + " + str(pub-len) + ")",
+    )
     let start = 3
     let g = clean.slice(start, start + group-len)
     let r = clean.slice(start + group-len, start + group-len + registrant-len)
@@ -185,17 +201,34 @@
 /// - format: formato de exibicao (true para exibir "ISBN" antes do numero)
 /// - product-form: forma do produto (opcional, ex: "brochura", "e-book")
 ///
+/// ISBN de 10 digitos (NBR ISO 2108, F.4.3): com `format: true` sai identificado como
+/// "ISBN-10" e acompanhado do ISBN de 13 digitos (se o de 10 for valido).
+///
 /// Exemplo:
 /// ```typst
-/// #display-isbn("978-85-1234-567-8")
-/// // ISBN 978-85-1234-567-8
+/// #display-isbn("978-85-1234-567-3")
+/// // ISBN 978-85-1234-567-3
 ///
-/// #display-isbn("978-85-1234-567-8", product-form: "e-book")
-/// // ISBN 978-85-1234-567-8 (e-book)
+/// #display-isbn("978-85-1234-567-3", product-form: "e-book")
+/// // ISBN 978-85-1234-567-3 (e-book)
+///
+/// #display-isbn("0-393-04002-X")
+/// // ISBN-10 0-393-04002-X; ISBN-13 978-0-393-04002-9
 /// ```
 #let display-isbn(isbn, format: true, product-form: none) = {
-  let result = if format { "ISBN " } else { "" }
+  let is-isbn10 = isbn.replace(regex("[^0-9Xx]"), "").len() == 10
+  let result = if format and is-isbn10 { "ISBN-10 " } else if format { "ISBN " } else { "" }
   result += isbn
+
+  if format and is-isbn10 and validate-isbn10(isbn) {
+    // Mesmos hifens do ISBN-10, com o prefixo 978 e o novo digito verificador
+    let isbn13 = isbn10-to-isbn13(isbn)
+    result += "; ISBN-13 " + if isbn.contains("-") {
+      "978-" + isbn.slice(0, isbn.len() - 1) + isbn13.last()
+    } else {
+      isbn13
+    }
+  }
 
   if product-form != none {
     result += " (" + product-form + ")"
@@ -213,9 +246,9 @@
 /// Exemplo:
 /// ```typst
 /// #isbn-block((
-///   ("978-85-1234-567-8", "brochura"),
-///   ("978-85-1234-568-5", "capa dura"),
-///   ("978-85-1234-569-2", "e-book"),
+///   ("978-85-1234-567-3", "brochura"),
+///   ("978-85-1234-568-0", "capa dura"),
+///   ("978-85-1234-569-7", "e-book"),
 /// ))
 /// ```
 #let isbn-block(isbns) = {
@@ -311,7 +344,7 @@
 /// Parametros:
 /// - issn: ISSN sem formatacao (8 caracteres)
 ///
-/// Retorna: ISSN no formato XXXX-XXXX
+/// Retorna: ISSN no formato XXXX-XXXX (o X do digito verificador em maiuscula)
 ///
 /// Exemplo:
 /// ```typst
@@ -324,7 +357,7 @@
     return issn
   }
 
-  clean.slice(0, 4) + "-" + clean.slice(4, 8)
+  upper(clean.slice(0, 4) + "-" + clean.slice(4, 8))
 }
 
 /// Exibe ISSN formatado conforme NBR 10525:2005
@@ -348,7 +381,7 @@
 }
 
 /// Gera meta tag HTML para ISSN online
-/// Conforme NBR 10525:2005 secao 5.5
+/// Conforme NBR 10525:2005 secao 6.6
 ///
 /// Parametros:
 /// - issn: numero ISSN
@@ -399,7 +432,7 @@
 /// Para publicacoes em diferentes suportes
 ///
 /// Parametros:
-/// - isbns: lista de tuplas (issn, suporte)
+/// - issns: lista de tuplas (issn, suporte)
 ///
 /// Exemplo:
 /// ```typst
@@ -425,7 +458,7 @@
 ///
 /// Exemplo:
 /// ```typst
-/// SILVA, Maria. *Manual de normas ABNT*. 2. ed. Sao Paulo: Atlas, 2023. #ref-isbn("978-85-1234-567-8")
+/// SILVA, Maria. *Manual de normas ABNT*. 2. ed. Sao Paulo: Atlas, 2023. #ref-isbn("978-85-1234-567-3")
 /// ```
 #let ref-isbn(isbn) = {
   [ISBN #isbn.]
@@ -466,7 +499,9 @@
   }
 }
 
-/// Grupos de registro ISBN conhecidos
+/// Grupos de registro ISBN conhecidos do prefixo 978
+/// Os nomes vem da Agencia Internacional do ISBN: o anexo D da NBR ISO 2108 so traz
+/// as faixas de grupos (0-5, 6, 7, 80-94, 950-989...), nao os paises.
 #let isbn-groups = (
   "0": "Países de língua inglesa",
   "1": "Países de língua inglesa",
@@ -475,17 +510,35 @@
   "4": "Japão",
   "5": "Rússia (ex-URSS)",
   "7": "China",
-  "65": "Brasil (antigo)",
+  "65": "Brasil",
   "85": "Brasil",
   "972": "Portugal",
   "989": "Portugal",
 )
 
-/// Identifica pais/regiao pelo grupo de registro do ISBN
+/// Grupos de registro ISBN conhecidos do prefixo 979 (o grupo muda com o prefixo:
+/// 979-10 e a Franca, enquanto 978-10 nao e)
+#let isbn-groups-979 = (
+  "8": "Estados Unidos",
+  "10": "França",
+  "11": "Coreia do Sul",
+  "12": "Itália",
+)
+
+/// Identifica pais/regiao pelo grupo de registro do ISBN (prefixo 978 ou 979)
 #let isbn-country(isbn) = {
   let clean = isbn.replace(regex("[^0-9]"), "")
 
   if clean.len() < 5 {
+    return none
+  }
+
+  // Cada prefixo tem a sua tabela de grupos
+  let groups = if clean.slice(0, 3) == "978" {
+    isbn-groups
+  } else if clean.slice(0, 3) == "979" {
+    isbn-groups-979
+  } else {
     return none
   }
 
@@ -496,8 +549,8 @@
   for len in (3, 2, 1) {
     if after-prefix.len() >= len {
       let group = after-prefix.slice(0, len)
-      if group in isbn-groups {
-        return isbn-groups.at(group)
+      if group in groups {
+        return groups.at(group)
       }
     }
   }

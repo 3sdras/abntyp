@@ -1,6 +1,7 @@
 // Seções e subseções conforme NBR 6024:2012
 
 #import "../core/lists.typ": numeracao-enum
+#import "../core/sorting.typ": sort-key
 
 /// Aplica formatação de headings ABNT
 #let with-abnt-headings(body) = {
@@ -121,7 +122,7 @@
 
   set par(first-line-indent: 0pt)
 
-  for (termo, definicao) in itens.pairs().sorted(key: p => p.at(0)) {
+  for (termo, definicao) in itens.pairs().sorted(key: p => sort-key(p.at(0))) {
     [*#termo:* #definicao]
     linebreak()
     v(0.5em)

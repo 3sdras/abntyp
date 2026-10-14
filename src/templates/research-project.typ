@@ -10,6 +10,7 @@
 #import "../core/page.typ": *
 #import "../core/fonts.typ": *
 #import "../core/spacing.typ": *
+#import "../core/sorting.typ": sort-key
 #import "../text/headings.typ": *
 #import "../elements/cover.typ": *
 #import "../elements/title-page.typ": *
@@ -378,7 +379,7 @@
   set par(first-line-indent: 0pt)
 
   // Ordenar itens alfabeticamente
-  let sorted-items = itens.pairs().sorted(key: p => p.at(0))
+  let sorted-items = itens.pairs().sorted(key: p => sort-key(p.at(0)))
 
   for (termo, definicao) in sorted-items {
     [*#termo:* #definicao]

@@ -2,6 +2,7 @@
 
 #import "../core/page.typ": abre-anverso
 #import "../core/spacing.typ": abnt-leading
+#import "../core/sorting.typ": sort-key
 
 // Show rules para formatar entradas do sumário conforme NBR 6027/6024.
 // Compartilhado entre abnt-outline() e sumario().
@@ -189,7 +190,7 @@
 
   set par(first-line-indent: 0pt)
 
-  for (sigla, significado) in itens.pairs().sorted(key: p => lower(p.at(0))) {
+  for (sigla, significado) in itens.pairs().sorted(key: p => sort-key(p.at(0), ignore-articles: false)) {
     [#sigla #h(1em) #significado \ ]
   }
 

@@ -6,6 +6,7 @@
 #import "../core/fonts.typ": *
 #import "../core/spacing.typ": *
 #import "../core/dates.typ": *
+#import "../core/sorting.typ": sort-key, sort-initial
 
 // Frente-verso: ligado por livro(frente-verso: true); os elementos que a NBR 6029
 // manda abrir em pagina impar consultam este estado.
@@ -532,7 +533,7 @@
   set par(first-line-indent: 0pt)
 
   // Ordenar alfabeticamente
-  let sorted-keys = items.keys().sorted()
+  let sorted-keys = items.keys().sorted(key: k => sort-key(k, ignore-articles: false))
   for key in sorted-keys {
     [#key #h(1em) #items.at(key) \ ]
   }
@@ -611,7 +612,7 @@
 
   set par(first-line-indent: 0pt)
 
-  let sorted-keys = items.keys().sorted()
+  let sorted-keys = items.keys().sorted(key: sort-key)
   for key in sorted-keys {
     [*#key:* #items.at(key) \ ]
     v(0.5em)
@@ -653,7 +654,7 @@
   // Organizar por letra inicial
   let by-letter = (:)
   for (term, pages) in entries {
-    let letter = upper(term.at(0))
+    let letter = sort-initial(term)
     if letter not in by-letter {
       by-letter.insert(letter, ())
     }

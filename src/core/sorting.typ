@@ -5,6 +5,16 @@
 #let definite-articles = (
   // Alemao
   "der", "die", "das",
+  // Arabe (ligados por hifen)
+  "al-", "el-",
+  // Catalao
+  "els",
+  // Holandes
+  "het",
+  // Hungaro
+  "az",
+  // Gales
+  "yr",
   // Espanhol
   "el", "la", "lo", "los", "las",
   // Frances
@@ -37,59 +47,99 @@
 #let all-articles = definite-articles + indefinite-articles
 
 /// Remove acentos e sinais diacriticos para ordenacao
-/// Conforme NBR 6033: letras com acentos sao alfabetadas sem as modificacoes
+/// Conforme NBR 6033 (3.1.3): letras com acentos sao alfabetadas sem as modificacoes
+/// (ä, ã, ñ, ü valem a, a, n, u). Tambem trata ç, ø, œ, æ e ß (-> ss) e descarta as
+/// marcas combinantes (texto em NFD). Maiusculas e minusculas sao preservadas.
 ///
 /// Exemplo:
 /// ```typst
-/// #remove-accents("Muller") // Retorna "Muller"
-/// #remove-accents("cafe") // Retorna "cafe"
+/// #remove-accents("Müller") // Retorna "Muller"
+/// #remove-accents("café") // Retorna "cafe"
 /// ```
 #let remove-accents(text) = {
-  let result = text
   // Mapeamento de caracteres acentuados para seus equivalentes
   let accent-map = (
-    // Minusculas
-    ("a", "a"), ("a", "a"), ("a", "a"), ("a", "a"), ("a", "a"),
-    ("e", "e"), ("e", "e"), ("e", "e"), ("e", "e"),
-    ("i", "i"), ("i", "i"), ("i", "i"), ("i", "i"),
-    ("o", "o"), ("o", "o"), ("o", "o"), ("o", "o"), ("o", "o"),
-    ("u", "u"), ("u", "u"), ("u", "u"), ("u", "u"),
-    ("c", "c"), ("n", "n"),
-    // Maiusculas
-    ("A", "A"), ("A", "A"), ("A", "A"), ("A", "A"), ("A", "A"),
-    ("E", "E"), ("E", "E"), ("E", "E"), ("E", "E"),
-    ("I", "I"), ("I", "I"), ("I", "I"), ("I", "I"),
-    ("O", "O"), ("O", "O"), ("O", "O"), ("O", "O"), ("O", "O"),
-    ("U", "U"), ("U", "U"), ("U", "U"), ("U", "U"),
-    ("C", "C"), ("N", "N"),
+    "ª": "a", "à": "a", "á": "a", "â": "a", "ã": "a", "ä": "a",
+    "å": "a", "ā": "a", "ă": "a", "ą": "a", "À": "A", "Á": "A",
+    "Â": "A", "Ã": "A", "Ä": "A", "Å": "A", "Ā": "A", "Ă": "A",
+    "Ą": "A", "æ": "ae", "Æ": "AE", "ç": "c", "ć": "c", "ĉ": "c",
+    "ċ": "c", "č": "c", "Ç": "C", "Ć": "C", "Ĉ": "C", "Ċ": "C",
+    "Č": "C", "ð": "d", "ď": "d", "đ": "d", "Ð": "D", "Ď": "D",
+    "Đ": "D", "è": "e", "é": "e", "ê": "e", "ë": "e", "ē": "e",
+    "ĕ": "e", "ė": "e", "ę": "e", "ě": "e", "È": "E", "É": "E",
+    "Ê": "E", "Ë": "E", "Ē": "E", "Ĕ": "E", "Ė": "E", "Ę": "E",
+    "Ě": "E", "ĝ": "g", "ğ": "g", "ġ": "g", "ģ": "g", "Ĝ": "G",
+    "Ğ": "G", "Ġ": "G", "Ģ": "G", "ĥ": "h", "ħ": "h", "Ĥ": "H",
+    "Ħ": "H", "ì": "i", "í": "i", "î": "i", "ï": "i", "ĩ": "i",
+    "ī": "i", "ĭ": "i", "į": "i", "ı": "i", "Ì": "I", "Í": "I",
+    "Î": "I", "Ï": "I", "Ĩ": "I", "Ī": "I", "Ĭ": "I", "Į": "I",
+    "İ": "I", "ĵ": "j", "Ĵ": "J", "ķ": "k", "Ķ": "K", "ĺ": "l",
+    "ļ": "l", "ľ": "l", "ł": "l", "Ĺ": "L", "Ļ": "L", "Ľ": "L",
+    "Ł": "L", "ñ": "n", "ń": "n", "ņ": "n", "ň": "n", "Ñ": "N",
+    "Ń": "N", "Ņ": "N", "Ň": "N", "º": "o", "ò": "o", "ó": "o",
+    "ô": "o", "õ": "o", "ö": "o", "ø": "o", "ō": "o", "ŏ": "o",
+    "ő": "o", "Ò": "O", "Ó": "O", "Ô": "O", "Õ": "O", "Ö": "O",
+    "Ø": "O", "Ō": "O", "Ŏ": "O", "Ő": "O", "œ": "oe", "Œ": "OE",
+    "ŕ": "r", "ŗ": "r", "ř": "r", "Ŕ": "R", "Ŗ": "R", "Ř": "R",
+    "ś": "s", "ŝ": "s", "ş": "s", "š": "s", "Ś": "S", "Ŝ": "S",
+    "Ş": "S", "Š": "S", "ß": "ss", "ţ": "t", "ť": "t", "Ţ": "T",
+    "Ť": "T", "ù": "u", "ú": "u", "û": "u", "ü": "u", "ũ": "u",
+    "ū": "u", "ŭ": "u", "ů": "u", "ű": "u", "ų": "u", "Ù": "U",
+    "Ú": "U", "Û": "U", "Ü": "U", "Ũ": "U", "Ū": "U", "Ŭ": "U",
+    "Ů": "U", "Ű": "U", "Ų": "U", "ŵ": "w", "Ŵ": "W", "ý": "y",
+    "ÿ": "y", "ŷ": "y", "Ý": "Y", "Ŷ": "Y", "Ÿ": "Y", "ź": "z",
+    "ż": "z", "ž": "z", "Ź": "Z", "Ż": "Z", "Ž": "Z",
   )
-
-  for (from, to) in accent-map {
-    result = result.replace(from, to)
-  }
-  result
+  text
+    .replace(regex("[\u{300}-\u{36f}]"), "")
+    .replace(regex("[" + accent-map.keys().join() + "]"), m => accent-map.at(m.text))
 }
 
 /// Remove artigo inicial para ordenacao
-/// Conforme NBR 6033: artigos iniciais nao sao considerados na ordenacao
+/// Conforme NBR 6033 (3.4): artigos iniciais nao sao levados em consideracao,
+/// a nao ser que facam parte integrante de um nome.
+///
+/// - Artigo colado por apostrofo ou hifen sai (compara-se so o prefixo ate o
+///   apostrofo/hifen: "L'enfant" -> "enfant", "al-Khwarizmi" -> "Khwarizmi").
+/// - Nome inicial no formato "Sobrenome, Prenome" com artigo estrangeiro e uma
+///   so palavra antes da virgula ("La Fontaine, Jean de", "Le Corbusier, Charles")
+///   mantem o artigo, pois ele e parte do sobrenome. Artigos em portugues e
+///   ingles (o, a, os, as, um, uma, the, an...) nunca sao mantidos por essa regra.
 ///
 /// Parametros:
 /// - text: texto a processar
-/// - keep-articles-in-names: se true, mantem artigos que fazem parte de nomes proprios (ex: "La Fontaine")
+/// - keep-articles-in-names: se true, mantem artigos que fazem parte de nomes proprios
+///   (heuristica: segunda palavra comeca com maiuscula, ex: "La Rochefoucault")
 ///
 /// Exemplo:
 /// ```typst
 /// #remove-initial-article("A batalha") // Retorna "batalha"
 /// #remove-initial-article("The book") // Retorna "book"
+/// #remove-initial-article("L'enfant créateur") // Retorna "enfant créateur"
 /// ```
 #let remove-initial-article(text, keep-articles-in-names: false) = {
   let words = text.split(" ")
   if words.len() == 0 { return text }
 
+  // Artigo ligado a palavra seguinte por apostrofo ou hifen: l'enfant, al-Khwarizmi
+  let glued = words.at(0).match(regex("^([^'’\-]+['’\-])(.+)$"))
+  if glued != none {
+    let prefix = lower(glued.captures.at(0)).replace("’", "'")
+    if prefix in all-articles {
+      return text.slice(glued.captures.at(0).len())
+    }
+    return text
+  }
+
   let first-word = lower(words.at(0))
 
   // Verifica se primeira palavra e um artigo
-  if first-word in all-articles or first-word.trim("'") in all-articles {
+  if first-word in all-articles {
+    // "La Fontaine, Jean de": artigo estrangeiro + uma palavra + virgula = sobrenome
+    let portugues-ou-ingles = ("o", "a", "os", "as", "um", "uma", "uns", "umas", "the", "an")
+    if words.len() > 1 and words.at(1).ends-with(",") and first-word not in portugues-ou-ingles {
+      return text
+    }
     // Se deve manter artigos em nomes proprios, verifica se segunda palavra comeca com maiuscula
     if keep-articles-in-names and words.len() > 1 {
       let second-word = words.at(1)
@@ -110,33 +160,97 @@
   }
 }
 
+/// Verifica se uma palavra e sigla ou inicial (NBR 6033, 3.3): duas ou mais
+/// letras, todas maiusculas (ASA, ISO, I.A.P.A.S), ou uma letra maiuscula
+/// seguida de ponto (C.).
+#let _is-sigla(word) = {
+  let letters = word.clusters().filter(c => c.match(regex("^\p{L}$")) != none)
+  if letters.len() >= 2 {
+    letters.all(c => c == upper(c) and c != lower(c))
+  } else if letters.len() == 1 {
+    word.ends-with(".") and letters.at(0) == upper(letters.at(0))
+  } else {
+    false
+  }
+}
+
 /// Gera chave de ordenacao para um texto conforme NBR 6033
-/// - Remove acentos
-/// - Ignora artigos iniciais
-/// - Converte para minusculas para comparacao
+///
+/// DEVOLVE UMA STRING, que pode ser usada direto em `array.sorted(key: ...)`:
+/// `lista.sorted(key: sort-key)` ou `lista.sorted(key: it => sort-key(it.nome))`.
+/// A chave segue estes criterios (strings sao comparadas por ponto de codigo):
+/// - Acentos e sinais diacriticos sao ignorados (3.1.3: Müller = Muller)
+/// - Artigo inicial e ignorado (3.4), ver `remove-initial-article`
+/// - Maiusculas e minusculas valem o mesmo; o espaco e o sinal de menor valor
+///   (palavra por palavra, 4.1)
+/// - Simbolos e sinais nao alfabeticos sao ignorados (3.6.1: `£ 100 por dia`
+///   ordena pelo 100)
+/// - Numeros sao lidos por valor e precedem as letras (3.5.1): `1.000.000` e um
+///   numero so; o ordinal vem logo apos o cardinal de mesmo valor (3.5.1.1):
+///   8, 8., 8º, 8th, 9
+/// - Siglas e iniciais (3.3) antecedem letras e palavras iguais nao usadas como
+///   sigla (`ASA` antes de `asa`): o desempate vai ao final da chave
+/// A chave NAO e legivel: serve so para comparar (nao a imprima nem tire a
+/// primeira letra dela; para o titulo de cada letra use `sort-initial`).
 ///
 /// Parametros:
-/// - text: texto original
+/// - text: texto original (string)
 /// - ignore-articles: se true, remove artigos iniciais
+/// - keep-articles-in-names: ver `remove-initial-article`
 ///
 /// Exemplo:
 /// ```typst
-/// #sort-key("A batalha") // Retorna "batalha"
-/// #sort-key("Cafe") // Retorna "cafe"
+/// #("Zebra", "Álvaro", "asa", "ASA", "8º", "8", "9").sorted(key: sort-key)
+/// // Resultado: ("8", "8º", "9", "Álvaro", "ASA", "asa", "Zebra")
 /// ```
-#let sort-key(text, ignore-articles: true) = {
-  let result = text
+#let sort-key(text, ignore-articles: true, keep-articles-in-names: false) = {
+  let result = text.trim()
 
   // Remove artigos iniciais se solicitado
   if ignore-articles {
-    result = remove-initial-article(result)
+    result = remove-initial-article(result, keep-articles-in-names: keep-articles-in-names)
   }
 
-  // Remove acentos (simplificado - Typst nao tem suporte nativo)
-  // Para ordenacao correta, o texto ja deve estar normalizado
+  // Palavras com letra ou numero (as demais, so de simbolos, nao contam), para o desempate das siglas
+  let words = result.split(regex("\s+")).filter(w => w.match(regex("[\p{L}\p{N}]")) != none)
+  let flags = words.map(w => if _is-sigla(w) { "0" } else { "1" }).join()
 
-  // Converte para minusculas
-  lower(result.trim())
+  // Numeros: 2 digitos com a quantidade de algarismos + algarismos sem zeros a esquerda
+  // + 1 digito do ordinal (0 cardinal, 1 ponto, 2 º/ª/°, 3 st/nd/rd/th)
+  let number = regex("(\d{1,3}(?:\.\d{3})+)|(\d+)[.,](\d+)|(\d+)(\.|º|ª|°|st\b|nd\b|rd\b|th\b)?")
+  let encode(digits, rank, fraction) = {
+    let digits = digits.trim("0", at: start)
+    if digits == "" { digits = "0" }
+    let length = str(calc.min(digits.len(), 99))
+    (if length.len() < 2 { "0" } else { "" }) + length + digits + str(rank) + fraction
+  }
+  result = lower(result).replace(number, m => {
+    let c = m.captures
+    if c.at(0) != none {
+      encode(c.at(0).replace(".", ""), 0, "")
+    } else if c.at(1) != none {
+      encode(c.at(1), 0, c.at(2))
+    } else {
+      let suffix = c.at(4)
+      let rank = if suffix == none { 0 } else if suffix == "." { 1 } else if suffix in ("º", "ª", "°") { 2 } else { 3 }
+      encode(c.at(3), rank, "")
+    }
+  })
+
+  // Remove acentos e depois os simbolos; o espaco continua separando as palavras
+  result = remove-accents(result).replace(regex("[^\p{L}\p{N}\s]"), "")
+  result = result.split(regex("\s+")).filter(w => w != "").join(" ")
+
+  result + "\u{1}" + flags
+}
+
+/// Letra (ou "0-9") para o titulo de cada grupo de um indice alfabetico:
+/// primeira letra do texto sem artigo inicial, acento e simbolos, em maiuscula.
+#let sort-initial(text, ignore-articles: true) = {
+  let plain = text.trim()
+  if ignore-articles { plain = remove-initial-article(plain) }
+  let letter = remove-accents(plain).clusters().find(c => c.match(regex("^[\p{L}\p{N}]$")) != none)
+  if letter == none { "" } else if letter.match(regex("^\p{N}$")) != none { "0-9" } else { upper(letter) }
 }
 
 /// Compara duas strings para ordenacao alfabetica conforme NBR 6033
@@ -166,6 +280,7 @@
 /// - items: lista de strings a ordenar
 /// - ignore-articles: se true, ignora artigos iniciais na ordenacao
 /// - key: funcao para extrair chave de ordenacao (opcional)
+/// - keep-articles-in-names: ver `remove-initial-article`
 ///
 /// Exemplo:
 /// ```typst
@@ -173,11 +288,11 @@
 /// #sort-alphabetically(lista)
 /// // Resultado: ("Arvore", "A casa", "O gato", "Zebra")
 /// ```
-#let sort-alphabetically(items, ignore-articles: true, key: none) = {
+#let sort-alphabetically(items, ignore-articles: true, key: none, keep-articles-in-names: false) = {
   if key != none {
-    items.sorted(key: it => sort-key(key(it), ignore-articles: ignore-articles))
+    items.sorted(key: it => sort-key(key(it), ignore-articles: ignore-articles, keep-articles-in-names: keep-articles-in-names))
   } else {
-    items.sorted(key: it => sort-key(it, ignore-articles: ignore-articles))
+    items.sorted(key: it => sort-key(it, ignore-articles: ignore-articles, keep-articles-in-names: keep-articles-in-names))
   }
 }
 
@@ -208,17 +323,19 @@
   (text: text, entry-type: entry-type)
 }
 
-/// Ordena entradas homografas conforme NBR 6033
-/// Quando textos tem mesma grafia, ordena por tipo:
+/// Ordena entradas homografas conforme NBR 6033 (4.2)
+/// Entradas com a mesma entrada principal (o texto antes da primeira virgula ou
+/// do primeiro traco com espacos: "Brasil, Vitor", "Brasil - Historia") ficam
+/// reunidas e, dentro delas, na ordem:
 /// 1. Autor (nome proprio)
 /// 2. Autor (entidade coletiva)
 /// 3. Assunto
 /// 4. Titulo
+/// e, em cada tipo, em ordem alfabetica do texto inteiro.
 #let sort-homographs(entries) = {
   entries.sorted(key: it => {
-    let base-key = sort-key(it.text)
-    let type-key = str(it.entry-type)
-    base-key + "_" + type-key
+    let head = it.text.split(regex(",| [-–—] ")).at(0)
+    sort-key(head) + "\u{2}" + str(it.entry-type) + "\u{2}" + sort-key(it.text)
   })
 }
 
@@ -274,8 +391,8 @@
     let term = if type(item) == array { item.at(0) } else { item }
     let page = if type(item) == array and item.len() > 1 { item.at(1) } else { none }
 
-    // Obtem primeira letra (sem acento, maiuscula)
-    let first-letter = upper(sort-key(term).at(0, default: ""))
+    // Obtem primeira letra (sem acento, maiuscula; numeros em "0-9")
+    let first-letter = sort-initial(term)
 
     // Mostra cabecalho de letra se mudou
     if show-letters and first-letter != current-letter and first-letter != "" {
@@ -326,21 +443,8 @@
 }
 
 /// Ordena lista mista de numeros e texto conforme NBR 6033
-/// Numeros vem antes de letras, ordenados por valor
+/// Numeros vem antes de letras, ordenados por valor (a chave de `sort-key` ja
+/// trata numeros, ordinais e simbolos)
 #let sort-mixed(items) = {
-  // Separa itens que comecam com numero dos que comecam com letra
-  let numeric = items.filter(it => starts-with-number(str(it)))
-  let alpha = items.filter(it => not starts-with-number(str(it)))
-
-  // Ordena numericos por valor
-  let sorted-numeric = numeric.sorted(key: it => {
-    let num = extract-number(str(it))
-    if num != none { num } else { 0 }
-  })
-
-  // Ordena alfabeticos normalmente
-  let sorted-alpha = sort-alphabetically(alpha)
-
-  // Junta: numeros primeiro, depois letras
-  sorted-numeric + sorted-alpha
+  items.sorted(key: it => sort-key(str(it)))
 }

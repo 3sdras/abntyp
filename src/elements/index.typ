@@ -12,6 +12,8 @@
 // - Quanto a ordenacao: alfabetica, sistematica, cronologica, numerica, alfanumerica
 // - Quanto ao enfoque: especial (autores, assuntos, titulos, etc.) ou geral
 
+#import "../core/sorting.typ": sort-key, sort-initial
+
 /// Estado para armazenar entradas do indice
 #let index-entries = state("abnt-index-entries", ())
 
@@ -145,12 +147,12 @@
     }
 
     // Ordenar termos alfabeticamente
-    let sorted-terms = grouped.keys().sorted()
+    let sorted-terms = grouped.keys().sorted(key: sort-key)
 
     // Agrupar por letra inicial
     let by-letter = (:)
     for term in sorted-terms {
-      let letter = upper(term.first())
+      let letter = sort-initial(term)
       if letter not in by-letter {
         by-letter.insert(letter, ())
       }
@@ -245,7 +247,7 @@
             linebreak()
 
             // Subtermos (com recuo)
-            let sorted-subterms = data.subterms.keys().sorted()
+            let sorted-subterms = data.subterms.keys().sorted(key: sort-key)
             for subterm-key in sorted-subterms {
               let sub-data = data.subterms.at(subterm-key)
               h(1em)
