@@ -7,9 +7,9 @@
 #import "../core/spacing.typ": *
 #import "../core/dates.typ": *
 #import "../core/sorting.typ": sort-key, sort-initial
-#import "../core/identifiers.typ": display-isbn
+#import "../core/identifiers.typ": display-isbn, validate-isbn, validate-isbn10
 #import "../elements/toc.typ": _abnt-outline-rules, _abnt-lista-rules
-#import "../elements/index.typ": indice
+#import "../elements/index.typ": indice, _indice-canto
 
 // Frente-verso: ligado por livro(frente-verso: true); os elementos que a NBR 6029
 // manda abrir em pagina impar consultam este estado.
@@ -121,11 +121,17 @@
 }
 
 // ISBN impresso com o prefixo; vazio ou none nao imprime nada. Lista: um por linha
-// (NBR ISO 2108, 6.4).
+// (NBR ISO 2108, 6.4). Texto com digito verificador errado e recusado (ISO 2108, 4.2).
 #let _livro-isbn(isbn) = {
   if isbn == none or isbn == "" or isbn == () { none }
   else if type(isbn) == array { isbn.map(_livro-isbn).join(linebreak()) }
-  else if type(isbn) == str { display-isbn(isbn) }
+  else if type(isbn) == str {
+    assert(
+      validate-isbn(isbn) or validate-isbn10(isbn),
+      message: "livro(): ISBN \"" + isbn + "\" inválido (NBR ISO 2108: 13 dígitos com prefixo 978 ou 979, ou 10 dígitos, com dígito verificador correto). Confira o número; para texto livre passe conteúdo, como [em obtenção].",
+    )
+    display-isbn(isbn)
+  }
   else { [ISBN #isbn] }
 }
 
@@ -198,6 +204,9 @@
   enumeracao: "abnt",
   body,
 ) = {
+  // ISBN invalido da erro ja aqui, mesmo que nenhuma pagina o imprima
+  let _ = _livro-isbn(isbn)
+
   // Configuracao do documento (o titulo do PDF leva o subtitulo)
   set document(
     title: if subtitulo != none and type(titulo) == str and type(subtitulo) == str {
@@ -385,6 +394,30 @@
   _livro-marca-sem-moldura()
   if conteudo != none { conteudo }
   pagebreak()
+}
+
+/// Orelha (NBR 6029, 4.1.5; elemento opcional)
+/// Uma pagina estreita (a largura da orelha), sem cabecalho nem numero, com o que a norma
+/// recomenda: dados biograficos do autor e comentario sobre a obra; podem constar o
+/// publico a que se destina e outras informacoes. Chame uma vez por orelha.
+///
+/// A sobrecapa (4.1.1) e feita de primeira capa, quarta capa e orelhas: componha-a com
+/// `book-cover()`, `book-orelha()` e `book-back-cover()`, na ordem da sua grafica.
+///
+/// Parametros:
+/// - biografia: dados biograficos do autor
+/// - comentario: comentario sobre a obra
+/// - publico: publico a que se destina
+/// - outros: outras informacoes
+/// - largura: largura da orelha (padrao 9 cm); a altura e a da pagina do livro
+#let book-orelha(biografia: none, comentario: none, publico: none, outros: none, largura: 9cm) = {
+  set page(width: largura, margin: (x: 1cm, y: 2cm), numbering: none)
+  _livro-marca-sem-moldura()
+  set par(justify: false, first-line-indent: 0pt, spacing: 1em)
+  set text(size: 10pt)
+  let partes = (biografia, comentario, publico, outros).filter(p => p != none)
+  partes.join(v(1em))
+  pagebreak(weak: true)
 }
 
 /// Quarta capa (contracapa)
@@ -931,11 +964,20 @@
 ///   (paginas automaticas; ver `indice()`);
 /// - com entradas: `#book-index(((termo, paginas), ...))` (termo e paginas em
 ///   texto ou conteudo; as paginas sao digitadas), ordenado pela NBR 6033.
-#let book-index(titulo: "ÍNDICE", ..entradas) = {
-  heading(level: 1, numbering: none, upper(titulo))
-
+///
+/// - canto: `"letras"` ou `"entradas"` imprime no canto superior externo de cada pagina as
+///   letras iniciais ou a primeira e a ultima entradas (6034, 6.5); so no modo automatico
+#let book-index(titulo: "ÍNDICE", canto: none, ..entradas) = {
   let entries = if entradas.pos().len() > 0 { entradas.pos().first() }
     else { entradas.named().at("entries", default: none) }
+
+  // `canto:` (6034, 6.5; so no indice automatico) abre pagina nova: vem antes do titulo
+  show: body => if canto != none and entries == none {
+    set page(foreground: _indice-canto(canto))
+    body
+  } else { body }
+
+  heading(level: 1, numbering: none, upper(titulo))
 
   if entries == none {
     // Entradas em espaco simples (6034 nao pede 1,5)

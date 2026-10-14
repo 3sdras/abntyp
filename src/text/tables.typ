@@ -29,8 +29,8 @@
 ///   do corpo e à direita, "(continua)" na primeira página, "(continuação)" nas
 ///   intermediárias e "(conclusão)" na última (IBGE 8.3); com a moldura, o traço de
 ///   fecho só vem na última. Tabela de uma página não recebe palavra. Não vale se você
-///   passar `table.footer`. Com `table.hline` seus, o traço final que você escrever sai
-///   em todas as páginas.
+///   passar `table.footer`. Com `table.hline` seus, o último, se vier depois de todas as
+///   linhas, é o traço de fecho e também só sai na última página.
 ///
 /// Uso (dentro de um `container`):
 /// ```typst
@@ -49,6 +49,14 @@
 
   let com-rodape = continuacao and not itens.any(i => é(i, table.footer))
   let fecho = moldura and not itens.any(i => é(i, table.hline))
+
+  // Traço de fecho: o da moldura, ou o último `table.hline` do usuário (depois de todas
+  // as linhas), que sai do corpo para o rodapé e só aparece na última página
+  let traco-final = if fecho { 1.5pt } else { none }
+  if com-rodape and not fecho and itens.len() > 0 and é(itens.last(), table.hline) {
+    traco-final = itens.last().at("stroke", default: auto)
+    itens = itens.slice(0, -1)
+  }
 
   let corpo = itens
   if fecho {
@@ -98,8 +106,8 @@
           else if aqui == ultima { "(conclusão)" }
           else { "(continuação)" }
         stack(
-          if fecho and aqui == ultima { line(length: 100%, stroke: 1.5pt) },
-          align(right, text(size: 10pt, palavra)),
+          if traco-final != none and aqui == ultima { line(length: 100%, stroke: traco-final) },
+          if palavra != none { align(right, text(size: 10pt, palavra)) },
         )
       })),
     )
