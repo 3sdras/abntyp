@@ -5,6 +5,8 @@
 // criar projetos de pesquisa em conformidade com a NBR 15287:2025.
 //
 // Elementos demonstrados:
+// - projeto-pesquisa() - Dados do projeto e numeração de páginas (a capa e a folha
+//   de rosto os usam, sem repetir)
 // - project-cover() - Capa
 // - project-title-page() - Folha de rosto com orientador
 // - Elementos textuais obrigatórios (tema, problema, hipóteses, objetivos,
@@ -31,36 +33,21 @@
   orientador: "Prof. Dr. Marcelo Augusto Ribeiro",
   coorientador: "Profa. Dra. Juliana Costa (Psicologia)",
   fonte: "Times New Roman",
-  // Para usar bibliografia automática, o caminho deve ser relativo à raiz:
-  // arquivo-bibliografia: "examples/referencias.bib",
+  // Para usar bibliografia automática, descomente a linha abaixo (o caminho é relativo
+  // a este arquivo):
+  // arquivo-bibliografia: read("referencias.bib"),
 )
 
 // ============================================================================
 // ELEMENTOS PRÉ-TEXTUAIS
 // ============================================================================
 
-// Capa
-#project-cover(
-  instituicao: "Universidade Federal de Exemplo",
-  autor: "Carolina Beatriz Fernandes",
-  titulo: "Desenvolvimento de Aplicativo Mobile para Gestão de Saúde Mental",
-  subtitulo: "uma abordagem baseada em técnicas de terapia cognitivo-comportamental",
-  local: "Cidade",
-  ano: 2026,
-)
+// Capa (entidade, autor, título, subtítulo, local e ano vêm de projeto-pesquisa())
+#project-cover()
 
-// Folha de rosto
-#project-title-page(
-  autor: "Carolina Beatriz Fernandes",
-  titulo: "Desenvolvimento de Aplicativo Mobile para Gestão de Saúde Mental",
-  subtitulo: "uma abordagem baseada em técnicas de terapia cognitivo-comportamental",
-  tipo-projeto: "Projeto de pesquisa apresentado ao Programa de Pós-Graduação em Ciência da Computação da Universidade Federal de Exemplo como requisito para qualificação no Mestrado.",
-  instituicao: "Universidade Federal de Exemplo",
-  orientador: "Prof. Dr. Marcelo Augusto Ribeiro",
-  coorientador: "Profa. Dra. Juliana Costa (Psicologia)",
-  local: "Cidade",
-  ano: 2026,
-)
+// Folha de rosto (tipo de projeto, orientador e coorientador também; a contagem de
+// páginas começa aqui, e o número aparece a partir da Introdução)
+#project-title-page()
 
 // Sumário
 #sumario()
@@ -68,10 +55,6 @@
 // ============================================================================
 // ELEMENTOS TEXTUAIS
 // ============================================================================
-
-// Inicia numeração arábica
-#counter(page).update(1)
-#set page(numbering: "1", number-align: top + right)
 
 = Introdução
 
@@ -249,8 +232,7 @@ Ensaio clínico randomizado controlado com:
 
 O projeto será submetido ao Comitê de Ética em Pesquisa da instituição. Todos os participantes assinarão Termo de Consentimento Livre e Esclarecido. Os dados serão anonimizados e armazenados em conformidade com a LGPD.
 
-= Cronograma
-
+// cronograma-simples() já traz o título da seção
 #cronograma-simples(
   titulo: "CRONOGRAMA",
   atividades: (
@@ -285,8 +267,6 @@ O projeto será submetido ao Comitê de Ética em Pesquisa da instituição. Tod
     (false, false, false, false, false, false, false, false, false, false, false, true), // Defesa
   ),
 )
-
-= Recursos
 
 // Tabela de recursos
 #heading(level: 1, "RECURSOS")

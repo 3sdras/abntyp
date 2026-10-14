@@ -5,13 +5,14 @@
 // fascículos de periódicos científicos em conformidade com a NBR 6021:2015.
 //
 // Elementos demonstrados:
-// - periodical-cover() - Capa com ISSN, volume, número
+// - periodical() - Dados do fascículo (a capa e a folha de rosto os usam)
+// - periodical-cover() - Capa com ISSN, volume, número e instituição
 // - periodical-title-page() - Folha de rosto
 // - periodical-title-page-verso() - Verso com expediente
-// - periodical-toc() - Sumário
+// - periodical-toc() - Sumário por artigos (título, autores, página)
 // - editorial() - Editorial
-// - periodical-article() - Artigos com resumos
-// - bibliographic-legend() - Legenda bibliográfica no rodapé
+// - periodical-article() - Artigos com resumos, datas de submissão e aprovação
+// - Legenda bibliográfica no rodapé (automática, com as páginas do artigo)
 // - author-guidelines() - Normas para autores
 //
 // ============================================================================
@@ -28,6 +29,7 @@
   ano: 2026,
   mes-inicio: 5,  // maio
   mes-fim: 8,    // agosto
+  pagina-inicial: 181,  // a numeração segue a do volume: o fascículo anterior terminou na p. 180
   local: "Cidade",
   editora: "Editora Universitária",
   instituicao: "Universidade Federal de Exemplo",
@@ -38,30 +40,11 @@
 // ELEMENTOS PRÉ-TEXTUAIS
 // ============================================================================
 
-// Capa do fascículo
-#periodical-cover(
-  titulo: "Revista Brasileira de Tecnologia e Inovação",
-  subtitulo: "Brazilian Journal of Technology and Innovation",
-  issn: "2965-0003",
-  volume: 8,
-  numero: 2,
-  ano: 2026,
-  mes-inicio: 5,
-  mes-fim: 8,
-)
+// Capa do fascículo (título, ISSN, volume, número, data e instituição vêm de periodical())
+#periodical-cover()
 
-// Folha de rosto - anverso
-#periodical-title-page(
-  titulo: "Revista Brasileira de Tecnologia e Inovação",
-  issn: "2965-0003",
-  volume: 8,
-  numero: 2,
-  paginas: "1-180",
-  ano: 2026,
-  mes-inicio: 5,
-  mes-fim: 8,
-  local: "Cidade",
-)
+// Folha de rosto - anverso (legenda com o intervalo de páginas do fascículo, calculado)
+#periodical-title-page()
 
 // Folha de rosto - verso (expediente)
 #periodical-title-page-verso(
@@ -149,8 +132,7 @@
 // ARTIGOS
 // ============================================================================
 
-// Artigo 1
-#pagebreak()
+// Artigo 1 (o editorial já termina com quebra de página)
 #periodical-article(
   titulo: "Detecção de Anomalias em Sistemas Industriais utilizando Aprendizado de Máquina",
   autores: (
@@ -165,6 +147,9 @@
     This paper presents a machine learning approach for anomaly detection in industrial systems in the context of Industry 4.0. The proposed method uses a combination of autoencoders and LSTM networks to identify anomalous patterns in sensor time series. Experiments were conducted with real data from a petrochemical plant, achieving a detection rate of 94.7% with only 2.3% false positives. The results demonstrate that the proposed approach outperforms traditional statistical methods and can be integrated into predictive maintenance systems.
   ],
   palavras-chave-en: ("Anomaly detection", "Machine learning", "Industry 4.0", "Predictive maintenance", "Time series"),
+  submissao: "3 de fevereiro de 2026",
+  aprovacao: "20 de março de 2026",
+  doi: "https://doi.org/10.0000/rbti.2026.801",
 )[
   = Introdução
 
@@ -198,9 +183,10 @@
 
   Trabalhos futuros incluem a extensão da abordagem para detecção em tempo real com latência mínima e a investigação de técnicas de explicabilidade para auxiliar operadores na interpretação dos alertas.
 
-  = Referências
+  #heading(level: 1, numbering: none)[Referências]
 
-  #set par(hanging-indent: 1.25cm, first-line-indent: 0pt)
+  // NBR 6023 6.3: alinhadas à esquerda, espaço simples, uma linha em branco entre elas
+  #set par(first-line-indent: 0pt, justify: false, leading: abnt-leading(1), spacing: abnt-leading(2))
 
   CHANDOLA, V.; BANERJEE, A.; KUMAR, V. Anomaly detection: a survey. *ACM Computing Surveys*, v. 41, n. 3, p. 1-58, 2009.
 
@@ -226,6 +212,9 @@
     This paper investigates the adoption of DevOps practices in Brazilian software development companies. A survey was conducted with 247 professionals from 89 organizations of different sizes and sectors. Results indicate that 68% of participating companies at least partially adopt DevOps practices, with emphasis on continuous integration (82%), version control (95%), and containerization (61%). The main reported benefits include reduced delivery time, improved software quality, and greater collaboration between teams. The most cited barriers were cultural resistance, lack of technical skills, and tool complexity. The study contributes to understanding the current state of DevOps adoption in the Brazilian context.
   ],
   palavras-chave-en: ("DevOps", "Software engineering", "Agile practices", "Continuous integration", "Survey"),
+  submissao: "10 de fevereiro de 2026",
+  aprovacao: "27 de março de 2026",
+  doi: "https://doi.org/10.0000/rbti.2026.802",
 )[
   = Introdução
 
@@ -269,9 +258,10 @@
 
   Este estudo apresentou um panorama da adoção de DevOps em empresas brasileiras de desenvolvimento de software. Os resultados contribuem para a compreensão das práticas adotadas, benefícios alcançados e barreiras enfrentadas pelas organizações no contexto nacional.
 
-  = Referências
+  #heading(level: 1, numbering: none)[Referências]
 
-  #set par(hanging-indent: 1.25cm, first-line-indent: 0pt)
+  // NBR 6023 6.3: alinhadas à esquerda, espaço simples, uma linha em branco entre elas
+  #set par(first-line-indent: 0pt, justify: false, leading: abnt-leading(1), spacing: abnt-leading(2))
 
   FORSGREN, N.; HUMBLE, J.; KIM, G. *Accelerate*: the science of lean software and DevOps. Portland: IT Revolution, 2018.
 
@@ -296,6 +286,9 @@
     This paper investigates the impact of conversational interfaces (chatbots) on user experience in mobile banking applications. An experimental study with 120 participants compared common banking tasks using traditional interface (menus and buttons) versus conversational interface. Results indicate that the conversational interface showed higher perceived satisfaction (4.2 vs 3.6 on SUS scale) and lower cognitive load, especially for complex tasks such as statement queries and transaction disputes. However, the traditional interface proved superior for simple and frequent tasks such as transfers. Hybrid interfaces that allow users to choose the interaction mode according to task context are recommended.
   ],
   palavras-chave-en: ("Chatbot", "User experience", "Conversational interface", "Mobile banking", "Usability"),
+  submissao: "17 de fevereiro de 2026",
+  aprovacao: "1 de abril de 2026",
+  doi: "https://doi.org/10.0000/rbti.2026.803",
 )[
   = Introdução
 
@@ -339,9 +332,10 @@
 
   Este estudo contribui para a compreensão de quando e como interfaces conversacionais agregam valor em aplicativos bancários. Recomenda-se que designers considerem a natureza das tarefas ao decidir onde implementar chatbots, priorizando cenários de alta complexidade e baixa frequência.
 
-  = Referências
+  #heading(level: 1, numbering: none)[Referências]
 
-  #set par(hanging-indent: 1.25cm, first-line-indent: 0pt)
+  // NBR 6023 6.3: alinhadas à esquerda, espaço simples, uma linha em branco entre elas
+  #set par(first-line-indent: 0pt, justify: false, leading: abnt-leading(1), spacing: abnt-leading(2))
 
   FØLSTAD, A.; BRANDTZÆG, P. B. Chatbots and the new world of HCI. *Interactions*, v. 24, n. 4, p. 38-42, 2017.
 

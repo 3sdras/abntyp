@@ -5,11 +5,14 @@
 // artigos científicos em conformidade com a NBR 6022:2018.
 //
 // Elementos demonstrados:
-// - Título e subtítulo
+// - Título, subtítulo e título em outro idioma
 // - Múltiplos autores com afiliações (footnotes)
 // - Resumo em português com palavras-chave
 // - Abstract em inglês com keywords
-// - Seções sem numeração (article-section)
+// - Seções numeradas (`=`, `==`; NBR 6024). Para uma seção sem numeração use
+//   `article-section[Título]` e `article-subsection[Título]`
+// - Datas de submissão e aprovação (obrigatórias, NBR 6022 5.1.4) e DOI
+// - Espaçamento simples (padrão do artigo; `espacamento: "1,5"` volta ao antigo)
 // - Citações (sistema autor-data)
 // - Figuras e tabelas
 // - Referências automáticas via arquivo .bib
@@ -22,6 +25,7 @@
 #show: artigo.with(
   titulo: "Impacto da Inteligência Artificial na Educação Superior",
   subtitulo: "uma revisão sistemática da literatura",
+  titulo-en: "Impact of artificial intelligence on higher education: a systematic literature review",
   autores: (
     (
       name: "Maria Eduarda Oliveira",
@@ -44,10 +48,15 @@
   ],
   palavras-chave: ("Inteligência artificial", "Educação superior", "Tecnologia educacional", "Aprendizado personalizado", "Revisão sistemática"),
   palavras-chave-en: ("Artificial intelligence", "Higher education", "Educational technology", "Personalized learning", "Systematic review"),
+  submissao: "12 de março de 2026",
+  aprovacao: "30 de abril de 2026",
+  doi: "https://doi.org/10.0000/exemplo.2026.001",
   fonte: "Times New Roman",
   colunas: 1,
-  // Para usar bibliografia automática, descomente a linha abaixo:
-  // arquivo-bibliografia: "examples/referencias.bib",
+  // Para usar bibliografia automática (em vez das referências manuais abaixo),
+  // descomente a linha abaixo (e apague as referências manuais); o caminho é relativo
+  // a este arquivo:
+  // arquivo-bibliografia: read("referencias.bib"),
 )
 
 // ============================================================================
@@ -164,7 +173,7 @@ Como limitação deste estudo, destaca-se a restrição linguística que pode te
 // ============================================================================
 
 // OPÇÃO 1: Bibliografia automática
-// Se você usou o parâmetro bibliography-file no template, as referências
+// Se você usou o parâmetro arquivo-bibliografia no template, as referências
 // são inseridas automaticamente. Também pode usar diretamente:
 // #abnt-bibliography(read("referencias.bib"))
 
@@ -172,7 +181,8 @@ Como limitação deste estudo, destaca-se a restrição linguística que pode te
 
 #heading(level: 1, numbering: none, "REFERÊNCIAS")
 
-#set par(hanging-indent: 1.25cm, first-line-indent: 0pt)
+// NBR 6023 6.3: alinhadas à esquerda, espaço simples, uma linha em branco entre elas
+#set par(first-line-indent: 0pt, justify: false, leading: abnt-leading(1), spacing: abnt-leading(2))
 
 CORMEN, Thomas H. et al. *Algoritmos*: teoria e prática. 3. ed. Rio de Janeiro: Elsevier, 2012.
 

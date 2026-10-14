@@ -4,59 +4,54 @@
 #import "../core/page.typ": *
 #import "../core/fonts.typ": *
 #import "../core/spacing.typ": *
+#import "../core/dates.typ": format-date
 #import "../references/bibliography.typ": *
 
-/// Template para artigo científico
-///
-/// Parâmetros:
-/// - titulo: título do artigo
-/// - subtitulo: subtítulo (opcional)
-/// - autores: lista de autores com afiliação
-/// - resumo: resumo em português
-/// - resumo-en: abstract em inglês
-/// - palavras-chave: palavras-chave
-/// - palavras-chave-en: keywords
-/// - fonte: fonte a usar
-/// - colunas: número de colunas (1 ou 2)
-/// - arquivo-bibliografia: caminho para arquivo .bib (opcional)
-/// - titulo-bibliografia: título da seção de referências (padrão: "REFERÊNCIAS")
-/// - enumeracao: "abnt" (padrão: alíneas a), b), c); subalíneas com travessão) ou
-///   "latex" (1., a), i), A.)
-#let artigo(
+// Data como o autor der: texto/conteúdo, ou datetime (vira "4 de abril de 2018")
+#let _data-artigo(d) = if type(d) == datetime { format-date(d) } else { d }
+
+// Bloco de resumo (NBR 6022 6.2; NBR 6028): título centralizado em negrito, texto sem
+// recuo, palavras-chave separadas por "; " e finalizadas por ponto (como no TCC)
+#let _bloco-resumo(rotulo, texto, rotulo-palavras, palavras) = {
+  set par(first-line-indent: 0pt)
+  align(center, text(weight: "bold", rotulo))
+  texto
+  if palavras.len() > 0 {
+    parbreak()
+    [*#rotulo-palavras:* #(palavras,).flatten().join("; ").]
+  }
+  v(2em)
+}
+
+// Elementos pré-textuais do artigo (NBR 6022 5.1), na ordem do esquema 1: título,
+// título em outro idioma, autores, resumo, abstract, datas, identificação (DOI).
+// Usado por `artigo()` e por `periodical-article()`.
+#let _cabecalho-artigo(
   titulo: "",
   subtitulo: none,
+  titulo-en: none,
   autores: (),
   resumo: none,
-  resumo-en: none,
   palavras-chave: (),
+  resumo-en: none,
   palavras-chave-en: (),
-  fonte: "Times New Roman",
-  colunas: 1,
-  arquivo-bibliografia: none,
-  titulo-bibliografia: "REFERÊNCIAS",
-  enumeracao: "abnt",
-  body,
+  submissao: none,
+  aprovacao: none,
+  doi: none,
 ) = {
-  // Configuração do documento
-  set document(
-    title: titulo,
-    author: if autores.len() > 0 { autores.map(a => a.name).join(", ") } else { () },
-  )
-
-  show: with-abnt-setup.with(fonte: fonte, level-1-pagebreak: false, enumeracao: enumeracao)
-
-  // Paginação visível desde o início para artigos
-  set page(
-    numbering: "1",
-    number-align: top + right,
-  )
-
-  // Título centralizado, maiúsculas, negrito
+  // Título em maiúsculas e negrito; subtítulo separado por dois-pontos colado ao
+  // título (5.1.1), sem hifenização
   align(center)[
-    #text(weight: "bold", size: 14pt, upper(titulo))
+    #set par(justify: false)
+    #set text(hyphenate: false)
+    #text(weight: "bold", upper(titulo) + if subtitulo != none { ":" } else { "" })
     #if subtitulo != none {
       linebreak()
-      text(size: 14pt, ": " + subtitulo)
+      subtitulo
+    }
+    #if titulo-en != none {
+      linebreak()
+      text(style: "italic", titulo-en)
     }
   ]
 
@@ -74,33 +69,117 @@
 
   v(2em)
 
-  // Resumo
   if resumo != none {
-    [*RESUMO*]
-    linebreak()
-    set par(first-line-indent: 0pt)
-    resumo
-    if palavras-chave.len() > 0 {
-      linebreak()
-      linebreak()
-      [*Palavras-chave:* #(palavras-chave,).flatten().join(". ").]
-    }
-    v(2em)
+    _bloco-resumo("RESUMO", resumo, "Palavras-chave", palavras-chave)
   }
 
-  // Abstract
   if resumo-en != none {
-    [*ABSTRACT*]
-    linebreak()
+    _bloco-resumo("ABSTRACT", resumo-en, "Keywords", palavras-chave-en)
+  }
+
+  // Datas de submissão e aprovação (obrigatórias, 5.1.4) e identificação (5.1.5)
+  if submissao != none or aprovacao != none or doi != none {
     set par(first-line-indent: 0pt)
-    resumo-en
-    if palavras-chave-en.len() > 0 {
-      linebreak()
-      linebreak()
-      [*Keywords:* #(palavras-chave-en,).flatten().join(". ").]
-    }
+    let linhas = ()
+    if submissao != none { linhas.push([*Data de submissão:* #_data-artigo(submissao).]) }
+    if aprovacao != none { linhas.push([*Data de aprovação:* #_data-artigo(aprovacao).]) }
+    if doi != none { linhas.push([*DOI:* #doi]) }
+    linhas.join(linebreak())
     v(2em)
   }
+}
+
+/// Agradecimentos do artigo (NBR 6022 5.3.5): título centralizado, sem quebra de
+/// página; é o último elemento pós-textual (depois das referências, apêndices e
+/// anexos). Com `arquivo-bibliografia`, passe o texto em `artigo(agradecimentos: …)`,
+/// que o coloca depois da lista de referências.
+#let agradecimentos-artigo(conteudo) = {
+  heading(level: 1, numbering: none, "AGRADECIMENTOS")
+  conteudo
+}
+
+/// Template para artigo científico
+///
+/// Parâmetros:
+/// - titulo: título do artigo
+/// - subtitulo: subtítulo (opcional); sai depois de dois-pontos colados ao título
+/// - titulo-en: título em outro idioma (opcional)
+/// - autores: lista de autores com afiliação
+/// - resumo: resumo em português
+/// - resumo-en: abstract em inglês
+/// - palavras-chave: palavras-chave
+/// - palavras-chave-en: keywords
+/// - submissao: data de submissão (obrigatória pela NBR 6022 5.1.4): texto, conteúdo
+///   ou `datetime`
+/// - aprovacao: data de aprovação (idem)
+/// - doi: identificação e disponibilidade (opcional), por exemplo o DOI
+/// - agradecimentos: texto de agradecimentos (opcional), impresso depois das referências
+///   automáticas; veja `agradecimentos-artigo`
+/// - espacamento: "simples" (padrão, NBR 6022 6.1) ou "1,5"
+/// - fonte: fonte a usar
+/// - colunas: número de colunas (1 ou 2)
+/// - arquivo-bibliografia: conteúdo do arquivo .bib, lido com `read("referencias.bib")`
+///   (opcional)
+/// - titulo-bibliografia: título da seção de referências (padrão: "REFERÊNCIAS")
+/// - enumeracao: "abnt" (padrão: alíneas a), b), c); subalíneas com travessão) ou
+///   "latex" (1., a), i), A.)
+#let artigo(
+  titulo: "",
+  subtitulo: none,
+  titulo-en: none,
+  autores: (),
+  resumo: none,
+  resumo-en: none,
+  palavras-chave: (),
+  palavras-chave-en: (),
+  submissao: none,
+  aprovacao: none,
+  doi: none,
+  agradecimentos: none,
+  espacamento: "simples",
+  fonte: "Times New Roman",
+  colunas: 1,
+  arquivo-bibliografia: none,
+  titulo-bibliografia: "REFERÊNCIAS",
+  enumeracao: "abnt",
+  body,
+) = {
+  assert(
+    espacamento in ("simples", "1,5"),
+    message: "artigo: 'espacamento' deve ser \"simples\" ou \"1,5\"",
+  )
+
+  // Configuração do documento
+  set document(
+    title: titulo,
+    author: if autores.len() > 0 { autores.map(a => a.name).join(", ") } else { () },
+  )
+
+  show: with-abnt-setup.with(fonte: fonte, level-1-pagebreak: false, enumeracao: enumeracao)
+
+  // Espaçamento simples (padrão) ou 1,5 em todo o artigo
+  let k = if espacamento == "simples" { 1 } else { 1.5 }
+  set par(leading: abnt-leading(k), spacing: abnt-leading(k))
+
+  // Paginação visível desde o início para artigos
+  set page(
+    numbering: "1",
+    number-align: top + right,
+  )
+
+  _cabecalho-artigo(
+    titulo: titulo,
+    subtitulo: subtitulo,
+    titulo-en: titulo-en,
+    autores: autores,
+    resumo: resumo,
+    palavras-chave: palavras-chave,
+    resumo-en: resumo-en,
+    palavras-chave-en: palavras-chave-en,
+    submissao: submissao,
+    aprovacao: aprovacao,
+    doi: doi,
+  )
 
   // Corpo do artigo
   if colunas == 2 {
@@ -112,6 +191,11 @@
   // Bibliografia automática (se arquivo .bib fornecido)
   if arquivo-bibliografia != none {
     abnt-bibliography(arquivo-bibliografia, titulo: titulo-bibliografia)
+  }
+
+  // Agradecimentos: último elemento pós-textual
+  if agradecimentos != none {
+    agradecimentos-artigo(agradecimentos)
   }
 }
 
