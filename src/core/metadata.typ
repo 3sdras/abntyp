@@ -44,6 +44,7 @@
 /// - area: área de concentração
 /// - orientador: orientador
 /// - coorientador: coorientador (opcional)
+/// - volume: número do volume (se houver mais de um; capa e folha de rosto)
 /// - palavras-chave: palavras-chave em português
 /// - palavras-chave-en: keywords em inglês
 #let dados(
@@ -61,6 +62,7 @@
   area: none,
   orientador: none,
   coorientador: none,
+  volume: none,
   palavras-chave: none,
   palavras-chave-en: none,
   ..args,
@@ -81,6 +83,7 @@
     "area": area,
     "orientador": orientador,
     "coorientador": coorientador,
+    "volume": volume,
     "palavras-chave": palavras-chave,
     "palavras-chave-en": palavras-chave-en,
   )
@@ -129,13 +132,13 @@
 ///
 /// - titulo: título principal
 /// - subtitulo: subtítulo (opcional)
-/// - tamanho-titulo: tamanho da fonte do título (padrão: 14pt)
-/// - tamanho-subtitulo: tamanho da fonte do subtítulo (padrão: 14pt)
+/// - tamanho-titulo: tamanho da fonte do título (padrão: 12pt, NBR 14724 5.1)
+/// - tamanho-subtitulo: tamanho da fonte do subtítulo (padrão: 12pt)
 #let _render-titulo(
   titulo,
   subtitulo: none,
-  tamanho-titulo: 14pt,
-  tamanho-subtitulo: 14pt,
+  tamanho-titulo: 12pt,
+  tamanho-subtitulo: 12pt,
 ) = {
   if titulo != none {
     if subtitulo != none {

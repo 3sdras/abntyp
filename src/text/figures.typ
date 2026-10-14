@@ -73,12 +73,12 @@
     {
       body
       if origem != none {
-        align(center)[
+        align(left)[
           #text(size: 10pt)[Fonte: #origem]
         ]
       }
       if nota != none {
-        align(center)[
+        align(left)[
           #text(size: 10pt)[Nota: #nota]
         ]
       }
@@ -170,14 +170,14 @@
 
 /// Fonte da figura (para usar avulso abaixo de um elemento)
 #let fonte(conteudo) = {
-  align(center)[
+  align(left)[
     #text(size: 10pt)[Fonte: #conteudo]
   ]
 }
 
 /// Nota da figura (para usar avulso abaixo de um elemento)
 #let nota-figura(conteudo) = {
-  align(center)[
+  align(left)[
     #text(size: 10pt)[Nota: #conteudo]
   ]
 }

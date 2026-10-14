@@ -1,77 +1,62 @@
 // Sumário conforme NBR 6027:2012
 
+#import "../core/page.typ": abre-anverso
+#import "../core/spacing.typ": abnt-leading
+
 // Show rules para formatar entradas do sumário conforme NBR 6027/6024.
 // Compartilhado entre abnt-outline() e sumario().
-#let _abnt-outline-rules(body) = {
-  // Nível 1: MAIÚSCULAS + negrito
-  show outline.entry.where(level: 1): it => {
-    v(0.5em)
-    block[
-      #link(it.element.location())[
-        #text(weight: "bold")[
-          #if it.prefix() != none [#it.prefix()#if it.element.func() == figure [:]#h(0.5em)]
-          #upper(it.body())
-        ]
+// Indicativos alinhados à esquerda; os títulos (inclusive os sem indicativo, como
+// REFERÊNCIAS) começam todos na margem do título do indicativo mais extenso (6027 5.1 e 5.2).
+// `profundidade`: só os indicativos até esse nível entram no cálculo da coluna.
+#let _abnt-outline-rules(body, profundidade: none) = context {
+  let indicativos = query(heading).filter(t => (
+    t.numbering != none and (profundidade == none or t.level <= profundidade)
+  ))
+  let largura = calc.max(0pt, ..indicativos.map(t => measure(text(weight: "bold")[
+    #numbering(t.numbering, ..counter(heading).at(t.location()))#h(0.5em)
+  ]).width))
+
+  // Entradas em espaço simples (a 6027 não pede 1,5); sumário longo não transborda
+  set par(leading: abnt-leading(1), spacing: abnt-leading(1))
+
+  show outline.entry: it => {
+    let el = it.element
+    if el.func() == figure {
+      // Parte: "Parte 1: Título", sem coluna de indicativo
+      v(0.5em)
+      block(link(el.location())[
+        #text(weight: "bold")[#it.prefix():#h(0.5em)#upper(it.body())]
         #box(width: 1fr, it.fill)
         #it.page()
-      ]
-    ]
+      ])
+    } else {
+      // Nível 1: MAIÚSCULAS + negrito; 2: MAIÚSCULAS; 3: negrito; 4: regular; 5: itálico
+      let n = it.level
+      let estilo(x) = text(
+        weight: if n in (1, 3) { "bold" } else { "regular" },
+        style: if n == 5 { "italic" } else { "normal" },
+        x,
+      )
+      if n == 1 { v(0.5em) }
+      block(link(el.location(), grid(
+        columns: (largura, 1fr),
+        estilo(it.prefix()),
+        [
+          #estilo(if n in (1, 2) { upper(it.body()) } else { it.body() })
+          #box(width: 1fr, it.fill)
+          #it.page()
+        ],
+      )))
+    }
   }
 
-  // Nível 2: MAIÚSCULAS, regular
-  show outline.entry.where(level: 2): it => {
-    block[
-      #link(it.element.location())[
-        #h(1em)
-        #if it.prefix() != none [#it.prefix()#h(0.5em)]
-        #upper(it.body())
-        #box(width: 1fr, it.fill)
-        #it.page()
-      ]
-    ]
-  }
+  body
+}
 
-  // Nível 3: Minúsculas + negrito
-  show outline.entry.where(level: 3): it => {
-    block[
-      #link(it.element.location())[
-        #h(2em)
-        #text(weight: "bold")[
-          #if it.prefix() != none [#it.prefix()#h(0.5em)]
-          #it.body()
-        ]
-        #box(width: 1fr, it.fill)
-        #it.page()
-      ]
-    ]
-  }
-
-  // Nível 4: Minúsculas, regular
-  show outline.entry.where(level: 4): it => {
-    block[
-      #link(it.element.location())[
-        #h(3em)
-        #if it.prefix() != none [#it.prefix()#h(0.5em)]
-        #it.body()
-        #box(width: 1fr, it.fill)
-        #it.page()
-      ]
-    ]
-  }
-
-  // Nível 5: Minúsculas, itálico
-  show outline.entry.where(level: 5): it => {
-    block[
-      #link(it.element.location())[
-        #h(4em)
-        #if it.prefix() != none [#it.prefix()#h(0.5em)]
-        #text(style: "italic")[#it.body()]
-        #box(width: 1fr, it.fill)
-        #it.page()
-      ]
-    ]
-  }
-
+// Legenda das listas (ilustrações, tabelas, quadros): "Figura 1 – Título ..... página"
+// (NBR 14724 5.8: número de ordem, travessão e título).
+#let _abnt-lista-rules(body) = {
+  show outline.entry: it => it.indented([#it.prefix() –], it.inner())
   body
 }
 
@@ -81,6 +66,8 @@
 /// - Entradas espelham a formatação dos headings (NBR 6027/6024)
 /// - Páginas ligadas por linha pontilhada
 #let abnt-outline() = {
+  abre-anverso()
+
   // Título
   align(center)[
     #text(weight: "bold", size: 12pt, "SUMÁRIO")
@@ -102,13 +89,15 @@
   titulo: "SUMÁRIO",
   profundidade: 3,
 ) = {
+  abre-anverso()
+
   align(center)[
     #text(weight: "bold", size: 12pt, titulo)
   ]
 
   v(1.5em)
 
-  show: _abnt-outline-rules
+  show: _abnt-outline-rules.with(profundidade: profundidade)
 
   outline(
     title: none,
@@ -121,29 +110,45 @@
 }
 
 /// Lista de ilustrações
-#let lista-ilustracoes() = {
+/// - tipo: tipo (kind) das ilustrações listadas; padrão `image` (figuras). Aceita o
+///   tipo de um `container(tipo: ...)` ou uma lista deles. A NBR 14724 4.2.1.9 pede
+///   uma lista própria para cada tipo (gráficos, fotografias, mapas…):
+///   `#lista-ilustracoes(tipo: "grafico", titulo: "LISTA DE GRÁFICOS")`
+/// - titulo: título da lista
+#let lista-ilustracoes(tipo: image, titulo: "LISTA DE ILUSTRAÇÕES") = {
+  abre-anverso()
+
   align(center)[
-    #text(weight: "bold", size: 12pt, "LISTA DE ILUSTRAÇÕES")
+    #text(weight: "bold", size: 12pt, titulo)
   ]
 
   v(1.5em)
 
+  let tipos = if type(tipo) == array { tipo } else { (tipo,) }
+  let alvo = tipos
+    .map(k => selector(figure.where(kind: if k == "imagem" { image } else if k == "tabela" { table } else { k })))
+    .reduce((a, b) => a.or(b))
+
+  show: _abnt-lista-rules
   outline(
     title: none,
-    target: figure.where(kind: image),
-      )
+    target: alvo,
+  )
 
   pagebreak()
 }
 
 /// Lista de tabelas
 #let lista-tabelas() = {
+  abre-anverso()
+
   align(center)[
     #text(weight: "bold", size: 12pt, "LISTA DE TABELAS")
   ]
 
   v(1.5em)
 
+  show: _abnt-lista-rules
   outline(
     title: none,
     target: figure.where(kind: table),
@@ -154,12 +159,15 @@
 
 /// Lista de quadros
 #let lista-quadros() = {
+  abre-anverso()
+
   align(center)[
     #text(weight: "bold", size: 12pt, "LISTA DE QUADROS")
   ]
 
   v(1.5em)
 
+  show: _abnt-lista-rules
   outline(
     title: none,
     target: figure.where(kind: "quadro"),
@@ -169,8 +177,10 @@
 }
 
 /// Lista de abreviaturas e siglas
-/// - itens: dicionário de sigla -> significado
+/// - itens: dicionário de sigla -> significado (impresso em ordem alfabética, NBR 14724 4.2.1.11)
 #let lista-siglas(itens) = {
+  abre-anverso()
+
   align(center)[
     #text(weight: "bold", size: 12pt, "LISTA DE ABREVIATURAS E SIGLAS")
   ]
@@ -179,7 +189,7 @@
 
   set par(first-line-indent: 0pt)
 
-  for (sigla, significado) in itens {
+  for (sigla, significado) in itens.pairs().sorted(key: p => lower(p.at(0))) {
     [#sigla #h(1em) #significado \ ]
   }
 
@@ -189,6 +199,8 @@
 /// Lista de símbolos
 /// - itens: dicionário de símbolo -> significado
 #let lista-simbolos(itens) = {
+  abre-anverso()
+
   align(center)[
     #text(weight: "bold", size: 12pt, "LISTA DE SÍMBOLOS")
   ]

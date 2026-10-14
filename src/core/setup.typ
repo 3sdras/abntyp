@@ -5,6 +5,20 @@
 #import "lists.typ": numeracao-enum
 #import "spacing.typ": abnt-leading, abnt-top-edge, abnt-bottom-edge
 
+// Indicativo + título; da 2ª linha em diante o título fica sob a primeira letra do
+// título (NBR 6024 4.1 j; NBR 14724 5.2.2). Sem indicativo, só o título. Parágrafo com
+// recuo deslocado (e não grid) para manter o vão vertical entre título e texto.
+#let _abnt-titulo(it, caixa-alta: false) = {
+  let corpo = if caixa-alta { upper(it.body) } else { it.body }
+  if it.numbering != none {
+    context {
+      let indicativo = counter(heading).display()
+      let largura = measure(indicativo + h(0.5em)).width
+      par(hanging-indent: largura)[#indicativo#h(0.5em)#corpo]
+    }
+  } else { corpo }
+}
+
 /// Aplica toda a configuração padrão ABNT ao documento.
 ///
 /// Esta função reúne as regras comuns a todos os templates ABNT:
@@ -27,7 +41,8 @@
 /// - enumeracao: "abnt" (padrão: alíneas a), b), c); subalíneas com travessão) ou
 ///   "latex" (1., a), i), A.)
 /// - suplemento-nivel1: texto usado em referências cruzadas para headings de nível 1
-///   (padrão: "Seção" — correto para artigos; use "Capítulo" para TCC, relatórios e livros)
+///   (padrão: "Seção" — correto para TCC e artigos (NBR 14724 4.2.2 não admite
+///   capítulos); use "Capítulo" para relatórios e livros)
 #let with-abnt-setup(
   fonte: "Times New Roman",
   headings-numeracao: "1.1",
@@ -97,65 +112,37 @@
     // Fraco: some no topo da página (14724 5.2.2). O espaço fraco absorve o espaço
     // entre parágrafos; somá-lo mantém o vão maior que o das seções secundárias.
     context v(1.5em + par.spacing, weak: true)
-    text(weight: "bold", size: 12pt)[
-      #if it.numbering != none {
-        counter(heading).display()
-        h(0.5em)
-      }
-      #upper(it.body)
-    ]
+    // Sem indicativo numérico (referências, apêndices, anexos…): centralizado (14724 5.2.3)
+    let titulo = text(weight: "bold", size: 12pt, _abnt-titulo(it, caixa-alta: true))
+    if it.numbering == none { align(center, titulo) } else { titulo }
     v(1.5em)
   }
 
   // Seção secundária (nível 2): MAIÚSCULAS, regular
   show heading.where(level: 2): it => {
     v(1.5em)
-    text(weight: "regular", size: 12pt)[
-      #if it.numbering != none {
-        counter(heading).display()
-        h(0.5em)
-      }
-      #upper(it.body)
-    ]
+    text(weight: "regular", size: 12pt, _abnt-titulo(it, caixa-alta: true))
     v(1.5em)
   }
 
   // Seção terciária (nível 3): Minúsculas, negrito
   show heading.where(level: 3): it => {
     v(1.5em)
-    text(weight: "bold", size: 12pt)[
-      #if it.numbering != none {
-        counter(heading).display()
-        h(0.5em)
-      }
-      #it.body
-    ]
+    text(weight: "bold", size: 12pt, _abnt-titulo(it, caixa-alta: false))
     v(1.5em)
   }
 
   // Seção quaternária (nível 4): Minúsculas, regular
   show heading.where(level: 4): it => {
     v(1.5em)
-    text(weight: "regular", size: 12pt)[
-      #if it.numbering != none {
-        counter(heading).display()
-        h(0.5em)
-      }
-      #it.body
-    ]
+    text(weight: "regular", size: 12pt, _abnt-titulo(it, caixa-alta: false))
     v(1.5em)
   }
 
   // Seção quinária (nível 5): Minúsculas, itálico
   show heading.where(level: 5): it => {
     v(1.5em)
-    text(weight: "regular", style: "italic", size: 12pt)[
-      #if it.numbering != none {
-        counter(heading).display()
-        h(0.5em)
-      }
-      #it.body
-    ]
+    text(weight: "regular", style: "italic", size: 12pt, _abnt-titulo(it, caixa-alta: false))
     v(1.5em)
   }
 
@@ -189,7 +176,7 @@
   }
 
   // Legenda (identificação) sempre acima de ilustrações e tabelas (NBR 14724)
-  set figure.caption(position: top)
+  set figure.caption(position: top, separator: [ – ])
 
   // Tabela maior que a página continua na seguinte (IBGE 8.3); o figure não quebra por padrão
   show figure.where(kind: table): set block(breakable: true)
@@ -205,6 +192,17 @@
   set footnote.entry(
     separator: line(length: 5cm, stroke: 0.5pt),
   )
+  // Da 2ª linha em diante a nota fica sob a primeira letra, destacando o expoente
+  // (14724 5.2.1; 10520 cap. 8)
+  show footnote.entry: it => context {
+    let numero = numbering(it.note.numbering, ..counter(footnote).at(it.note.location()))
+    grid(
+      columns: (auto, 1fr),
+      column-gutter: 0.05em,
+      link(it.note.location(), super(numero)),
+      it.note.body,
+    )
+  }
 
   body
 }

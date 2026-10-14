@@ -1,6 +1,7 @@
 // Citações conforme NBR 10520:2023
 
 #import "../references/citation.typ": _abnt-cite-supplement
+#import "../core/spacing.typ": abnt-leading
 
 /// Citação direta curta (até 3 linhas)
 /// Incorporada ao parágrafo, entre aspas duplas
@@ -52,8 +53,8 @@
       if volume != none { [, v. #volume] }
       if pagina != none { [, p. #pagina] }
       if localizacao != none { [, #localizacao] }
-      if grifo != none { [, grifo #grifo] }
       if traducao != none { [, tradução #traducao] }
+      if grifo != none { [, grifo #grifo] }
       [)]
     }
   }
@@ -97,7 +98,8 @@
   pad(left: 4cm)[
     #set text(size: 10pt)
     #set par(
-      leading: 1em * 0.65,
+      leading: abnt-leading(1),
+      spacing: abnt-leading(1),
       first-line-indent: 0pt,
       justify: true,
     )
@@ -116,8 +118,8 @@
       if volume != none { [, v. #volume] }
       if pagina != none { [, p. #pagina] }
       if localizacao != none { [, #localizacao] }
-      if grifo != none { [, grifo #grifo] }
       if traducao != none { [, tradução #traducao] }
+      if grifo != none { [, grifo #grifo] }
       [)]
     }
   ]
@@ -134,7 +136,7 @@
 
 /// Destaque/ênfase em trecho de citação (aplica itálico ao trecho).
 ///
-/// IMPORTANTE (NBR 10520:2023, 5.1): a INDICAÇÃO "grifo nosso" / "grifo do
+/// IMPORTANTE (NBR 10520:2023, 7.1.5): a INDICAÇÃO "grifo nosso" / "grifo do
 /// autor" deve aparecer ao FINAL da citação, dentro dos parênteses, após a
 /// página — ex.: (Souto, 1916, p. 46, grifo nosso). Por isso o indicador é
 /// passado via o parâmetro `grifo:` da função de citação, e estas funções

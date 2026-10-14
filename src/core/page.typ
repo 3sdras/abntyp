@@ -109,7 +109,9 @@
     } else if textuais.len() > 0 {
       textuais.first().location().position().page
     } else { none }
-    if primeira != none and atual >= primeira and atual >= inicio {
+    // O verso da folha de rosto (ficha catalográfica) não é contado nem numerado (14724 5.3)
+    let fichas = query(<abnt-ficha>).map(m => m.location().position().page)
+    if primeira != none and atual >= primeira and atual >= inicio and atual not in fichas {
       let lado = if centro { center } else if frente-verso and calc.even(atual) { left } else { right }
       align(lado, text(size: 10pt, str(counter(page).get().first())))
     }
@@ -131,6 +133,23 @@
   } else {
     counter(page).update(1)
   }
+]
+
+/// Impressão frente-verso, ligada por `normas-abnt(frente-verso: true)`.
+#let abnt-frente-verso = state("abnt-frente-verso", false)
+
+/// Abre o elemento pré-textual no anverso: em frente-verso, avança para a próxima
+/// página ímpar (14724 5.1; 6027 4.1 b), deixando em branco o verso anterior. Sem
+/// frente-verso não faz nada.
+#let abre-anverso() = context {
+  if abnt-frente-verso.get() { pagebreak(weak: true, to: "odd") }
+}
+
+/// Marca o verso da folha de rosto (ficha catalográfica): a página não entra na
+/// contagem (a seguinte continua a numeração da folha de rosto) nem recebe número.
+#let marcar-ficha() = [
+  #box(width: 0pt, height: 0pt) <abnt-ficha>
+  #counter(page).update(n => n - 1)
 ]
 
 /// Quebra de página (equivale a `pagebreak()`, com `para` em português).

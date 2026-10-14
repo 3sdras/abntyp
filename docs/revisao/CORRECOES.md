@@ -161,6 +161,89 @@ Arquivos alterados: `src/templates/thesis.typ`, `book.typ`, `poster.typ`, `resea
 ### Verificação da Etapa 1b
 - Matriz repetida depois da 1b: os 12 exemplos e o `testeCit.typ` em 0.14.1, 0.13.0 e 0.15.1, 39 de 39 sem erro, sem aviso e com as mesmas páginas da linha de base. `rotulo-ref`, `avulsas-page`, `avulsas-fmt`, `tb2-setup`, `eq` e `num1` também iguais nas três versões.
 
+## Etapa 2 — estrutura do TCC (14/10/2026)
+
+Arquivos alterados: `src/core/setup.typ`, `page.typ`, `metadata.typ`; `src/elements/title-page.typ`, `cover.typ`, `abstract.typ`, `toc.typ`; `src/templates/thesis.typ`; `src/text/figures.typ`, `quotes.typ`. Fora da lista da etapa, mas exigidos pelos achados: `setup.typ` (R1-04, R1-06, R1-13, R1-14) e `page.typ` (R1-10, R1-11), como já aconteceu na Etapa 1. `headings.typ` e `lists.typ` **não** foram tocados. Sem agentes. Testes novos em `docs/revisao/testes-2/` (`tcc-completo.typ` com `--input fv=1` para frente-verso, `aprovacao-volume.typ`, `sumarios.typ`). Nada comitado; `typst.toml` e os PDFs de `examples/` não foram tocados (os exemplos foram compilados para o scratchpad).
+
+### R1-04 · títulos sem indicativo numérico centralizados
+- **Onde:** `setup.typ:116-117`. **Antes:** `REFERÊNCIAS`, `APÊNDICE A – …`, `ANEXO A – …`, `GLOSSÁRIO` encostados na margem esquerda. **Depois:** `align(center, …)` quando `it.numbering == none` (nível 1). Vale para todos os templates que usam `with-abnt-setup`.
+- **Verificado:** `tcc-completo.typ` (imagem), `artigo`, `relatorio`, `citacao-autordata` (REFERÊNCIAS centralizada).
+- **Não alterado:** `with-abnt-headings`/`abnt-heading-setup` (`headings.typ:6-80`, cópia antiga das regras, fora dos templates) continua com os títulos à esquerda e sem recuo deslocado.
+
+### R1-13 · título de mais de uma linha sob a primeira letra
+- **Onde:** `setup.typ:8-21` (novo `_abnt-titulo`) e os 5 níveis (`:116, 124, 131, 138, 145`). **Antes:** indicativo + `h(0.5em)` + corpo corridos; 2ª linha voltava à margem. **Depois:** `par(hanging-indent: largura do indicativo + 0,5 em)`, largura medida por `measure`.
+- **Armadilha:** a primeira tentativa com `grid(columns: (auto, 1fr))` mudou o vão entre título e texto (45,7 → 39,8 pt), porque o grid é bloco e não parágrafo. Com `par(hanging-indent:)` as posições y são **idênticas** à linha de base (medido com `pdftotext -bbox-layout`: 85,31 / 131,02 / 256,12 / 319,12 pt) e a 2ª linha começa em x = 106,0 (a primeira letra do título).
+
+### R1-06 · legenda com travessão, listas com travessão
+- **Onde:** `setup.typ:179` (`set figure.caption(position: top, separator: [ – ])`); `toc.typ:58-61` (`_abnt-lista-rules`: `it.indented([#it.prefix() –], it.inner())`) aplicado em `lista-ilustracoes`, `lista-tabelas`, `lista-quadros`. **Antes:** `Figura 1: Título`; nas listas `Figura 1 Título ….. 4`. **Depois:** `Figura 1 – Título` nos dois. O mesmo efeito vale para artigo, periódico, livro, relatório e projeto (legendas).
+- **Verificado:** imagem (tcc-completo, livro e artigo no diff de texto); funciona em 0.13.0, 0.14.1 e 0.15.1.
+
+### R1-14 · notas de rodapé com a 2ª linha sob a primeira letra
+- **Onde:** `setup.typ:197-205` (`show footnote.entry`: grid de duas colunas, número sobrescrito com `link` à chamada, `column-gutter: 0.05em`). **Antes:** número recuado 1 em e 2ª linha na margem. **Depois:** número na margem (x = 85,04), texto começa em 88,9 e a 2ª linha também. As posições y e o tamanho de fonte são os mesmos da linha de base.
+- **Perda:** o número da nota no rodapé continua clicável (leva à chamada), mas não tem mais o "backlink" interno que o Typst põe na realização padrão.
+
+### R1-15 · "Fonte:" e "Nota:" alinhadas à esquerda
+- **Onde:** `figures.typ:76, 81` (`container`) e `:173, 180` (`fonte`, `nota-figura`): `align(center)` → `align(left)`. Dentro do `container` o `figure` abraça a largura da ilustração, então "Fonte:" fica na margem esquerda **da ilustração** (imagem conferida com figura estreita), como pede a 14724 5.8. Fora do `container`, `fonte()` e `nota-figura()` usam a margem do texto (como `nota-tabela`).
+
+### R1-07 · palavras-chave
+- **Onde:** `abstract.typ:~38` (`join("; ")`). **Antes:** `Palavras-chave: alfa. beta.` **Depois:** `Palavras-chave: gestação; cuidado pré-natal; Aedes aegypti; Brasil.` (e `Keywords: …; ….`). Iniciais minúsculas são do autor: o exemplo (`tcc-exemplo.typ:90-91`, "Palavra-chave 1") fica para a Etapa 6.
+- **Não alterado (outras etapas):** o resumo do artigo, do relatório, do periódico e do projeto têm código próprio e ainda separam por ponto (Etapa 4).
+
+### R1-08 · lista de siglas em ordem alfabética
+- **Onde:** `toc.typ:192` (`itens.pairs().sorted(key: p => lower(p.at(0)))`). **Antes:** `ZZZ` antes de `AAA`. **Depois:** `AAA`, `MMM`, `ZZZ`. **Limite:** sigla acentuada (`Á`) ainda cai depois do Z (limite do Typst, `DECISOES.md`; a Etapa 3 pode trocar a chave por `sort-key`). A lista de símbolos continua na ordem do texto (4.2.1.12).
+
+### R1-10 · ficha catalográfica fora da contagem
+- **Onde:** `page.typ:150-153` (`marcar-ficha`: label `<abnt-ficha>` e `counter(page).update(n => n - 1)`), `title-page.typ:113` (chamada), `page.typ:113-114` (o número não aparece na ficha com `paginacao: "todas"`). **Antes:** folha de rosto = 1, ficha = 2, Introdução = 12 no `tcc-completo`. **Depois:** Introdução = 11; com `paginacao: "todas"` a ficha não leva número e a errata/folha seguinte vem como 2 (imagem conferida).
+- **Consequência (para decidir):** em frente-verso a Introdução, que cai numa página ímpar do PDF (anverso), sai com número **par** (20 na p. 23 do PDF), porque a norma manda não contar o verso da folha de rosto e a posição do número segue a página física. Não mudei isso: seguir a 14724 5.3 ao pé da letra produz essa inversão.
+
+### R1-11 · frente-verso: pré-textuais no anverso e ficha no verso
+- **Onde:** `page.typ:139-146` (estado `abnt-frente-verso` e `abre-anverso()`: `pagebreak(weak: true, to: "odd")` só se frente-verso), `thesis.typ:73` (`normas-abnt` grava o estado) e `abre-anverso()` no início de `folha-rosto`, `folha-aprovacao`, `dedicatoria`, `agradecimentos`, `epigrafe`, `abstract-page` (resumo e abstract), `sumario`, `abnt-outline`, `lista-ilustracoes`, `lista-tabelas`, `lista-quadros`, `lista-siglas`, `lista-simbolos`. **Antes:** capa p. 1, folha de rosto p. 2 (verso), ficha p. 3 (anverso), dedicatória p. 4. **Depois (`tcc-completo --input fv=1`):** capa p. 1, verso em branco, folha de rosto p. 3, ficha p. 4 (verso), dedicatória p. 5, … todos os elementos em página ímpar; 24 → 34 páginas (as páginas a mais são versos em branco). Sem frente-verso nada muda.
+- **Não alterado:** o `livro` tem o seu próprio estado (`book.typ:12`); `pretextual()`/`textual()`/`postextual()` (obsoletas).
+
+### R1-12 · sumário: indicativos à esquerda, títulos em coluna
+- **Onde:** `toc.typ:11-56` (`_abnt-outline-rules`: `grid` com coluna do indicativo = largura do indicativo mais extenso, medida em negrito; títulos sem indicativo, como REFERÊNCIAS, começam na coluna dos títulos, como na 6027 5.2). **Antes:** `h(1em)`, `h(2em)`… por nível. **Depois:** `1`, `1.1`, `1.3.1` na margem, títulos alinhados. O estilo por nível (MAIÚSCULAS+negrito, MAIÚSCULAS, negrito, regular, itálico) foi mantido. `sumario(profundidade:)` mede só até a profundidade pedida. Cada entrada passou a ter 1 link (antes ~5 fragmentos por linha: 164 → 31 anotações na página do sumário). Entradas de `parte()` mantêm o formato "Parte 1: Título".
+- **Vale para todos os templates** que usam `sumario`/`abnt-outline` (relatório, projeto, periódico); conferidos em imagem (relatório).
+
+### Sumário do `tcc-exemplo` sem "REFERÊNCIAS" sozinha
+- **Onde:** `toc.typ:~16` (`set par(leading: abnt-leading(1), spacing: abnt-leading(1))` dentro de `_abnt-outline-rules`). **Antes:** com as entradas em 1,5 o sumário passava uma linha para a p. 9. **Depois:** entradas em espaço simples (a 6027 não pede 1,5); o sumário cabe em 1 página (última entrada a 567 pt). Efeito: `tcc-exemplo` 20 → 19 páginas e `projeto-exemplo` 21 → 20, iguais nos três binários.
+
+### R1-17 · título e natureza em 12 pt
+- **Onde:** `metadata.typ` (`_render-titulo`: 14 pt → 12 pt, só `capa` e `folha-rosto` o usam); `title-page.typ:~62` (removido `set text(size: 10pt)` da natureza). **Depois:** título, subtítulo e natureza em 12 pt, natureza em espaço simples. Ficha continua em 10 pt (dados catalográficos são exceção enumerada).
+- **Não alterado:** `nature-block` (`spacing.typ:~91`, código morto com `0.65`, Etapa 4).
+
+### `0.65` migrados (teste de aceitação da etapa)
+- `title-page.typ` (natureza e ficha), `abstract.typ` (resumo: `abnt-leading(1.5)`, R1-25 — o comentário passou a dizer 1,5), `quotes.typ` (citação longa: `abnt-leading(1)` em `leading` e `spacing`; medido 11,50 pt em 10 pt, recuo 4 cm, igual ao Word). `grep -n "0.65"` nos três arquivos: vazio.
+
+### R1-05 · "Seção" em vez de "Capítulo"
+- **Onde:** `thesis.typ:~57` (removido `suplemento-nivel1: "Capítulo"`; vale o padrão "Seção"), docstrings de `thesis.typ` e `setup.typ:43`. **Antes:** `@sec` → "Capítulo 1". **Depois:** "Seção 1" (com `S` maiúsculo, como as seções de nível 2+; o relatório sugeria minúsculo, mas o pacote usa "Seção" em todos os níveis).
+- **Não feito:** renomear `quebra-capitulo` (cosmético; exigiria apelido e mais um parâmetro) e o texto do exemplo ("cinco capítulos", `tcc-exemplo.typ:388`): Etapa 6.
+
+### R1-16 · volume, folha de aprovação, errata
+- **Volume:** novo parâmetro `volume` em `capa()` e `folha-rosto()` e chave `volume` em `dados()`; sai `v. N` depois do título (capa e folha de rosto). `cover.typ:21,68`, `title-page.typ:19,54`, `metadata.typ:47,65,86`.
+- **Folha de aprovação:** nova `folha-aprovacao(…, data:, banca:)` (`title-page.typ:141`): autor, título, natureza (12 pt, caixa de 8 cm), instituição, área, "Aprovada em" (data dada ou linha em branco para preencher) e "BANCA EXAMINADORA" com uma linha de assinatura por membro (`(nome:, titulacao:, instituicao:)` ou texto). Os dados vêm de `dados()`.
+- **Errata:** não criei função. `errata(referencia:, itens:)` já existe em `technical-report.typ:347` e `lib.typ` a exporta; ela funciona num TCC (testada em `aprovacao-volume.typ`). Falta só documentá-la para o TCC (Etapa 6). Uma segunda `errata` em `thesis.typ` sobrescreveria a do relatório em silêncio.
+
+### R1-20 · lista por tipo de ilustração
+- **Onde:** `toc.typ:118-139`: `lista-ilustracoes(tipo: image, titulo: "LISTA DE ILUSTRAÇÕES")`. `tipo` aceita o `tipo` de um `container` ou uma lista deles (`"imagem"`, `"tabela"` e qualquer kind). **Antes:** `container(tipo: "grafico")` nunca entrava em lista. **Depois:** `#lista-ilustracoes(tipo: "grafico", titulo: "LISTA DE GRÁFICOS")` lista "Gráfico 1 – …" (imagem conferida). O padrão não mudou.
+- **Não corrigido:** `container(tipo: "grafico")` sem `suplemento:` ainda rotula "Figura" (`figures.typ:62-66`).
+
+### R1-22 · ordem tradução/grifo
+- **Onde:** `quotes.typ:55-56` e `:119-120` (caminho sem `.bib`): `tradução …, grifo …` (a ordem do exemplo da 10520 5.2); comentário "5.1" → "7.1.5". **Não corrigido:** o caminho com `.bib` (`_abnt-cite-supplement`, `citation.typ:36-62`) é da Etapa 3 e ainda imprime `grifo …, tradução …`; até lá os dois caminhos divergem.
+
+### Não corrigido nesta etapa
+- **R1-09** (glossário sem acento/caixa): `headings.typ:124`, é da Etapa 3 (a própria Parte 1 manda resolver na Parte 3).
+- **R1-21** (extensão do resumo): o Typst não emite aviso sem abortar a compilação (só `panic`), então não há como avisar sem quebrar; só a docstring cita 150–500 palavras.
+- **R1-23 a R1-28** (P3): não eram da etapa. `lists.typ` não foi tocado.
+- **R1-02** (`pretextual()`/`textual()`/`postextual()`): continuam como estão (obsoletas).
+- **Texto e comentários do `tcc-exemplo.typ`** (palavras-chave com maiúscula, "capítulos", `#textual()`): Etapa 6.
+
+### Verificação da etapa
+- Os 12 `.typ` de `examples/` e o `testeCit.typ` compilam em **0.14.1, 0.13.0 e 0.15.1**, 39 de 39, sem erro e **sem aviso**, com as mesmas páginas nas três versões. Contra a linha de base: `tcc-exemplo` 20 → 19, `projeto-exemplo` 21 → 20 (sumário em espaço simples); os demais iguais.
+- Os três testes de `testes-2/` compilam sem erro nem aviso nos 3 binários (`tcc-completo` 20 páginas e 34 em frente-verso; `aprovacao-volume` 9; `sumarios` 7).
+- Aceitação: o `tcc-exemplo` foi conferido em imagem (capa, folha de rosto, dedicatória, agradecimentos, epígrafe, resumo, abstract, sumário), títulos centralizados, legenda com travessão, palavras-chave com `;`, siglas em ordem, ficha fora da contagem, frente-verso, sumário em 1 página; sem `0.65` nos três arquivos.
+- Scripts de apoio no scratchpad (fora do pacote): `matrix.sh`, `sheet.sh`, `ys.sh`.
+
 ## Quebras de API para a nota da 0.7.0 (resumo; detalhes nos itens indicados)
 1. **`#sub[…]` → `#sublinhado[…]`** (R8b-06, Etapa 0): sem a troca o texto sai subscrito, sem erro.
 2. **Funções `abnt-*-setup` e de numeração** (R1-02, Etapa 1b): `#abnt-page-setup(...)` e similares deixam de ser chamadas sem efeito e passam a dar erro de compilação; usar `#show: abnt-page-setup.with(...)`.
+3. **Saída visível da Etapa 2** (sem quebra de API, mas a nota da versão deve citar): títulos sem número centralizados; legendas e listas com "Figura 1 – Título"; 2ª linha de título e de nota sob a primeira letra; sumário com indicativos na margem, títulos em coluna e entradas em espaço simples; palavras-chave separadas por `;`; título da capa e natureza em 12 pt; `@rótulo` do TCC passa a dizer "Seção N"; ficha fora da contagem; frente-verso com pré-textuais no anverso (mais páginas em branco); siglas em ordem; novas `folha-aprovacao`, `volume:` e `lista-ilustracoes(tipo:)`.

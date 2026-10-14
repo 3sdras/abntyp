@@ -8,6 +8,7 @@
 /// - autor: nome do autor
 /// - titulo: título do trabalho
 /// - subtitulo: subtítulo (opcional)
+/// - volume: número do volume, se houver mais de um (14724 4.1.1 e)
 /// - local: cidade
 /// - ano: ano de depósito
 #let capa(
@@ -17,6 +18,7 @@
   autor: none,
   titulo: none,
   subtitulo: none,
+  volume: none,
   local: none,
   ano: none,
 ) = {
@@ -29,6 +31,7 @@
     let autor = metadata._resolve(autor, "autor")
     let titulo = metadata._resolve(titulo, "titulo")
     let subtitulo = metadata._resolve(subtitulo, "subtitulo")
+    let volume = metadata._resolve(volume, "volume")
     let local = metadata._resolve(local, "local")
     let ano = metadata._resolve(ano, "ano")
 
@@ -60,6 +63,13 @@
 
     // Título (maiúsculas, negrito) + subtítulo
     metadata._render-titulo(titulo, subtitulo: subtitulo)
+
+    // Volume (se houver)
+    if volume != none {
+      linebreak()
+      linebreak()
+      text(size: 12pt)[v. #volume]
+    }
 
     v(1fr)
 

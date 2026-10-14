@@ -19,8 +19,10 @@
 ///
 /// Parâmetros:
 /// - fonte: fonte a usar ("Times New Roman" ou "Arial")
-/// - quebra-capitulo: se true, cada seção de nível 1 (capítulo) começa em nova
+/// - quebra-capitulo: se true, cada seção primária (nível 1) começa em nova
 ///   página (padrão: true, conforme NBR 14724). Use false para fluxo contínuo.
+///   (A NBR 14724 4.2.2 não admite "capítulos": `@rótulo` de seção primária
+///   produz "Seção N".)
 /// - paginacao: numeração de páginas (padrão: "auto")
 ///   - "auto": NBR 14724 — a contagem começa na folha de rosto (a capa não
 ///     conta) e o número, em arábico, canto superior direito a 2 cm da borda,
@@ -30,8 +32,10 @@
 /// - frente-verso: impressão frente-verso (padrão: false). Se true: margens
 ///   espelhadas (anverso 3/2 cm esq./dir.; verso 2/3 cm), número no canto
 ///   superior direito em páginas ímpares e superior esquerdo em páginas pares,
-///   e seções primárias iniciando em página ímpar. A paridade é a da página
-///   do PDF (a que a impressora usa): página 1 = capa = anverso.
+///   e seções primárias e elementos pré-textuais (folha de rosto, dedicatória,
+///   resumo, sumário…) iniciando em página ímpar; a ficha catalográfica fica no
+///   verso da folha de rosto e não entra na contagem (14724 5.1 e 5.3). A
+///   paridade é a da página do PDF (a que a impressora usa): página 1 = capa = anverso.
 /// - enumeracao: "abnt" (padrão, NBR 6024: alíneas a), b), c); subalíneas com
 ///   travessão) ou "latex" (1., a), i), A.)
 /// - cor-links: cor dos links externos (padrão: none = texto preto sublinhado)
@@ -54,7 +58,6 @@
     level-1-pagebreak-impar: frente-verso,
     cor-links: cor-links,
     enumeracao: enumeracao,
-    suplemento-nivel1: "Capítulo",
   )
 
   // Frente-verso: margens espelhadas (interna 3 cm, externa 2 cm)
@@ -65,6 +68,9 @@
 
   // Nota: metadados do PDF (title, author) são definidos por dados().
   // Se o usuário não usar dados(), o PDF ficará sem metadados.
+
+  // Frente-verso: os elementos pré-textuais consultam este estado (abre-anverso)
+  abnt-frente-verso.update(frente-verso)
 
   // Conteúdo
   body
@@ -101,6 +107,7 @@
 
 /// Página de dedicatória
 #let dedicatoria(conteudo) = {
+  abre-anverso()
   set page(numbering: none)
   v(1fr)
   align(right)[
@@ -114,6 +121,7 @@
 
 /// Página de agradecimentos
 #let agradecimentos(conteudo) = {
+  abre-anverso()
   align(center)[
     #text(weight: "bold", size: 12pt, "AGRADECIMENTOS")
   ]
@@ -124,6 +132,7 @@
 
 /// Epígrafe
 #let epigrafe(citacao, autor) = {
+  abre-anverso()
   set page(numbering: none)
   v(1fr)
   align(right)[
