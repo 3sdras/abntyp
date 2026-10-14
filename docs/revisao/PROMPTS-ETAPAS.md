@@ -52,3 +52,7 @@ Ordem: 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7. As etapas 3 e 4 só usam age
 ## Backlog (decidir depois da Etapa 5)
 - Tabela longa: legendas "continua / continuação / conclusão" por página e traço do rodapé só na última (IBGE 8.3).
 - Subdivisões de apêndice/anexo como "A.1" (exige contador próprio).
+
+## Itens a levar para as Etapas 6 e 7, acumulados na Etapa 3 (14/10/2026)
+- **Etapa 6:** a lista completa está em CORRECOES.md ("Pendências e observações da Etapa 3"). Os mais importantes: `tcc-exemplo.typ` ainda imprime as referências com recuo francês (lista escrita à mão); o manual e a introdução ainda mostram `citar-num-apud` com chave, `(1; 2)`, `@incollection`/`institution`, ISBN inválidos e `format-isbn(…, publication-len: 4)` (agora erro); README com `hanging-indent`.
+- **Etapa 7 (nota da versão):** acrescentar as quebras 8 a 12 de CORRECOES.md ("Quebras de API e mudanças de uso da Etapa 3"), a saída nova da lista de referências (entrelinha simples, linha em branco entre entradas, sem recuo, sem justificar, pt-BR), a ordenação NBR 6033 no glossário/siglas/índice, e os limites do Typst: desambiguação por iniciais só no 0.13 e 0.14; `type` de tese descartado no 0.13.
