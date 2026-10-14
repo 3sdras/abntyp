@@ -4,14 +4,14 @@
 // SOBRE O SISTEMA NUMERICO
 // ============================================================================
 //
-// A NBR 10520:2023 (secao 4.2) permite dois sistemas de chamada para citacoes:
+// A NBR 10520:2023 (secao 6) permite dois sistemas de chamada para citacoes:
 // - Sistema autor-data (padrao no Brasil)
 // - Sistema numerico (permitido pela norma)
 //
 // Este modulo implementa o sistema numerico, inspirado no abntex2-num.bst
 // do pacote abntex2 para LaTeX.
 //
-// IMPORTANTE (NBR 10520:2023, secao 4.2):
+// IMPORTANTE (NBR 10520:2023, secao 6.2.2):
 // "O sistema numerico NAO pode ser usado quando houver notas"
 // Isso significa que se voce usar o sistema numerico, NAO pode ter notas
 // de rodape no documento, pois haveria conflito na numeracao.
@@ -39,10 +39,26 @@
 //
 // ============================================================================
 
+#import "../core/spacing.typ": abnt-leading
+
 // Estado global para o sistema numerico
 // Armazena o mapeamento de chaves de citacao para numeros
 // O numero de cada chave e o seu tamanho + 1 no momento do primeiro registro
 #let _numeric-citations = state("abnt-numeric-citations", (:))
+
+// Configuracao do documento (citacao-num-config): estilo e colchetes padrao,
+// lidos por todas as funcoes citar-num-* cujo parametro e `auto`.
+#let _numeric-config = state("abnt-numeric-config", (estilo: "parentheses", colchetes: "()"))
+
+// Resolve estilo/colchetes: valor passado na chamada, ou o do documento se `auto`.
+// Use dentro de `context`.
+#let _numeric-cfg(estilo, colchetes) = {
+  let cfg = _numeric-config.get()
+  (
+    if estilo == auto { cfg.estilo } else { estilo },
+    if colchetes == auto { cfg.colchetes } else { colchetes },
+  )
+}
 
 // Registra chaves ainda nao citadas, em ordem. O update e uma funcao do
 // proprio estado (nao depende de leitura em context); do contrario cada
@@ -61,8 +77,13 @@
 /// Configura o documento para usar o sistema numerico de citacoes
 ///
 /// ATENCAO: O sistema numerico NAO pode ser usado com notas de rodape
-/// (NBR 10520:2023, secao 4.2). Esta funcao desabilita notas de rodape
-/// para evitar conflitos.
+/// (NBR 10520:2023, secao 6.2.2: "O sistema numerico nao pode ser utilizado
+/// quando houver notas"). O pacote NAO impede nem avisa se houver `#footnote`
+/// no documento: a proibicao e responsabilidade de quem escreve.
+///
+/// Grava o estilo e os colchetes do documento: todas as funcoes `citar-num-*`,
+/// `citacao-num-curta` e `citacao-num-longa` passam a usa-los, a menos que a
+/// chamada traga o proprio `estilo`/`colchetes`. Tambem reinicia a numeracao.
 ///
 /// Parametros:
 /// - estilo: estilo de apresentacao ("parentheses" ou "superscript")
@@ -83,14 +104,8 @@
   colchetes: "()",
   body,
 ) = {
-  // Aviso importante sobre notas de rodape
-  // A NBR 10520:2023 proibe o uso simultaneo de sistema numerico e notas
-
-  // Armazenar configuracao no estado
-  let config = state("abnt-numeric-config", (
-    estilo: estilo,
-    colchetes: colchetes,
-  ))
+  // Armazenar configuracao no estado global lido por citar-num e demais
+  _numeric-config.update((estilo: estilo, colchetes: colchetes))
 
   // Resetar contadores no inicio do documento
   _numeric-citations.update((:))
@@ -125,11 +140,12 @@
   chave,
   pagina: none,
   volume: none,
-  estilo: "parentheses",
-  colchetes: "()",
+  estilo: auto,
+  colchetes: auto,
 ) = {
   _numeric-register(chave)
   context {
+    let (estilo, colchetes) = _numeric-cfg(estilo, colchetes)
     let num = _numeric-citations.get().at(chave)
 
     // Formatar localizacao (pagina, volume)
@@ -174,8 +190,8 @@
   chave,
   pagina: none,
   volume: none,
-  estilo: "parentheses",
-  colchetes: "()",
+  estilo: auto,
+  colchetes: auto,
 ) = {
   citar-num(chave, pagina: pagina, volume: volume, estilo: estilo, colchetes: colchetes)
 }
@@ -189,14 +205,15 @@
 /// Varios autores confirmam #citar-num-multiplos(("silva2023", "santos2022", "costa2021")).
 /// ```
 ///
-/// Saida: (1; 2; 3) ou ¹ ² ³
+/// Saida: (1, 2, 3) (NBR 10520:2023, 6.2.3: "(5, 7)") ou ¹, ², ³
 #let citar-num-multiplos(
   chaves,
-  estilo: "parentheses",
-  colchetes: "()",
+  estilo: auto,
+  colchetes: auto,
 ) = {
   _numeric-register(..chaves)
   context {
+    let (estilo, colchetes) = _numeric-cfg(estilo, colchetes)
     let citations = _numeric-citations.get()
     let nums = chaves.map(chave => citations.at(chave))
 
@@ -208,7 +225,7 @@
       } else {
         ("(", ")")
       }
-      [#open#nums.map(str).join("; ")#close]
+      [#open#nums.map(str).join(", ")#close]
     }
   }
 }
@@ -218,46 +235,48 @@
 /// Para citar uma fonte que voce nao teve acesso direto,
 /// citada em outra obra que voce consultou.
 ///
-/// NBR 10520:2023: Na lista de referencias, inclua SOMENTE a fonte consultada.
+/// NBR 10520:2023, 7.3: na lista de referencias entra SOMENTE a fonte consultada.
+/// Por isso so a fonte consultada e numerada e registrada; a original aparece
+/// como TEXTO, exatamente como voce a escrever em `chave-original`.
 ///
 /// Parametros:
-/// - chave-original: chave da fonte original (nao acessada)
+/// - chave-original: texto da fonte original (nao acessada), ex.: "Freire, 1994"
 /// - pagina-original: pagina na fonte original (opcional)
-/// - chave-consultada: chave da fonte consultada
+/// - chave-consultada: chave da fonte consultada (numerada, vai para a lista)
 /// - pagina-consultada: pagina na fonte consultada (opcional)
 ///
 /// Exemplo:
 /// ```typst
-/// Segundo a teoria #citar-num-apud("freire1994", pagina-original: "13", "streck2017", pagina-consultada: "25").
+/// Segundo a teoria #citar-num-apud("Freire, 1994", "streck2017", pagina-original: "13", pagina-consultada: "25").
 /// ```
 ///
-/// Saida: (1 apud 2, p. 25)
+/// Saida: (Freire, 1994, p. 13 apud 1, p. 25)
 #let citar-num-apud(
   chave-original,
   chave-consultada,
   pagina-original: none,
   pagina-consultada: none,
-  estilo: "parentheses",
-  colchetes: "()",
+  estilo: auto,
+  colchetes: auto,
 ) = {
-  _numeric-register(chave-original, chave-consultada)
+  _numeric-register(chave-consultada)
   context {
+    let (estilo, colchetes) = _numeric-cfg(estilo, colchetes)
     let citations = _numeric-citations.get()
-    let orig-num = citations.at(chave-original)
     let cons-num = citations.at(chave-consultada)
 
     let orig-loc = if pagina-original != none { [, p. #pagina-original] } else { [] }
     let cons-loc = if pagina-consultada != none { [, p. #pagina-consultada] } else { [] }
 
     if estilo == "superscript" {
-      super[#orig-num#orig-loc apud #cons-num#cons-loc]
+      super[#chave-original#orig-loc apud #cons-num#cons-loc]
     } else {
       let (open, close) = if colchetes == "[]" {
         ("[", "]")
       } else {
         ("(", ")")
       }
-      [#open#orig-num#orig-loc apud #cons-num#cons-loc#close]
+      [#open#chave-original#orig-loc apud #cons-num#cons-loc#close]
     }
   }
 }
@@ -281,8 +300,8 @@
 #let citacao-num-curta(
   chave,
   pagina: none,
-  estilo: "parentheses",
-  colchetes: "()",
+  estilo: auto,
+  colchetes: auto,
   body,
 ) = {
   ["#body" #citar-num(chave, pagina: pagina, estilo: estilo, colchetes: colchetes).]
@@ -305,13 +324,13 @@
 #let citacao-num-longa(
   chave,
   pagina: none,
-  estilo: "parentheses",
-  colchetes: "()",
+  estilo: auto,
+  colchetes: auto,
   body,
 ) = {
   set par(
     first-line-indent: 0pt,
-    leading: 1em, // espacamento simples
+    leading: abnt-leading(1), // espacamento simples
   )
   set text(size: 10pt) // fonte menor
 
@@ -357,9 +376,9 @@
 
   // Configuracao de paragrafo para referencias
   set par(
-    hanging-indent: 0pt, // sem recuo frances no sistema numerico
+    hanging-indent: 0pt,
     first-line-indent: 0pt,
-    leading: 1em,
+    leading: abnt-leading(1), // espacamento simples
   )
 
   context {
@@ -419,7 +438,7 @@
 /// Use no inicio do documento quando adotar o sistema numerico.
 #let aviso-sistema-numerico() = {
   text(size: 10pt, fill: gray, style: "italic")[
-    Este documento utiliza o sistema numérico de citações (NBR 10520:2023, seção 4.2).
+    Este documento utiliza o sistema numérico de citações (NBR 10520:2023, seção 6.2.2).
     Conforme a norma, o sistema numérico não pode ser usado simultaneamente com
     notas de rodapé.
   ]

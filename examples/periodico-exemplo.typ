@@ -22,7 +22,7 @@
 #show: periodical.with(
   titulo: "Revista Brasileira de Tecnologia e Inovação",
   subtitulo: "Brazilian Journal of Technology and Innovation",
-  issn: "2965-0000",
+  issn: "2965-0003",
   volume: 8,
   numero: 2,
   ano: 2026,
@@ -42,7 +42,7 @@
 #periodical-cover(
   titulo: "Revista Brasileira de Tecnologia e Inovação",
   subtitulo: "Brazilian Journal of Technology and Innovation",
-  issn: "2965-0000",
+  issn: "2965-0003",
   volume: 8,
   numero: 2,
   ano: 2026,
@@ -53,7 +53,7 @@
 // Folha de rosto - anverso
 #periodical-title-page(
   titulo: "Revista Brasileira de Tecnologia e Inovação",
-  issn: "2965-0000",
+  issn: "2965-0003",
   volume: 8,
   numero: 2,
   paginas: "1-180",
@@ -112,7 +112,7 @@
     Revista Brasileira de Tecnologia e Inovação / Universidade Federal de Exemplo. -- v. 1, n. 1 (2019)- . -- Cidade: Editora Universitária, 2019-
 
     #h(1em) Quadrimestral
-    #h(1em) ISSN 2965-0000
+    #h(1em) ISSN 2965-0003
 
     #h(1em) 1. Tecnologia - Periódicos. 2. Inovação - Periódicos.
     I. Universidade Federal de Exemplo.

@@ -1,7 +1,7 @@
 // Sistema de citacoes e referencias conforme NBR 6023:2018 e NBR 10520:2023
 //
 // ============================================================================
-// SISTEMAS DE CHAMADA (NBR 10520:2023, secao 4)
+// SISTEMAS DE CHAMADA (NBR 10520:2023, secao 6)
 // ============================================================================
 //
 // A NBR 10520:2023 permite dois sistemas de chamada para citacoes:
@@ -14,11 +14,13 @@
 // 2. SISTEMA NUMERICO (ver numeric.typ)
 //    - Formato: (1) ou (1, p. X) ou sobrescrito
 //    - Permitido pela norma, inspirado no abntex2-num.bst
-//    - NAO pode ser usado com notas de rodape
+//    - NAO pode ser usado com notas de rodape (NBR 10520:2023, 6.2.2)
 //
 // Escolha UM sistema e use consistentemente em todo o trabalho.
 //
 // ============================================================================
+
+#import "../core/spacing.typ": abnt-leading, abnt-top-edge, abnt-bottom-edge
 
 // Este modulo fornece funcoes auxiliares para o sistema AUTOR-DATA
 // Para referências completas, usar arquivo .bib com estilo CSL ABNT
@@ -35,7 +37,7 @@
 // (ex.: "Silva", "Brasil", "IBGE", "Organização Mundial da Saúde").
 
 // Sufixo de localização da fonte: , v. X, p. Y, <localização livre>
-// (NBR 10520:2023, 5.1 — volume/tomo antes da página; fontes não paginadas)
+// (NBR 10520:2023, 7.1.3 — volume/tomo antes da página; 7.1.4 — fontes não paginadas)
 #let _abnt-localizacao(volume: none, pagina: none, localizacao: none) = {
   if volume != none { [, v. #volume] }
   if pagina != none { [, p. #pagina] }
@@ -43,10 +45,11 @@
 }
 
 // Sufixo de expressão final da citação: , grifo nosso / , tradução nossa
-// (NBR 10520:2023, 5.1 — grifo/tradução indicados ao FINAL, dentro do parêntese)
+// (NBR 10520:2023, 7.1.5 e 7.1.6 — tradução e grifo indicados ao FINAL, dentro do
+// parêntese, nesta ordem: ..., tradução nossa, grifo nosso)
 #let _abnt-expressao(grifo: none, traducao: none) = {
-  if grifo != none { [, grifo #grifo] }
   if traducao != none { [, tradução #traducao] }
+  if grifo != none { [, grifo #grifo] }
 }
 
 // Mesmo conteúdo de _abnt-localizacao + _abnt-expressao, mas sem vírgula
@@ -57,8 +60,8 @@
   if volume != none { parts.push([v. #volume]) }
   if pagina != none { parts.push([p. #pagina]) }
   if localizacao != none { parts.push([#localizacao]) }
-  if grifo != none { parts.push([grifo #grifo]) }
   if traducao != none { parts.push([tradução #traducao]) }
+  if grifo != none { parts.push([grifo #grifo]) }
   if parts.len() == 0 { none } else { parts.join([, ]) }
 }
 
@@ -96,6 +99,18 @@
   }
 }
 
+// Autor na sentença (NBR 10520:2023, 6.1.4): o motor do Typst junta os nomes com
+// ";" (Lima; Serrano), que vale entre parênteses; na frase a norma pede
+// "Lima e Serrano" e "Cruz, Correa e Costa". Troca os ";" só dentro da citação.
+#let _abnt-autores-na-frase(corpo) = {
+  show regex("[^;()]+(?:; [^;()]+)+"): it => {
+    let t = it.text
+    let nomes = t.split(";").map(n => n.trim())
+    nomes.slice(0, -1).join(", ") + " e " + nomes.last() + if t.ends-with(" ") { " " } else { "" }
+  }
+  corpo
+}
+
 /// Citação com autor na sentença — "Segundo Silva (2023, p. 45)..."
 /// Página/volume são opcionais (NBR 10520:2023: "Autor (ano, p. X)")
 /// `autor` aceita `<chave>` de entrada `.bib` (ver `citar`); nesse caso
@@ -105,14 +120,14 @@
   if autor == none and pos.len() >= 1 { autor = pos.at(0) }
   if ano == none and pos.len() >= 2 { ano = pos.at(1) }
   if type(autor) == label {
-    cite(autor, form: "prose", supplement: _abnt-cite-supplement(volume: volume, pagina: pagina))
+    _abnt-autores-na-frase(cite(autor, form: "prose", supplement: _abnt-cite-supplement(volume: volume, pagina: pagina)))
   } else {
     [#autor (#ano#_abnt-localizacao(volume: volume, pagina: pagina))]
   }
 }
 
 /// Citação indireta (paráfrase) — (Silva, 2023)
-/// Página/localização é opcional na citação indireta (NBR 10520:2023, 5.2)
+/// Página/localização é opcional na citação indireta (NBR 10520:2023, 7.2)
 /// `autor` aceita `<chave>` de entrada `.bib` (ver `citar`).
 #let citar-indireto(autor: none, ano: none, pagina: none, ..args) = {
   let pos = args.pos()
@@ -160,13 +175,31 @@
 }
 
 /// Várias OBRAS citadas simultaneamente (autores/anos distintos)
-/// Separadas por ponto e vírgula, em ordem alfabética (NBR 10520:2023, 4.1)
-/// — (Fonseca, 1997; Paiva, 1997; Silva, 1997)
+/// Separadas por ponto e vírgula, em ordem alfabética de autor (NBR 10520:2023,
+/// 6.1.8; a ordem de digitação não importa). Obras do mesmo autor ficam juntas,
+/// em ordem de ano, com os anos separados por vírgula (6.1.7) —
+/// (Dreyfuss, 1989, 1991, 1995; Fonseca, 1997; Paiva, 1997)
 /// - obras: lista de pares (autor, ano) ou trios (autor, ano, pagina)
+/// A ordenação compara o texto: nomes que começam por letra acentuada vão para
+/// depois do Z (limite do Typst).
 #let citar-varios(obras) = {
-  let parts = obras.map(o => {
-    if o.len() >= 3 and o.at(2) != none [#o.at(0), #o.at(1), p. #o.at(2)]
-    else [#o.at(0), #o.at(1)]
+  let chave(x) = if type(x) == str { lower(x) } else if type(x) == content and x.has("text") { lower(x.text) } else { repr(x) }
+  let ord = obras.sorted(key: o => (chave(o.at(0)), chave(o.at(1))))
+  let grupos = ()
+  for o in ord {
+    let n = grupos.len()
+    if n > 0 and grupos.at(n - 1).autor == o.at(0) {
+      grupos.at(n - 1).obras.push(o)
+    } else {
+      grupos.push((autor: o.at(0), obras: (o,)))
+    }
+  }
+  let parts = grupos.map(g => {
+    g.autor
+    for o in g.obras {
+      [, #o.at(1)]
+      if o.len() >= 3 and o.at(2) != none [, p. #o.at(2)]
+    }
   })
   [(#parts.join("; "))]
 }
@@ -192,7 +225,7 @@
 
 /// Citação de obra sem autoria (entrada pelo título)
 /// Informe a 1ª palavra do título seguida de [...] quando houver mais palavras
-/// (NBR 10520:2023, 4.1) — ex.: citar-titulo([Anteprojeto [...]], 1987)
+/// (NBR 10520:2023, 6.1.1.4) — ex.: citar-titulo([Anteprojeto [...]], 1987)
 /// `titulo` aceita `<chave>` de entrada `.bib` (ver `citar`).
 #let citar-titulo(titulo: none, ano: none, pagina: none, ..args) = {
   let pos = args.pos()
@@ -223,10 +256,12 @@
 ///   #pag(<silva2023>)      ->  Silva (2023)
 /// - chave: label da entrada, ex.: <silva2023>
 /// - pagina (posicional, opcional): número ou intervalo de página
-/// - autor (nomeado, opcional): sobrenomes na grafia da sentença. Use para 2–3
-///   autores, pois o motor do Typst só sabe juntar nomes com ";" — na sentença a
-///   NBR 10520:2023 pede "e" (Lima; Serrano entre parênteses, mas Lima e Serrano
-///   na frase). O ano continua vindo do `.bib`.
+/// - autor (nomeado, opcional): sobrenomes na grafia da sentença. Já não é
+///   preciso para 2–3 autores: `pag` troca sozinha o ";" do motor do Typst pelo
+///   "e" da NBR 10520:2023 (Lima; Serrano entre parênteses, mas Lima e Serrano
+///   na frase; Cruz, Correa e Costa para três). Use `autor:` só para outra grafia.
+///   O ano continua vindo do `.bib`. Atenção: `#cite(<chave>, form: "prose")` e
+///   `@chave` nativos NÃO fazem essa troca; use `pag(<chave>)`.
 ///   #pag(<lima2024>, autor: "Lima e Serrano")      -> Lima e Serrano (2024)
 ///   #pag(<lima2024>, 45, autor: "Lima e Serrano")  -> Lima e Serrano (2024, p. 45)
 #let pag(chave, autor: none, ..args) = {
@@ -234,14 +269,14 @@
   if autor != none {
     [#autor (#cite(chave, form: "year")#if pagina != none [, p. #pagina])]
   } else {
-    cite(chave, form: "prose", supplement: if pagina != none [p. #pagina])
+    _abnt-autores-na-frase(cite(chave, form: "prose", supplement: if pagina != none [p. #pagina]))
   }
 }
 
 /// Citação de citação (apud) integrada ao .bib.
 /// A fonte CONSULTADA é uma chave `.bib` (entra na lista de referências e
 /// fornece autor/ano automaticamente); a fonte ORIGINAL, não acessada, é
-/// informada como texto, pois NÃO entra na lista (NBR 10520:2023, 5.3).
+/// informada como texto, pois NÃO entra na lista (NBR 10520:2023, 7.3).
 ///   #apud("Freire", 1994, <oliveira2021>, 25)
 ///     ->  (Freire, 1994 apud Oliveira; Costa, 2021, p. 25)
 /// - autor-original, ano-original: dados da fonte não acessada (texto)
@@ -253,6 +288,102 @@
   [(#autor-original, #ano-original#if pagina-original != none [, p. #pagina-original] apud #cite(chave-consultada, form: "author"), #cite(chave-consultada, form: "year")#if pagina != none [, p. #pagina])]
 }
 
+// ============================================================================
+// NOTAS DE REFERÊNCIA ABREVIADAS (NBR 10520:2023, 8.1.2)
+// ============================================================================
+// Para notas de rodapé do sistema autor-data (NÃO use com o sistema numérico:
+// 6.2.2). A primeira citação da fonte leva a referência completa em nota
+// (8.1.1); as seguintes podem ser abreviadas com as funções abaixo, que
+// devolvem o texto da nota já terminado em ponto:
+//   #footnote[#citar-ibid(pagina: 52)]            -> Ibid., p. 52.
+//   #footnote[#citar-id(2006, pagina: 12)]        -> Id., 2006, p. 12.
+//   #footnote[#citar-opcit("Minayo", pagina: 23)] -> MINAYO, op. cit., p. 23.
+//   #footnote[#citar-loccit("Shakespeare")]       -> SHAKESPEARE, loc. cit.
+//   #footnote[#citar-passim("Bechara", 2009)]     -> BECHARA, 2009, passim.
+//   #footnote[#citar-cf("Caldeira", 1992)]        -> Cf. CALDEIRA, 1992.
+//   #footnote[#citar-etseq("Faria", 1994, 17)]    -> FARIA, 1994, p. 17 et seq.
+//   #footnote[#citar-ref("Faria", 8, pagina: 15)] -> FARIA, ref. 8, p. 15.
+// O autor sai em maiúsculas (8.1.2); `pagina` vira "p. X" e `localizacao` entra
+// como foi escrita (cap. V, art. 49). Anos aceitam número ou texto ([202-]).
+//
+// ATENÇÃO — mesma página: a norma só permite `Id.`, `Ibid.` e `op. cit.` na MESMA
+// página ou folha da citação a que se referem, e `op. cit.` não pode ser usada
+// quando houver duas obras do mesmo autor na página (8.1.2.2, a, b, c). O pacote
+// NÃO verifica isto: as notas completas são escritas à mão e ele não sabe em que
+// página caiu a nota anterior. Confira no PDF e, se a nota anterior ficou em outra
+// página, repita a chamada abreviada (`MINAYO, 2021, p. 54.`) em vez de usar a
+// expressão latina.
+
+// Monta a nota: partes separadas por vírgula e ponto final, exceto quando a
+// última parte já termina em ponto (Ibid., loc. cit., et seq.)
+#let _abnt-nota-abrev(partes, termina-em-ponto: false, prefixo: none) = {
+  if prefixo != none { prefixo }
+  partes.join([, ])
+  if not termina-em-ponto [.]
+}
+
+// ", p. X" / ", cap. V": localizador opcional da nota abreviada
+#let _abnt-nota-onde(pagina, localizacao) = {
+  let r = ()
+  if pagina != none { r.push([p. #pagina]) }
+  if localizacao != none { r.push([#localizacao]) }
+  r
+}
+
+/// Idem (NBR 10520:2023, 8.1.2.2 a): mesma autoria, documento diferente.
+/// Só vale na mesma página da citação a que se refere (o pacote não verifica).
+///   #citar-id(2006, pagina: 12)  ->  Id., 2006, p. 12.
+#let citar-id(ano, pagina: none, localizacao: none) = {
+  _abnt-nota-abrev(([Id.], [#ano], .._abnt-nota-onde(pagina, localizacao)))
+}
+
+/// Ibidem (8.1.2.2 b): mesma autoria e mesmo documento da nota imediatamente anterior.
+/// Só vale na mesma página da citação a que se refere (o pacote não verifica).
+///   #citar-ibid(pagina: 52)  ->  Ibid., p. 52.
+#let citar-ibid(pagina: none, localizacao: none) = {
+  let onde = _abnt-nota-onde(pagina, localizacao)
+  _abnt-nota-abrev(([Ibid.], ..onde), termina-em-ponto: onde.len() == 0)
+}
+
+/// Opus citatum, opere citato (8.1.2.2 c): mesma obra, citações não subsequentes.
+/// Só vale na mesma página da citação a que se refere e não pode ser usada se
+/// houver duas obras do mesmo autor na página (o pacote não verifica).
+///   #citar-opcit("Minayo", pagina: 23)  ->  MINAYO, op. cit., p. 23.
+#let citar-opcit(autor, pagina: none, localizacao: none) = {
+  let onde = _abnt-nota-onde(pagina, localizacao)
+  _abnt-nota-abrev((upper(autor), [op. cit.], ..onde), termina-em-ponto: onde.len() == 0)
+}
+
+/// Loco citato (8.1.2.2 e): mesma fonte e mesma localização já citadas.
+///   #citar-loccit("Shakespeare")  ->  SHAKESPEARE, loc. cit.
+#let citar-loccit(autor) = {
+  _abnt-nota-abrev((upper(autor), [loc. cit.]), termina-em-ponto: true)
+}
+
+/// Passim (8.1.2.2 d): informação em diversos trechos da fonte.
+///   #citar-passim("Bechara", 2009)  ->  BECHARA, 2009, passim.
+#let citar-passim(autor, ano) = {
+  _abnt-nota-abrev((upper(autor), [#ano], [passim]))
+}
+
+/// Conferre (8.1.2.2 f): sugestão de consulta, para comparar ou confrontar.
+///   #citar-cf("Bechara", 2009, pagina: 337)  ->  Cf. BECHARA, 2009, p. 337.
+#let citar-cf(autor, ano, pagina: none, localizacao: none) = {
+  _abnt-nota-abrev((upper(autor), [#ano], .._abnt-nota-onde(pagina, localizacao)), prefixo: [Cf. ])
+}
+
+/// Sequentia (8.1.2.2 g): a página citada e as seguintes.
+///   #citar-etseq("Faria", 1994, 17)  ->  FARIA, 1994, p. 17 et seq.
+#let citar-etseq(autor, ano, pagina) = {
+  _abnt-nota-abrev((upper(autor), [#ano], [p. #pagina et seq.]), termina-em-ponto: true)
+}
+
+/// Remissão à nota anterior (8.1.2.1): chamada, "ref." e número da nota.
+///   #citar-ref("Faria", 8, pagina: 15)  ->  FARIA, ref. 8, p. 15.
+#let citar-ref(autor, nota, pagina: none, localizacao: none) = {
+  _abnt-nota-abrev((upper(autor), [ref. #nota], .._abnt-nota-onde(pagina, localizacao)))
+}
+
 /// Título da seção de referências
 #let referencias-titulo() = {
   heading(level: 1, numbering: none, "REFERÊNCIAS")
@@ -260,8 +391,51 @@
 
 // Funções para formatação manual de referências
 // (usar quando não for possível usar .bib)
+//
+// Comuns às três funções (NBR 6023:2018, 6.3 e 8.1.1): o autor vem como
+// "Sobrenome, Prenome" (vários: "Silva, A.; Santos, B."); só o último sobrenome
+// sai em maiúsculas (LUCK, Heloisa.). Entidade (sem vírgula): nome todo em
+// maiúsculas. As referências saem em espaço simples, alinhadas à margem esquerda
+// (sem recuo), separadas da seguinte por uma linha em branco de espaço simples.
+
+// Autor da referência: LUCK, Heloisa / SILVA, A.; SANTOS, B. / ENTIDADE
+#let _abnt-autor-ref(autor) = {
+  if type(autor) != str { return upper(autor) }
+  autor.split(";").map(a => {
+    let a = a.trim()
+    let i = a.position(",")
+    if i == none { upper(a) } else { upper(a.slice(0, i)) + ", " + a.slice(i + 1).trim() }
+  }).join("; ")
+}
+
+// Texto seguido de ponto final, sem duplicar quando já termina em ponto (R. D.)
+#let _abnt-com-ponto(x) = {
+  if type(x) == str and x.ends-with(".") { x } else { [#x.] }
+}
+
+// Local e editora: [S. l.: s. n.] quando faltam os dois (NBR 6023, 8.4.4 e 8.5.6)
+#let _abnt-local-editora(local, editora) = {
+  if local == none and editora == none { [[S. l.: s. n.]] }
+  else if local == none { [[S. l.]: #editora] }
+  else if editora == none { [#local: [s. n.]] }
+  else { [#local: #editora] }
+}
+
+// Bloco da referência: espaço simples, margem esquerda, sem recuo, sem justificar
+#let _abnt-ref-bloco(corpo) = {
+  set text(top-edge: abnt-top-edge, bottom-edge: abnt-bottom-edge)
+  set par(
+    first-line-indent: 0pt,
+    leading: abnt-leading(1),
+    spacing: abnt-leading(2),
+    justify: false,
+  )
+  block(spacing: abnt-leading(2), corpo)
+}
 
 /// Formata referência de livro
+///
+/// `ano` aceita número ou texto. Sem local ou editora sai `[S. l.: s. n.]`.
 #let ref-livro(
   autor: none,
   titulo: none,
@@ -270,23 +444,20 @@
   local: none,
   editora: none,
   ano: none,
-) = {
-  set par(
-    hanging-indent: 1.25cm,
-    first-line-indent: 0pt,
-  )
-
-  if autor != none { upper(autor); [. ] }
+) = _abnt-ref-bloco({
+  if autor != none { _abnt-com-ponto(_abnt-autor-ref(autor)); [ ] }
   if titulo != none { strong(titulo) }
   if subtitulo != none { [: #subtitulo] }
   [. ]
   if edicao != none { [#edicao. ed. ] }
-  if local != none { [#local: ] }
-  if editora != none { editora }
-  if ano != none { [, #ano.] }
-}
+  _abnt-local-editora(local, editora)
+  if ano != none { [, #ano.] } else { [.] }
+})
 
 /// Formata referência de artigo de periódico
+///
+/// `ano`, `volume`, `numero` aceitam número ou texto. Sem `local` sai `[s. l.]`.
+/// `mes` (opcional, ex.: "jan.") sai antes do ano: `p. 199-202, jan. 1985.`
 #let ref-artigo(
   autor: none,
   titulo: none,
@@ -297,24 +468,23 @@
   paginas: none,
   mes: none,
   ano: none,
-) = {
-  set par(
-    hanging-indent: 1.25cm,
-    first-line-indent: 0pt,
-  )
-
-  if autor != none { upper(autor); [. ] }
+) = _abnt-ref-bloco({
+  if autor != none { _abnt-com-ponto(_abnt-autor-ref(autor)); [ ] }
   if titulo != none { [#titulo. ] }
   if revista != none { strong(revista) }
-  if local != none { [, #local] }
+  if local != none { [, #local] } else { [, [s. l.]] }
   if volume != none { [, v. #volume] }
   if numero != none { [, n. #numero] }
   if paginas != none { [, p. #paginas] }
-  if mes != none { [, #mes] }
-  if ano != none { [. #ano.] }
-}
+  if mes != none and ano != none { [, #mes #ano] }
+  else if mes != none { [, #mes] }
+  else if ano != none { [, #ano] }
+  [.]
+})
 
 /// Formata referência de documento eletrônico
+///
+/// `ano` aceita número ou texto. Sem `site` sai `[S. l.: s. n.]`.
 #let ref-online(
   autor: none,
   titulo: none,
@@ -322,20 +492,15 @@
   ano: none,
   url: none,
   data-acesso: none,
-) = {
-  set par(
-    hanging-indent: 1.25cm,
-    first-line-indent: 0pt,
-  )
-
-  if autor != none { upper(autor); [. ] }
+) = _abnt-ref-bloco({
+  if autor != none { _abnt-com-ponto(_abnt-autor-ref(autor)); [ ] }
   if titulo != none { strong(titulo); [. ] }
-  if site != none { [#site, ] }
-  if ano != none { ano }
+  if site != none { [#site] } else { [[S. l.: s. n.]] }
+  if ano != none { [, #ano] }
   [. ]
   if url != none { [Disponível em: #url. ] }
   if data-acesso != none { [Acesso em: #data-acesso.] }
-}
+})
 
 // Aliases curtos
 #let cautor = citar-autor

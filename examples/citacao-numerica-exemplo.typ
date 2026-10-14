@@ -101,7 +101,7 @@ Segundo Silva #citar-num-linha("silva2023", pagina: "78"), a abordagem proposta 
 
 == Citacao de Citacao (Apud)
 
-Freire afirmou que a educacao e um ato politico #citar-num-apud("freire1994", "streck2017", pagina-original: "13", pagina-consultada: "25").
+Freire afirmou que a educacao e um ato politico #citar-num-apud("Freire, 1994", "streck2017", pagina-original: "13", pagina-consultada: "25").
 
 = CITACOES DIRETAS
 
@@ -134,7 +134,7 @@ O estudo comprovou a hipotese#citar-num("costa2021", estilo: "superscript"). Out
   [*Formato Parenteses (padrao)*], [*Formato Sobrescrito*],
   [O resultado foi positivo (1).], [O resultado foi positivo¹.],
   [Conforme Silva (1, p. 45).], [Conforme Silva¹, p. 45.],
-  [(1; 2; 3)], [¹ ² ³],
+  [(1, 2, 3)], [¹ ² ³],
 )
 
 #pagebreak()
@@ -150,7 +150,6 @@ O estudo comprovou a hipotese#citar-num("costa2021", estilo: "superscript"). Out
     ("costa2021", [COSTA, Pedro Henrique. *Fundamentos de estatistica*. Rio de Janeiro: LTC, 2021.]),
     ("oliveira2020", [OLIVEIRA, Ana Paula. Analise de dados qualitativos. *Cadernos de Pesquisa*, Sao Paulo, v. 50, n. 175, p. 30-52, jan./mar. 2020.]),
     ("enciclopedia2020", [ENCICLOPEDIA Brasileira de Ciencias. Sao Paulo: Companhia das Letras, 2020. 5 v.]),
-    ("freire1994", [FREIRE, Paulo. *Pedagogia do oprimido*. 17. ed. Rio de Janeiro: Paz e Terra, 1994.]),
     ("streck2017", [STRECK, Danilo R.; REDIN, Euclides; ZITKOSKI, Jaime Jose (org.). *Dicionario Paulo Freire*. 3. ed. Belo Horizonte: Autentica, 2017.]),
   ),
 )

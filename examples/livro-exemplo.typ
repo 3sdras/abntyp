@@ -37,7 +37,7 @@
   local: "São Paulo",
   ano: 2026,
   edicao: 2,
-  isbn: "978-65-00000-00-0",
+  isbn: "978-65-00000-00-9",
   fonte: "Times New Roman",
   cabecalho: "Fundamentos de Programação",
 )
@@ -59,7 +59,7 @@
 
 // Quarta capa (contracapa)
 #book-back-cover(
-  isbn: "978-65-00000-00-0",
+  isbn: "978-65-00000-00-9",
   resumo: [
     *Fundamentos de Programação: Uma Abordagem Prática* é um livro didático destinado a estudantes de cursos superiores de Computação, Engenharia e áreas afins que estão iniciando seus estudos em programação.
 
@@ -141,7 +141,7 @@
 
     #h(1em) 320 p. : il.
 
-    #h(1em) ISBN 978-65-00000-00-0
+    #h(1em) ISBN 978-65-00000-00-9
 
     #h(1em) 1. Programação de computadores. 2. Python (Linguagem de programação). 3. Algoritmos. 4. Estruturas de dados. I. Título.
 

@@ -12,10 +12,24 @@
 
     Fonte original: https://github.com/virgilinojuca/csl-abnt (CC0/domínio público)
 
-    Limitações conhecidas:
-    - Subtítulos aparecem em negrito junto com o título (limitação do CSL)
-    - Títulos sem autor: a primeira palavra deve estar em maiúsculas no .bib
-    - Legislação tem suporte limitado
+    Limitações conhecidas (do motor de citação do Typst, não do CSL):
+    - O campo `subtitle` do BibTeX é DESCARTADO pelo Typst: escreva
+      title = {Título: subtítulo}; então o título e o subtítulo saem juntos em
+      negrito (a norma destaca só o título)
+    - Títulos sem autor: a primeira palavra (com artigo) deve estar em
+      maiúsculas no .bib; para a chamada no texto use
+      shorttitle = {Primeira [...]}
+    - Trabalho em evento: booktitle = {Anais} + eventtitle + venue + eventdate
+      + publisher; o CSL põe o evento em MAIÚSCULAS e acrescenta "[...]" ao
+      "Anais" quando há eventtitle
+    - Teses e relatórios: use `publisher` (não school/institution) e, nas
+      teses, `type` completo ("Tese (Doutorado em ...)")
+    - Capítulo de livro: @inbook (não @incollection) com booktitle e editor
+    - Ordenação: nomes que começam por letra acentuada vão para depois do Z
+    - Mesma autoria e ano em chamadas simultâneas: o Typst separa os anos com
+      ";" (a norma pede ","), ver citar-varios
+    - Legislação, jurisprudência, atos administrativos e documentos de
+      cartório: referência manual (o Typst não tem campos para eles)
   -->
   <info>
     <title>ABNT NBR 6023:2018 / NBR 10520:2023 (ABNTyp)</title>
@@ -64,6 +78,8 @@
       <term name="in">in</term>
       <term name="accessed">acesso em</term>
       <term name="no-place" form="short">s. l.</term>
+      <term name="page-range-delimiter">-</term>
+      <term name="ordinal">.</term>
     </terms>
   </locale>
   <macro name="container-contributors">
@@ -110,7 +126,7 @@
         <label form="short" plural="never" prefix=" (" suffix=".)"/>
         <substitute>
           <names variable="translator"/>
-          <text macro="title"/>
+          <text variable="title"/>
         </substitute>
       </names>
       <text variable="authority"/>
@@ -133,7 +149,7 @@
             <text variable="title" form="short" text-case="uppercase" strip-periods="false" quotes="false" font-variant="normal" vertical-align="baseline" display="left-margin"/>
           </else-if>
           <else>
-            <text variable="title" form="short" text-case="uppercase" suffix="…"/>
+            <text variable="title" form="short"/>
           </else>
         </choose>
       </substitute>
@@ -203,7 +219,10 @@
   </macro>
   <macro name="container-title">
     <choose>
-      <if type="paper-conference article" match="all">
+      <if type="paper-conference" variable="event container-title" match="all">
+        <text variable="container-title" font-weight="bold" suffix=" [...]"/>
+      </if>
+      <else-if type="paper-conference article" match="all">
         <choose>
           <if match="any" variable="container-title">
             <text variable="container-title" font-weight="bold"/>
@@ -212,7 +231,7 @@
             <text value="Anais" font-weight="bold" suffix=" [...]"/>
           </else>
         </choose>
-      </if>
+      </else-if>
       <else>
         <text variable="container-title" font-weight="bold"/>
       </else>
@@ -263,14 +282,7 @@
   </macro>
   <macro name="event">
     <group delimiter=", ">
-      <choose>
-        <if match="any" variable="title author">
-          <text variable="event"/>
-        </if>
-        <else>
-          <text variable="event" text-case="uppercase"/>
-        </else>
-      </choose>
+      <text variable="event" text-case="uppercase"/>
       <text variable="edition" suffix="."/>
       <choose>
         <if match="any" variable="event-date">
@@ -338,8 +350,8 @@
         <choose>
           <if is-numeric="edition">
             <group>
-              <number suffix=". " variable="edition"/>
-              <text term="edition" form="short"/>
+              <number variable="edition" form="ordinal"/>
+              <text term="edition" form="short" prefix=" "/>
             </group>
           </if>
           <else>
@@ -508,9 +520,12 @@
   </macro>
   <macro name="number-of-pages">
     <choose>
-      <if match="all" is-numeric="number-of-pages">
-        <text variable="number-of-pages" suffix=" p."/>
+      <if match="all" is-numeric="number-of-pages" type="thesis">
+        <text variable="number-of-pages" suffix=" f."/>
       </if>
+      <else-if match="all" is-numeric="number-of-pages">
+        <text variable="number-of-pages" suffix=" p."/>
+      </else-if>
       <else>
         <text variable="number-of-pages"/>
       </else>
@@ -529,10 +544,10 @@
   <macro name="page-locator">
     <text variable="page" prefix="p. "/>
   </macro>
-  <citation et-al-min="3" et-al-use-first="1" disambiguate-add-year-suffix="true" collapse="year">
+  <citation et-al-min="3" et-al-use-first="1" disambiguate-add-year-suffix="true" disambiguate-add-givenname="true" collapse="year">
     <sort>
-      <key macro="issued-year"/>
       <key macro="author"/>
+      <key macro="issued-year"/>
     </sort>
     <layout prefix="(" suffix=")" delimiter="; ">
       <group delimiter=", ">
@@ -544,7 +559,7 @@
   </citation>
   <bibliography hanging-indent="false" entry-spacing="1">
     <sort>
-      <key macro="author-short"/>
+      <key macro="author"/>
       <key variable="issued"/>
     </sort>
     <layout>
@@ -608,9 +623,9 @@
             <group delimiter=", ">
               <group delimiter=" – ">
                 <text variable="genre"/>
-                <text variable="publisher" prefix=" " suffix=","/>
+                <text variable="publisher" suffix=","/>
               </group>
-              <text variable="publisher-place" prefix=" "/>
+              <text variable="publisher-place"/>
               <text macro="issued"/>
             </group>
             <text variable="note" quotes="false"/>
