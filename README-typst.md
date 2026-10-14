@@ -24,7 +24,7 @@ O objetivo aqui é adaptar o projeto abnTeX2 para o caso do Typst, para servir c
 ### Via Typst Universe (recomendado)
 
 ```typst
-#import "@preview/abntyp:0.6.0": *
+#import "@preview/abntyp:0.7.0": *
 ```
 
 ### Via Clone Local
@@ -47,23 +47,23 @@ A documentação do ABNTyp consiste nos seguintes arquivos:
 
 | Arquivo                | Descrição                           |
 | ---------------------- | ----------------------------------- |
-| [`docs/manual-implementacao.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/docs/manual-implementacao.typ) | Manual completo da classe e funções |
-| [`docs/introducao-abntyp.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/docs/introducao-abntyp.typ) | Introdução ao Typst e ao ABNTyp, em formato de livro (tutorial) |
-| [`docs/guia-rapido.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/docs/guia-rapido.typ) | Guia rápido para começar |
+| [`docs/manual-implementacao.typ`](https://github.com/3sdras/abntyp/blob/v0.7.0/docs/manual-implementacao.typ) | Manual completo da classe e funções |
+| [`docs/introducao-abntyp.typ`](https://github.com/3sdras/abntyp/blob/v0.7.0/docs/introducao-abntyp.typ) | Introdução ao Typst e ao ABNTyp, em formato de livro (tutorial) |
+| [`docs/guia-rapido.typ`](https://github.com/3sdras/abntyp/blob/v0.7.0/docs/guia-rapido.typ) | Guia rápido para começar |
 
 ### Modelos Canônicos (Exemplos)
 
 | Arquivo                                 | Tipo de Documento                           | Norma Principal |
 | --------------------------------------- | ------------------------------------------- | --------------- |
-| [`examples/tcc-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/examples/tcc-exemplo.typ) | Trabalho acadêmico (tese, dissertação, TCC) | NBR 14724:2024 |
-| [`examples/artigo-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/examples/artigo-exemplo.typ) | Artigo científico | NBR 6022:2018 |
-| [`examples/relatorio-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/examples/relatorio-exemplo.typ) | Relatório técnico | NBR 10719:2015 |
-| [`examples/projeto-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/examples/projeto-exemplo.typ) | Projeto de pesquisa | NBR 15287:2025 |
-| [`examples/livro-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/examples/livro-exemplo.typ) | Livro | NBR 6029:2023 |
-| [`examples/periodico-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/examples/periodico-exemplo.typ) | Publicação periódica | NBR 6021:2015 |
-| [`examples/poster-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/examples/poster-exemplo.typ) | Pôster científico | NBR 15437:2006 |
-| [`examples/slides-defesa-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/examples/slides-defesa-exemplo.typ) | Apresentação de slides | Boas práticas\* |
-| [`examples/citacao-numerica-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.6.0/examples/citacao-numerica-exemplo.typ) | Sistema numérico de citações | NBR 10520:2023 |
+| [`examples/tcc-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.7.0/examples/tcc-exemplo.typ) | Trabalho acadêmico (tese, dissertação, TCC) | NBR 14724:2024 |
+| [`examples/artigo-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.7.0/examples/artigo-exemplo.typ) | Artigo científico | NBR 6022:2018 |
+| [`examples/relatorio-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.7.0/examples/relatorio-exemplo.typ) | Relatório técnico | NBR 10719:2015 |
+| [`examples/projeto-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.7.0/examples/projeto-exemplo.typ) | Projeto de pesquisa | NBR 15287:2025 |
+| [`examples/livro-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.7.0/examples/livro-exemplo.typ) | Livro | NBR 6029:2023 |
+| [`examples/periodico-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.7.0/examples/periodico-exemplo.typ) | Publicação periódica | NBR 6021:2015 |
+| [`examples/poster-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.7.0/examples/poster-exemplo.typ) | Pôster científico | NBR 15437:2006 |
+| [`examples/slides-defesa-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.7.0/examples/slides-defesa-exemplo.typ) | Apresentação de slides | Boas práticas\* |
+| [`examples/citacao-numerica-exemplo.typ`](https://github.com/3sdras/abntyp/blob/v0.7.0/examples/citacao-numerica-exemplo.typ) | Sistema numérico de citações | NBR 10520:2023 |
 
 _\* A ABNT não possui norma específica para slides. O template segue boas práticas acadêmicas._
 
@@ -123,7 +123,7 @@ O ABNTyp implementa as seguintes normas ABNT (edições de 1989 a 2025, conforme
 ### Trabalho Acadêmico (Tese/Dissertação/TCC)
 
 ```typst
-#import "@preview/abntyp:0.6.0": *
+#import "@preview/abntyp:0.7.0": *
 
 // Metadados do trabalho — definidos uma única vez
 #show: dados.with(
@@ -183,7 +183,7 @@ Em frente-verso, a ficha catalográfica (no verso da folha de rosto) não é con
 ### Artigo Científico
 
 ```typst
-#import "@preview/abntyp:0.6.0": *
+#import "@preview/abntyp:0.7.0": *
 
 #show: artigo.with(
   titulo: "Título do Artigo",
@@ -236,7 +236,7 @@ O ABNTyp suporta os dois sistemas de chamada permitidos pela NBR 10520:2023:
 O sistema numérico foi implementado inspirado no `abntex2-num.bst` do abnTeX2.
 
 ```typst
-#import "@preview/abntyp:0.6.0": *
+#import "@preview/abntyp:0.7.0": *
 
 #show: citacao-num-config
 
@@ -257,9 +257,9 @@ Outros autores #citar-num-multiplos(("santos2022", "costa2021")) confirmam.
 
 As referências saem de um arquivo `.bib` com o estilo CSL ABNT incluído no pacote (`#referencias(read("referencias.bib"))`) ou são escritas à mão. O caminho precisa vir dentro de `read(...)`; texto puro dá erro. A lista sai alinhada à margem esquerda, sem recuo, em espaço simples e com uma linha em branco entre as entradas (NBR 6023, 6.3).
 
-**Como cadastrar no `.bib`.** Capítulo de livro: `@inbook`, não `@incollection` (que perde o "In:" e o título da obra). Dissertação e tese: `@thesis` com `publisher` (a instituição) e `type` completo, por exemplo `{Tese (Doutorado em Psicologia)}`; `institution` e `school` são ignorados. Trabalho em evento: `@inproceedings` com `booktitle` (por exemplo `{Anais}`) e `eventtitle`. Subtítulo: `title = {Título: subtítulo}`; o campo `subtitle` é descartado. Detalhes e limites por versão do Typst estão na [introdução](https://github.com/3sdras/abntyp/blob/v0.6.0/docs/introducao-abntyp.typ) e no [manual](https://github.com/3sdras/abntyp/blob/v0.6.0/docs/manual-implementacao.typ).
+**Como cadastrar no `.bib`.** Capítulo de livro: `@inbook`, não `@incollection` (que perde o "In:" e o título da obra). Dissertação e tese: `@thesis` com `publisher` (a instituição) e `type` completo, por exemplo `{Tese (Doutorado em Psicologia)}`; `institution` e `school` são ignorados. Trabalho em evento: `@inproceedings` com `booktitle` (por exemplo `{Anais}`) e `eventtitle`. Subtítulo: `title = {Título: subtítulo}`; o campo `subtitle` é descartado. Detalhes e limites por versão do Typst estão na [introdução](https://github.com/3sdras/abntyp/blob/v0.7.0/docs/introducao-abntyp.typ) e no [manual](https://github.com/3sdras/abntyp/blob/v0.7.0/docs/manual-implementacao.typ).
 
-**Tipos de documento sem entrada no Typst.** Partitura (NBR 6023, 7.14), jurisprudência (7.11.3 e 7.11.4), atos administrativos normativos (7.11.5 e 7.11.6) e documentos civis e de cartórios (7.12) não têm tipo de entrada no Typst: não há como cadastrá-los no `.bib`, e o estilo do ABNTyp não os formata. Escreva essas referências à mão, conforme a norma. Veja a seção "Limitações do CSL e soluções manuais" do [documento de introdução](https://github.com/3sdras/abntyp/blob/v0.6.0/docs/introducao-abntyp.typ).
+**Tipos de documento sem entrada no Typst.** Partitura (NBR 6023, 7.14), jurisprudência (7.11.3 e 7.11.4), atos administrativos normativos (7.11.5 e 7.11.6) e documentos civis e de cartórios (7.12) não têm tipo de entrada no Typst: não há como cadastrá-los no `.bib`, e o estilo do ABNTyp não os formata. Escreva essas referências à mão, conforme a norma. Veja a seção "Limitações do CSL e soluções manuais" do [documento de introdução](https://github.com/3sdras/abntyp/blob/v0.7.0/docs/introducao-abntyp.typ).
 
 ---
 

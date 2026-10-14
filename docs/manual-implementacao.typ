@@ -59,7 +59,7 @@
   #text(size: 12pt)[Manual de Implementação]
 
   #v(1cm)
-  #text(size: 11pt)[Versão 0.7.0 (em preparação)]
+  #text(size: 11pt)[Versão 0.7.0]
 
   #v(1fr)
   #text(size: 11pt)[Outubro 2026]
@@ -155,7 +155,7 @@ No seu documento:
 
 == Instalação como Pacote
 
-A versão 0.7.0 ainda não foi publicada no repositório oficial do Typst (Universe); a última publicada é a 0.6.0, que *não* tem as mudanças descritas neste manual (ver o changelog). Depois da publicação:
+Este manual descreve a versão 0.7.0, que muda a saída e o uso em relação à 0.6.0 (ver o changelog). Para instalar:
 
 ```typst
 #import "@preview/abntyp:0.7.0": *
@@ -3077,9 +3077,9 @@ O que o pacote ainda não faz ou faz com ressalva. Cada item remete à seção d
 
 = Changelog
 
-== Versão 0.7.0 (em preparação)
+== Versão 0.7.0 (Outubro 2026)
 
-_Rascunho: a nota oficial da versão é escrita na publicação. Esta entrada lista o que muda na saída ou no uso, para quem atualiza da 0.6.0._
+Resultado de uma revisão do pacote contra o texto das normas. Esta entrada lista o que muda na saída ou no uso, para quem atualiza da 0.6.0.
 
 *Quebras de API (o documento antigo pode precisar de ajuste):*
 
@@ -3088,6 +3088,7 @@ _Rascunho: a nota oficial da versão é escrita na publicação. Esta entrada li
 - `container()` sem `fonte:` (nem `origem:`) aborta com mensagem em português; `fonte: none` dispensa.
 - ISBN inválido (texto que não seja ISBN-13 978/979 com dígito certo nem ISBN-10 válido) dá erro em `livro()`, `book-title-page-verso()` e `book-back-cover()`; passar conteúdo (`[em obtenção]`) contorna.
 - `format-isbn` com grupo + registrante + publicação que não somam 9 dígitos dá erro; `validate-isbn` recusa o que não é 978/979; `format-date-numeric`, `format-date-mixed` e `format-date-short` dão erro com ano de menos de quatro dígitos.
+- Sistema numérico: o número da obra deixa de repetir (antes, com cinco ou mais obras novas a saída era `(5) (5) (5)` e o Typst avisava que o layout não convergia); agora `(1) (2) (3) (4) (5) (6) (7) (1) (8)`. `citacao-num-curta` tira os espaços das pontas do conteúdo e usa “ ” explícitas.
 - `citar-num-apud`: o primeiro argumento é o *texto* da chamada original (`"Freire, 1994"`), não uma chave; só a fonte consultada entra na lista.
 - `abbreviation-dict` mudou de formato (chave → `(substantivo, adjetivo)`); `get-abbreviation` devolve a caixa da norma (`bras.`, não `Bras.`).
 - `sort-key` devolve uma chave opaca (não imprimir); glossário, lista de siglas, índice e `book-index` ordenam pela NBR 6033.
@@ -3115,6 +3116,7 @@ _Rascunho: a nota oficial da versão é escrita na publicação. Esta entrada li
 - `tabela()` desenha os três traços da IBGE e repete o cabeçalho; tabela de várias páginas com "(continua)", "(continuação)" e "(conclusão)"; o último `table.hline` escrito à mão sai só na última página; tabela maior que a página quebra (sob `with-abnt-setup`).
 - Índice: entradas que diferem só por caixa ou acento viram uma; termos com subentradas inteiros na coluna, "(continuação)" nos maiores que uma coluna.
 - Artigo: título de 12 pt, `TÍTULO:` com subtítulo na linha seguinte, RESUMO e ABSTRACT centralizados. Periódico: legenda com o intervalo de páginas do artigo, sem rodapé na capa e na folha de rosto, sumário por artigos. Livro: cabeçalho só nos elementos textuais, sem cabeçalho e número em páginas em branco, `©` no verso. Pôster: colunas equilibradas, título e autores centralizados, afiliações numeradas. Slides: data em português, capa em 1 página, rodapé com o contador separado do autor, texto auxiliar de contraste >= 4,5:1.
+- Chamadas com página: o CSL deixa de somar dois espaços antes de "p." (`(Silva; Santos, 2023, p. 45)`); `cronograma-simples` com mais de 6 períodos de rótulo maior que 4 caracteres escreve o cabeçalho na vertical; o aviso do sistema numérico passa de `gray` a `luma(60)` (contraste).
 - `fonte: "Arial"` fora do Linux gera 1 aviso `unknown font family: liberation sans` (aceito de propósito); as pilhas de fonte não citam mais famílias que não existem em nenhum ambiente (`Linux Libertine`, `Linux Biolinum`, `Noto Sans`).
 
 *Funções e parâmetros novos:*

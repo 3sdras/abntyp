@@ -30,7 +30,7 @@
 //   de dentro de examples/:   typst compile --root .. relatorio-exemplo.typ
 // (sem --root, o Typst recusa o import: "cannot read file outside of project root")
 // Se você COPIAR este arquivo para o seu projeto, troque o import abaixo por
-//   #import "@preview/abntyp:0.6.0": *
+//   #import "@preview/abntyp:0.7.0": *
 // e compile com `typst compile relatorio-exemplo.typ`. Arquivos que o exemplo lê (referencias.bib,
 // imagens de ../docs/figuras/), se houver, precisam ir junto, com os caminhos ajustados.
 

@@ -72,7 +72,7 @@
   #v(3cm)
 
   #text(size: 12pt)[
-    versão 0.6.0 -- Outubro/2026
+    versão 0.7.0 -- Outubro/2026
   ]
 
   #v(1fr)
@@ -143,7 +143,7 @@
   #v(1cm)
 
   #align(right)[
-    Jataí, janeiro de 2026
+    Jataí, outubro de 2026
 
     _Equipe ABNTyp_
   ]
@@ -202,7 +202,7 @@ O webapp oferece:
 
 Para usar o ABNTyp no webapp, basta importar o pacote no início do documento:
 
-#raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.6.0\": *")
+#raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.7.0\": *")
 
 === Instalação local (CLI)
 
@@ -256,7 +256,7 @@ Este código acima produz um documento de uma página contendo apenas "Olá, mun
 Para um documento acadêmico usando ABNTyp, o exemplo mínimo seria:
 
 #exemplo[
-  #raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.6.0\": *
+  #raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.7.0\": *
 
 #show: dados.with(
   titulo: \"Meu Trabalho Acadêmico\",
@@ -293,7 +293,7 @@ Um documento Typst pode ser dividido em três partes:
 
 #exemplo[
   #raw(block: true, lang: "typst", "// 1. Preâmbulo (importações)
-#import \"@preview/abntyp:0.6.0\": *
+#import \"@preview/abntyp:0.7.0\": *
 
 // 2. Configuração
 #set page(paper: \"a4\", margin: 2cm)
@@ -341,7 +341,7 @@ O Typst oferece várias formas de alterar o estilo do texto. A @tab:estilos resu
 )[
   #set text(size: 10pt)
   #set par(first-line-indent: 0pt)
-  *Atalhos do ABNTypst:* As funções `#sublinhado`, `#risc` e `#caps` não existem no Typst puro — são exportadas pelo pacote ABNTypst como atalhos de escrita para `#underline`, `#strike` e versalete, respectivamente. Ao importar o pacote com `#import "@preview/abntyp:0.6.0": *`, essas funções ficam disponíveis automaticamente.
+  *Atalhos do ABNTypst:* As funções `#sublinhado`, `#risc` e `#caps` não existem no Typst puro — são exportadas pelo pacote ABNTypst como atalhos de escrita para `#underline`, `#strike` e versalete, respectivamente. Ao importar o pacote com `#import "@preview/abntyp:0.7.0": *`, essas funções ficam disponíveis automaticamente.
 
   *Atenção com `#sub`:* esse nome _existe_ no Typst e é o *subscrito* nativo (H#sub[2]O, digitado `H#sub[2]O`; o sobrescrito é `#super`). Até a versão 0.6.0 o pacote redefinia `#sub` como sublinhado, o que escondia o subscrito de quem importava tudo com `*`; por isso o atalho agora se chama `#sublinhado`. Quem tem documentos antigos com `#sub[…]` no sentido de sublinhado deve trocar por `#sublinhado[…]`.
 
@@ -2534,7 +2534,7 @@ O pôster tem 90 × 120 cm no exemplo; `poster-a1` usa 60 × 90 cm, que é o mí
 
 Não existe norma ABNT para slides. Os templates `slides` (apresentação em geral) e `slides-defesa` (TCC, dissertação e tese, com slide final "Obrigado!" e banca) seguem boas práticas de apresentação e usam o pacote Touying @touying. O `import` do pacote já traz os nomes do Touying (`pause`, `only`, `uncover`, `speaker-note`, `config-common`...), então não é preciso importá-lo à parte:
 
-#raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.6.0\": *
+#raw(block: true, lang: "typst", "#import \"@preview/abntyp:0.7.0\": *
 
 #show: slides-defesa.with(
   titulo: \"Título do Trabalho\",

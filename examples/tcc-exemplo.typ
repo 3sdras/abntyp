@@ -21,7 +21,7 @@
 // REQUISITOS:
 // - Typst instalado (https://typst.app)
 // - Se você COPIAR este arquivo para o seu projeto, troque o import da seção
-//   "CONFIGURAÇÃO INICIAL" por   #import "@preview/abntyp:0.6.0": *
+//   "CONFIGURAÇÃO INICIAL" por   #import "@preview/abntyp:0.7.0": *
 //   (o pacote é baixado sozinho; não é preciso copiar nenhuma pasta)
 //
 // ESTRUTURA DO DOCUMENTO:
@@ -39,7 +39,7 @@
 // Em Typst, usamos #import para carregar pacotes externos.
 // O caminho "../lib.typ" assume que este arquivo está na pasta examples/
 // do repositório do pacote. No SEU projeto, use o pacote publicado:
-//   #import "@preview/abntyp:0.6.0": *
+//   #import "@preview/abntyp:0.7.0": *
 // (ou, com uma cópia local do ABNTyp na raiz do projeto:
 //   #import "abntyp/lib.typ": *)
 //
@@ -979,7 +979,7 @@ SOLUÇÃO: Compile com --root apontando para a raiz do pacote (veja o cabeçalho
          deste arquivo) ou use o import do pacote publicado.
 
 ERRO: "unknown variable: normas-abnt"
-SOLUÇÃO: Certifique-se de importar com: #import "@preview/abntyp:0.6.0": *
+SOLUÇÃO: Certifique-se de importar com: #import "@preview/abntyp:0.7.0": *
 
 ERRO: Numeração de páginas incorreta
 SOLUÇÃO: A contagem começa na folha de rosto e o número só aparece a partir da

@@ -20,7 +20,7 @@
 Pelo Typst Universe (recomendado; funciona também no typst.app):
 
 ```typst
-#import "@preview/abntyp:0.6.0": *
+#import "@preview/abntyp:0.7.0": *
 ```
 
 Ou, com a pasta `abntyp` copiada para o seu projeto:

@@ -22,7 +22,7 @@
 //   de dentro de examples/:   typst compile --root .. citacao-numerica-exemplo.typ
 // (sem --root, o Typst recusa o import: "cannot read file outside of project root")
 // Se você COPIAR este arquivo para o seu projeto, troque o import abaixo por
-//   #import "@preview/abntyp:0.6.0": *
+//   #import "@preview/abntyp:0.7.0": *
 // e compile com `typst compile citacao-numerica-exemplo.typ` (este exemplo não
 // lê arquivos auxiliares: as referências são escritas à mão, abaixo).
 
