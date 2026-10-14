@@ -5,15 +5,23 @@
 // pôsteres científicos em conformidade com a NBR 15437:2006.
 //
 // Elementos demonstrados:
-// - Título grande e legível
-// - Autores com afiliações
-// - Orientador (academic_poster)
+// - Título grande e legível (o título leva os dois pontos; o subtítulo vem abaixo)
+// - Autores com afiliações (numeradas por instituição distinta)
+// - Orientador (academic-poster)
 // - Resumo com palavras-chave
-// - Seções coloridas (poster-section)
-// - Caixas de destaque (poster-highlight)
-// - Figuras com legendas (poster-figure)
+// - Colunas equilibradas (as seções partem entre as colunas)
+// - Seções coloridas (poster-section) e caixas de destaque (poster-highlight),
+//   que herdam a cor-destaque do pôster
+// - Tabelas e figuras com identificação em cima e fonte embaixo (poster-figure)
 // - Referências compactas (poster-references)
-// - Variantes de tamanho: poster, academic-poster, poster-a0, poster-a1
+//
+// Outros formatos (cada um é um documento próprio, com o mesmo conteúdo):
+// - poster.with(...)           sem orientador nem logotipo (90 x 120 cm)
+// - poster-a0.with(...)        A0 (84,1 x 118,9 cm)
+// - poster-a1.with(...)        60 x 90 cm (o A1 ISO, 59,4 x 84,1 cm, fica abaixo do
+//                              mínimo da NBR 15437 5.2)
+// - academic-poster.with(logo: image("logo.png"), logo-direita: image(...))
+//   logotipos reduzidos ao tamanho máximo (largura-logo, altura-logo)
 //
 // ============================================================================
 
@@ -27,15 +35,14 @@
   autores: (
     (
       name: "Lucas Henrique Almeida",
-      affiliation: "Graduando em Ciência da Computação, Universidade Federal de Exemplo",
+      affiliation: "Universidade Federal de Exemplo",
     ),
     (
       name: "Beatriz Costa Mendes",
-      affiliation: "Graduanda em Ciência da Computação, Universidade Federal de Exemplo",
+      affiliation: "Universidade Federal de Exemplo",
     ),
   ),
   orientador: "Prof. Dr. Ricardo Oliveira Silva",
-  instituicao: "Universidade Federal de Exemplo",
   departamento: "Departamento de Ciência da Computação",
   contato: "lucas.almeida@ufe.edu.br | beatriz.mendes@ufe.edu.br",
   texto-resumo: [
@@ -55,7 +62,7 @@
 // CONTEÚDO DO PÔSTER
 // ============================================================================
 
-#poster-section(titulo: "Introdução", cor-destaque: rgb("#1a5276"))[
+#poster-section(titulo: "Introdução")[
   A análise de sentimentos é uma tarefa fundamental do Processamento de Linguagem Natural (PLN) que busca identificar e extrair opiniões subjetivas em textos.
 
   Com o crescimento exponencial das redes sociais, milhões de opiniões são compartilhadas diariamente, criando uma fonte rica de dados para:
@@ -68,7 +75,7 @@
   *Objetivo:* Desenvolver um modelo de deep learning para classificação de sentimentos em português brasileiro com alta acurácia.
 ]
 
-#poster-section(titulo: "Metodologia", cor-destaque: rgb("#1a5276"))[
+#poster-section(titulo: "Metodologia")[
   == Dataset
 
   - *Fonte:* Twitter/X (API Acadêmica)
@@ -86,7 +93,7 @@
 
   == Arquitetura do Modelo
 
-  #poster-highlight(cor-destaque: rgb("#1a5276"))[
+  #poster-highlight[
     *BERTimbau-Large* + Camada de classificação
 
     - 24 camadas transformer
@@ -96,25 +103,29 @@
   ]
 ]
 
-#poster-section(titulo: "Resultados", cor-destaque: rgb("#1a5276"))[
+#poster-section(titulo: "Resultados")[
   == Métricas de Desempenho
 
-  #table(
-    columns: (1fr, auto, auto, auto),
-    stroke: 0.5pt,
-    inset: 8pt,
-    align: (left, center, center, center),
-
-    [*Classe*], [*Precisão*], [*Recall*], [*F1-Score*],
-    [Positivo], [0,91], [0,88], [0,89],
-    [Negativo], [0,87], [0,92], [0,89],
-    [Neutro], [0,88], [0,86], [0,87],
-    [*Média*], [*0,89*], [*0,89*], [*0,89*],
+  #poster-figure(
+    table(
+      columns: (1fr, auto, auto, auto),
+      stroke: none,
+      inset: 8pt,
+      align: (left, center, center, center),
+      table.hline(stroke: 1.5pt),
+      [*Classe*], [*Precisão*], [*Recall*], [*F1-Score*],
+      table.hline(stroke: 0.75pt),
+      [Positivo], [0,91], [0,88], [0,89],
+      [Negativo], [0,87], [0,92], [0,89],
+      [Neutro], [0,88], [0,86], [0,87],
+      [*Média*], [*0,89*], [*0,89*], [*0,89*],
+      table.hline(stroke: 1.5pt),
+    ),
+    legenda: "Métricas de desempenho por classe",
+    origem: "Elaborado pelos autores (2026)",
   )
 
-  #v(0.5em)
-
-  #poster-highlight(cor-destaque: rgb("#1a5276"))[
+  #poster-highlight[
     *Acurácia Global: 89,3%*
 
     Superando o baseline (SVM + TF-IDF) em 12,7 pontos percentuais
@@ -125,21 +136,24 @@
   #poster-figure(
     table(
       columns: (1fr, auto),
-      stroke: 0.5pt,
+      stroke: none,
       inset: 8pt,
       align: (left, center),
-
+      table.hline(stroke: 1.5pt),
       [*Modelo*], [*Acurácia*],
+      table.hline(stroke: 0.75pt),
       [SVM + TF-IDF], [76,6%],
       [LSTM], [81,2%],
       [BERT Multilíngue], [85,4%],
       [*BERTimbau (nosso)*], [*89,3%*],
+      table.hline(stroke: 1.5pt),
     ),
     legenda: "Comparativo de desempenho",
+    origem: "Elaborado pelos autores (2026)",
   )
 ]
 
-#poster-section(titulo: "Discussão", cor-destaque: rgb("#1a5276"))[
+#poster-section(titulo: "Discussão")[
   == Principais Contribuições
 
   - Modelo estado-da-arte para português brasileiro
@@ -154,7 +168,7 @@
   - *Gírias regionais:* 22% dos erros
   - *Textos muito curtos:* 18% dos erros
 
-  #poster-highlight(cor-destaque: rgb("#1a5276"))[
+  #poster-highlight[
     *Trabalhos Futuros:*
     - Incorporar detecção de sarcasmo
     - Expandir para outras redes sociais
@@ -162,7 +176,7 @@
   ]
 ]
 
-#poster-section(titulo: "Conclusão", cor-destaque: rgb("#1a5276"))[
+#poster-section(titulo: "Conclusão")[
   Este trabalho demonstrou que modelos de deep learning baseados em BERT adaptados para o português brasileiro superam significativamente abordagens tradicionais na tarefa de análise de sentimentos.
 
   O modelo desenvolvido atinge *89,3% de acurácia*, representando um avanço importante para aplicações de PLN em português.

@@ -5,17 +5,23 @@
 // criar relatórios técnicos em conformidade com a NBR 10719:2015.
 //
 // Elementos demonstrados:
+// - relatorio() - os dados do relatório (instituição, título, autores, ano...)
+//   são informados UMA vez e valem para a capa e a folha de rosto
+// - report-code() - código de identificação do relatório
 // - report-cover() - Capa
 // - report-title-page() - Folha de rosto (anverso)
-// - report-title-page-verso() - Verso com equipe técnica
+// - report-title-page-verso() - Verso com equipe técnica e ficha catalográfica
 // - errata() - Errata (exemplo)
 // - agradecimentos-relatorio() - Agradecimentos
 // - resumo-relatorio() - Resumo com palavras-chave
 // - Sumário
-// - Seções numeradas
+// - Seções numeradas, figura, tabelas e citações (@chave)
+// - referencias-relatorio() - Referências na posição da norma (antes do apêndice)
+// - apendice() - Apêndice
 // - formulario-identificacao() - Formulário de identificação
-// - Referências automáticas
 //
+// Espaçamento simples (padrão, NBR 10719 5.1); para 1,5 use
+// relatorio.with(espacamento: "1,5").
 // ============================================================================
 
 #import "../lib.typ": *
@@ -25,7 +31,13 @@
   titulo: "Análise de Desempenho de Sistemas de Banco de Dados NoSQL",
   subtitulo: "estudo comparativo entre MongoDB, Cassandra e Redis",
   numero-relatorio: 15,
-  codigo-relatorio: "UFE-CPD-2026-BD-015",
+  codigo-relatorio: report-code(
+    codigo-instituicao: "UFE",
+    categoria: "CPD",
+    ano: 2026,
+    assunto: "BD",
+    sequencia: 15,
+  ),
   instituicao: "Universidade Federal de Exemplo",
   endereco-instituicao: "Av. Principal, 1000 - Campus Universitário - CEP 12345-678 - Cidade/UF",
   titulo-projeto: "Projeto de Modernização da Infraestrutura de Dados",
@@ -39,39 +51,20 @@
   local: "Cidade",
   ano: 2026,
   fonte: "Times New Roman",
-  // Para usar bibliografia automática, o caminho deve ser relativo à raiz:
-  // arquivo-bibliografia: "examples/referencias.bib",
+  // Referências automáticas: o conteúdo do .bib, lido com read(). Elas saem onde
+  // estiver `referencias-relatorio()` (mais abaixo); sem essa chamada, no fim.
+  arquivo-bibliografia: read("referencias.bib"),
 )
 
 // ============================================================================
 // ELEMENTOS PRÉ-TEXTUAIS
 // ============================================================================
 
-// Capa
-#report-cover(
-  instituicao: "Universidade Federal de Exemplo",
-  endereco-instituicao: "Av. Principal, 1000 - Campus Universitário - Cidade/UF",
-  numero-relatorio: 15,
-  titulo: "Análise de Desempenho de Sistemas de Banco de Dados NoSQL",
-  subtitulo: "estudo comparativo entre MongoDB, Cassandra e Redis",
-  ano: 2026,
-)
+// Capa (os dados vêm de relatorio.with; só se repete o que mudar)
+#report-cover()
 
-// Folha de rosto - anverso
-#report-title-page(
-  instituicao: "Universidade Federal de Exemplo",
-  titulo-projeto: "Projeto de Modernização da Infraestrutura de Dados",
-  titulo: "Análise de Desempenho de Sistemas de Banco de Dados NoSQL",
-  subtitulo: "estudo comparativo entre MongoDB, Cassandra e Redis",
-  codigo-relatorio: "UFE-CPD-2026-BD-015",
-  autores: (
-    (name: "Dr. Fernando Henrique Alves", qualification: "Coordenador do Projeto"),
-    (name: "MSc. Roberta Cristina Lima", qualification: "Pesquisadora"),
-    (name: "BSc. Gabriel Santos Oliveira", qualification: "Analista de Sistemas"),
-  ),
-  local: "Cidade",
-  ano: 2026,
-)
+// Folha de rosto - anverso (a contagem de páginas começa aqui, NBR 10719 5.2)
+#report-title-page()
 
 // Folha de rosto - verso (equipe técnica e ficha catalográfica)
 #report-title-page-verso(
@@ -83,13 +76,11 @@
     (funcao: "Revisão", nome: "Profa. Dra. Ana Paula Ferreira"),
   ),
   dados-catalogacao: [
-    #set text(size: 9pt)
-    #set par(leading: 0.8em)
     Alves, Fernando Henrique.
 
     #h(1em) Análise de desempenho de sistemas de banco de dados NoSQL: estudo comparativo entre MongoDB, Cassandra e Redis / Fernando Henrique Alves, Roberta Cristina Lima, Gabriel Santos Oliveira. -- Cidade: UFE/CPD, 2026.
 
-    #h(1em) 45 p. : il. -- (Relatório Técnico; n. 15)
+    #h(1em) #context counter(page).final().first() p. : il. -- (Relatório Técnico; n. 15)
 
     #h(1em) 1. Banco de dados. 2. NoSQL. 3. Desempenho. I. Lima, Roberta Cristina. II. Oliveira, Gabriel Santos. III. Título.
 
@@ -97,12 +88,13 @@
   ],
 )
 
-// Errata (opcional - incluída como demonstração)
+// Errata (opcional - incluída como demonstração; cita trechos que estão no texto;
+// folha e linha conferidas com Times New Roman)
 #errata(
-  referencia: [ALVES, F. H.; LIMA, R. C.; OLIVEIRA, G. S. *Análise de desempenho de sistemas de banco de dados NoSQL*: estudo comparativo entre MongoDB, Cassandra e Redis. Cidade: UFE/CPD, 2026. 45 p. (Relatório Técnico, n. 15).],
+  referencia: [ALVES, F. H.; LIMA, R. C.; OLIVEIRA, G. S. *Análise de desempenho de sistemas de banco de dados NoSQL*: estudo comparativo entre MongoDB, Cassandra e Redis. Cidade: UFE/CPD, 2026. #context counter(page).final().first() p. (Relatório Técnico, n. 15).],
   itens: (
-    (pagina: 12, linha: 5, errado: "throughput de 15.000", correto: "throughput de 150.000"),
-    (pagina: 23, linha: 18, errado: "latência média de 5ms", correto: "latência média de 0,5ms"),
+    (pagina: 10, linha: 29, errado: "Execução de warm-up de 5 minutos", correto: "Execução de warm-up de 10 minutos"),
+    (pagina: 11, linha: 25, errado: "escalabilidade linear até 10 nós testados", correto: "escalabilidade linear até 12 nós testados"),
   ),
 )
 
@@ -136,7 +128,7 @@
 
 O crescimento exponencial do volume de dados nas instituições de ensino superior tem imposto desafios significativos para os sistemas de gerenciamento de banco de dados tradicionais. Os sistemas relacionais, embora maduros e confiáveis, frequentemente apresentam limitações de escalabilidade e desempenho quando confrontados com cargas de trabalho caracterizadas por alto volume de transações, dados semiestruturados e necessidade de disponibilidade contínua.
 
-Neste contexto, os sistemas de banco de dados NoSQL (Not Only SQL) emergiram como alternativas viáveis, oferecendo diferentes modelos de dados e características de desempenho adequadas a cenários específicos. Conforme destacam Silva e Santos (2023), a escolha do sistema de banco de dados adequado pode impactar significativamente o desempenho e a escalabilidade de aplicações corporativas.
+Neste contexto, os sistemas de banco de dados NoSQL (Not Only SQL) emergiram como alternativas viáveis, oferecendo diferentes modelos de dados e características de desempenho adequadas a cenários específicos. Conforme destacam #cite(<silva2023>, form: "prose"), a escolha do sistema de banco de dados adequado pode impactar significativamente o desempenho e a escalabilidade de aplicações corporativas.
 
 == Objetivo do Relatório
 
@@ -156,7 +148,7 @@ O escopo deste estudo compreende:
 
 == Bancos de Dados NoSQL
 
-Os bancos de dados NoSQL constituem uma categoria heterogênea de sistemas que compartilham a característica de não utilizar exclusivamente o modelo relacional e a linguagem SQL como interface principal. Segundo Cormen et al. (2012), estes sistemas podem ser classificados em quatro grandes categorias:
+Os bancos de dados NoSQL constituem uma categoria heterogênea de sistemas que compartilham a característica de não utilizar exclusivamente o modelo relacional e a linguagem SQL como interface principal. Segundo #cite(<cormen2012>, form: "prose"), estes sistemas podem ser classificados em quatro grandes categorias:
 
 + *Orientados a documentos:* armazenam dados em documentos semiestruturados (JSON, BSON), como MongoDB e CouchDB;
 + *Chave-valor:* armazenam pares chave-valor simples, otimizados para alta velocidade, como Redis e DynamoDB;
@@ -272,7 +264,7 @@ O throughput (operações por segundo) foi medido para cada workload:
 
 #fonte[Dados coletados pela equipe técnica (2026).]
 
-#nota-figura[Valores representam a média de 3 execuções. Redis operando em modo cluster com 3 nós.]
+#nota-tabela[Valores representam a média de 3 execuções. Redis operando em modo cluster com 3 nós.]
 
 == Latência
 
@@ -304,6 +296,13 @@ Os testes de escalabilidade horizontal demonstraram:
 - *MongoDB:* escalabilidade linear até 5 nós, com degradação gradual após;
 - *Cassandra:* escalabilidade linear até 10 nós testados, conforme esperado pela arquitetura;
 - *Redis:* escalabilidade limitada pelo modelo de dados, mas excelente para particionamento por chave.
+
+#figure(
+  image("../docs/figuras/placeholder.svg", width: 70%),
+  caption: [Esquema do cluster utilizado nos testes de escalabilidade],
+)
+
+#fonte[Elaborado pela equipe técnica (2026).]
 
 == Consumo de Recursos
 
@@ -379,11 +378,12 @@ As próximas etapas do projeto incluem:
 // ELEMENTOS PÓS-TEXTUAIS
 // ============================================================================
 
-// Referências são inseridas automaticamente pelo template
+// Referências: na posição da NBR 10719 4.2.3 (referências, glossário, apêndice,
+// anexo, índice), usando o arquivo-bibliografia de relatorio.with
+#referencias-relatorio()
 
 // Apêndice
-#pagebreak()
-#heading(level: 1, numbering: none, "APÊNDICE A -- SCRIPTS DE CONFIGURAÇÃO")
+#apendice("A", "Scripts de configuração")
 
 Os scripts de configuração utilizados para cada banco de dados estão disponíveis no repositório interno do projeto:
 
@@ -398,27 +398,29 @@ Arquivos principais:
 
 // Formulário de identificação
 #formulario-identificacao(
-  titulo: "Análise de Desempenho de Sistemas de Banco de Dados NoSQL: estudo comparativo entre MongoDB, Cassandra e Redis",
+  titulo: "Análise de Desempenho de Sistemas de Banco de Dados NoSQL",
+  subtitulo: "estudo comparativo entre MongoDB, Cassandra e Redis",
   classificacao: "Ostensivo",
   numero-relatorio: "15",
   tipo-relatorio: "Relatório Técnico de Pesquisa Aplicada",
   data: "Janeiro de 2026",
+  titulo-projeto: "Projeto de Modernização da Infraestrutura de Dados",
+  numero-projeto: "2025/007",
   autores: (
     (name: "Dr. Fernando Henrique Alves"),
     (name: "MSc. Roberta Cristina Lima"),
     (name: "BSc. Gabriel Santos Oliveira"),
   ),
-  instituicoes: (
-    "Universidade Federal de Exemplo",
-    "Centro de Processamento de Dados",
-  ),
+  instituicao-executora: [Universidade Federal de Exemplo, Centro de Processamento de Dados. Av. Principal, 1000 - Campus Universitário - CEP 12345-678 - Cidade/UF],
+  instituicao-patrocinadora: [Fundação de Amparo à Pesquisa do Estado (FAPE). Rua das Fundações, 50 - CEP 12345-000 - Cidade/UF],
   texto-resumo: [
     Análise comparativa de desempenho entre MongoDB, Cassandra e Redis para subsidiar decisão tecnológica do novo sistema de gestão acadêmica. Testes realizados com YCSB em ambiente controlado. Recomenda-se arquitetura híbrida com MongoDB para dados principais e Redis para cache.
   ],
   palavras-chave: ("Banco de dados NoSQL", "MongoDB", "Cassandra", "Redis", "Benchmarking"),
   edicao: "1ª edição",
-  paginas: "45",
-  distribuicao: "Irrestrita",
+  paginas: context counter(page).final().first(),
+  numero-classificacao: "005.74",
+  tiragem: "50 exemplares",
   distribuidor: "Centro de Processamento de Dados - UFE",
   observacoes: "Relatório produzido no âmbito do Projeto de Modernização da Infraestrutura de Dados.",
 )
