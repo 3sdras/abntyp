@@ -12,12 +12,24 @@
 // - Elementos textuais obrigatórios (tema, problema, hipóteses, objetivos,
 //   justificativa, referencial teórico, metodologia)
 // - cronograma-simples() - Cronograma com atividades × períodos
-// - recursos() - Recursos com valores e total
+// - Tabela de recursos (orçamento) com legenda e fonte; `recursos(itens: ((descrição,
+//   valor), ...))` também existe, mas produz uma tabela simples, sem legenda
 // - glossario-projeto() - Glossário
 // - apendice() e anexo()
-// - Referências automáticas
+// - Referências automáticas (abnt-bibliography com read("referencias.bib")); as
+//   obras são citadas no texto com #pag(<chave>) ou @chave
 //
 // ============================================================================
+
+// COMO COMPILAR: este exemplo importa ../lib.typ, que fica FORA da pasta
+// examples/; por isso o Typst precisa saber onde está a raiz do pacote:
+//   da raiz do pacote:        typst compile --root . examples/projeto-exemplo.typ
+//   de dentro de examples/:   typst compile --root .. projeto-exemplo.typ
+// (sem --root, o Typst recusa o import: "cannot read file outside of project root")
+// Se você COPIAR este arquivo para o seu projeto, troque o import abaixo por
+//   #import "@preview/abntyp:0.6.0": *
+// e compile com `typst compile projeto-exemplo.typ`. Arquivos que o exemplo lê (referencias.bib,
+// imagens de ../docs/figuras/), se houver, precisam ir junto, com os caminhos ajustados.
 
 #import "../lib.typ": *
 
@@ -33,9 +45,9 @@
   orientador: "Prof. Dr. Marcelo Augusto Ribeiro",
   coorientador: "Profa. Dra. Juliana Costa (Psicologia)",
   fonte: "Times New Roman",
-  // Para usar bibliografia automática, descomente a linha abaixo (o caminho é relativo
-  // a este arquivo):
-  // arquivo-bibliografia: read("referencias.bib"),
+  // Bibliografia automática no fim do documento: arquivo-bibliografia: read("referencias.bib").
+  // Aqui as referências saem antes do glossário e dos apêndices (NBR 15287: referências,
+  // glossário, apêndice, anexo), com abnt-bibliography(...) na posição certa, mais abaixo.
 )
 
 // ============================================================================
@@ -62,7 +74,7 @@
 
 O presente projeto de pesquisa situa-se na interseção entre Ciência da Computação e Psicologia da Saúde, focando especificamente no desenvolvimento de tecnologias móveis para suporte à saúde mental. A pesquisa aborda o desenvolvimento de um aplicativo mobile que implementa técnicas validadas de Terapia Cognitivo-Comportamental (TCC) para auxiliar indivíduos no gerenciamento de ansiedade e depressão leve a moderada.
 
-A saúde mental tornou-se uma preocupação global de saúde pública, especialmente após a pandemia de COVID-19. Segundo dados do Instituto Brasileiro de Geografia e Estatística (IBGE, 2023), aproximadamente 26% da população brasileira reportou sintomas de ansiedade em 2022, um aumento significativo em relação aos anos anteriores.
+A saúde mental tornou-se uma preocupação global de saúde pública, especialmente após a pandemia de COVID-19, o que aumenta a demanda por intervenções acessíveis e de baixo custo, como os aplicativos móveis @mendes2023.
 
 == Problema de Pesquisa
 
@@ -119,7 +131,7 @@ A relevância desta pesquisa fundamenta-se em três dimensões principais: cient
 
 == Relevância Científica
 
-Apesar do crescente número de aplicativos de saúde mental disponíveis nas lojas de aplicativos, estudos indicam que menos de 5% possuem validação científica adequada. Oliveira e Costa (2021) destacam que a maioria dos aplicativos disponíveis não foi desenvolvida com base em evidências científicas nem passou por avaliação rigorosa de eficácia.
+Apesar do crescente número de aplicativos de saúde mental disponíveis nas lojas de aplicativos, poucos possuem validação científica adequada. #pag(<mendes2023>) destacam que a maioria dos aplicativos disponíveis não foi desenvolvida com base em evidências científicas nem passou por avaliação rigorosa de eficácia.
 
 Esta pesquisa contribuirá para o avanço do conhecimento ao:
 
@@ -129,7 +141,7 @@ Esta pesquisa contribuirá para o avanço do conhecimento ao:
 
 == Relevância Social
 
-O Brasil enfrenta uma crise de saúde mental agravada pela escassez de profissionais especializados e pela dificuldade de acesso a tratamentos. Segundo dados do Conselho Federal de Psicologia, há aproximadamente 1 psicólogo para cada 500 habitantes, com distribuição desigual entre regiões urbanas e rurais.
+O Brasil enfrenta uma crise de saúde mental agravada pela escassez de profissionais especializados e pela dificuldade de acesso a tratamentos. Há escassez de psicólogos em relação à demanda, com distribuição desigual entre regiões urbanas e rurais.
 
 Um aplicativo validado cientificamente pode:
 
@@ -153,7 +165,7 @@ Do ponto de vista tecnológico, este projeto aborda desafios relevantes para a �
 
 A Terapia Cognitivo-Comportamental é uma abordagem psicoterapêutica estruturada, orientada para objetivos, que foca na modificação de padrões disfuncionais de pensamento e comportamento. Desenvolvida por Aaron Beck na década de 1960, a TCC tornou-se um dos tratamentos mais pesquisados e validados empiricamente para transtornos de ansiedade e depressão.
 
-Conforme Silva e Santos (2023), as principais técnicas da TCC incluem:
+Conforme #pag(<beck2021>), as principais técnicas da TCC incluem:
 
 - *Reestruturação cognitiva:* identificação e modificação de pensamentos automáticos negativos;
 - *Ativação comportamental:* planejamento de atividades prazerosas e significativas;
@@ -163,19 +175,19 @@ Conforme Silva e Santos (2023), as principais técnicas da TCC incluem:
 
 == Intervenções Digitais em Saúde Mental
 
-As intervenções digitais em saúde mental, também conhecidas como e-mental health, têm crescido exponencialmente na última década. Ferreira (2020) classifica estas intervenções em três categorias:
+As intervenções digitais em saúde mental, também conhecidas como e-mental health, têm crescido exponencialmente na última década. #pag(<costa2022>) classifica estas intervenções em três categorias:
 
 + *Intervenções autoguiadas:* o usuário navega pelo conteúdo de forma independente;
 + *Intervenções guiadas:* há suporte de um profissional de saúde, mesmo que remoto;
 + *Intervenções híbridas:* combinam elementos autoguiados com sessões presenciais.
 
-A eficácia de intervenções digitais baseadas em TCC tem sido demonstrada em diversos estudos. Uma meta-análise conduzida por Lima (2019) encontrou tamanho de efeito moderado a grande (d = 0,77) para aplicativos de TCC no tratamento de ansiedade.
+A eficácia de intervenções digitais baseadas em TCC tem sido demonstrada em diversos estudos. Os resultados de #pag(<costa2022>) apontam efeito favorável dos aplicativos de TCC no tratamento de ansiedade, o que sustenta a hipótese H1.
 
 == Personalização e Machine Learning
 
 A personalização de intervenções de saúde mental utilizando técnicas de machine learning representa uma fronteira promissora de pesquisa. Algoritmos de recomendação podem adaptar o conteúdo apresentado ao usuário com base em seu perfil, preferências e progresso no tratamento.
 
-Santos (2022) demonstrou que sistemas adaptativos baseados em reinforcement learning podem otimizar a sequência de exercícios terapêuticos, melhorando tanto a aderência quanto os resultados clínicos.
+#pag(<ribeiro2024>) mostram que sistemas adaptativos podem otimizar a sequência de atividades, melhorando a aderência; a proposta é estender essa ideia aos exercícios terapêuticos.
 
 = Metodologia
 
@@ -250,7 +262,10 @@ O projeto será submetido ao Comitê de Ética em Pesquisa da instituição. Tod
     "Redação da dissertação",
     "Defesa",
   ),
-  periodos: ("Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez", "Jan", "Fev"),
+  // Períodos = meses do projeto (1 a 12). Se preferir nomes de mês, use as
+  // abreviaturas da NBR 5892 ("jan.", "fev.", ..., "maio", ...), que ocupam mais
+  // espaço: com 12 colunas elas não cabem ("maio" é cortado); use poucos períodos.
+  periodos: ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),
   marcacoes: (
     (true, true, false, false, false, false, false, false, false, false, false, false),  // Revisão
     (true, true, false, false, false, false, false, false, false, false, false, false),  // Seleção TCC
@@ -300,13 +315,17 @@ O projeto será submetido ao Comitê de Ética em Pesquisa da instituição. Tod
   kind: table,
 )
 
+#fonte[Elaborado pela autora (2026).]
+
 *Fonte de financiamento:* Bolsa CAPES/CNPq + Edital de fomento à pesquisa da instituição.
 
 // ============================================================================
 // ELEMENTOS PÓS-TEXTUAIS
 // ============================================================================
 
-// Referências são inseridas automaticamente pelo template
+// Referências: só as obras citadas no texto saem. O .bib é lido com read() (relativo
+// a este arquivo). Vêm antes do glossário, do apêndice e do anexo (NBR 15287 4.2.3).
+#abnt-bibliography(read("referencias.bib"))
 
 // Glossário
 #glossario-projeto((

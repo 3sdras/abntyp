@@ -24,6 +24,16 @@
 // relatorio.with(espacamento: "1,5").
 // ============================================================================
 
+// COMO COMPILAR: este exemplo importa ../lib.typ, que fica FORA da pasta
+// examples/; por isso o Typst precisa saber onde está a raiz do pacote:
+//   da raiz do pacote:        typst compile --root . examples/relatorio-exemplo.typ
+//   de dentro de examples/:   typst compile --root .. relatorio-exemplo.typ
+// (sem --root, o Typst recusa o import: "cannot read file outside of project root")
+// Se você COPIAR este arquivo para o seu projeto, troque o import abaixo por
+//   #import "@preview/abntyp:0.6.0": *
+// e compile com `typst compile relatorio-exemplo.typ`. Arquivos que o exemplo lê (referencias.bib,
+// imagens de ../docs/figuras/), se houver, precisam ir junto, com os caminhos ajustados.
+
 #import "../lib.typ": *
 
 // Configuração do documento usando o template technical-report
@@ -46,7 +56,7 @@
     (name: "MSc. Roberta Cristina Lima", qualification: "Pesquisadora"),
     (name: "BSc. Gabriel Santos Oliveira", qualification: "Analista de Sistemas"),
   ),
-  classificacao: none,
+  classificacao: "Ostensivo",
   issn: none,
   local: "Cidade",
   ano: 2026,
@@ -88,8 +98,11 @@
   ],
 )
 
-// Errata (opcional - incluída como demonstração; cita trechos que estão no texto;
-// folha e linha conferidas com Times New Roman)
+// Errata (opcional - incluída como demonstração). Cita trechos que estão no texto.
+// ATENÇÃO: a folha e a linha da errata dependem da paginação, que depende da fonte:
+// foram conferidas com Times New Roman (folha 10, linha 29; folha 11, linha 25, contando
+// as linhas de texto da página sem o número). Com Arial, outro corpo ou outro texto,
+// confira de novo no PDF antes de usar estes números.
 #errata(
   referencia: [ALVES, F. H.; LIMA, R. C.; OLIVEIRA, G. S. *Análise de desempenho de sistemas de banco de dados NoSQL*: estudo comparativo entre MongoDB, Cassandra e Redis. Cidade: UFE/CPD, 2026. #context counter(page).final().first() p. (Relatório Técnico, n. 15).],
   itens: (
@@ -128,7 +141,7 @@
 
 O crescimento exponencial do volume de dados nas instituições de ensino superior tem imposto desafios significativos para os sistemas de gerenciamento de banco de dados tradicionais. Os sistemas relacionais, embora maduros e confiáveis, frequentemente apresentam limitações de escalabilidade e desempenho quando confrontados com cargas de trabalho caracterizadas por alto volume de transações, dados semiestruturados e necessidade de disponibilidade contínua.
 
-Neste contexto, os sistemas de banco de dados NoSQL (Not Only SQL) emergiram como alternativas viáveis, oferecendo diferentes modelos de dados e características de desempenho adequadas a cenários específicos. Conforme destacam #cite(<silva2023>, form: "prose"), a escolha do sistema de banco de dados adequado pode impactar significativamente o desempenho e a escalabilidade de aplicações corporativas.
+Neste contexto, os sistemas de banco de dados NoSQL (Not Only SQL) emergiram como alternativas viáveis, oferecendo diferentes modelos de dados e características de desempenho adequadas a cenários específicos. Conforme destacam #pag(<gessert2017>), a escolha do sistema de banco de dados adequado pode impactar significativamente o desempenho e a escalabilidade de aplicações corporativas.
 
 == Objetivo do Relatório
 
@@ -148,7 +161,7 @@ O escopo deste estudo compreende:
 
 == Bancos de Dados NoSQL
 
-Os bancos de dados NoSQL constituem uma categoria heterogênea de sistemas que compartilham a característica de não utilizar exclusivamente o modelo relacional e a linguagem SQL como interface principal. Segundo #cite(<cormen2012>, form: "prose"), estes sistemas podem ser classificados em quatro grandes categorias:
+Os bancos de dados NoSQL constituem uma categoria heterogênea de sistemas que compartilham a característica de não utilizar exclusivamente o modelo relacional e a linguagem SQL como interface principal. Segundo #pag(<sadalage2013>), estes sistemas podem ser classificados em quatro grandes categorias:
 
 + *Orientados a documentos:* armazenam dados em documentos semiestruturados (JSON, BSON), como MongoDB e CouchDB;
 + *Chave-valor:* armazenam pares chave-valor simples, otimizados para alta velocidade, como Redis e DynamoDB;
@@ -200,10 +213,10 @@ Os testes foram executados em ambiente de cluster virtualizado com as seguintes 
     table.hline(stroke: 1.5pt),
     [*Componente*], [*Especificação*],
     table.hline(stroke: 0.75pt),
-    [Servidores], [3 nós (cluster) + 1 servidor de benchmark],
+    [Servidores], [3 a 12 nós (cluster, conforme o teste) + 1 servidor de benchmark],
     [CPU], [AMD EPYC 7742 (16 vCPUs por nó)],
     [Memória], [64 GB RAM por nó],
-    [Armazenamento], [NVMe SSD 1TB por nó],
+    [Armazenamento], [NVMe SSD de 1 TB por nó],
     [Rede], [10 Gbps entre nós],
     [Sistema Operacional], [Ubuntu Server 22.04 LTS],
     table.hline(stroke: 1.5pt),
@@ -216,7 +229,7 @@ Os testes foram executados em ambiente de cluster virtualizado com as seguintes 
 
 == Framework de Benchmark
 
-Foi utilizado o Yahoo! Cloud Serving Benchmark (YCSB), framework padrão da indústria para avaliação de bancos de dados NoSQL. O YCSB permite a execução de cargas de trabalho padronizadas que simulam diferentes padrões de acesso a dados.
+Foi utilizado o Yahoo! Cloud Serving Benchmark (YCSB) @cooper2010, framework padrão da indústria para avaliação de bancos de dados NoSQL. O YCSB permite a execução de cargas de trabalho padronizadas que simulam diferentes padrões de acesso a dados.
 
 As cargas de trabalho utilizadas foram:
 

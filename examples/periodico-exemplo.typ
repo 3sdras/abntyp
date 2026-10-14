@@ -17,6 +17,16 @@
 //
 // ============================================================================
 
+// COMO COMPILAR: este exemplo importa ../lib.typ, que fica FORA da pasta
+// examples/; por isso o Typst precisa saber onde está a raiz do pacote:
+//   da raiz do pacote:        typst compile --root . examples/periodico-exemplo.typ
+//   de dentro de examples/:   typst compile --root .. periodico-exemplo.typ
+// (sem --root, o Typst recusa o import: "cannot read file outside of project root")
+// Se você COPIAR este arquivo para o seu projeto, troque o import abaixo por
+//   #import "@preview/abntyp:0.6.0": *
+// e compile com `typst compile periodico-exemplo.typ`. Arquivos que o exemplo lê (referencias.bib,
+// imagens de ../docs/figuras/), se houver, precisam ir junto, com os caminhos ajustados.
+
 #import "../lib.typ": *
 
 // Configuração do documento usando o template periodical
@@ -53,37 +63,39 @@
   direitos-reproducao: [
     É permitida a reprodução parcial ou total desta obra, desde que citada a fonte e que não seja para venda ou qualquer fim comercial.
   ],
+  // Em conteúdo [ ... ] uma quebra de linha vira espaço: use `\` no fim da linha
+  // para quebrar, e uma linha em branco para separar os blocos.
   creditos: [
     *CORPO EDITORIAL*
 
-    *Editor-Chefe*
-    Prof. Dr. Ricardo Mendes Albuquerque
+    *Editor-Chefe* \
+    Prof. Dr. Ricardo Mendes Albuquerque \
     Universidade Federal de Exemplo
 
-    *Editores Associados*
-    Profa. Dra. Carla Regina Sousa -- UFE
-    Prof. Dr. Marcos Antonio Lima -- UFRJ
-    Profa. Dra. Patrícia Helena Costa -- USP
+    *Editores Associados* \
+    Profa. Dra. Carla Regina Sousa -- UFE \
+    Prof. Dr. Marcos Antonio Lima -- UEM \
+    Profa. Dra. Patrícia Helena Costa -- IFE
 
-    *Conselho Editorial*
-    Prof. Dr. André Luiz Ferreira -- UNICAMP
-    Profa. Dra. Beatriz Santos Oliveira -- UFMG
-    Prof. Dr. Carlos Eduardo Martins -- UFRGS
-    Profa. Dra. Diana Cristina Pereira -- UnB
-    Prof. Dr. Eduardo Felipe Silva -- UFSC
-    Prof. Dr. Fernando José Ribeiro -- PUC-Rio
+    *Conselho Editorial* \
+    Prof. Dr. André Luiz Ferreira -- UFE \
+    Profa. Dra. Beatriz Santos Oliveira -- UEM \
+    Prof. Dr. Carlos Eduardo Martins -- IFE \
+    Profa. Dra. Diana Cristina Pereira -- UFM \
+    Prof. Dr. Eduardo Felipe Silva -- UFM \
+    Prof. Dr. Fernando José Ribeiro -- UEM
 
-    *Secretaria Editorial*
-    Ana Paula Rodrigues
+    *Secretaria Editorial* \
+    Ana Paula Rodrigues \
     E-mail: rbti\@ufe.edu.br
 
-    *Revisão de Português*
+    *Revisão de Português* \
     Prof. Me. João Carlos Andrade
 
-    *Revisão de Inglês*
+    *Revisão de Inglês* \
     Profa. Dra. Michelle Santos
 
-    *Diagramação*
+    *Diagramação* \
     Núcleo de Editoração -- UFE
 
     *Periodicidade:* Quadrimestral
@@ -94,7 +106,7 @@
     #set text(size: 9pt)
     Revista Brasileira de Tecnologia e Inovação / Universidade Federal de Exemplo. -- v. 1, n. 1 (2019)- . -- Cidade: Editora Universitária, 2019-
 
-    #h(1em) Quadrimestral
+    #h(1em) Quadrimestral \
     #h(1em) ISSN 2965-0003
 
     #h(1em) 1. Tecnologia - Periódicos. 2. Inovação - Periódicos.
@@ -142,22 +154,22 @@
   resumo: [
     Este artigo apresenta uma abordagem baseada em aprendizado de máquina para detecção de anomalias em sistemas industriais no contexto da Indústria 4.0. O método proposto utiliza uma combinação de autoencoders e redes LSTM para identificar padrões anômalos em séries temporais de sensores. Os experimentos foram realizados com dados reais de uma planta industrial do setor petroquímico, alcançando taxa de detecção de 94,7% com apenas 2,3% de falsos positivos. Os resultados demonstram que a abordagem proposta supera métodos estatísticos tradicionais e pode ser integrada a sistemas de manutenção preditiva.
   ],
-  palavras-chave: ("Detecção de anomalias", "Aprendizado de máquina", "Indústria 4.0", "Manutenção preditiva", "Séries temporais"),
+  palavras-chave: ("detecção de anomalias", "aprendizado de máquina", "Indústria 4.0", "manutenção preditiva", "séries temporais"),
   resumo-en: [
     This paper presents a machine learning approach for anomaly detection in industrial systems in the context of Industry 4.0. The proposed method uses a combination of autoencoders and LSTM networks to identify anomalous patterns in sensor time series. Experiments were conducted with real data from a petrochemical plant, achieving a detection rate of 94.7% with only 2.3% false positives. The results demonstrate that the proposed approach outperforms traditional statistical methods and can be integrated into predictive maintenance systems.
   ],
-  palavras-chave-en: ("Anomaly detection", "Machine learning", "Industry 4.0", "Predictive maintenance", "Time series"),
+  palavras-chave-en: ("anomaly detection", "machine learning", "Industry 4.0", "predictive maintenance", "time series"),
   submissao: "3 de fevereiro de 2026",
   aprovacao: "20 de março de 2026",
-  doi: "https://doi.org/10.0000/rbti.2026.801",
+  doi: "https://doi.org/10.5555/rbti.2026.801",
 )[
   = Introdução
 
   A transformação digital da indústria, conhecida como Indústria 4.0, tem proporcionado a geração de grandes volumes de dados provenientes de sensores e sistemas de monitoramento. Neste cenário, a detecção automática de anomalias torna-se fundamental para garantir a continuidade operacional e a segurança dos processos industriais.
 
-  Os métodos tradicionais de detecção de anomalias, baseados em limiares estáticos ou regras definidas por especialistas, apresentam limitações significativas quando aplicados a sistemas complexos com múltiplas variáveis interdependentes. Técnicas de aprendizado de máquina oferecem alternativas promissoras ao permitir a identificação de padrões sutis e não-lineares nos dados.
+  Os métodos tradicionais de detecção de anomalias, baseados em limiares estáticos ou regras definidas por especialistas, apresentam limitações significativas quando aplicados a sistemas complexos com múltiplas variáveis interdependentes. Técnicas de aprendizado de máquina oferecem alternativas promissoras ao permitir a identificação de padrões sutis e não-lineares nos dados (Chandola; Banerjee; Kumar, 2009; Goodfellow; Bengio; Courville, 2016).
 
-  Este trabalho propõe uma arquitetura híbrida que combina autoencoders para redução de dimensionalidade e extração de características com redes LSTM para modelagem temporal. A abordagem foi validada em cenário real de uma planta petroquímica.
+  Este trabalho propõe uma arquitetura híbrida que combina autoencoders para redução de dimensionalidade e extração de características com redes LSTM para modelagem temporal. A abordagem foi validada em cenário real de uma planta petroquímica, na linha da manufatura inteligente descrita por Lee et al. (2018).
 
   = Metodologia
 
@@ -207,18 +219,18 @@
   resumo: [
     Este artigo investiga a adoção de práticas DevOps em empresas brasileiras de desenvolvimento de software. Foi conduzido um survey com 247 profissionais de 89 organizações de diferentes portes e setores. Os resultados indicam que 68% das empresas participantes adotam pelo menos parcialmente práticas DevOps, com destaque para integração contínua (82%), controle de versão (95%) e containerização (61%). Os principais benefícios reportados incluem redução no tempo de entrega, melhoria na qualidade do software e maior colaboração entre equipes. As barreiras mais citadas foram resistência cultural, falta de habilidades técnicas e complexidade de ferramentas. O estudo contribui para a compreensão do estado atual da adoção de DevOps no contexto brasileiro.
   ],
-  palavras-chave: ("DevOps", "Engenharia de software", "Práticas ágeis", "Integração contínua", "Survey"),
+  palavras-chave: ("DevOps", "engenharia de software", "práticas ágeis", "integração contínua", "survey"),
   resumo-en: [
     This paper investigates the adoption of DevOps practices in Brazilian software development companies. A survey was conducted with 247 professionals from 89 organizations of different sizes and sectors. Results indicate that 68% of participating companies at least partially adopt DevOps practices, with emphasis on continuous integration (82%), version control (95%), and containerization (61%). The main reported benefits include reduced delivery time, improved software quality, and greater collaboration between teams. The most cited barriers were cultural resistance, lack of technical skills, and tool complexity. The study contributes to understanding the current state of DevOps adoption in the Brazilian context.
   ],
-  palavras-chave-en: ("DevOps", "Software engineering", "Agile practices", "Continuous integration", "Survey"),
+  palavras-chave-en: ("DevOps", "software engineering", "agile practices", "continuous integration", "survey"),
   submissao: "10 de fevereiro de 2026",
   aprovacao: "27 de março de 2026",
-  doi: "https://doi.org/10.0000/rbti.2026.802",
+  doi: "https://doi.org/10.5555/rbti.2026.802",
 )[
   = Introdução
 
-  DevOps é um conjunto de práticas que visa unificar o desenvolvimento de software (Dev) e as operações de TI (Ops), promovendo maior colaboração, automação e entrega contínua de valor. Originado na comunidade de software por volta de 2009, o movimento DevOps ganhou ampla adoção global na última década.
+  DevOps é um conjunto de práticas que visa unificar o desenvolvimento de software (Dev) e as operações de TI (Ops), promovendo maior colaboração, automação e entrega contínua de valor. Originado na comunidade de software por volta de 2009, o movimento DevOps ganhou ampla adoção global na última década (Kim et al., 2016; Forsgren; Humble; Kim, 2018).
 
   Apesar da crescente importância do DevOps para a competitividade das organizações de software, poucos estudos investigaram sistematicamente sua adoção no contexto brasileiro. Este trabalho busca preencher essa lacuna através de um survey abrangente com profissionais da indústria nacional.
 
@@ -226,7 +238,7 @@
 
   == Design do Survey
 
-  O questionário foi desenvolvido com base em frameworks estabelecidos de avaliação de maturidade DevOps, como o modelo CALMS (Culture, Automation, Lean, Measurement, Sharing) e relatórios como o DORA State of DevOps.
+  O questionário foi desenvolvido com base em frameworks estabelecidos de avaliação de maturidade DevOps, como o modelo CALMS (Culture, Automation, Lean, Measurement, Sharing) e relatórios como o DORA State of DevOps (Forsgren; Humble; Kim, 2018). As práticas de entrega contínua seguem Humble e Farley (2010).
 
   O instrumento final contém 45 questões organizadas em seções: perfil do respondente, características da organização, práticas adotadas, benefícios percebidos e barreiras encontradas.
 
@@ -238,7 +250,7 @@
 
   == Adoção de Práticas
 
-  Os resultados mostram alta adoção de práticas fundamentais: controle de versão (95%), integração contínua (82%) e testes automatizados (74%). Práticas mais avançadas como deployment contínuo (47%) e infraestrutura como código (51%) apresentam adoção moderada.
+  Os resultados mostram alta adoção de práticas fundamentais: controle de versão (95%), integração contínua (82%), testes automatizados (74%) e containerização (61%). Práticas mais avançadas como deployment contínuo (47%) e infraestrutura como código (51%) apresentam adoção moderada.
 
   == Benefícios Percebidos
 
@@ -265,9 +277,9 @@
 
   FORSGREN, N.; HUMBLE, J.; KIM, G. *Accelerate*: the science of lean software and DevOps. Portland: IT Revolution, 2018.
 
-  KIM, G. et al. *The DevOps Handbook*: how to create world-class agility, reliability, and security in technology organizations. Portland: IT Revolution, 2016.
-
   HUMBLE, J.; FARLEY, D. *Continuous Delivery*: reliable software releases through build, test, and deployment automation. Boston: Addison-Wesley, 2010.
+
+  KIM, G. et al. *The DevOps Handbook*: how to create world-class agility, reliability, and security in technology organizations. Portland: IT Revolution, 2016.
 ]
 
 // Artigo 3
@@ -279,22 +291,22 @@
     (name: "Roberto Carlos Ferreira", affiliation: "Doutor em Ciência da Computação, Professor Associado da Universidade Federal de Exemplo. E-mail: roberto.ferreira@ufe.edu.br"),
   ),
   resumo: [
-    Este artigo investiga o impacto de interfaces conversacionais (chatbots) na experiência do usuário em aplicativos bancários móveis. Um estudo experimental com 120 participantes comparou a realização de tarefas bancárias comuns utilizando interface tradicional (menus e botões) versus interface conversacional. Os resultados indicam que a interface conversacional apresentou maior satisfação percebida (4,2 vs 3,6 na escala SUS) e menor carga cognitiva, especialmente para tarefas complexas como consulta de extratos e contestação de transações. Entretanto, a interface tradicional mostrou-se superior para tarefas simples e frequentes, como transferências. Recomenda-se a adoção de interfaces híbridas que permitam ao usuário escolher o modo de interação conforme o contexto da tarefa.
+    Este artigo investiga o impacto de interfaces conversacionais (chatbots) na experiência do usuário em aplicativos bancários móveis. Um estudo experimental com 120 participantes comparou a realização de tarefas bancárias comuns utilizando interface tradicional (menus e botões) versus interface conversacional. Os resultados indicam que a interface conversacional apresentou maior satisfação percebida (78,4 vs 66,2 na escala SUS, que vai de 0 a 100) e menor carga cognitiva, especialmente para tarefas complexas como consulta de extratos e contestação de transações. Entretanto, a interface tradicional mostrou-se superior para tarefas simples e frequentes, como transferências. Recomenda-se a adoção de interfaces híbridas que permitam ao usuário escolher o modo de interação conforme o contexto da tarefa.
   ],
-  palavras-chave: ("Chatbot", "Experiência do usuário", "Interface conversacional", "Mobile banking", "Usabilidade"),
+  palavras-chave: ("chatbot", "experiência do usuário", "interface conversacional", "mobile banking", "usabilidade"),
   resumo-en: [
-    This paper investigates the impact of conversational interfaces (chatbots) on user experience in mobile banking applications. An experimental study with 120 participants compared common banking tasks using traditional interface (menus and buttons) versus conversational interface. Results indicate that the conversational interface showed higher perceived satisfaction (4.2 vs 3.6 on SUS scale) and lower cognitive load, especially for complex tasks such as statement queries and transaction disputes. However, the traditional interface proved superior for simple and frequent tasks such as transfers. Hybrid interfaces that allow users to choose the interaction mode according to task context are recommended.
+    This paper investigates the impact of conversational interfaces (chatbots) on user experience in mobile banking applications. An experimental study with 120 participants compared common banking tasks using traditional interface (menus and buttons) versus conversational interface. Results indicate that the conversational interface showed higher perceived satisfaction (78.4 vs 66.2 on the SUS scale, which ranges from 0 to 100) and lower cognitive load, especially for complex tasks such as statement queries and transaction disputes. However, the traditional interface proved superior for simple and frequent tasks such as transfers. Hybrid interfaces that allow users to choose the interaction mode according to task context are recommended.
   ],
-  palavras-chave-en: ("Chatbot", "User experience", "Conversational interface", "Mobile banking", "Usability"),
+  palavras-chave-en: ("chatbot", "user experience", "conversational interface", "mobile banking", "usability"),
   submissao: "17 de fevereiro de 2026",
   aprovacao: "1 de abril de 2026",
-  doi: "https://doi.org/10.0000/rbti.2026.803",
+  doi: "https://doi.org/10.5555/rbti.2026.803",
 )[
   = Introdução
 
   O setor bancário tem investido significativamente em interfaces conversacionais como forma de melhorar o atendimento ao cliente e reduzir custos operacionais. Chatbots baseados em inteligência artificial são cada vez mais comuns em aplicativos móveis de instituições financeiras, prometendo interações mais naturais e intuitivas.
 
-  Entretanto, a literatura sobre a eficácia dessas interfaces no contexto específico de aplicativos bancários ainda é limitada. Este estudo busca investigar empiricamente em quais cenários as interfaces conversacionais oferecem vantagens em relação às interfaces tradicionais baseadas em menus.
+  Entretanto, a literatura sobre a eficácia dessas interfaces no contexto específico de aplicativos bancários ainda é limitada (Følstad; Brandtzæg, 2017; Luger; Sellen, 2016). Este estudo busca investigar empiricamente em quais cenários as interfaces conversacionais oferecem vantagens em relação às interfaces tradicionais baseadas em menus.
 
   = Metodologia
 
@@ -318,7 +330,7 @@
 
   == Satisfação e Carga Cognitiva
 
-  A satisfação geral medida pela escala SUS foi significativamente maior para a interface conversacional (4,2 vs 3,6, p\<0,01). A carga cognitiva, medida pelo NASA-TLX, foi menor na interface conversacional para tarefas complexas.
+  A satisfação geral medida pela escala SUS foi significativamente maior para a interface conversacional (78,4 vs 66,2, p\<0,01). A carga cognitiva, medida pelo NASA-TLX, foi menor na interface conversacional para tarefas complexas.
 
   == Preferências
 
@@ -339,7 +351,7 @@
 
   FØLSTAD, A.; BRANDTZÆG, P. B. Chatbots and the new world of HCI. *Interactions*, v. 24, n. 4, p. 38-42, 2017.
 
-  LUGER, E.; SELLEN, A. "Like having a really bad PA": the gulf between user expectation and experience of conversational agents. *CHI '16*, p. 5286-5297, 2016.
+  LUGER, E.; SELLEN, A. "Like having a really bad PA": the gulf between user expectation and experience of conversational agents. *In*: CONFERENCE ON HUMAN FACTORS IN COMPUTING SYSTEMS, 2016, San Jose. *Proceedings* [...]. New York: ACM, 2016. p. 5286-5297.
 
   NORMAN, D. *The Design of Everyday Things*. Revised edition. New York: Basic Books, 2013.
 ]
@@ -374,8 +386,6 @@
   Submissões devem ser realizadas exclusivamente pelo sistema OJS da revista:
 
   https://rbti.ufe.edu.br/submissao
-
-  = Contato
 
   Dúvidas podem ser encaminhadas para: rbti\@ufe.edu.br
 ]

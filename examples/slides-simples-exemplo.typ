@@ -12,6 +12,16 @@
 // - NBR 10520:2023 - Citacoes em documentos
 // ============================================================================
 
+// COMO COMPILAR: este exemplo importa ../lib.typ, que fica FORA da pasta
+// examples/; por isso o Typst precisa saber onde está a raiz do pacote:
+//   da raiz do pacote:        typst compile --root . examples/slides-simples-exemplo.typ
+//   de dentro de examples/:   typst compile --root .. slides-simples-exemplo.typ
+// (sem --root, o Typst recusa o import: "cannot read file outside of project root")
+// Se você COPIAR este arquivo para o seu projeto, troque o import abaixo por
+//   #import "@preview/abntyp:0.6.0": *
+// e compile com `typst compile slides-simples-exemplo.typ`. Arquivos que o exemplo lê (referencias.bib,
+// imagens de ../docs/figuras/), se houver, precisam ir junto, com os caminhos ajustados.
+
 #import "../lib.typ": *
 
 // Template simples para apresentacao academica
@@ -105,11 +115,13 @@
 
 O algoritmo ajusta os coeficientes para minimizar o erro quadrático médio (MSE).
 
-// Citação em slide: sobrenome só com a inicial maiúscula (NBR 10520:2023)
+// Citação em slide: sobrenome só com a inicial maiúscula (NBR 10520:2023). A citação
+// direta é literal e leva a página: copie a frase exatamente como está na fonte.
 #slide-citacao(
-  quote: "Machine learning is the field of study that gives computers the ability to learn without being explicitly programmed.",
-  autor: "Samuel",
-  ano: "1959",
+  quote: "A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P, if its performance at tasks in T, as measured by P, improves with experience E.",
+  autor: "Mitchell",
+  ano: "1997",
+  pagina: "2",
 )
 
 == Aplicações Práticas
@@ -144,11 +156,11 @@ O algoritmo ajusta os coeficientes para minimizar o erro quadrático médio (MSE
 )
 
 #slide-resultado-numerico(
-  titulo: "ML em Números",
+  titulo: "ML em Datas e Números",
   itens: (
-    ("$15.7 tri", "Mercado global de IA em 2030"),
-    ("77%", "Empresas usando ou explorando IA"),
-    ("2.3M", "Empregos em IA/ML até 2025"),
+    ("1959", "Arthur Samuel cunha o termo \"machine learning\""),
+    ("1997", "Definição formal de aprendizado, de Tom Mitchell"),
+    ("3", "Paradigmas: supervisionado, não supervisionado e por reforço"),
   ),
 )
 

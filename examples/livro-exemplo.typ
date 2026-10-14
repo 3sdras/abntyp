@@ -14,7 +14,8 @@
 // - book-dedication() - Dedicatória
 // - book-acknowledgments() - Agradecimentos
 // - book-epigraph() - Epígrafe
-// - book-list-illustrations() - Lista de ilustrações
+// - book-list-illustrations() - Lista de ilustrações (só sai se houver figuras: este
+//   exemplo só tem tabelas e um quadro, então ela não é impressa)
 // - book-list-tables() - Lista de tabelas
 // - book-list-quadros() - Lista de quadros
 // - book-list-abbreviations() - Lista de siglas
@@ -36,6 +37,16 @@
 //
 // ============================================================================
 
+// COMO COMPILAR: este exemplo importa ../lib.typ, que fica FORA da pasta
+// examples/; por isso o Typst precisa saber onde está a raiz do pacote:
+//   da raiz do pacote:        typst compile --root . examples/livro-exemplo.typ
+//   de dentro de examples/:   typst compile --root .. livro-exemplo.typ
+// (sem --root, o Typst recusa o import: "cannot read file outside of project root")
+// Se você COPIAR este arquivo para o seu projeto, troque o import abaixo por
+//   #import "@preview/abntyp:0.6.0": *
+// e compile com `typst compile livro-exemplo.typ`. Arquivos que o exemplo lê (referencias.bib,
+// imagens de ../docs/figuras/), se houver, precisam ir junto, com os caminhos ajustados.
+
 #import "../lib.typ": *
 
 // Configuração do documento usando o template book
@@ -54,6 +65,9 @@
   // sem ele sai só o da direita)
   cabecalho: (par: [Fundamentos de Programação], impar: auto),
 )
+
+// Blocos de código inteiros na mesma página (sem partir no meio)
+#show raw.where(block: true): set block(breakable: false)
 
 // ============================================================================
 // CAPA
@@ -107,7 +121,7 @@
 
     #h(1em) Fundamentos de programação: uma abordagem prática / Ricardo Mendes Silva. -- 2. ed. -- São Paulo: Editora Universitária, 2026.
 
-    #h(1em) 320 p. : il.
+    #h(1em) #context counter(page).final().first() p. : il.
 
     #h(1em) ISBN 978-65-00000-00-9
 

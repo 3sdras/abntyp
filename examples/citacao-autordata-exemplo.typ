@@ -6,8 +6,14 @@
 // ano e o "et al." vêm do arquivo .bib, e a lista de referências é gerada e
 // mantida em sincronia automaticamente. Use a sintaxe nativa @chave.
 //
-// Compile a partir da pasta examples/ (o referencias.bib está aqui ao lado):
-//   typst compile citacao-autordata-exemplo.typ
+// COMO COMPILAR: este exemplo importa ../lib.typ, que fica FORA da pasta
+// examples/; por isso o Typst precisa saber onde está a raiz do pacote:
+//   da raiz do pacote:        typst compile --root . examples/citacao-autordata-exemplo.typ
+//   de dentro de examples/:   typst compile --root .. citacao-autordata-exemplo.typ
+// (sem --root, o Typst recusa o import: "cannot read file outside of project root")
+// Se você COPIAR este arquivo para o seu projeto, troque o import abaixo por
+//   #import "@preview/abntyp:0.6.0": *
+// e leve junto o referencias.bib (ele é lido de ao lado deste arquivo).
 //
 // ============================================================================
 
@@ -25,7 +31,8 @@ Para 4 ou mais autores, o "et al." é inserido automaticamente @cormen2012 ---
 nenhuma função é necessária.
 
 Várias obras citadas juntas: basta colocá-las lado a lado
-@silva2023@santos2022 (o Typst agrupa e ordena).
+@silva2023@santos2022 (o Typst agrupa e ordena as obras por autor, em ordem
+alfabética, e não pela ordem em que você as escreveu).
 
 == Autor na sentença
 
@@ -40,10 +47,12 @@ a fonte original, não acessada, vai como texto:
 
 == Citação direta
 
-Citação curta incorporada ao texto, entre aspas
-#citacao-curta("Silva", 2023, 45)[a padronização garante consistência],
-com grifo do citador #citacao-curta("Silva", 2023, 46, grifo: "nosso")[a
-#grifo-nosso[clareza] é essencial].
+Citação curta incorporada ao texto, entre aspas, com a chave do `.bib` no
+lugar do autor (autor e ano vêm da entrada; a página vai em `pagina:`)
+#citacao-curta(<silva2023>, pagina: "45")[a padronização garante consistência],
+com grifo do citador
+#citacao-curta(<silva2023>, pagina: "46", grifo: "nosso")[a #grifo-nosso[clareza]
+é essencial].
 
 #postextual()
 

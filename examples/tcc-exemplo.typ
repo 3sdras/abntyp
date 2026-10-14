@@ -11,12 +11,18 @@
 // 2. Modifique os dados (título, autor, instituição, etc.)
 // 3. Substitua o conteúdo de exemplo pelo seu texto
 //
-// Para compilar: typst compile tcc-exemplo.typ
-// Para visualização ao vivo: typst watch tcc-exemplo.typ
+// COMO COMPILAR: este exemplo importa ../lib.typ, que fica FORA da pasta
+// examples/; por isso o Typst precisa saber onde está a raiz do pacote:
+//   da raiz do pacote:        typst compile --root . examples/tcc-exemplo.typ
+//   de dentro de examples/:   typst compile --root .. tcc-exemplo.typ
+//   visualização ao vivo:     typst watch --root . examples/tcc-exemplo.typ
+// (sem --root, o Typst recusa o import: "cannot read file outside of project root")
 //
 // REQUISITOS:
 // - Typst instalado (https://typst.app)
-// - Pasta abntyp no mesmo diretório ou caminho correto no import
+// - Se você COPIAR este arquivo para o seu projeto, troque o import da seção
+//   "CONFIGURAÇÃO INICIAL" por   #import "@preview/abntyp:0.6.0": *
+//   (o pacote é baixado sozinho; não é preciso copiar nenhuma pasta)
 //
 // ESTRUTURA DO DOCUMENTO:
 // - Elementos pré-textuais (capa, folha de rosto, resumo, sumário)
@@ -32,10 +38,10 @@
 //
 // Em Typst, usamos #import para carregar pacotes externos.
 // O caminho "../lib.typ" assume que este arquivo está na pasta examples/
-// Se seu arquivo estiver em outro lugar, ajuste o caminho.
-//
-// DICA: Se colocar o ABNTyp na raiz do seu projeto:
-//   #import "abntyp/lib.typ": *
+// do repositório do pacote. No SEU projeto, use o pacote publicado:
+//   #import "@preview/abntyp:0.6.0": *
+// (ou, com uma cópia local do ABNTyp na raiz do projeto:
+//   #import "abntyp/lib.typ": *)
 //
 // O asterisco (*) significa "importar tudo" do pacote.
 
@@ -56,7 +62,7 @@
   // --- Dados básicos do trabalho ---
   titulo: "Uma proposta de pacote para normas ABNT em Typst",
   // DICA: Se não tiver subtítulo, remova ou comente a linha abaixo
-  subtitulo: [Material didático para a disciplina \ Software Livre para Edição de Textos Matemáticos],
+  subtitulo: "implementação e validação em documentos acadêmicos",
 
   // --- Dados do autor ---
   autor: "Cláudio Código",
@@ -74,8 +80,11 @@
 
   // --- Natureza do trabalho ---
   // Para DISSERTAÇÃO de mestrado:
-  natureza: "Dissertação apresentada ao PROFMAT - Programa de Mestrado Profissional em Rede em Matemática do Instituto de Ciências Exatas e Tecnológicas da Universidade Federal de Jataí",
+  // A natureza NÃO repete a instituição: o nome dela sai logo depois do objetivo,
+  // seguido da área de concentração (NBR 14724:2024, 4.2.1.1.1).
+  natureza: "Dissertação apresentada ao PROFMAT - Programa de Mestrado Profissional em Rede em Matemática do Instituto de Ciências Exatas e Tecnológicas",
   objetivo: "como requisito parcial para obtenção do título de Mestre.",
+  area: "Ensino de Matemática",
 
   // Para TCC de graduação (descomente e adapte):
   // natureza: "Trabalho de Conclusão de Curso apresentado ao Curso de Licenciatura em Matemática da Universidade Federal de Jataí",
@@ -91,8 +100,10 @@
   // coorientador: "Prof. Dr. Nome do Coorientador",
 
   // --- Palavras-chave ---
-  palavras-chave: ("Palavra-chave 1", "Palavra-chave 2", "Palavra-chave 3", "Palavra-chave 4"),
-  palavras-chave-en: ("Keyword 1", "Keyword 2", "Keyword 3", "Keyword 4"),
+  // Iniciais minúsculas, exceto nomes próprios (NBR 6028:2021, 4.1.7); o template
+  // as separa por ponto e vírgula e põe o ponto final.
+  palavras-chave: ("normas técnicas", "ABNT", "Typst", "trabalhos acadêmicos"),
+  palavras-chave-en: ("technical standards", "ABNT", "Typst", "academic works"),
 )
 
 // ----------------------------------------------------------------------------
@@ -108,9 +119,9 @@
   // Opções: "Times New Roman" (padrão) ou "Arial"
   fonte: "Times New Roman",
 
-  // Bibliografia automática (opcional):
-  // Se você tiver um arquivo .bib com suas referências:
-  // arquivo-bibliografia: "referencias.bib",
+  // Bibliografia automática (opcional): se você tiver um arquivo .bib, passe o
+  // CONTEÚDO dele (o caminho em string dá erro):
+  // arquivo-bibliografia: read("referencias.bib"),
 )
 
 
@@ -129,6 +140,37 @@
 
 #capa()
 #folha-rosto()
+
+// Verso da folha de rosto: ficha catalográfica (obrigatória, NBR 14724:2024
+// 4.2.1.2). Ela é elaborada pela biblioteca da instituição: o conteúdo abaixo é
+// só um modelo fictício. A ficha não entra na contagem das páginas (14724 5.3).
+#ficha-catalografica[
+  #set par(first-line-indent: 0pt, justify: false)
+  Código, Cláudio.
+
+  #h(1em) Uma proposta de pacote para normas ABNT em Typst: implementação e validação em documentos acadêmicos / Cláudio Código. -- Jataí, 2026.
+
+  #h(1em) #context counter(page).final().first() f. : il.
+
+  #h(1em) Orientador: Prof. Dr. Esdras Teixeira Costa. Dissertação (Mestrado) -- Universidade Federal de Jataí, Instituto de Ciências Exatas e Tecnológicas, PROFMAT, 2026.
+
+  #h(1em) 1. Normas técnicas. 2. Typst. 3. Trabalhos acadêmicos. I. Costa, Esdras Teixeira. II. Título.
+
+  #align(right)[CDD 005.52]
+]
+
+// Folha de aprovação (obrigatória, NBR 14724:2024 4.2.1.3). Autor, título,
+// natureza, instituição e área vêm de dados(). `data:` é a data da defesa (sem
+// ela, a folha traz uma linha para preencher à mão); `banca:` lista os membros,
+// cada um com uma linha para assinatura.
+#folha-aprovacao(
+  data: "15 de março de 2026",
+  banca: (
+    (titulacao: "Prof. Dr.", nome: "Esdras Teixeira Costa", instituicao: "Universidade Federal de Jataí (orientador)"),
+    (titulacao: "Profa. Dra.", nome: "Helena Modelo Andrade", instituicao: "Universidade Federal de Jataí"),
+    (titulacao: "Prof. Dr.", nome: "Rafael Exemplo Nogueira", instituicao: "Universidade Estadual de Modelo"),
+  ),
+)
 
 
 // ============================================================================
@@ -226,7 +268,8 @@
 // PARTE 4: RESUMO E ABSTRACT
 // ============================================================================
 //
-// O resumo e o abstract são elementos OBRIGATÓRIOS (NBR 6028:2021).
+// O resumo e o abstract são elementos OBRIGATÓRIOS no trabalho acadêmico
+// (NBR 14724:2024, 4.2.1.7 e 4.2.1.8); a NBR 6028:2021 diz como redigi-los.
 //
 // ESTRUTURA SUGERIDA (pode variar conforme a área):
 // 1. Contexto/problema
@@ -236,7 +279,8 @@
 // 5. Conclusão
 //
 // EXTENSÃO: 150 a 500 palavras para trabalhos acadêmicos
-// PALAVRAS-CHAVE: 3 a 5, separadas por ponto
+// PALAVRAS-CHAVE: logo abaixo do resumo, separadas por ponto e vírgula e
+// terminadas por ponto (NBR 6028:2021, 4.1.7); a norma não fixa a quantidade
 
 // ----------------------------------------------------------------------------
 // RESUMO (em português)
@@ -278,11 +322,10 @@
 // ----------------------------------------------------------------------------
 // INÍCIO DA PARTE TEXTUAL
 // ----------------------------------------------------------------------------
-// A contagem de páginas já vem da folha de rosto (NBR 14724:2024).
-// A numeração aparece automaticamente a partir da primeira seção numerada
+// A contagem de páginas já vem da folha de rosto (NBR 14724:2024) e a numeração
+// aparece automaticamente a partir da primeira seção numerada
 // (normas-abnt(paginacao: "auto")). Alternativas: "todas" ou "nenhuma".
-
-#textual()
+// Não é preciso marcar o início da parte textual: basta começar pela Introdução.
 
 
 // ============================================================================
@@ -308,7 +351,7 @@
 // Seu texto começa aqui. Cada parágrafo é separado por uma linha em branco.
 // O recuo da primeira linha (1,25cm) é aplicado automaticamente.
 
-Este capítulo apresenta a introdução do trabalho, incluindo a contextualização do tema, a definição do problema de pesquisa, os objetivos e a justificativa.
+Esta seção apresenta a introdução do trabalho, incluindo a contextualização do tema, a definição do problema de pesquisa, os objetivos e a justificativa.
 
 // DICA: Em Typst, você pode usar *negrito* e _itálico_ facilmente:
 // *Este texto fica em negrito*
@@ -383,9 +426,10 @@ Além disso, a comunidade acadêmica brasileira carece de ferramentas modernas q
 
 == Estrutura do Trabalho
 
-// Descreva brevemente o que cada capítulo aborda.
+// Descreva brevemente o que cada seção primária aborda. A NBR 6024 chama as
+// divisões de "seções"; por isso @rótulo escreve "Seção 2" (e não "Capítulo 2").
 
-Este trabalho está estruturado em cinco capítulos. O Capítulo 2 apresenta a fundamentação teórica, revisando as normas ABNT e conceitos de tipografia digital. O Capítulo 3 descreve a metodologia utilizada no desenvolvimento. O Capítulo 4 apresenta os resultados obtidos. Por fim, o Capítulo 5 traz as conclusões e sugestões para trabalhos futuros.
+Este trabalho está estruturado em cinco seções primárias. A @sec-fundamentacao apresenta a fundamentação teórica, revisando as normas ABNT e conceitos de tipografia digital. A @sec-metodologia descreve a metodologia utilizada no desenvolvimento. A @sec-resultados apresenta os resultados obtidos. Por fim, a @sec-conclusao traz as conclusões e sugestões para trabalhos futuros.
 
 
 // ============================================================================
@@ -401,9 +445,9 @@ Este trabalho está estruturado em cinco capítulos. O Capítulo 2 apresenta a f
 // 3. Citação indireta (paráfrase) - sem aspas
 // 4. Citação de citação (apud) - quando não se tem acesso ao original
 
-= Fundamentação Teórica
+= Fundamentação Teórica <sec-fundamentacao>
 
-Este capítulo apresenta os conceitos fundamentais para o desenvolvimento do trabalho, incluindo uma revisão das normas ABNT e dos princípios de tipografia digital.
+Esta seção apresenta os conceitos fundamentais para o desenvolvimento do trabalho, incluindo uma revisão das normas ABNT e dos princípios de tipografia digital.
 
 
 == Normas ABNT para Trabalhos Acadêmicos
@@ -432,11 +476,14 @@ A padronização de documentos científicos surgiu da necessidade de facilitar a
 // ----------------------------------------------------------------------------
 // CITAÇÃO DIRETA CURTA (até 3 linhas)
 // ----------------------------------------------------------------------------
-// Use aspas duplas e indique autor, ano e página.
+// Use aspas duplas e indique autor, ano e página (a página é obrigatória na
+// citação direta, NBR 10520:2023). O texto entre colchetes recebe a chamada
+// (Autor, ano, p. N) logo depois das aspas. Não repita o autor na frase.
 
-De acordo com Santos (2022, p. 45), #citacao-curta(autor: "Santos", ano: "2022")[as normas técnicas são instrumentos fundamentais para a qualidade e a confiabilidade da produção científica].
+// Forma posicional: autor, ano e página, nessa ordem:
+Sobre o papel das normas, afirma-se que #citacao-curta("Santos", "2022", "45")[as normas técnicas são instrumentos fundamentais para a qualidade e a confiabilidade da produção científica].
 
-// Outra forma (com página):
+// Forma nomeada (equivalente):
 A literatura especializada destaca que #citacao-curta(autor: "Santos", ano: "2022", pagina: "45")[as normas técnicas são instrumentos fundamentais para a qualidade e a confiabilidade da produção científica].
 
 
@@ -459,7 +506,7 @@ A importância da normalização para a comunicação científica é amplamente 
 // ATENÇÃO: Deve ser evitada. Use apenas quando realmente necessário.
 
 // Exemplo de apud:
-Oliveira (1998 apud SANTOS, 2022, p. 78) já destacava a importância da padronização documental. O uso do apud indica que você está citando um autor (Oliveira) através de outro (Santos), pois não teve acesso direto à obra original.
+Oliveira (1998 apud Santos, 2022, p. 78) já destacava a importância da padronização documental. O uso do apud indica que você está citando um autor (Oliveira) através de outro (Santos), pois não teve acesso direto à obra original.
 
 // Usando a função citar-apud:
 Essa perspectiva histórica demonstra que a preocupação com normas técnicas não é recente #citar-apud("Oliveira", "1998", "Santos", "2022", pagina: "78").
@@ -504,9 +551,9 @@ Os princípios básicos da tipografia incluem legibilidade, hierarquia visual e 
 //
 // Numeração: automática, sequencial (Figura 1, Figura 2...)
 
-= Metodologia
+= Metodologia <sec-metodologia>
 
-Este capítulo descreve a metodologia utilizada no desenvolvimento do trabalho.
+Esta seção descreve a metodologia utilizada no desenvolvimento do trabalho.
 
 
 == Classificação da Pesquisa
@@ -591,6 +638,10 @@ A @fig-arquitetura apresenta a arquitetura geral do pacote desenvolvido.
     ]
   ),
   caption: [Arquitetura modular do pacote ABNTyp],
+  // O Typst escolhe o tipo da figura pelo conteúdo: como há uma `table` dentro do
+  // retângulo, ela viraria "Tabela". `kind: image` + `supplement` fixam "Figura".
+  kind: image,
+  supplement: [Figura],
 ) <fig-arquitetura>
 
 #fonte[Elaborado pelo autor (2026).]
@@ -607,9 +658,9 @@ A @fig-arquitetura apresenta a arquitetura geral do pacote desenvolvido.
 // - Fonte na parte INFERIOR
 // - Cabeçalho em negrito
 
-= Resultados e Discussão
+= Resultados e Discussão <sec-resultados>
 
-Este capítulo apresenta os resultados obtidos no desenvolvimento do pacote.
+Esta seção apresenta os resultados obtidos no desenvolvimento do pacote.
 
 
 == Funcionalidades Implementadas
@@ -695,14 +746,14 @@ Os seguintes testes foram realizados:
 
 === Resultados dos Testes
 
-Todos os testes apresentaram resultados satisfatórios. Os documentos gerados foram submetidos à análise de professores orientadores, que confirmaram a conformidade com as normas ABNT.
+Todos os testes apresentaram resultados satisfatórios. Os documentos gerados foram conferidos por inspeção visual, página a página, contra as exigências de cada norma.
 
 
 // ============================================================================
 // PARTE 11: CONCLUSÃO
 // ============================================================================
 
-= Conclusão
+= Conclusão <sec-conclusao>
 
 // A conclusão deve:
 // 1. Retomar o objetivo do trabalho
@@ -759,19 +810,15 @@ Como sugestões para trabalhos futuros, destacam-se:
 // ============================================================================
 //
 // OPÇÃO 1: Referências automáticas com arquivo .bib
-// Se você configurou bibliography-file no template, as referências serão
-// inseridas automaticamente ao final. Você também pode usar:
+// Se você passou arquivo-bibliografia: read("referencias.bib") a normas-abnt,
+// as referências são inseridas automaticamente ao final. Você também pode usar:
 //   #abnt-bibliography(read("referencias.bib"))
 //
 // OPÇÃO 2: Referências manuais (mostrado abaixo)
 // Use quando não tiver arquivo .bib ou precisar de controle total.
 
-// ----------------------------------------------------------------------------
-// INÍCIO DA PARTE PÓS-TEXTUAL
-// ----------------------------------------------------------------------------
-// #postextual() mantém a numeração arábica contínua (NBR 14724:2024).
-
-#postextual()
+// A numeração arábica continua sem interrupção nos elementos pós-textuais
+// (NBR 14724:2024); nada a marcar.
 
 // ----------------------------------------------------------------------------
 // SEÇÃO DE REFERÊNCIAS (manual)
@@ -780,35 +827,36 @@ Como sugestões para trabalhos futuros, destacam-se:
 // - NÃO tem numeração
 // - Título "REFERÊNCIAS" centralizado, negrito
 // - Entradas em ordem alfabética pelo sobrenome
-// - Recuo deslocado (segunda linha em diante recuada)
-// - Espaçamento simples entre referências, com espaço entre elas
+// - Alinhadas à margem esquerda, SEM recuo, em espaço simples, separadas entre
+//   si por uma linha em branco; sem justificar nem hifenizar (NBR 6023:2018, 6.3)
 
 #secao("REFERÊNCIAS")
 
-// Configuração do recuo deslocado (hanging indent)
-#set par(
-  hanging-indent: 1.25cm,
-  first-line-indent: 0pt,
-)
+// O bloco [ ... ] limita o #set ao trecho das referências (um `set` no nível do
+// documento valeria até o fim do arquivo).
+#[
+  #set par(first-line-indent: 0pt, justify: false, leading: abnt-leading(1), spacing: abnt-leading(2))
+  #set text(hyphenate: false)
 
-// DICA: Organize as referências em ordem alfabética pelo sobrenome do primeiro autor.
-// Use *texto* para negrito (títulos de livros, periódicos).
+  // DICA: Organize as referências em ordem alfabética pelo sobrenome do primeiro autor.
+  // Use *texto* para negrito (títulos de livros, periódicos).
 
-ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *NBR 6023*: informação e documentação: referências: elaboração. Rio de Janeiro: ABNT, 2018.
+  ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *ABNT NBR 6023*: informação e documentação: referências: elaboração. Rio de Janeiro: ABNT, 2018.
 
-ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *NBR 6024*: informação e documentação: numeração progressiva das seções de um documento: apresentação. Rio de Janeiro: ABNT, 2012.
+  ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *ABNT NBR 6024*: informação e documentação: numeração progressiva das seções de um documento: apresentação. Rio de Janeiro: ABNT, 2012.
 
-ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *NBR 6027*: informação e documentação: sumário: apresentação. Rio de Janeiro: ABNT, 2012.
+  ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *ABNT NBR 6027*: informação e documentação: sumário: apresentação. Rio de Janeiro: ABNT, 2012.
 
-ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *NBR 6028*: informação e documentação: resumo, resenha e recensão: apresentação. Rio de Janeiro: ABNT, 2021.
+  ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *ABNT NBR 6028*: informação e documentação: resumo, resenha e recensão: apresentação. Rio de Janeiro: ABNT, 2021.
 
-ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *NBR 10520*: informação e documentação: citações em documentos: apresentação. Rio de Janeiro: ABNT, 2023.
+  ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *ABNT NBR 10520*: informação e documentação: citações em documentos: apresentação. Rio de Janeiro: ABNT, 2023.
 
-ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *NBR 14724*: informação e documentação: trabalhos acadêmicos: apresentação. Rio de Janeiro: ABNT, 2024.
+  ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. *ABNT NBR 14724*: informação e documentação: trabalhos acadêmicos: apresentação. Rio de Janeiro: ABNT, 2024.
 
-SANTOS, Maria. *Metodologia da pesquisa científica*. 3. ed. São Paulo: Atlas, 2022.
+  SANTOS, Maria. *Metodologia da pesquisa científica*. 3. ed. São Paulo: Atlas, 2022.
 
-SILVA, João. Formatação de trabalhos acadêmicos: desafios e soluções. *Revista Brasileira de Ciência da Informação*, Brasília, v. 15, n. 2, p. 35-48, maio/ago. 2023.
+  SILVA, João. Formatação de trabalhos acadêmicos: desafios e soluções. *Revista Brasileira de Ciência da Informação*, Brasília, v. 15, n. 2, p. 35-48, maio/ago. 2023.
+]
 
 
 // ============================================================================
@@ -926,17 +974,25 @@ Observações: _______________________________________________
 ERRO: "cannot find file"
 SOLUÇÃO: Verifique o caminho do import. Use caminho relativo correto.
 
+ERRO: "cannot read file outside of project root" ao compilar um exemplo
+SOLUÇÃO: Compile com --root apontando para a raiz do pacote (veja o cabeçalho
+         deste arquivo) ou use o import do pacote publicado.
+
 ERRO: "unknown variable: normas-abnt"
-SOLUÇÃO: Certifique-se de importar com: #import "abntyp/lib.typ": *
+SOLUÇÃO: Certifique-se de importar com: #import "@preview/abntyp:0.6.0": *
 
 ERRO: Numeração de páginas incorreta
-SOLUÇÃO: Verifique se #counter(page).update(1) está antes da Introdução.
+SOLUÇÃO: A contagem começa na folha de rosto e o número só aparece a partir da
+         primeira seção numerada (normas-abnt(paginacao: "auto")). NÃO use
+         #counter(page).update(1) na Introdução: ele reinicia a contagem e o
+         sumário passa a mostrar a Introdução como página 1.
 
 ERRO: Fonte não encontrada
 SOLUÇÃO: Instale Times New Roman ou use fonte: "Arial" no template.
 
 ERRO: Referências não aparecem
-SOLUÇÃO: Use referências manuais ou verifique se o arquivo .bib existe.
+SOLUÇÃO: Use referências manuais ou passe arquivo-bibliografia: read("referencias.bib")
+         (o caminho em string dá erro; só saem as obras que o texto cita).
 
 
 // ============================================================================
@@ -954,10 +1010,11 @@ SOLUÇÃO: Use referências manuais ou verifique se o arquivo .bib existe.
   margin: (top: 3cm, bottom: 2cm, left: 3cm, right: 2cm),
 )
 
-// ADICIONAR CABEÇALHO/RODAPÉ PERSONALIZADO:
+// ADICIONAR RODAPÉ PERSONALIZADO (o número de página fica no canto superior
+// direito, como manda a NBR 14724 5.3: NÃO troque o `header`, que o apagaria).
+// O número do contador só pode ser lido dentro de `context`:
 #set page(
-  header: [Meu Cabeçalho],
-  footer: [Rodapé - Página #counter(page).display()],
+  footer: context [Rodapé - Página #counter(page).display()],
 )
 
 
@@ -970,7 +1027,7 @@ SOLUÇÃO: Use referências manuais ou verifique se o arquivo .bib existe.
 [ ] Resumo com 150-500 palavras e palavras-chave
 [ ] Abstract em inglês
 [ ] Sumário com numeração correta
-[ ] Numeração de páginas (romanas nos pré-textuais, arábicas no texto)
+[ ] Numeração de páginas (pré-textuais contadas e sem número; algarismos arábicos a partir da Introdução)
 [ ] Citações formatadas corretamente
 [ ] Figuras com legenda acima e fonte abaixo
 [ ] Tabelas no formato IBGE

@@ -25,6 +25,16 @@
 //
 // ============================================================================
 
+// COMO COMPILAR: este exemplo importa ../lib.typ, que fica FORA da pasta
+// examples/; por isso o Typst precisa saber onde está a raiz do pacote:
+//   da raiz do pacote:        typst compile --root . examples/poster-exemplo.typ
+//   de dentro de examples/:   typst compile --root .. poster-exemplo.typ
+// (sem --root, o Typst recusa o import: "cannot read file outside of project root")
+// Se você COPIAR este arquivo para o seu projeto, troque o import abaixo por
+//   #import "@preview/abntyp:0.6.0": *
+// e compile com `typst compile poster-exemplo.typ`. Arquivos que o exemplo lê (referencias.bib,
+// imagens de ../docs/figuras/), se houver, precisam ir junto, com os caminhos ajustados.
+
 #import "../lib.typ": *
 
 // Configuração do documento usando o template academic-poster
@@ -46,9 +56,9 @@
   departamento: "Departamento de Ciência da Computação",
   contato: "lucas.almeida@ufe.edu.br | beatriz.mendes@ufe.edu.br",
   texto-resumo: [
-    Este trabalho apresenta uma abordagem de deep learning para análise de sentimentos em postagens de redes sociais em português brasileiro. Utilizando uma arquitetura BERT adaptada (BERTimbau), o modelo alcançou 89,3% de acurácia na classificação de sentimentos em três categorias: positivo, negativo e neutro. O dataset utilizado contém 50.000 tweets coletados entre 2022 e 2024.
+    Este trabalho apresenta uma abordagem de deep learning para análise de sentimentos em postagens de redes sociais em português brasileiro. Utilizando uma arquitetura BERT adaptada (BERTimbau), o modelo alcançou 89,3% de acurácia na classificação de sentimentos em três categorias: positivo, negativo e neutro. O dataset utilizado contém 50.000 tweets coletados entre 2021 e 2022.
   ],
-  palavras-chave: ("Análise de sentimentos", "Deep Learning", "BERT", "Redes sociais", "PLN"),
+  palavras-chave: ("análise de sentimentos", "deep learning", "BERT", "redes sociais", "PLN"),
   num-colunas: 3,
   largura: 90cm,
   altura: 120cm,
@@ -63,7 +73,7 @@
 // ============================================================================
 
 #poster-section(titulo: "Introdução")[
-  A análise de sentimentos é uma tarefa fundamental do Processamento de Linguagem Natural (PLN) que busca identificar e extrair opiniões subjetivas em textos.
+  A análise de sentimentos é uma tarefa fundamental do Processamento de Linguagem Natural (PLN) que busca identificar e extrair opiniões subjetivas em textos (Liu, 2012).
 
   Com o crescimento exponencial das redes sociais, milhões de opiniões são compartilhadas diariamente, criando uma fonte rica de dados para:
 
@@ -79,7 +89,7 @@
   == Dataset
 
   - *Fonte:* Twitter/X (API Acadêmica)
-  - *Período:* Janeiro/2022 a Dezembro/2024
+  - *Período:* janeiro/2021 a dezembro/2022
   - *Total:* 50.000 tweets em português
   - *Anotação:* Três anotadores humanos
   - *Concordância:* Kappa = 0,82
@@ -92,6 +102,8 @@
   + Tokenização com BERTimbau
 
   == Arquitetura do Modelo
+
+  Modelo BERT (Devlin et al., 2018) pré-treinado em português, o BERTimbau (Souza et al., 2020):
 
   #poster-highlight[
     *BERTimbau-Large* + Camada de classificação
@@ -198,7 +210,6 @@
 
 #poster-references((
   [DEVLIN, J. et al. BERT: pre-training of deep bidirectional transformers for language understanding. *arXiv*, 2018.],
-  [SOUZA, F. et al. BERTimbau: pretrained BERT models for Brazilian Portuguese. *BRACIS*, 2020.],
   [LIU, B. Sentiment analysis and opinion mining. *Synthesis Lectures on HLT*, Morgan & Claypool, 2012.],
-  [SANTOS, P. A. Análise comparativa de algoritmos de ordenação. *Rev. Bras. Comp.*, v. 15, n. 2, 2022.],
+  [SOUZA, F. et al. BERTimbau: pretrained BERT models for Brazilian Portuguese. *BRACIS*, 2020.],
 ))

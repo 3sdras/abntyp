@@ -20,6 +20,16 @@
 //
 // ============================================================================
 
+// COMO COMPILAR: este exemplo importa ../lib.typ, que fica FORA da pasta
+// examples/; por isso o Typst precisa saber onde está a raiz do pacote:
+//   da raiz do pacote:        typst compile --root . examples/slides-defesa-exemplo.typ
+//   de dentro de examples/:   typst compile --root .. slides-defesa-exemplo.typ
+// (sem --root, o Typst recusa o import: "cannot read file outside of project root")
+// Se você COPIAR este arquivo para o seu projeto, troque o import abaixo por
+//   #import "@preview/abntyp:0.6.0": *
+// e compile com `typst compile slides-defesa-exemplo.typ`. Arquivos que o exemplo lê (referencias.bib,
+// imagens de ../docs/figuras/), se houver, precisam ir junto, com os caminhos ajustados.
+
 #import "../lib.typ": *
 
 // Usar o template de defesa
@@ -75,8 +85,8 @@
 
 #pause
 
-- Netflix: 80% do conteúdo assistido vem de recomendações
-- Amazon: 35% das vendas originam de recomendações
+- Plataformas de vídeo e de comércio eletrônico usam recomendações para organizar o catálogo
+- Netflix Prize (2006-2009): concurso que popularizou o problema
 
 == Problema de Pesquisa
 
@@ -136,7 +146,9 @@ Desenvolver um sistema de recomendação de filmes baseado em filtragem colabora
   ],
 )
 
-// Citação em slide: escreva o sobrenome só com a inicial maiúscula (NBR 10520:2023)
+// Citação em slide: escreva o sobrenome só com a inicial maiúscula (NBR 10520:2023).
+// A frase abaixo é ILUSTRATIVA (não é literal): numa apresentação real, copie a
+// frase exata da fonte, com a página.
 #slide-citacao(
   quote: "A filtragem colaborativa é uma das técnicas mais bem-sucedidas para construir sistemas de recomendação, baseando-se na premissa de que usuários com comportamentos similares no passado terão preferências similares no futuro.",
   autor: "Ricci",
@@ -198,8 +210,8 @@ Desenvolver um sistema de recomendação de filmes baseado em filtragem colabora
 #slide-resultado-numerico(
   titulo: "Resultados Obtidos",
   itens: (
-    ("0.89", "RMSE"),
-    ("0.71", "MAE"),
+    ("0,89", "RMSE"),
+    ("0,71", "MAE"),
     ("78%", "Precisão@10"),
   ),
 )
@@ -211,10 +223,10 @@ Desenvolver um sistema de recomendação de filmes baseado em filtragem colabora
   inset: 10pt,
   align: (left, center, center, center),
   [*Método*], [*RMSE*], [*MAE*], [*Precisão\@10*],
-  [Baseline (média)], [1.12], [0.94], [52%],
-  [SVD clássico], [0.93], [0.74], [71%],
-  [*Nossa abordagem*], [*0.89*], [*0.71*], [*78%*],
-  [Estado da arte], [0.85], [0.68], [82%],
+  [Baseline (média)], [1,12], [0,94], [52%],
+  [SVD clássico], [0,93], [0,74], [71%],
+  [*Nossa abordagem*], [*0,89*], [*0,71*], [*78%*],
+  [Estado da arte], [0,85], [0,68], [82%],
 )
 
 #pause
